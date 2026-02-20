@@ -1,0 +1,30 @@
+# EditorConfig - ensures consistent coding style across all editors
+# Docs: https://editorconfig.org
+
+# This is the top-level config (stop searching in parent directories)
+root = true
+
+# Default settings for all files
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Markdown files: trailing whitespace can be intentional (line breaks)
+[*.md]
+trim_trailing_whitespace = false
+
+# Terraform files: 2 spaces (HashiCorp standard)
+[*.tf]
+indent_size = 2
+
+# YAML files: 2 spaces
+[*.{yml,yaml}]
+indent_size = 2
+
+# Makefiles require tabs
+[Makefile]
+indent_style = tab

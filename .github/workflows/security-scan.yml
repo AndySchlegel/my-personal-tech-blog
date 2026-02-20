@@ -1,0 +1,85 @@
+# Security Scanning Pipeline
+# Runs on every push and PR to catch security issues early.
+# Three scanners: tfsec (Terraform), Checkov (AWS policy), Trufflehog (secrets)
+
+name: Security Scanning
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  # -----------------------------------------------
+  # tfsec - Scans Terraform code for security issues
+  # Example: "S3 bucket has no encryption" or "Security group allows 0.0.0.0/0"
+  # -----------------------------------------------
+  tfsec:
+    name: Terraform Security (tfsec)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: terraform/
+          soft_fail: true
+          format: sarif
+          out: tfsec-results.sarif
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: tfsec-results.sarif
+
+  # -----------------------------------------------
+  # Checkov - Validates AWS infrastructure against best practices
+  # Example: "RDS instance not encrypted" or "EKS cluster has public endpoint"
+  # -----------------------------------------------
+  checkov:
+    name: Policy Compliance (Checkov)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform/
+          framework: terraform
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+          soft_fail: true
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: checkov-results.sarif
+
+  # -----------------------------------------------
+  # Trufflehog - Scans git history for leaked secrets
+  # Example: finds accidentally committed AWS keys or database passwords
+  # -----------------------------------------------
+  trufflehog:
+    name: Secret Detection (Trufflehog)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Trufflehog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified

@@ -1,0 +1,40 @@
+# Code Quality Pipeline
+# Runs ESLint and Prettier checks on every push and PR.
+# This catches code style issues and potential bugs.
+
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: ESLint + Prettier
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: backend/
+        run: npm ci
+
+      # Run ESLint - checks for code errors and bad patterns
+      - name: Run ESLint
+        working-directory: backend/
+        run: npm run lint
+
+      # Run Prettier - checks for formatting consistency
+      - name: Check formatting
+        working-directory: backend/
+        run: npm run format:check

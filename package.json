@@ -1,0 +1,25 @@
+{
+  "name": "my-personal-tech-blog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloud-native tech blog on AWS EKS",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "backend/src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "frontend/src/**/*.{js,css,html}": [
+      "prettier --write"
+    ],
+    "terraform/**/*.tf": [
+      "terraform fmt -write=true"
+    ]
+  }
+}

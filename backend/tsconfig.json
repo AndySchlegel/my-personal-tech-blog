@@ -1,0 +1,38 @@
+{
+  // TypeScript configuration for the backend
+  // Compiles .ts files from src/ into .js files in dist/
+  "compilerOptions": {
+    // Output directory for compiled JavaScript
+    "outDir": "./dist",
+    // Source directory for TypeScript files
+    "rootDir": "./src",
+
+    // Strict mode - catches more bugs at compile time
+    "strict": true,
+
+    // Use modern JavaScript modules
+    "module": "commonjs",
+    "target": "ES2022",
+    "moduleResolution": "node",
+
+    // Allow importing JSON files (e.g. package.json)
+    "resolveJsonModule": true,
+
+    // Ensure each file can be safely transpiled on its own
+    "isolatedModules": true,
+
+    // Generate source maps for debugging
+    "sourceMap": true,
+
+    // Skip type checking of node_modules (faster builds)
+    "skipLibCheck": true,
+
+    // Allow default imports from modules without a default export
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  // Only compile files in src/
+  "include": ["src/**/*"],
+  // Never compile these
+  "exclude": ["node_modules", "dist", "tests"]
+}

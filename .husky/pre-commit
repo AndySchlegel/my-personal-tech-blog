@@ -1,0 +1,5 @@
+# Pre-commit hook - runs automatically before every git commit
+# Checks code quality with lint-staged (ESLint + Prettier)
+# If this fails, the commit is blocked until you fix the issues
+
+npx lint-staged
