@@ -1,9 +1,8 @@
 # Security Scanning Pipeline
-# Three scanners: tfsec (Terraform), Checkov (AWS policy), Trufflehog (secrets)
-# tfsec and Checkov skip automatically when no .tf files exist.
-# Trufflehog runs on every push (secret leaks can happen anywhere).
+# Trufflehog scans for leaked secrets on every push.
+# tfsec and Checkov will be enabled when Terraform code exists.
 
-name: Security Scanning
+name: "Security Scanning"
 
 on:
   push:
@@ -13,65 +12,10 @@ on:
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   # -----------------------------------------------
-  # tfsec - Scans Terraform code for security issues
-  # Skips when no .tf files exist yet
-  # -----------------------------------------------
-  tfsec:
-    name: Terraform Security (tfsec)
-    runs-on: ubuntu-latest
-    if: hashFiles('terraform/**/*.tf') != ''
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: terraform/
-          soft_fail: true
-          format: sarif
-          out: tfsec-results.sarif
-
-      - name: Upload results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: tfsec-results.sarif
-
-  # -----------------------------------------------
-  # Checkov - Validates AWS infrastructure against best practices
-  # Skips when no .tf files exist yet
-  # -----------------------------------------------
-  checkov:
-    name: Policy Compliance (Checkov)
-    runs-on: ubuntu-latest
-    if: hashFiles('terraform/**/*.tf') != ''
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Checkov
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: terraform/
-          framework: terraform
-          output_format: sarif
-          output_file_path: checkov-results.sarif
-          soft_fail: true
-
-      - name: Upload results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: checkov-results.sarif
-
-  # -----------------------------------------------
   # Trufflehog - Scans git history for leaked secrets
-  # Runs on every push (secret leaks can happen anywhere)
   # -----------------------------------------------
   trufflehog:
     name: Secret Detection (Trufflehog)
