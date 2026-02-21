@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="de" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datenschutz - Andy Schlegel Tech Blog</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Fonts + Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+  >
+    <!-- ==================== HEADER ==================== -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+      >
+        <a href="./index.html" class="flex items-center gap-2.5 group">
+          <div
+            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+          >
+            <i class="ti ti-terminal-2 text-white text-lg"></i>
+          </div>
+          <span class="font-bold text-lg text-slate-900 dark:text-white">
+            Andy<span class="text-sky-500">.</span>dev
+          </span>
+        </a>
+        <nav class="hidden sm:flex items-center gap-6">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >About</a
+          >
+        </nav>
+        <button
+          id="theme-toggle"
+          class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+          aria-label="Toggle dark mode"
+        >
+          <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+          <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENT ==================== -->
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <h1
+        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+      >
+        <i class="ti ti-shield-lock text-sky-500"></i>
+        Datenschutzerklaerung
+      </h1>
+
+      <!-- 1. Verantwortlicher -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          1. Verantwortlicher
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p>Andy Schlegel</p>
+          <!-- TODO: Adresse eintragen -->
+          <p>[Adresse]</p>
+          <p>E-Mail: [E-Mail-Adresse]</p>
+        </div>
+      </section>
+
+      <!-- 2. Hosting -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          2. Hosting
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website wird bei Amazon Web Services (AWS) gehostet. Anbieter
+          ist die Amazon Web Services EMEA SARL, 38 Avenue John F. Kennedy,
+          L-1855 Luxemburg. Bei Aufruf dieser Website werden automatisch
+          Informationen in sogenannten Server-Log-Dateien gespeichert, die der
+          Browser automatisch uebermittelt. Dies sind: Browsertyp und -version,
+          verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden
+          Rechners, Uhrzeit der Serveranfrage und IP-Adresse.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          Die Nutzung von AWS erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f
+          DSGVO. Wir haben ein berechtigtes Interesse an einer zuverlaessigen
+          Darstellung unserer Website.
+        </p>
+      </section>
+
+      <!-- 3. CDN -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          3. Content Delivery Network (CloudFront)
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Zur Auslieferung statischer Inhalte nutzen wir Amazon CloudFront, ein
+          Content Delivery Network (CDN) von AWS. Hierdurch kann die
+          Ladegeschwindigkeit der Website optimiert werden. CloudFront speichert
+          Inhalte in Rechenzentren weltweit, um Anfragen geographisch naeher am
+          Nutzer zu bedienen.
+        </p>
+      </section>
+
+      <!-- 4. Externe Ressourcen -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          4. Externe Ressourcen
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
+          Diese Website laedt folgende externe Ressourcen:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2"
+        >
+          <li>
+            <strong>Google Fonts (Inter)</strong> - Schriftart, bereitgestellt
+            von Google Ireland Limited. Beim Laden wird die IP-Adresse des
+            Nutzers an Google uebertragen.
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sky-500 hover:text-sky-400"
+              >Datenschutzerklaerung von Google</a
+            >
+          </li>
+          <li>
+            <strong>Tabler Icons (jsDelivr CDN)</strong> - Icon-Bibliothek,
+            bereitgestellt ueber das jsDelivr CDN.
+            <a
+              href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sky-500 hover:text-sky-400"
+              >Datenschutzerklaerung von jsDelivr</a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <!-- 5. Cookies -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          5. Cookies und Local Storage
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website verwendet keine Tracking-Cookies. Es wird lediglich
+          localStorage genutzt, um die Einstellung des Dark/Light-Modus zu
+          speichern. Diese Daten verbleiben ausschliesslich im Browser des
+          Nutzers und werden nicht an Server uebertragen.
+        </p>
+      </section>
+
+      <!-- 6. Kommentare -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          6. Kommentarfunktion
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Bei der Nutzung der Kommentarfunktion werden der eingegebene Name und
+          der Kommentartext gespeichert. Optional eingegebene E-Mail-Adressen
+          werden ebenfalls gespeichert, jedoch nicht oeffentlich angezeigt. Die
+          Kommentare werden mittels Amazon Comprehend (AWS) auf Sentiment
+          analysiert. Hierbei wird nur der Kommentartext verarbeitet, keine
+          personenbezogenen Daten.
+        </p>
+      </section>
+
+      <!-- 7. Rechte -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          7. Ihre Rechte
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
+          Sie haben gegenueber dem Verantwortlichen folgende Rechte hinsichtlich
+          der Sie betreffenden personenbezogenen Daten:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1"
+        >
+          <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
+          <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
+          <li>Recht auf Loeschung (Art. 17 DSGVO)</li>
+          <li>Recht auf Einschraenkung der Verarbeitung (Art. 18 DSGVO)</li>
+          <li>Recht auf Datenuebertragbarkeit (Art. 20 DSGVO)</li>
+          <li>Recht auf Widerspruch (Art. 21 DSGVO)</li>
+        </ul>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          Ferner haben Sie das Recht, sich bei einer
+          Datenschutz-Aufsichtsbehoerde ueber die Verarbeitung Ihrer
+          personenbezogenen Daten zu beschweren.
+        </p>
+      </section>
+
+      <!-- Hinweis-Box -->
+      <div
+        class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm text-amber-600 dark:text-amber-400 flex items-start gap-3"
+      >
+        <i class="ti ti-alert-triangle text-lg mt-0.5"></i>
+        <span
+          >TODO: Persoenliche Daten (Adresse, E-Mail) muessen vor dem
+          oeffentlichen Launch eingetragen werden.</span
+        >
+      </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+    >
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div
+            class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            <span
+              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
+            >
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <a
+              href="./impressum.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Impressum</a
+            >
+            <a href="./datenschutz.html" class="text-sky-600 dark:text-sky-400"
+              >Datenschutz</a
+            >
+          </div>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/AndySchlegel"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-github text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

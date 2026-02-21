@@ -134,7 +134,7 @@
       'cursor-pointer group" style="animation-delay: ' +
       index * 0.1 +
       's" ' +
-      "onclick=\"window.location.href='/post.html?slug=" +
+      "onclick=\"window.location.href='./post.html?slug=" +
       post.slug +
       "'\">" +
       // Card body

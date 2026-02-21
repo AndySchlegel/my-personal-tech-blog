@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="de" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressum - Andy Schlegel Tech Blog</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Fonts + Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+  >
+    <!-- ==================== HEADER ==================== -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+      >
+        <a href="./index.html" class="flex items-center gap-2.5 group">
+          <div
+            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+          >
+            <i class="ti ti-terminal-2 text-white text-lg"></i>
+          </div>
+          <span class="font-bold text-lg text-slate-900 dark:text-white">
+            Andy<span class="text-sky-500">.</span>dev
+          </span>
+        </a>
+        <nav class="hidden sm:flex items-center gap-6">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >About</a
+          >
+        </nav>
+        <button
+          id="theme-toggle"
+          class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+          aria-label="Toggle dark mode"
+        >
+          <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+          <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENT ==================== -->
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <h1
+        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+      >
+        <i class="ti ti-gavel text-sky-500"></i>
+        Impressum
+      </h1>
+
+      <!-- Angaben gemaess DDG (ehemals TMG) -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Angaben gem. &sect; 5 DDG
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p>Andy Schlegel</p>
+          <!-- TODO: Adresse eintragen bevor die Seite oeffentlich geht -->
+          <p>[Strasse + Hausnummer]</p>
+          <p>[PLZ + Ort]</p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Kontakt
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <!-- TODO: Kontaktdaten eintragen -->
+          <p>E-Mail: [E-Mail-Adresse]</p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Verantwortlich fuer den Inhalt gem. &sect; 18 Abs. 2 MStV
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p>Andy Schlegel</p>
+          <p>[Adresse wie oben]</p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Haftungsausschluss
+        </h2>
+
+        <h3
+          class="text-lg font-medium text-slate-800 dark:text-slate-200 mt-4 mb-2"
+        >
+          Haftung fuer Inhalte
+        </h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Die Inhalte dieser Seiten wurden mit groesster Sorgfalt erstellt. Fuer
+          die Richtigkeit, Vollstaendigkeit und Aktualitaet der Inhalte kann
+          jedoch keine Gewaehr uebernommen werden. Als Diensteanbieter bin ich
+          gem. &sect; 7 Abs. 1 DDG fuer eigene Inhalte auf diesen Seiten nach
+          den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10
+          DDG bin ich als Diensteanbieter jedoch nicht verpflichtet,
+          uebermittelte oder gespeicherte fremde Informationen zu ueberwachen.
+        </p>
+
+        <h3
+          class="text-lg font-medium text-slate-800 dark:text-slate-200 mt-4 mb-2"
+        >
+          Haftung fuer Links
+        </h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website enthaelt Links zu externen Websites Dritter, auf deren
+          Inhalte ich keinen Einfluss habe. Fuer die Inhalte der verlinkten
+          Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
+          verantwortlich. Eine permanente inhaltliche Kontrolle der verlinkten
+          Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht
+          zumutbar.
+        </p>
+      </section>
+
+      <!-- Hinweis-Box -->
+      <div
+        class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm text-amber-600 dark:text-amber-400 flex items-start gap-3"
+      >
+        <i class="ti ti-alert-triangle text-lg mt-0.5"></i>
+        <span
+          >TODO: Persoenliche Daten (Adresse, E-Mail) muessen vor dem
+          oeffentlichen Launch eingetragen werden.</span
+        >
+      </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+    >
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div
+            class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            <span
+              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
+            >
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <a href="./impressum.html" class="text-sky-600 dark:text-sky-400"
+              >Impressum</a
+            >
+            <a
+              href="./datenschutz.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Datenschutz</a
+            >
+          </div>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/AndySchlegel"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-github text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
