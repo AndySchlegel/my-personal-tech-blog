@@ -1,0 +1,7 @@
+# Don't send these to Docker (faster builds, smaller context)
+node_modules
+dist
+coverage
+.env
+.env.*
+*.log

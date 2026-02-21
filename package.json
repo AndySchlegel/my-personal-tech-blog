@@ -16,7 +16,7 @@
       "npx --prefix backend prettier --write"
     ],
     "frontend/src/**/*.{js,css,html}": [
-      "prettier --write"
+      "npx --prefix backend prettier --write"
     ],
     "terraform/**/*.tf": [
       "terraform fmt -write=true"
