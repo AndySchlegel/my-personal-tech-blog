@@ -10,6 +10,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { healthRouter } from './routes/health';
+import { postsRouter } from './routes/posts';
+import { commentsRouter } from './routes/comments';
+import { categoriesRouter } from './routes/categories';
 
 // Create the Express application
 const app = express();
@@ -36,7 +39,14 @@ app.use(express.json());
 
 // --- Routes ---
 
-// Health check route - used by Kubernetes to verify the server is alive
+// Health check - used by Kubernetes to verify the server is alive
 app.use('/health', healthRouter);
+
+// Blog API routes
+app.use('/api/posts', postsRouter);
+app.use('/api/categories', categoriesRouter);
+
+// Comment routes are mounted at /api (because they use /posts/:postId/comments)
+app.use('/api', commentsRouter);
 
 export default app;
