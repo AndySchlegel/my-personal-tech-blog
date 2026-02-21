@@ -27,7 +27,7 @@ const pool = new Pool({
 });
 
 // Log connection errors (but don't crash the server)
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   console.error('Database pool error:', err.message);
 });
 

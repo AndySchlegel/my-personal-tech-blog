@@ -29,11 +29,18 @@ postsRouter.get('/', async (_req: Request, res: Response) => {
         p.id, p.title, p.slug, p.excerpt, p.cover_image_url,
         p.featured, p.reading_time_minutes, p.view_count, p.published_at,
         c.name AS category_name, c.slug AS category_slug,
-        u.display_name AS author_name
+        u.display_name AS author_name,
+        COALESCE(
+          json_agg(json_build_object('name', t.name, 'slug', t.slug))
+          FILTER (WHERE t.id IS NOT NULL), '[]'
+        ) AS tags
       FROM posts p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN users u ON p.author_id = u.id
+      LEFT JOIN post_tags pt ON p.id = pt.post_id
+      LEFT JOIN tags t ON pt.tag_id = t.id
       WHERE p.status = 'published'
+      GROUP BY p.id, c.name, c.slug, u.display_name
       ORDER BY p.published_at DESC`
     );
 
@@ -130,7 +137,7 @@ postsRouter.post('/', async (req: Request, res: Response) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *`,
       [
-        slug,
+        title,
         slug,
         content,
         excerpt || null,
