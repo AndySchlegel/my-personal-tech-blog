@@ -59,7 +59,7 @@
         <!-- Logo / Blog Name -->
         <a href="./index.html" class="flex items-center gap-2.5 group">
           <div
-            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+            class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
           >
             <i class="ti ti-terminal-2 text-white text-lg"></i>
           </div>
@@ -87,7 +87,7 @@
           <!-- Theme toggle button -->
           <button
             id="theme-toggle"
-            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            class="theme-toggle-btn w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
             aria-label="Toggle dark mode"
           >
             <!-- Sun icon (shown in dark mode - click to go light) -->
@@ -135,12 +135,13 @@
       >
         <div class="max-w-2xl">
           <h1
-            class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+            class="slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
           >
             From Zero to Cloud Engineer
           </h1>
           <p
-            class="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
+            class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
+            style="animation-delay: 0.1s; opacity: 0"
           >
             Personal blog about my journey into cloud engineering. AWS,
             Kubernetes, Terraform, Security, and everything I learn along the
@@ -150,19 +151,22 @@
           <!-- Stats badges -->
           <div class="flex flex-wrap gap-3 mt-6">
             <span
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-sm font-medium"
+              class="stat-badge scale-up inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-sm font-medium cursor-default"
+              style="animation-delay: 0.3s"
             >
               <i class="ti ti-certificate text-base"></i>
               3x AWS Certified
             </span>
             <span
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-sm font-medium"
+              class="stat-badge scale-up inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-sm font-medium cursor-default"
+              style="animation-delay: 0.45s"
             >
               <i class="ti ti-server text-base"></i>
               Homelab Enthusiast
             </span>
             <span
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-sm font-medium"
+              class="stat-badge scale-up inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-sm font-medium cursor-default"
+              style="animation-delay: 0.6s"
             >
               <i class="ti ti-brand-kubernetes text-base"></i>
               EKS Deployed
@@ -277,15 +281,15 @@
               href="https://github.com/AndySchlegel"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-github text-xl"></i>
             </a>
             <a
-              href="https://linkedin.com/in/andyschlegel"
+              href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-linkedin text-xl"></i>
             </a>

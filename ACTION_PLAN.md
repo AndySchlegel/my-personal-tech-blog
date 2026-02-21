@@ -46,8 +46,8 @@
 - [ ] Auth middleware (Cognito JWT validation)
 - [ ] S3 image upload service
 - [ ] Markdown rendering
-- [ ] Unit tests (min. 5, Jest)
-- [ ] Seed data (migrate 12 articles from old blog)
+- [x] Unit tests (19 tests: health, posts, comments, categories)
+- [x] Seed data (12 articles, 6 categories, 28 tags from old blog)
 
 ## Phase 3: Frontend
 

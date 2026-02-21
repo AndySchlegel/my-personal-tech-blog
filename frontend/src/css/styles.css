@@ -5,7 +5,7 @@
    This file is only for things Tailwind can't do:
    - Smooth theme transitions
    - Custom scrollbar
-   - Special animations
+   - Animations and hover effects
    ============================================ */
 
 /* --- Smooth transition when switching themes --- */
@@ -42,22 +42,32 @@ html.transition-theme *::after {
   background: #94a3b8; /* slate-400 */
 }
 
-/* --- Post card hover animation --- */
+/* --- Post card hover effects --- */
 .post-card {
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .post-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 24px -8px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(56, 189, 248, 0.1); /* subtle sky glow */
+}
+
+.dark .post-card:hover {
+  box-shadow:
+    0 12px 24px -8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(56, 189, 248, 0.15); /* sky glow in dark mode */
 }
 
 /* --- Fade in animation for loaded content --- */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -66,10 +76,44 @@ html.transition-theme *::after {
 }
 
 .fade-in {
-  animation: fadeIn 0.4s ease forwards;
+  animation: fadeIn 0.5s ease forwards;
+  opacity: 0; /* start invisible, animation brings it in */
 }
 
-/* --- Skeleton loading pulse (shown while posts load) --- */
+/* --- Slide in from left (for hero text) --- */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s ease forwards;
+}
+
+/* --- Scale up animation (for badges) --- */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scale-up {
+  animation: scaleUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+/* --- Skeleton loading pulse --- */
 @keyframes pulse {
   0%,
   100% {
@@ -84,10 +128,83 @@ html.transition-theme *::after {
   animation: pulse 1.5s infinite;
 }
 
-/* --- Category badge colors --- */
+/* --- Category badge base style --- */
 .badge {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.025em;
   text-transform: uppercase;
+  transition: transform 0.2s ease;
+}
+
+.post-card:hover .badge {
+  transform: scale(1.05);
+}
+
+/* --- Logo pulse on hover --- */
+.logo-icon {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.logo-icon:hover {
+  transform: rotate(-5deg) scale(1.1);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+}
+
+/* --- Social link hover effects --- */
+.social-link {
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.social-link:hover {
+  transform: translateY(-2px);
+}
+
+/* --- Tag hover effect --- */
+.tag-pill {
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tag-pill:hover {
+  transform: scale(1.05);
+}
+
+/* --- Smooth scroll for the whole page --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* --- Stats badge hover --- */
+.stat-badge {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.stat-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .stat-badge:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Theme toggle spin animation --- */
+.theme-toggle-btn {
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: rotate(20deg);
+}
+
+.theme-toggle-btn:active {
+  transform: rotate(180deg);
 }

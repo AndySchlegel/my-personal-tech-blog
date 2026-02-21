@@ -250,6 +250,40 @@
       });
   }
 
+  // --- Save scroll position before leaving the page ---
+  // So when the user clicks "Back to all articles", we can
+  // scroll them back to where they were in the post list.
+  function setupScrollMemory() {
+    // Save scroll position whenever user is about to leave
+    window.addEventListener("beforeunload", function () {
+      sessionStorage.setItem("scrollPos", window.scrollY.toString());
+    });
+
+    // Also save when clicking a post card (beforeunload doesn't always fire on SPA-like nav)
+    document.addEventListener("click", function (e) {
+      var card = e.target.closest(".post-card");
+      if (card) {
+        sessionStorage.setItem("scrollPos", window.scrollY.toString());
+      }
+    });
+  }
+
+  // --- Restore scroll position if coming back from a post ---
+  function restoreScrollPosition() {
+    var saved = sessionStorage.getItem("scrollPos");
+    if (saved) {
+      // Small delay so the DOM has rendered the posts first
+      setTimeout(function () {
+        window.scrollTo(0, parseInt(saved, 10));
+      }, 100);
+      sessionStorage.removeItem("scrollPos");
+    }
+  }
+
   // --- Start loading when DOM is ready ---
-  document.addEventListener("DOMContentLoaded", loadPosts);
+  document.addEventListener("DOMContentLoaded", function () {
+    loadPosts();
+    setupScrollMemory();
+    restoreScrollPosition();
+  });
 })();
