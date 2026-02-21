@@ -5,7 +5,7 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Project Setup + Backend API
+**Current Phase:** Backend API + Frontend
 **Last Updated:** 2026-02-21
 
 ---
@@ -16,7 +16,7 @@
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
 | 2. Backend API | In Progress | Week 1-2 |
-| 3. Frontend | Not Started | Week 2 |
+| 3. Frontend | In Progress | Week 1-2 |
 | 4. Terraform Infrastructure | Not Started | Week 2-3 |
 | 5. Kubernetes + CI/CD | Not Started | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
@@ -45,18 +45,22 @@
 - [x] Express routes: CRUD posts, comments, categories (11 endpoints)
 - [ ] Auth middleware (Cognito JWT validation)
 - [ ] S3 image upload service
-- [ ] Markdown rendering
 - [x] Unit tests (19 tests: health, posts, comments, categories)
 - [x] Seed data (12 articles, 6 categories, 28 tags from old blog)
 
 ## Phase 3: Frontend
 
-- [ ] Blog homepage (post list, categories, search)
-- [ ] Single post view (Markdown rendered)
+- [x] Blog homepage (post list with demo data, category badges, reading time)
+- [x] Single post view (Markdown rendered via marked.js + highlight.js)
 - [ ] About page (personal journey timeline)
 - [ ] Admin dashboard (post editor, comment moderation)
-- [ ] Dark mode toggle (localStorage)
-- [ ] Mobile responsive (all pages)
+- [x] Dark mode toggle (localStorage, dark default)
+- [x] Mobile responsive (all pages, mobile menu)
+- [x] Impressum + Datenschutz (German legal requirement)
+- [x] Scroll position memory (sessionStorage)
+- [x] Animations (slide-in hero, scale-up badges, fade-in cards, hover effects)
+- [ ] Search and category filtering
+- [ ] Connect to real API (currently demo data fallback)
 
 ## Phase 4: Terraform Infrastructure
 
@@ -108,3 +112,6 @@
 | 2026-02-20 | S3 + CloudFront for images | Professional, scalable, shows S3 integration |
 | 2026-02-20 | Husky pre-commit hooks | Security from day 1, prevents secret leaks |
 | 2026-02-20 | 3 docs only | README + ACTION_PLAN + LESSONS_LEARNED, nothing else |
+| 2026-02-21 | Relative paths | All HTML uses `./` paths for file:// dev compatibility |
+| 2026-02-21 | marked.js + highlight.js | Client-side Markdown rendering, no SSR needed |
+| 2026-02-21 | Impressum + Datenschutz | German legal pages added from day 1 |

@@ -142,13 +142,16 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 ### Local Development
 
 ```bash
-# Backend
+# Option 1: Docker Compose (recommended - runs everything)
+docker compose up --build
+
+# Option 2: Frontend only (just open in browser)
+open frontend/src/index.html
+# Shows demo posts when backend is not running
+
+# Option 3: Backend only
 cd backend
 npm install
-npm run dev
-
-# Frontend
-cd frontend
 npm run dev
 ```
 
@@ -205,6 +208,8 @@ Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
 | Terraform Modules | 8 planned |
 | AWS Services | 10+ |
 | Blog Articles | 12 (migrated from previous project) |
+| Unit Tests | 19 (health, posts, comments, categories) |
+| Lessons Learned | 7 documented |
 
 *Updated as the project progresses.*
 
@@ -219,6 +224,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 1: Project Setup)
+**Project Status:** In Development (Phase 2: Backend API + Phase 3: Frontend)
 **Last Updated:** 2026-02-21
 **AWS Region:** eu-central-1 (Frankfurt)

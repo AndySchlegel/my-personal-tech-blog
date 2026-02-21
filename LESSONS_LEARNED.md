@@ -70,3 +70,53 @@ Split into two files: `app.ts` (Express configuration + routes) and `server.ts` 
 Separate "what your app does" from "how it starts". This is a common pattern in Express/Node.js projects that makes testing cleaner.
 
 ---
+
+## #5 - Relative Paths for Local Development
+
+**Date:** 2026-02-21
+**Phase:** Frontend
+
+**Context:**
+The frontend HTML files used absolute paths (`/js/app.js`, `/css/styles.css`). This works perfectly when served by nginx or any web server. But when opening the files directly via `file://` protocol in a browser (for quick local testing without Docker), absolute paths resolve to the filesystem root - so nothing loads.
+
+**Decision:**
+Changed all paths to relative (`./js/app.js`, `./css/styles.css`, `./index.html`). This works with both `file://` and web servers. Navigation links also changed from `href="/"` to `href="./index.html"`.
+
+**Takeaway:**
+During development, you want the fastest feedback loop possible. Being able to just double-click an HTML file and see it work is valuable. Relative paths cost nothing but enable this workflow.
+
+---
+
+## #6 - Test Before Commit, Ask Before Removing
+
+**Date:** 2026-02-21
+**Phase:** Frontend
+
+**Context:**
+During the Markdown rendering implementation, LinkedIn links were removed from footer sections across multiple pages without being asked. The intent was to "clean up" placeholder links, but this removed working functionality that was already correct.
+
+**Decision:**
+Two rules established:
+1. **Always test changes in the browser before committing** - visual verification catches issues that code review misses
+2. **Never remove existing functionality without asking first** - if something seems wrong or temporary, ask whether to fix it or remove it
+
+**Takeaway:**
+Removing code feels productive but can destroy working features. The safer default is always to ask: "Should we fix this or remove it?" A quick question saves a multi-file fix later.
+
+---
+
+## #7 - lint-staged and Monorepo Tool Resolution
+
+**Date:** 2026-02-21
+**Phase:** Project Setup
+
+**Context:**
+lint-staged in the root `package.json` ran `prettier --write` for frontend HTML/CSS files. But Prettier was installed in `backend/node_modules/`, not at the root level. lint-staged could not find the `prettier` binary and failed with ENOENT.
+
+**Decision:**
+Changed the lint-staged command from `"prettier --write"` to `"npx --prefix backend prettier --write"`. This tells npx to look for Prettier in the backend directory where it is actually installed.
+
+**Takeaway:**
+In a monorepo with tools installed in subdirectories, lint-staged commands at the root level need explicit paths to find the right binaries. `npx --prefix <dir>` is the clean solution.
+
+---
