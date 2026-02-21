@@ -120,3 +120,24 @@ Changed the lint-staged command from `"prettier --write"` to `"npx --prefix back
 In a monorepo with tools installed in subdirectories, lint-staged commands at the root level need explicit paths to find the right binaries. `npx --prefix <dir>` is the clean solution.
 
 ---
+
+## #8 - Hot-Reload with podman cp
+
+**Date:** 2026-02-21
+**Phase:** Frontend
+
+**Context:**
+During visual development (hover effects, colors, animations), rebuilding the entire Docker image for every CSS or JS change was painfully slow. Each rebuild took 30+ seconds, killing the feedback loop for iterative design work.
+
+**Decision:**
+Used `podman cp` to copy individual files directly into the running container:
+```bash
+podman cp frontend/src/css/styles.css container_name:/usr/share/nginx/html/css/styles.css
+podman exec container_name nginx -s reload
+```
+Changes are visible after a browser hard-reload - no rebuild, no restart. When satisfied with the result, commit the source files normally.
+
+**Takeaway:**
+For visual iteration (CSS, JS, HTML), copy files into running containers instead of rebuilding. Save full rebuilds for structural changes (Dockerfile, dependencies, config). The fastest feedback loop wins during design work.
+
+---

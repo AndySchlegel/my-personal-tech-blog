@@ -90,47 +90,120 @@
     });
   }
 
-  // --- Pick a color for a category badge ---
-  // Each category gets a consistent color from this list
-  var CATEGORY_COLORS = {
-    Career:
-      "bg-purple-500/20 text-purple-400 dark:bg-purple-500/20 dark:text-purple-400",
-    Security: "bg-red-500/20 text-red-400 dark:bg-red-500/20 dark:text-red-400",
-    Homelab:
-      "bg-green-500/20 text-green-400 dark:bg-green-500/20 dark:text-green-400",
-    DevOps: "bg-sky-500/20 text-sky-400 dark:bg-sky-500/20 dark:text-sky-400",
-    AWS: "bg-amber-500/20 text-amber-400 dark:bg-amber-500/20 dark:text-amber-400",
-    default:
-      "bg-slate-500/20 text-slate-400 dark:bg-slate-500/20 dark:text-slate-400",
+  // --- Category color system ---
+  // Each category gets a badge color AND a card accent color (top border)
+  var CATEGORY_STYLES = {
+    "DevOps & CI/CD": {
+      badge: "bg-sky-500/20 text-sky-400",
+      border: "border-t-sky-500",
+      glow: "glow-sky",
+      tag: "text-sky-500/70",
+    },
+    Certifications: {
+      badge: "bg-amber-500/20 text-amber-400",
+      border: "border-t-amber-500",
+      glow: "glow-amber",
+      tag: "text-amber-500/70",
+    },
+    "Homelab & Self-Hosting": {
+      badge: "bg-green-500/20 text-green-400",
+      border: "border-t-green-500",
+      glow: "glow-green",
+      tag: "text-green-500/70",
+    },
+    "Networking & Security": {
+      badge: "bg-red-500/20 text-red-400",
+      border: "border-t-red-500",
+      glow: "glow-red",
+      tag: "text-red-500/70",
+    },
+    "Tools & Productivity": {
+      badge: "bg-purple-500/20 text-purple-400",
+      border: "border-t-purple-500",
+      glow: "glow-purple",
+      tag: "text-purple-500/70",
+    },
+    "AWS & Cloud": {
+      badge: "bg-orange-500/20 text-orange-400",
+      border: "border-t-orange-500",
+      glow: "glow-orange",
+      tag: "text-orange-500/70",
+    },
+    // Fallback for demo posts and unknown categories
+    Career: {
+      badge: "bg-purple-500/20 text-purple-400",
+      border: "border-t-purple-500",
+      glow: "glow-purple",
+      tag: "text-purple-500/70",
+    },
+    Security: {
+      badge: "bg-red-500/20 text-red-400",
+      border: "border-t-red-500",
+      glow: "glow-red",
+      tag: "text-red-500/70",
+    },
+    Homelab: {
+      badge: "bg-green-500/20 text-green-400",
+      border: "border-t-green-500",
+      glow: "glow-green",
+      tag: "text-green-500/70",
+    },
+    DevOps: {
+      badge: "bg-sky-500/20 text-sky-400",
+      border: "border-t-sky-500",
+      glow: "glow-sky",
+      tag: "text-sky-500/70",
+    },
+    AWS: {
+      badge: "bg-orange-500/20 text-orange-400",
+      border: "border-t-orange-500",
+      glow: "glow-orange",
+      tag: "text-orange-500/70",
+    },
   };
 
-  function getCategoryColor(category) {
-    return CATEGORY_COLORS[category] || CATEGORY_COLORS.default;
+  var DEFAULT_STYLE = {
+    badge: "bg-slate-500/20 text-slate-400",
+    border: "border-t-slate-500",
+    glow: "glow-sky",
+    tag: "text-slate-500/70",
+  };
+
+  function getCategoryStyle(category) {
+    return CATEGORY_STYLES[category] || DEFAULT_STYLE;
   }
 
   // --- Create HTML for a single post card ---
   function createPostCard(post, index) {
-    // Build tags HTML (only show first 3 tags)
+    var style = getCategoryStyle(post.category_name);
+
+    // Build tags HTML (only show first 3 tags) with category color
     var tagsArray = post.tags || [];
     var tagsHtml = tagsArray
       .slice(0, 3)
       .map(function (tag) {
         return (
-          '<span class="text-xs text-slate-500 dark:text-slate-500">#' +
-          tag.name +
-          "</span>"
+          '<span class="text-xs ' + style.tag + '">#' + tag.name + "</span>"
         );
       })
       .join(" ");
 
-    // Category badge with color
-    var categoryColor = getCategoryColor(post.category_name);
+    // Featured indicator (star icon for featured posts)
+    var featuredHtml = post.featured
+      ? '<span class="flex items-center gap-1 text-xs text-amber-400" title="Featured">' +
+        '<i class="ti ti-star-filled text-sm"></i></span>'
+      : "";
 
-    // Build the card HTML
+    // Build the card HTML with colored top border + glow class for gradient title
     return (
-      '<article class="post-card fade-in bg-white dark:bg-slate-800/50 rounded-xl ' +
-      "border border-slate-200 dark:border-slate-700/50 overflow-hidden " +
-      "hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-lg dark:hover:shadow-slate-900/50 " +
+      '<article class="post-card fade-in ' +
+      style.glow +
+      " bg-white dark:bg-slate-800/50 rounded-xl " +
+      "border border-slate-200 dark:border-slate-700/50 " +
+      "border-t-2 " +
+      style.border +
+      " " +
+      "hover:border-slate-300 dark:hover:border-slate-600 " +
       'cursor-pointer group" style="animation-delay: ' +
       index * 0.1 +
       's" ' +
@@ -139,23 +212,27 @@
       "'\">" +
       // Card body
       '<div class="p-6">' +
-      // Category + reading time
+      // Category + featured star + reading time
       '<div class="flex items-center justify-between mb-3">' +
+      '<div class="flex items-center gap-2">' +
       '<span class="badge px-2.5 py-1 rounded-full ' +
-      categoryColor +
+      style.badge +
       '">' +
       post.category_name +
       "</span>" +
+      featuredHtml +
+      "</div>" +
       '<span class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">' +
       '<i class="ti ti-clock text-sm"></i>' +
       post.reading_time_minutes +
       " min read" +
       "</span>" +
       "</div>" +
-      // Title
-      '<h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2 ' +
-      'group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">' +
+      // Title with gradient span
+      '<h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">' +
+      '<span class="title-text">' +
       post.title +
+      "</span>" +
       "</h2>" +
       // Excerpt
       '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">' +
@@ -167,7 +244,7 @@
       '<i class="ti ti-calendar text-sm"></i>' +
       formatDate(post.published_at) +
       "</span>" +
-      '<div class="flex gap-2">' +
+      '<div class="flex gap-2 card-tags">' +
       tagsHtml +
       "</div>" +
       "</div>" +

@@ -6,7 +6,7 @@
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
 **Current Phase:** Backend API + Frontend
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-21 (Session 3)
 
 ---
 
@@ -52,15 +52,17 @@
 
 - [x] Blog homepage (post list with demo data, category badges, reading time)
 - [x] Single post view (Markdown rendered via marked.js + highlight.js)
-- [ ] About page (personal journey timeline)
-- [ ] Admin dashboard (post editor, comment moderation)
 - [x] Dark mode toggle (localStorage, dark default)
 - [x] Mobile responsive (all pages, mobile menu)
 - [x] Impressum + Datenschutz (German legal requirement)
 - [x] Scroll position memory (sessionStorage)
 - [x] Animations (slide-in hero, scale-up badges, fade-in cards, hover effects)
+- [x] Category color system (colored badges, borders, tags, glows per category)
+- [x] Visual polish (magnifying glass hover, gradient titles, glowing stat badges)
+- [x] Connect to real API via Docker Compose (12 articles from PostgreSQL)
+- [ ] About page (personal journey timeline)
+- [ ] Admin dashboard (post editor, comment moderation)
 - [ ] Search and category filtering
-- [ ] Connect to real API (currently demo data fallback)
 
 ## Phase 4: Terraform Infrastructure
 
@@ -115,3 +117,6 @@
 | 2026-02-21 | Relative paths | All HTML uses `./` paths for file:// dev compatibility |
 | 2026-02-21 | marked.js + highlight.js | Client-side Markdown rendering, no SSR needed |
 | 2026-02-21 | Impressum + Datenschutz | German legal pages added from day 1 |
+| 2026-02-21 | Podman over Docker | Validated as Docker alternative on dev machine |
+| 2026-02-21 | Category color system | Each category gets unique badge, border, glow, and gradient colors |
+| 2026-02-21 | podman cp hot-reload | Copy files into running containers for instant feedback |

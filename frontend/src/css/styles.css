@@ -42,25 +42,128 @@ html.transition-theme *::after {
   background: #94a3b8; /* slate-400 */
 }
 
-/* --- Post card hover effects --- */
+/* --- Post card hover effects (magnifying glass style) --- */
 .post-card {
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
+/* THE big hover: card pops up and scales like a magnifying glass */
 .post-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-16px) scale(1.07);
+  z-index: 10;
   box-shadow:
-    0 12px 24px -8px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(56, 189, 248, 0.1); /* subtle sky glow */
+    0 40px 80px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 40px rgba(56, 189, 248, 0.1);
 }
 
 .dark .post-card:hover {
+  background-color: rgba(30, 41, 59, 0.95);
   box-shadow:
-    0 12px 24px -8px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(56, 189, 248, 0.15); /* sky glow in dark mode */
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 0 50px rgba(56, 189, 248, 0.15);
+}
+
+/* Category-colored glow on hover - stronger and more visible */
+.dark .post-card[class*="border-t-sky"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(14, 165, 233, 0.35),
+    0 0 80px rgba(14, 165, 233, 0.15);
+}
+.dark .post-card[class*="border-t-amber"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(245, 158, 11, 0.35),
+    0 0 80px rgba(245, 158, 11, 0.15);
+}
+.dark .post-card[class*="border-t-green"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(34, 197, 94, 0.35),
+    0 0 80px rgba(34, 197, 94, 0.15);
+}
+.dark .post-card[class*="border-t-red"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(239, 68, 68, 0.35),
+    0 0 80px rgba(239, 68, 68, 0.15);
+}
+.dark .post-card[class*="border-t-purple"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(168, 85, 247, 0.35),
+    0 0 80px rgba(168, 85, 247, 0.15);
+}
+.dark .post-card[class*="border-t-orange"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(249, 115, 22, 0.35),
+    0 0 80px rgba(249, 115, 22, 0.15);
+}
+
+/* Title gets gradient color on hover */
+.post-card h2 {
+  transition:
+    transform 0.35s ease,
+    color 0.3s ease;
+}
+
+.post-card:hover h2 {
+  transform: translateX(6px);
+}
+
+/* Gradient title magic - each category gets its own gradient */
+.post-card h2 .title-text {
+  transition: all 0.4s ease;
+  background-size: 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.post-card:hover h2 .title-text {
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sky (DevOps) */
+.post-card.glow-sky:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #38bdf8, #818cf8);
+}
+/* Amber (Certifications) */
+.post-card.glow-amber:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #fbbf24, #f97316);
+}
+/* Green (Homelab) */
+.post-card.glow-green:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #4ade80, #2dd4bf);
+}
+/* Red (Security) */
+.post-card.glow-red:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #f87171, #fb923c);
+}
+/* Purple (Tools) */
+.post-card.glow-purple:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #c084fc, #f472b6);
+}
+/* Orange (AWS) */
+.post-card.glow-orange:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #fb923c, #fbbf24);
+}
+
+/* Excerpt text brightens on hover */
+.post-card p {
+  transition: color 0.3s ease;
+}
+
+.dark .post-card:hover p {
+  color: #cbd5e1; /* slate-300 instead of slate-400 */
 }
 
 /* --- Fade in animation for loaded content --- */
@@ -134,11 +237,27 @@ html.transition-theme *::after {
   font-weight: 600;
   letter-spacing: 0.025em;
   text-transform: uppercase;
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
 }
 
+/* Badge pops and gets a glow on card hover */
 .post-card:hover .badge {
-  transform: scale(1.05);
+  transform: scale(1.15);
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* Tags float up on card hover */
+.post-card .card-tags span {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.post-card:hover .card-tags span {
+  transform: translateY(-3px);
+  opacity: 1;
 }
 
 /* --- Logo pulse on hover --- */
@@ -149,19 +268,21 @@ html.transition-theme *::after {
 }
 
 .logo-icon:hover {
-  transform: rotate(-5deg) scale(1.1);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  transform: rotate(-5deg) scale(1.15);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
 }
 
 /* --- Social link hover effects --- */
 .social-link {
   transition:
-    transform 0.2s ease,
-    color 0.2s ease;
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.3s ease,
+    text-shadow 0.3s ease;
 }
 
 .social-link:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px) scale(1.25);
+  text-shadow: 0 0 16px currentColor;
 }
 
 /* --- Tag hover effect --- */
@@ -180,21 +301,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* --- Stats badge hover --- */
-.stat-badge {
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.stat-badge:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.dark .stat-badge:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
+/* (stat-badge base styles and color-specific hovers are at the bottom of this file) */
 
 /* --- Theme toggle spin animation --- */
 .theme-toggle-btn {
@@ -207,4 +314,67 @@ html {
 
 .theme-toggle-btn:active {
   transform: rotate(180deg);
+}
+
+/* --- Nav links hover effect --- */
+nav a {
+  transition:
+    color 0.3s ease,
+    text-shadow 0.3s ease;
+}
+
+.dark nav a:hover {
+  text-shadow: 0 0 12px currentColor;
+}
+
+/* --- Hero title hover: gradient text effect --- */
+.hero-title {
+  transition:
+    background 0.5s ease,
+    -webkit-text-fill-color 0.5s ease;
+  background-size: 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  cursor: default;
+}
+
+.hero-title:hover {
+  background-image: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc, #f472b6);
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- Stat badges: color-specific glow on hover --- */
+.stat-badge {
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.stat-badge-sky:hover {
+  transform: translateY(-8px) scale(1.1);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow:
+    0 16px 40px rgba(14, 165, 233, 0.25),
+    0 0 20px rgba(14, 165, 233, 0.2);
+  background-color: rgba(14, 165, 233, 0.15);
+}
+
+.stat-badge-purple:hover {
+  transform: translateY(-8px) scale(1.1);
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow:
+    0 16px 40px rgba(168, 85, 247, 0.25),
+    0 0 20px rgba(168, 85, 247, 0.2);
+  background-color: rgba(168, 85, 247, 0.15);
+}
+
+.stat-badge-green:hover {
+  transform: translateY(-8px) scale(1.1);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow:
+    0 16px 40px rgba(34, 197, 94, 0.25),
+    0 0 20px rgba(34, 197, 94, 0.2);
+  background-color: rgba(34, 197, 94, 0.15);
 }

@@ -144,6 +144,12 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 ```bash
 # Option 1: Docker Compose (recommended - runs everything)
 docker compose up --build
+# Or with Podman:
+podman-compose up --build
+
+# Frontend: http://localhost:8080
+# Backend API: http://localhost:3000/api
+# PostgreSQL: localhost:5432
 
 # Option 2: Frontend only (just open in browser)
 open frontend/src/index.html
@@ -209,7 +215,7 @@ Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
 | AWS Services | 10+ |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 19 (health, posts, comments, categories) |
-| Lessons Learned | 7 documented |
+| Lessons Learned | 8 documented |
 
 *Updated as the project progresses.*
 
