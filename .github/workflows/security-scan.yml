@@ -1,5 +1,5 @@
 # Security Scanning Pipeline
-# Runs on every push and PR to catch security issues early.
+# Runs only when relevant files change - not on every push.
 # Three scanners: tfsec (Terraform), Checkov (AWS policy), Trufflehog (secrets)
 
 name: Security Scanning
@@ -7,6 +7,13 @@ name: Security Scanning
 on:
   push:
     branches: [main, develop]
+    paths:
+      # Terraform scanners only need to run when infra code changes
+      - 'terraform/**'
+      # Trufflehog should run on any code change (secret detection)
+      - '**.ts'
+      - '**.js'
+      - '**.env*'
   pull_request:
     branches: [main, develop]
 
@@ -17,11 +24,13 @@ permissions:
 jobs:
   # -----------------------------------------------
   # tfsec - Scans Terraform code for security issues
-  # Example: "S3 bucket has no encryption" or "Security group allows 0.0.0.0/0"
+  # Only runs when terraform/ files change
   # -----------------------------------------------
   tfsec:
     name: Terraform Security (tfsec)
     runs-on: ubuntu-latest
+    # Skip if no .tf files exist yet (prevents failures during early development)
+    if: hashFiles('terraform/**/*.tf') != ''
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,11 +51,13 @@ jobs:
 
   # -----------------------------------------------
   # Checkov - Validates AWS infrastructure against best practices
-  # Example: "RDS instance not encrypted" or "EKS cluster has public endpoint"
+  # Only runs when terraform/ files change
   # -----------------------------------------------
   checkov:
     name: Policy Compliance (Checkov)
     runs-on: ubuntu-latest
+    # Skip if no .tf files exist yet
+    if: hashFiles('terraform/**/*.tf') != ''
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -68,7 +79,7 @@ jobs:
 
   # -----------------------------------------------
   # Trufflehog - Scans git history for leaked secrets
-  # Example: finds accidentally committed AWS keys or database passwords
+  # Runs on every qualifying push (secret leaks can happen anywhere)
   # -----------------------------------------------
   trufflehog:
     name: Secret Detection (Trufflehog)

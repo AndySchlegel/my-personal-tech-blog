@@ -10,7 +10,7 @@
 **Phase:** Project Setup
 
 **Context:**
-In the previous project (ecokart-webshop), security scanning (tfsec, Checkov, Trufflehog) was added late in development. This meant potential issues accumulated before being caught.
+In one of my earlier projects, security scanning (tfsec, Checkov, Trufflehog) was added late in development. This meant potential issues accumulated before being caught.
 
 **Decision:**
 Set up all security tools before writing the first line of application code: GitHub Actions security workflows, ESLint, Prettier, and Husky pre-commit hooks.
@@ -26,7 +26,7 @@ Security is not a feature you add later - it's a foundation you build on. Adding
 **Phase:** Project Setup
 
 **Context:**
-In ecokart-webshop, documentation grew to 8+ files (ACTION_PLAN.md, ACTION_PLAN_PHASE2.md, DEVELOPMENT.md, DEPLOYMENT.md, DEVSECOPS_ANALYSIS.md, MOBILE_READINESS.md, RECURRING_ISSUES.md, TODO_RESEND_MIGRATION.md). Files became outdated and contradicted each other.
+In a previous project, documentation grew to 8+ separate files. Files became outdated quickly and started contradicting each other because too many places needed updating.
 
 **Decision:**
 Only 3 documentation files, each with a clear purpose:

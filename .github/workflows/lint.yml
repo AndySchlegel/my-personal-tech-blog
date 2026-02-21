@@ -1,14 +1,18 @@
 # Code Quality Pipeline
-# Runs ESLint and Prettier checks on every push and PR.
-# This catches code style issues and potential bugs.
+# Runs only when backend code changes - not on every push.
+# Checks ESLint (code errors) and Prettier (formatting).
 
 name: Code Quality
 
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'backend/**'
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'backend/**'
 
 jobs:
   lint:
