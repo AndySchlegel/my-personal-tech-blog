@@ -25,8 +25,9 @@ services:
     volumes:
       # Persist data between restarts
       - pgdata:/var/lib/postgresql/data
-      # Run schema.sql on first startup to create tables
+      # Run schema + seed on first startup (alphabetical order: 01 before 02)
       - ./backend/src/models/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/src/models/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bloguser -d techblog"]
       interval: 5s
