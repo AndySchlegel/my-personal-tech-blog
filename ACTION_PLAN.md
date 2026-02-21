@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Project Setup
-**Last Updated:** 2026-02-20
+**Current Phase:** Project Setup + Backend API
+**Last Updated:** 2026-02-21
 
 ---
 
@@ -34,14 +34,14 @@
 - [x] Set up security scanning workflows (tfsec, Checkov, Trufflehog)
 - [x] EditorConfig + LICENSE
 - [x] Branch strategy (main + develop)
-- [ ] Backend skeleton (Express + TypeScript + first route)
+- [x] Backend skeleton (Express + TypeScript + health endpoint + 3 tests)
 - [ ] Frontend skeleton (Tailwind + Tabler Icons + Dark Mode)
 - [ ] Docker setup (Dockerfiles for backend + frontend)
 
 ## Phase 2: Backend API
 
-- [ ] PostgreSQL schema design (posts, categories, comments, users)
-- [ ] Express routes: CRUD posts, comments, categories
+- [x] PostgreSQL schema design (6 tables: users, categories, posts, tags, post_tags, comments)
+- [x] Express routes: CRUD posts, comments, categories (11 endpoints)
 - [ ] Auth middleware (Cognito JWT validation)
 - [ ] S3 image upload service
 - [ ] Markdown rendering
