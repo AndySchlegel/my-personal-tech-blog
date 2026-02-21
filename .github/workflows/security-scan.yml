@@ -1,19 +1,13 @@
 # Security Scanning Pipeline
-# Runs only when relevant files change - not on every push.
 # Three scanners: tfsec (Terraform), Checkov (AWS policy), Trufflehog (secrets)
+# tfsec and Checkov skip automatically when no .tf files exist.
+# Trufflehog runs on every push (secret leaks can happen anywhere).
 
 name: Security Scanning
 
 on:
   push:
     branches: [main, develop]
-    paths:
-      # Terraform scanners only need to run when infra code changes
-      - 'terraform/**'
-      # Trufflehog should run on any code change (secret detection)
-      - '**.ts'
-      - '**.js'
-      - '**.env*'
   pull_request:
     branches: [main, develop]
 
@@ -24,12 +18,11 @@ permissions:
 jobs:
   # -----------------------------------------------
   # tfsec - Scans Terraform code for security issues
-  # Only runs when terraform/ files change
+  # Skips when no .tf files exist yet
   # -----------------------------------------------
   tfsec:
     name: Terraform Security (tfsec)
     runs-on: ubuntu-latest
-    # Skip if no .tf files exist yet (prevents failures during early development)
     if: hashFiles('terraform/**/*.tf') != ''
     steps:
       - name: Checkout code
@@ -51,12 +44,11 @@ jobs:
 
   # -----------------------------------------------
   # Checkov - Validates AWS infrastructure against best practices
-  # Only runs when terraform/ files change
+  # Skips when no .tf files exist yet
   # -----------------------------------------------
   checkov:
     name: Policy Compliance (Checkov)
     runs-on: ubuntu-latest
-    # Skip if no .tf files exist yet
     if: hashFiles('terraform/**/*.tf') != ''
     steps:
       - name: Checkout code
@@ -79,7 +71,7 @@ jobs:
 
   # -----------------------------------------------
   # Trufflehog - Scans git history for leaked secrets
-  # Runs on every qualifying push (secret leaks can happen anywhere)
+  # Runs on every push (secret leaks can happen anywhere)
   # -----------------------------------------------
   trufflehog:
     name: Secret Detection (Trufflehog)

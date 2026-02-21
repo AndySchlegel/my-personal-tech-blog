@@ -1,6 +1,5 @@
 # Code Quality Pipeline
-# Runs only when backend code changes - not on every push.
-# Checks ESLint (code errors) and Prettier (formatting).
+# Runs ESLint, Prettier, and unit tests when backend code changes.
 
 name: Code Quality
 
@@ -28,17 +27,35 @@ jobs:
         with:
           node-version: 22
 
-      # Install backend dependencies
       - name: Install backend dependencies
         working-directory: backend/
         run: npm ci
 
-      # Run ESLint - checks for code errors and bad patterns
       - name: Run ESLint
         working-directory: backend/
         run: npm run lint
 
-      # Run Prettier - checks for formatting consistency
       - name: Check formatting
         working-directory: backend/
         run: npm run format:check
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install backend dependencies
+        working-directory: backend/
+        run: npm ci
+
+      - name: Run tests
+        working-directory: backend/
+        run: npm test
