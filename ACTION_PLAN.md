@@ -14,8 +14,8 @@
 
 | Phase | Status | Target |
 |-------|--------|--------|
-| 1. Project Setup | In Progress | Week 1 |
-| 2. Backend API | Not Started | Week 1-2 |
+| 1. Project Setup | Done | Week 1 |
+| 2. Backend API | In Progress | Week 1-2 |
 | 3. Frontend | Not Started | Week 2 |
 | 4. Terraform Infrastructure | Not Started | Week 2-3 |
 | 5. Kubernetes + CI/CD | Not Started | Week 3 |
@@ -35,8 +35,9 @@
 - [x] EditorConfig + LICENSE
 - [x] Branch strategy (main + develop)
 - [x] Backend skeleton (Express + TypeScript + health endpoint + 3 tests)
-- [ ] Frontend skeleton (Tailwind + Tabler Icons + Dark Mode)
-- [ ] Docker setup (Dockerfiles for backend + frontend)
+- [x] Frontend skeleton (Tailwind + Tabler Icons + Dark Mode)
+- [x] Docker setup (Dockerfiles for backend + frontend, docker-compose.yml)
+- [x] Podman als Docker-Alternative validiert
 
 ## Phase 2: Backend API
 
