@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Backend API + Frontend
-**Last Updated:** 2026-02-21 (Session 3)
+**Current Phase:** Backend API + Frontend (About/Skills done, Admin + Auth open)
+**Last Updated:** 2026-02-22 (Session 4)
 
 ---
 
@@ -60,7 +60,10 @@
 - [x] Category color system (colored badges, borders, tags, glows per category)
 - [x] Visual polish (magnifying glass hover, gradient titles, glowing stat badges)
 - [x] Connect to real API via Docker Compose (12 articles from PostgreSQL)
-- [ ] About page (personal journey timeline)
+- [x] About page (personal journey, timeline, quote block, animated counters, Quick Facts)
+- [x] Skills page (7 skill cards with priority labels, skill-item rows, cert split, Current Progress counters)
+- [x] counter.js (Intersection Observer scroll-triggered animated counters)
+- [x] Design upgrade v3 (hero gradients, alternating BGs, proficiency icons, priority labels)
 - [ ] Admin dashboard (post editor, comment moderation)
 - [ ] Search and category filtering
 
@@ -120,3 +123,6 @@
 | 2026-02-21 | Podman over Docker | Validated as Docker alternative on dev machine |
 | 2026-02-21 | Category color system | Each category gets unique badge, border, glow, and gradient colors |
 | 2026-02-21 | podman cp hot-reload | Copy files into running containers for instant feedback |
+| 2026-02-22 | Animated counters via Intersection Observer | Scroll-triggered number animation, no dependencies |
+| 2026-02-22 | Priority labels on skill cards | CRITICAL, HIGH DEMAND, GROWING, SUPPORTING for recruiter scanning |
+| 2026-02-22 | Cert split: Earned vs Roadmap | Separates achievements from goals, clearer hierarchy |

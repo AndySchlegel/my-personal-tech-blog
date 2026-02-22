@@ -89,7 +89,8 @@ S3 (image uploads via CloudFront)
 - Blog posts with Markdown rendering and syntax highlighting
 - Auto-generated tags via Amazon Comprehend
 - Comment system with sentiment analysis
-- About page with personal journey timeline
+- About page with personal journey timeline, animated counters, and quote block
+- Skills page with priority labels, proficiency-based skill rows, cert roadmap, and animated progress stats
 - Search and category filtering
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
@@ -215,7 +216,7 @@ Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
 | AWS Services | 10+ |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 19 (health, posts, comments, categories) |
-| Lessons Learned | 8 documented |
+| Lessons Learned | 9 documented |
 
 *Updated as the project progresses.*
 
@@ -230,6 +231,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 2: Backend API + Phase 3: Frontend)
-**Last Updated:** 2026-02-21
+**Project Status:** In Development (Phase 2-3: Backend API + Frontend, About/Skills done)
+**Last Updated:** 2026-02-22
 **AWS Region:** eu-central-1 (Frankfurt)

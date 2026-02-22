@@ -141,3 +141,21 @@ Changes are visible after a browser hard-reload - no rebuild, no restart. When s
 For visual iteration (CSS, JS, HTML), copy files into running containers instead of rebuilding. Save full rebuilds for structural changes (Dockerfile, dependencies, config). The fastest feedback loop wins during design work.
 
 ---
+
+## #9 - Content Ownership: Never Assume, Always Ask
+
+**Date:** 2026-02-22
+**Phase:** Frontend
+
+**Context:**
+While building the Skills page "Certification Roadmap" section, a "CKA or Security+" card was added as a placeholder for future certifications. This was entirely fabricated -- the user had never mentioned these specific certifications as goals. When confronted, it turned out the actual next step was a Berufsspezialist IHK certification in a completely different direction.
+
+**Decision:**
+Two rules established:
+1. **Never add content about the user's career plans, certifications, or personal goals without explicit confirmation** -- even if it seems like a logical assumption
+2. **Placeholder content must be clearly marked as TODO** -- not filled with made-up data that looks real
+
+**Takeaway:**
+A portfolio website represents a real person. Made-up content on a resume-like page is worse than a blank space. When in doubt, ask. A TODO placeholder is honest; a fabricated certification roadmap is misleading.
+
+---

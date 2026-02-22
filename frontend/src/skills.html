@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skills - Andy Schlegel Tech Blog</title>
+    <meta
+      name="description"
+      content="Technical skills and certifications of Andy Schlegel. AWS, Kubernetes, Terraform, Docker, CI/CD, and more."
+    />
+
+    <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tabler Icons (4900+ modern icons, 2px stroke) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <!-- Our custom styles + theme toggle -->
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+  >
+    <!-- ==================== HEADER ==================== -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+      >
+        <!-- Logo / Blog Name -->
+        <a href="./index.html" class="flex items-center gap-2.5 group">
+          <div
+            class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
+          >
+            <i class="ti ti-terminal-2 text-white text-lg"></i>
+          </div>
+          <span class="font-bold text-lg text-slate-900 dark:text-white">
+            Andy<span class="text-sky-500">.</span>dev
+          </span>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="hidden sm:flex items-center gap-6">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >About</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-sky-600 dark:text-sky-400"
+            >Skills</a
+          >
+        </nav>
+
+        <!-- Right side: theme toggle + mobile menu -->
+        <div class="flex items-center gap-2">
+          <!-- Theme toggle button -->
+          <button
+            id="theme-toggle"
+            class="theme-toggle-btn w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+            aria-label="Toggle dark mode"
+          >
+            <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+            <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+          </button>
+
+          <!-- Mobile menu button -->
+          <button
+            id="mobile-menu-toggle"
+            class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Open menu"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile navigation (hidden by default) -->
+      <nav
+        id="mobile-menu"
+        class="sm:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      >
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >About</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-sky-600 dark:text-sky-400 py-2"
+            >Skills</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1">
+      <!-- ===== Hero / Intro Section (with gradient) ===== -->
+      <div
+        class="bg-gradient-to-br from-sky-500/5 via-purple-500/5 to-transparent dark:from-sky-500/10 dark:via-purple-500/5 dark:to-transparent"
+      >
+        <section
+          class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10"
+        >
+          <div class="max-w-2xl">
+            <h1
+              class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+            >
+              Technical Skills
+            </h1>
+            <p
+              class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
+              style="animation-delay: 0.1s; opacity: 0"
+            >
+              One year of intensive training, real projects, and a homelab that
+              never sleeps. Here is what I work with every day.
+            </p>
+          </div>
+        </section>
+
+        <!-- ===== Proficiency Legend ===== -->
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-8">
+          <div
+            class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <span class="font-medium text-slate-700 dark:text-slate-300"
+              >Proficiency:</span
+            >
+            <span class="inline-flex items-center gap-1.5">
+              <i class="ti ti-trophy text-green-500 text-sm"></i>
+              Certified
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <i class="ti ti-circle-check text-sky-500 text-sm"></i>
+              Competent
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <i class="ti ti-loader text-amber-500 text-sm"></i>
+              In Progress
+            </span>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== Skills Grid Section (alternating bg) ===== -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+          <h2
+            class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            Technical Competencies
+          </h2>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <!-- Card 1: Cloud & AWS -- CRITICAL -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >CRITICAL</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-cloud text-xl text-orange-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Cloud &amp; AWS
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-certified flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-trophy text-green-500 text-lg"></i>
+                  <span
+                    class="text-sm font-semibold text-slate-900 dark:text-white"
+                    >AWS Foundation &amp; Architecture (CLP, SAA)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Core Services (EC2, VPC, S3, IAM, RDS)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Application Services (EKS, CloudFront, Cognito)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >ML &amp; Analytics (Comprehend, Key Phrases)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Security &amp; Compliance (IAM Policies, OIDC)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Infrastructure as Code -- HIGH DEMAND -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >HIGH DEMAND</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-brand-terraform text-xl text-purple-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Infrastructure as Code
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Terraform (Modules, Remote State, Variables)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >CI/CD Integration (Plan, Apply, Destroy)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Security Scanning (tfsec, Checkov)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Containers & Orchestration -- HIGH DEMAND -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >HIGH DEMAND</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-brand-docker text-xl text-sky-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Containers &amp; Orchestration
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Docker (Multi-Stage Builds, Compose, 50+ Services)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-learning flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-loader text-amber-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Kubernetes / EKS (Deployments, Services, Ingress)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Podman (Rootless Containers)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Container Registries (ECR, Docker Hub)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: CI/CD & DevOps -- HIGH DEMAND -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >HIGH DEMAND</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-git-merge text-xl text-sky-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  CI/CD &amp; DevOps
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >GitHub Actions (OIDC, Multi-Stage Pipelines)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Automated Testing (Jest, Integration Tests)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Image Tagging &amp; Versioning (SHA, Semantic)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >GitOps Workflow (Branch Protection, PR Reviews)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5: Monitoring & Security -- CRITICAL -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >CRITICAL</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-shield-check text-xl text-red-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Monitoring &amp; Security
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >SIEM &amp; Threat Detection (Wazuh)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Metrics &amp; Dashboards (Prometheus, Grafana)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Uptime &amp; Alerting (UptimeKuma, Telegram)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >IaC Security (tfsec, Checkov, Trufflehog)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Incident Response (Real-world experience)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 6: Development -- GROWING -->
+            <div
+              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >GROWING</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-code text-xl text-green-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Development
+                </h3>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Node.js &amp; Express (REST APIs, Middleware)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >HTML / CSS / Tailwind (Responsive, Dark Mode)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >PostgreSQL (Queries, Migrations, RDS)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Git &amp; Version Control (Branching, Rebasing)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 7: Homelab & Networking (full width) -- SUPPORTING -->
+            <div
+              class="skill-card relative sm:col-span-2 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-amber-500 p-6"
+            >
+              <span
+                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-slate-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >SUPPORTING</span
+              >
+              <div class="flex items-center gap-3 mb-5">
+                <div
+                  class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center"
+                >
+                  <i class="ti ti-home text-xl text-amber-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Homelab &amp; Networking
+                </h3>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-2">
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Synology NAS (Docker, GitLab, Storage)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Hetzner Cloud (Multi-Server, Deployments)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >UniFi Networking (VLAN, Firewall, WiFi)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Tailscale VPN (Mesh Network, ACLs)</span
+                  >
+                </div>
+                <div
+                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2 sm:col-span-2 sm:max-w-[50%]"
+                >
+                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Traefik (Reverse Proxy, Let's Encrypt, Labels)</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== Earned Certifications Section ===== -->
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+        >
+          <i class="ti ti-certificate text-sky-500"></i>
+          Earned Certifications
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <!-- Cert 1: AWS Cloud Practitioner -->
+          <div
+            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+          >
+            <span
+              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+              >CERTIFIED</span
+            >
+            <div
+              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-orange-500/5 border border-orange-500/20 flex items-center justify-center text-orange-500"
+            >
+              <i class="ti ti-cloud text-3xl"></i>
+            </div>
+            <h3
+              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+            >
+              AWS Cloud Practitioner
+            </h3>
+            <p
+              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+            >
+              CLF-C02
+            </p>
+            <div class="flex justify-center mb-3">
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+              >
+                <i class="ti ti-circle-check text-sm"></i>
+                Earned June 2025
+              </span>
+            </div>
+            <div class="text-center">
+              <a
+                href="#"
+                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              >
+                <i class="ti ti-external-link text-sm"></i>
+                VIEW CERTIFICATE
+              </a>
+            </div>
+          </div>
+
+          <!-- Cert 2: LPI Linux Essentials -->
+          <div
+            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+          >
+            <span
+              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+              >CERTIFIED</span
+            >
+            <div
+              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-green-500/5 border border-green-500/20 flex items-center justify-center text-green-500"
+            >
+              <i class="ti ti-brand-ubuntu text-3xl"></i>
+            </div>
+            <h3
+              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+            >
+              LPI Linux Essentials
+            </h3>
+            <p
+              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+            >
+              010-160
+            </p>
+            <div class="flex justify-center mb-3">
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+              >
+                <i class="ti ti-circle-check text-sm"></i>
+                Earned July 2025
+              </span>
+            </div>
+            <div class="text-center">
+              <a
+                href="#"
+                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              >
+                <i class="ti ti-external-link text-sm"></i>
+                VIEW CERTIFICATE
+              </a>
+            </div>
+          </div>
+
+          <!-- Cert 3: AWS Solutions Architect Associate -->
+          <div
+            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+          >
+            <span
+              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+              >CERTIFIED</span
+            >
+            <div
+              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-orange-500/5 border border-orange-500/20 flex items-center justify-center text-orange-500"
+            >
+              <i class="ti ti-cloud text-3xl"></i>
+            </div>
+            <h3
+              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+            >
+              AWS Solutions Architect
+            </h3>
+            <p
+              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+            >
+              SAA-C03
+            </p>
+            <div class="flex justify-center mb-3">
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+              >
+                <i class="ti ti-circle-check text-sm"></i>
+                Earned February 2026
+              </span>
+            </div>
+            <div class="text-center">
+              <a
+                href="#"
+                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              >
+                <i class="ti ti-external-link text-sm"></i>
+                VIEW CERTIFICATE
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Certification Roadmap (alternating bg) ===== -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+          <h2
+            class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+          >
+            <i class="ti ti-map text-sky-500"></i>
+            Certification Roadmap
+          </h2>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <!-- GitHub Foundations -- STARTED -->
+            <div
+              class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
+            >
+              <span
+                class="absolute top-3 right-3 px-2.5 py-1 bg-amber-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >STARTED</span
+              >
+              <div
+                class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex items-center justify-center text-purple-500"
+              >
+                <i class="ti ti-brand-github text-3xl"></i>
+              </div>
+              <h3
+                class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+              >
+                GitHub Foundations
+              </h3>
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+              >
+                GitHub Certifications
+              </p>
+              <div class="flex justify-center mb-2">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-semibold"
+                >
+                  <i class="ti ti-loader text-sm"></i>
+                  In Progress
+                </span>
+              </div>
+              <p
+                class="text-xs text-slate-400 dark:text-slate-500 text-center italic"
+              >
+                Expected: Q1 2026
+              </p>
+              <div class="mt-3 flex justify-center">
+                <span
+                  class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
+                  >DevOps Essential</span
+                >
+              </div>
+            </div>
+
+            <!-- Berufsspezialist -->
+            <div
+              class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+            >
+              <span
+                class="absolute top-3 right-3 px-2.5 py-1 bg-sky-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >STARTING</span
+              >
+              <div
+                class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-sky-500/5 border border-sky-500/20 flex items-center justify-center text-sky-500"
+              >
+                <i class="ti ti-certificate-2 text-3xl"></i>
+              </div>
+              <h3
+                class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+              >
+                Berufsspezialist (IHK)
+              </h3>
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+              >
+                Systemintegration &amp; Vernetzung
+              </p>
+              <div class="flex justify-center mb-2">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-semibold"
+                >
+                  <i class="ti ti-calendar text-sm"></i>
+                  Starting Feb 2026
+                </span>
+              </div>
+              <p
+                class="text-xs text-slate-400 dark:text-slate-500 text-center italic"
+              >
+                7 months, part-time
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== Project Highlights Section ===== -->
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-16">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+        >
+          <i class="ti ti-briefcase text-sky-500"></i>
+          Project Highlights
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <!-- Project 1: ecokart Webshop -->
+          <div
+            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-shopping-cart text-xl text-orange-500"></i>
+              </div>
+              <div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  ecokart Webshop
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Production AWS E-Commerce Platform
+                </p>
+              </div>
+            </div>
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+            >
+              Serverless webshop with 15 Terraform modules, CI/CD via GitHub
+              Actions with OIDC, Cognito auth. Fully reproducible infrastructure
+              &mdash; own AWS account.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Terraform</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Lambda</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >DynamoDB</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Cognito</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >GitHub Actions</span
+              >
+            </div>
+            <a
+              href="#"
+              class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+            >
+              <i class="ti ti-brand-github text-sm"></i>
+              VIEW ON GITHUB
+            </a>
+          </div>
+
+          <!-- Project 2: Personal Tech Blog -->
+          <div
+            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-writing text-xl text-sky-500"></i>
+              </div>
+              <div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Personal Tech Blog
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Full-Stack on AWS EKS
+                </p>
+              </div>
+            </div>
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+            >
+              The blog you are reading. Node.js + Express backend, Tailwind
+              frontend on nginx, PostgreSQL on RDS, Comprehend ML for sentiment
+              analysis. Deployed on EKS with Terraform.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >EKS</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Terraform</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Node.js</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >PostgreSQL</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Comprehend</span
+              >
+            </div>
+            <span
+              class="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400"
+            >
+              <i class="ti ti-circle-check text-sm"></i>
+              YOU ARE HERE
+            </span>
+          </div>
+
+          <!-- Project 3: Agra Dashboard -->
+          <div
+            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-dashboard text-xl text-green-500"></i>
+              </div>
+              <div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Agra Dashboard
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  ECS to Self-Hosted Migration
+                </p>
+              </div>
+            </div>
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+            >
+              Dashboard originally built on AWS ECS, now self-hosted on Hetzner.
+              Static HTML/CSS served by nginx container via Traefik reverse
+              proxy.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >ECS</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Docker</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >nginx</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Traefik</span
+              >
+            </div>
+            <a
+              href="#"
+              class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+            >
+              <i class="ti ti-brand-github text-sm"></i>
+              VIEW ON GITHUB
+            </a>
+          </div>
+
+          <!-- Project 4: Monitoring & Security Stack -->
+          <div
+            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-shield-check text-xl text-red-500"></i>
+              </div>
+              <div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Monitoring &amp; Security Stack
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Multi-Server Infrastructure
+                </p>
+              </div>
+            </div>
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+            >
+              Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Prometheus, Grafana
+              across NAS and Hetzner servers. Telegram alerting. Born from real
+              security incidents.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Wazuh</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Prometheus</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Grafana</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Docker</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Tailscale</span
+              >
+            </div>
+            <span
+              class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500"
+            >
+              <i class="ti ti-lock text-sm"></i>
+              PRIVATE INFRASTRUCTURE
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Current Progress Section (animated counters) ===== -->
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+        >
+          <i class="ti ti-chart-bar text-sky-500"></i>
+          Current Progress
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <!-- Stat 1: Certifications -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-trophy text-2xl text-sky-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="3"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Professional Certifications
+            </div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+              Earned while rebuilding my career
+            </div>
+          </div>
+
+          <!-- Stat 2: Docker Services -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-bolt text-2xl text-amber-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="50"
+              data-count-suffix="+"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Docker Services
+            </div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+              From homelab to production
+            </div>
+          </div>
+
+          <!-- Stat 3: Months Training -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-clock text-2xl text-green-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="12"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Months Intensive Training
+            </div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+              2,300 hours and counting
+            </div>
+          </div>
+
+          <!-- Stat 4: Technology Categories -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-category text-2xl text-purple-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="7"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Technology Categories
+            </div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+              Full-stack cloud mindset
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Tools I Use Section (alternating bg) ===== -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+          <h2
+            class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+          >
+            <i class="ti ti-tool text-sky-500"></i>
+            Tools I Use
+          </h2>
+
+          <div class="flex flex-wrap gap-3">
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-visual-studio text-sky-500"></i> VS Code
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-git-branch text-orange-500"></i> Git
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-terraform text-purple-500"></i> Terraform
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-docker text-sky-500"></i> Docker
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-terminal-2 text-green-500"></i> AWS CLI
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-github text-slate-400"></i> GitHub
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-markdown text-amber-500"></i> Markdown
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-ubuntu text-red-500"></i> Linux
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-brand-nodejs text-green-500"></i> Node.js
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-database text-sky-500"></i> PostgreSQL
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-chart-line text-amber-500"></i> Prometheus
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-dashboard text-purple-500"></i> Grafana
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-player-play text-sky-500"></i> Pluralsight
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-robot text-purple-500"></i> Claude Code
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-box text-sky-500"></i> Podman
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="ti ti-lock text-green-500"></i> Tailscale
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== Currently Learning Section ===== -->
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-16">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+        >
+          <i class="ti ti-loader text-sky-500"></i>
+          Currently Learning
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Item 1 -->
+          <div
+            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+          >
+            <div class="pulse-dot shrink-0"></div>
+            <i class="ti ti-brand-github text-xl text-purple-500"></i>
+            <div>
+              <p class="font-medium text-slate-900 dark:text-white">
+                GitHub Foundations Certification
+              </p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Git workflows, Actions, security features, admin tasks
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div
+            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+          >
+            <div class="pulse-dot shrink-0"></div>
+            <i class="ti ti-brand-kubernetes text-xl text-sky-500"></i>
+            <div>
+              <p class="font-medium text-slate-900 dark:text-white">
+                Deeper Kubernetes
+              </p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Advanced deployments, Helm charts, networking, CKA preparation
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div
+            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+          >
+            <div class="pulse-dot shrink-0"></div>
+            <i class="ti ti-cloud text-xl text-orange-500"></i>
+            <div>
+              <p class="font-medium text-slate-900 dark:text-white">
+                Advanced AWS
+              </p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Well-Architected Framework, cost optimization, multi-account
+                strategies
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div
+            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+          >
+            <div class="pulse-dot shrink-0"></div>
+            <i class="ti ti-brand-python text-xl text-green-500"></i>
+            <div>
+              <p class="font-medium text-slate-900 dark:text-white">
+                Python for DevOps
+              </p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Scripting, automation, Boto3 SDK, tooling
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+    >
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <!-- Left: copyright -->
+          <div
+            class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            <span
+              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
+            >
+          </div>
+
+          <!-- Center: legal links -->
+          <div class="flex items-center gap-4 text-sm">
+            <a
+              href="./impressum.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Impressum</a
+            >
+            <a
+              href="./datenschutz.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Datenschutz</a
+            >
+          </div>
+
+          <!-- Right: social links -->
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/AndySchlegel"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              <i class="ti ti-brand-github text-xl"></i>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              <i class="ti ti-brand-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile menu toggle script -->
+    <script>
+      // Simple toggle for the mobile navigation menu
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-menu-toggle");
+        var menu = document.getElementById("mobile-menu");
+        if (toggle && menu) {
+          toggle.addEventListener("click", function () {
+            menu.classList.toggle("hidden");
+          });
+        }
+      });
+    </script>
+
+    <!-- Animated counters (scroll-triggered) -->
+    <script src="./js/counter.js"></script>
+  </body>
+</html>
