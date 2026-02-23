@@ -12,6 +12,7 @@
 import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
 import { CreatePostRequest } from '../models/types';
+import { requireAuth } from '../middleware/auth';
 
 export const postsRouter = Router();
 
@@ -141,9 +142,9 @@ postsRouter.get('/:slug', async (req: Request, res: Response) => {
  *
  * Expects JSON body with title, content, category_id.
  * Automatically generates a URL slug from the title.
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.post('/', async (req: Request, res: Response) => {
+postsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const { title, content, excerpt, category_id, status, featured, tags } =
       req.body as CreatePostRequest;
@@ -219,9 +220,9 @@ postsRouter.post('/', async (req: Request, res: Response) => {
  * PUT /posts/:id - Update an existing post
  *
  * Accepts partial updates (only send the fields you want to change).
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.put('/:id', async (req: Request, res: Response) => {
+postsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, content, excerpt, category_id, status, featured } = req.body;
@@ -298,9 +299,9 @@ postsRouter.put('/:id', async (req: Request, res: Response) => {
  *
  * Permanently removes the post and its tag associations.
  * Comments are also deleted (CASCADE in schema).
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.delete('/:id', async (req: Request, res: Response) => {
+postsRouter.delete('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const result = await query('DELETE FROM posts WHERE id = $1 RETURNING id', [req.params.id]);
 

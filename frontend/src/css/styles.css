@@ -867,3 +867,178 @@ nav a {
     0 8px 30px rgba(0, 0, 0, 0.4),
     0 0 15px rgba(56, 189, 248, 0.1);
 }
+
+/* ============================================
+   Admin Dashboard Styles
+   ============================================ */
+
+/* --- Admin layout: fixed sidebar + scrollable main --- */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  z-index: 40;
+  overflow-y: auto;
+}
+
+.dark .admin-sidebar {
+  background: #0f172a;
+  border-right-color: #1e293b;
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* Mobile top bar (hidden on desktop) */
+.admin-mobile-header {
+  display: none;
+}
+
+/* --- Admin navigation links --- */
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #64748b;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+.dark .admin-nav-link {
+  color: #94a3b8;
+}
+
+.admin-nav-link:hover {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #0f172a;
+}
+
+.dark .admin-nav-link:hover {
+  background-color: rgba(148, 163, 184, 0.08);
+  color: #f1f5f9;
+}
+
+/* Active nav item */
+.admin-nav-active {
+  background-color: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+}
+
+.dark .admin-nav-active {
+  background-color: rgba(14, 165, 233, 0.12);
+  color: #38bdf8;
+}
+
+.admin-nav-active:hover {
+  background-color: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.dark .admin-nav-active:hover {
+  background-color: rgba(14, 165, 233, 0.18);
+  color: #38bdf8;
+}
+
+/* Disabled nav items (coming soon) */
+.admin-nav-disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* --- Stat cards --- */
+.admin-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.dark .admin-stat-card {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .admin-stat-card:hover {
+  box-shadow:
+    0 12px 40px -10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(56, 189, 248, 0.08);
+}
+
+/* --- Admin list items (recent posts/comments) --- */
+.admin-list-item {
+  transition: background-color 0.15s ease;
+}
+
+.admin-list-item:hover {
+  background-color: rgba(148, 163, 184, 0.05);
+}
+
+.dark .admin-list-item:hover {
+  background-color: rgba(148, 163, 184, 0.04);
+}
+
+/* --- Responsive: sidebar collapses on mobile --- */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 260px;
+  }
+
+  .admin-sidebar.admin-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 4.5rem; /* space for mobile header */
+  }
+
+  .admin-mobile-header {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .dark .admin-mobile-header {
+    background: #0f172a;
+    border-bottom-color: #1e293b;
+  }
+}

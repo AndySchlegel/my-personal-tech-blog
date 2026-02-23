@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signing in... - Andy.dev</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tabler Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex items-center justify-center"
+  >
+    <div class="text-center">
+      <!-- Loading state -->
+      <div id="callback-loading" class="fade-in">
+        <div
+          class="w-12 h-12 border-3 border-slate-200 dark:border-slate-700 border-t-sky-500 rounded-full animate-spin mx-auto mb-4"
+        ></div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">
+          Signing you in...
+        </p>
+      </div>
+
+      <!-- Error state (hidden by default) -->
+      <div id="callback-error" class="hidden fade-in">
+        <div
+          class="w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="ti ti-alert-triangle text-red-500 text-2xl"></i>
+        </div>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          Sign-in Failed
+        </h2>
+        <p
+          id="callback-error-msg"
+          class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-xs mx-auto"
+        ></p>
+        <a
+          href="/admin/login.html"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-medium rounded-xl transition-all text-sm"
+        >
+          <i class="ti ti-refresh text-base"></i>
+          Try Again
+        </a>
+      </div>
+    </div>
+
+    <!-- Auth module -->
+    <script src="./js/auth.js"></script>
+
+    <script>
+      // Process the OAuth callback immediately
+      (async function () {
+        try {
+          await AdminAuth.handleCallback();
+        } catch (err) {
+          document.getElementById("callback-loading").classList.add("hidden");
+          document.getElementById("callback-error").classList.remove("hidden");
+          document.getElementById("callback-error-msg").textContent =
+            err.message || "An unexpected error occurred.";
+        }
+      })();
+    </script>
+  </body>
+</html>
