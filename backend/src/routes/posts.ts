@@ -16,14 +16,47 @@ import { CreatePostRequest } from '../models/types';
 export const postsRouter = Router();
 
 /**
- * GET /posts - List all published posts
+ * GET /posts - List published posts with optional filtering
+ *
+ * Query parameters:
+ *   ?search=terraform    - Search in title and excerpt (case-insensitive)
+ *   ?category=devops-ci-cd - Filter by category slug
+ *   ?tag=aws             - Filter by tag slug
  *
  * Returns posts sorted by publish date (newest first).
  * Includes category name and tags for each post.
  * Only returns published posts (not drafts or archived).
  */
-postsRouter.get('/', async (_req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request, res: Response) => {
   try {
+    const { search, category, tag } = req.query;
+
+    // Build WHERE clause dynamically with parameterized queries
+    const conditions: string[] = ["p.status = 'published'"];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (search && typeof search === 'string' && search.trim()) {
+      conditions.push(`(p.title ILIKE $${paramIndex} OR p.excerpt ILIKE $${paramIndex})`);
+      values.push(`%${search.trim()}%`);
+      paramIndex++;
+    }
+
+    if (category && typeof category === 'string' && category.trim()) {
+      conditions.push(`c.slug = $${paramIndex}`);
+      values.push(category.trim());
+      paramIndex++;
+    }
+
+    // Tag filter requires a subquery to check post_tags + tags
+    let tagJoinClause = '';
+    if (tag && typeof tag === 'string' && tag.trim()) {
+      tagJoinClause = `JOIN post_tags pt_filter ON p.id = pt_filter.post_id
+        JOIN tags t_filter ON pt_filter.tag_id = t_filter.id AND t_filter.slug = $${paramIndex}`;
+      values.push(tag.trim());
+      paramIndex++;
+    }
+
     const result = await query(
       `SELECT
         p.id, p.title, p.slug, p.excerpt, p.cover_image_url,
@@ -39,9 +72,11 @@ postsRouter.get('/', async (_req: Request, res: Response) => {
       LEFT JOIN users u ON p.author_id = u.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
-      WHERE p.status = 'published'
+      ${tagJoinClause}
+      WHERE ${conditions.join(' AND ')}
       GROUP BY p.id, c.name, c.slug, u.display_name
-      ORDER BY p.published_at DESC`
+      ORDER BY p.published_at DESC`,
+      values
     );
 
     res.json(result.rows);

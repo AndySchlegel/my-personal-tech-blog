@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Backend API + Frontend (About/Skills done, Admin + Auth open)
-**Last Updated:** 2026-02-22 (Session 4)
+**Current Phase:** Backend API + Frontend (Search/Filter done, Admin + Auth open)
+**Last Updated:** 2026-02-23 (Session 5)
 
 ---
 
@@ -65,7 +65,7 @@
 - [x] counter.js (Intersection Observer scroll-triggered animated counters)
 - [x] Design upgrade v3 (hero gradients, alternating BGs, proficiency icons, priority labels)
 - [ ] Admin dashboard (post editor, comment moderation)
-- [ ] Search and category filtering
+- [x] Search and category filtering (search bar + category pills + debounced API filtering)
 
 ## Phase 4: Terraform Infrastructure
 
@@ -126,3 +126,5 @@
 | 2026-02-22 | Animated counters via Intersection Observer | Scroll-triggered number animation, no dependencies |
 | 2026-02-22 | Priority labels on skill cards | CRITICAL, HIGH DEMAND, GROWING, SUPPORTING for recruiter scanning |
 | 2026-02-22 | Cert split: Earned vs Roadmap | Separates achievements from goals, clearer hierarchy |
+| 2026-02-23 | Server-side filtering via query params | Portfolio-worthy: demonstrates SQL query building, scales properly |
+| 2026-02-23 | Debounced search (300ms) | Prevents API hammering, smooth UX while typing |
