@@ -5,7 +5,7 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Backend API + Frontend (Search/Filter done, Admin + Auth open)
+**Current Phase:** Terraform done, next: Admin Dashboard + Auth or K8s manifests
 **Last Updated:** 2026-02-23 (Session 5)
 
 ---
@@ -15,16 +15,16 @@
 | Phase | Status | Target |
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
-| 2. Backend API | In Progress | Week 1-2 |
-| 3. Frontend | In Progress | Week 1-2 |
-| 4. Terraform Infrastructure | Not Started | Week 2-3 |
+| 2. Backend API | ~90% Done (Auth + S3 open) | Week 1-2 |
+| 3. Frontend | ~85% Done (Admin Dashboard open) | Week 1-2 |
+| 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | Not Started | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
 | 7. Polish + Presentation | Not Started | Week 4 |
 
 ---
 
-## Phase 1: Project Setup (Current)
+## Phase 1: Project Setup (Done)
 
 - [x] Finalize tech stack decisions
 - [x] Create GitHub repository
@@ -39,16 +39,17 @@
 - [x] Docker setup (Dockerfiles for backend + frontend, docker-compose.yml)
 - [x] Podman als Docker-Alternative validiert
 
-## Phase 2: Backend API
+## Phase 2: Backend API (~90% Done)
 
 - [x] PostgreSQL schema design (6 tables: users, categories, posts, tags, post_tags, comments)
 - [x] Express routes: CRUD posts, comments, categories (11 endpoints)
+- [x] Search + filter query params (?search, ?category, ?tag with dynamic SQL WHERE)
 - [ ] Auth middleware (Cognito JWT validation)
-- [ ] S3 image upload service
+- [ ] S3 image upload service (pre-signed URLs)
 - [x] Unit tests (19 tests: health, posts, comments, categories)
 - [x] Seed data (12 articles, 6 categories, 28 tags from old blog)
 
-## Phase 3: Frontend
+## Phase 3: Frontend (~85% Done)
 
 - [x] Blog homepage (post list with demo data, category badges, reading time)
 - [x] Single post view (Markdown rendered via marked.js + highlight.js)
@@ -64,33 +65,44 @@
 - [x] Skills page (7 skill cards with priority labels, skill-item rows, cert split, Current Progress counters)
 - [x] counter.js (Intersection Observer scroll-triggered animated counters)
 - [x] Design upgrade v3 (hero gradients, alternating BGs, proficiency icons, priority labels)
-- [ ] Admin dashboard (post editor, comment moderation)
 - [x] Search and category filtering (search bar + category pills + debounced API filtering)
+- [ ] Admin dashboard (post editor, comment moderation, image uploads)
 
-## Phase 4: Terraform Infrastructure
+## Phase 4: Terraform Infrastructure (Done)
 
-- [ ] VPC module (public + private subnets, 2 AZs)
-- [ ] EKS module (cluster + node group)
-- [ ] RDS module (PostgreSQL db.t3.micro)
-- [ ] ECR module (frontend + backend repos)
-- [ ] Cognito module (user pool + admin group)
-- [ ] CloudFront module (CDN)
-- [ ] S3 module (blog assets)
-- [ ] Security Groups module
-- [ ] Remote state (S3 + DynamoDB locking)
+- [x] Remote state (S3 + DynamoDB locking, bootstrap-state.sh)
+- [x] Root config (versions.tf, providers.tf, backend.tf)
+- [x] VPC module (public + private subnets, 2 AZs, conditional NAT GW)
+- [x] Security Groups module (ALB, EKS nodes, RDS -- layered defense)
+- [x] ECR module (frontend + backend repos, lifecycle policies)
+- [x] S3 module (assets bucket, OAC-only access, CORS, lifecycle to IA)
+- [x] Cognito module (admin pool, OAuth code flow, optional TOTP MFA)
+- [x] RDS module (PostgreSQL 16, db.t3.micro, private subnets only)
+- [x] EKS module (cluster, spot nodes, KMS encryption, OIDC/IRSA)
+- [x] CloudFront module (CDN, ACM cert, OAC, Route 53 DNS)
+- [x] Root module wiring (main.tf with Wave 1/2/3 structure)
+- [x] Detailed learning-oriented comments in all 29 files
+- [x] terraform validate + terraform fmt = clean
+- [ ] Bootstrap remote state (run bootstrap-state.sh)
+- [ ] Wave 1 apply (VPC, SGs, ECR, S3, Cognito)
+- [ ] Wave 2 apply (RDS)
+- [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
+- [ ] tfsec + Checkov CI integration
 
 ## Phase 5: Kubernetes + CI/CD
 
 - [ ] Kubernetes manifests (deployments, services, ingress, HPA)
-- [ ] GitHub Actions pipeline (test -> build -> push ECR -> deploy EKS)
-- [ ] OIDC authentication (no AWS keys)
-- [ ] ConfigMap + Secrets
+- [ ] ConfigMap + Secrets (RDS endpoint, Cognito IDs, ECR URLs)
 - [ ] Liveness + Readiness probes
+- [ ] GitHub Actions pipeline (test -> build -> push ECR -> deploy EKS)
+- [ ] OIDC authentication (no AWS keys in GitHub)
+- [ ] ALB Ingress controller setup
 
 ## Phase 6: ML Integration
 
 - [ ] Comprehend service (detectKeyPhrases for auto-tags)
 - [ ] Comprehend service (detectSentiment for comments)
+- [ ] IRSA role for Comprehend access (pod-level IAM)
 - [ ] Admin dashboard: ML results display
 
 ## Phase 7: Polish + Presentation
@@ -100,6 +112,40 @@
 - [ ] Demo data (3-5 polished articles)
 - [ ] Presentation slides (20-30 min)
 - [ ] Cost documentation
+
+---
+
+## Wave Deployment Strategy (Terraform)
+
+| Wave | What | Monthly Cost | Status |
+|------|------|-------------|--------|
+| **0** | Bootstrap (S3 state + DynamoDB) | $0 | Ready (script written) |
+| **1** | VPC, Security Groups, ECR, S3, Cognito | ~$0.50 | Code done |
+| **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Code done |
+| **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
+
+After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.65/month.
+
+---
+
+## What's Next? (Priority Order)
+
+### Option A: Admin Dashboard + Auth (Frontend/Backend focus)
+Build the admin dashboard and Cognito JWT authentication. This completes
+the application logic before deploying to AWS. Pro: Can test everything
+locally with Docker Compose before spending any money on AWS.
+
+### Option B: K8s Manifests + CI/CD (DevOps focus)
+Write Kubernetes deployments, services, and ingress. Set up the GitHub
+Actions pipeline. Pro: Gets the infrastructure pipeline ready so we can
+deploy as soon as Terraform is applied.
+
+### Option C: Bootstrap + Wave 1 Apply (Infrastructure focus)
+Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito).
+Pro: Validates Terraform code against real AWS, costs almost nothing.
+
+Recommended: **Option A** (Admin Dashboard) -> then B -> then C.
+Reason: Complete the app first, then deploy. Less risk, less cost.
 
 ---
 
@@ -128,3 +174,9 @@
 | 2026-02-22 | Cert split: Earned vs Roadmap | Separates achievements from goals, clearer hierarchy |
 | 2026-02-23 | Server-side filtering via query params | Portfolio-worthy: demonstrates SQL query building, scales properly |
 | 2026-02-23 | Debounced search (300ms) | Prevents API hammering, smooth UX while typing |
+| 2026-02-23 | Wave-based Terraform deployment | Apply in stages to control costs: free -> $13 -> $126/month |
+| 2026-02-23 | Spot instances for EKS | t3.medium + t3a.medium, ~70% cheaper than on-demand |
+| 2026-02-23 | Conditional NAT Gateway | $35/month toggle via variable, off in Wave 1-2 |
+| 2026-02-23 | OAC over OAI for CloudFront | Newer, more secure S3 access pattern (SigV4 signing) |
+| 2026-02-23 | IRSA for pod-level IAM | Fine-grained permissions per pod, not per node |
+| 2026-02-23 | Detailed Terraform comments | Learning-oriented code for better understanding |

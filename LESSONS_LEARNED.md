@@ -159,3 +159,65 @@ Two rules established:
 A portfolio website represents a real person. Made-up content on a resume-like page is worse than a blank space. When in doubt, ask. A TODO placeholder is honest; a fabricated certification roadmap is misleading.
 
 ---
+
+## #10 - Terraform: Write Code First, Deploy Later
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+EKS is expensive (~$126/month with NAT Gateway). Writing and immediately applying Terraform would mean paying for infrastructure that isn't needed yet -- the application code (admin dashboard, auth) isn't even complete.
+
+**Decision:**
+Wave-based deployment strategy: write ALL 8 Terraform modules upfront but validate them with `terraform validate` and `terraform fmt` only. Actual `terraform apply` happens in cost-controlled waves:
+- Wave 1 (free): VPC, SGs, ECR, S3, Cognito (~$0.50/month)
+- Wave 2: RDS (~$13/month, can be stopped)
+- Wave 3: EKS + NAT GW + CloudFront (~$126/month, sprint only)
+
+After a deployment sprint (8 hours), destroy EKS and disable NAT GW -> back to ~$0.65/month.
+
+**Takeaway:**
+Infrastructure code and infrastructure cost are separate concerns. You can write, review, and validate IaC without deploying anything. This is especially important when learning -- iterate on the code for free, deploy only when ready.
+
+---
+
+## #11 - Terraform: Empty filter Block for Lifecycle Rules
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+The S3 lifecycle rule for transitioning objects to Infrequent Access did not include a `filter` attribute. `terraform validate` returned a warning:
+```
+Warning: Attribute "filter" is not specified
+```
+Without a filter, Terraform implicitly applies the rule to all objects, but newer versions of the AWS provider require the filter to be explicit.
+
+**Decision:**
+Added an empty `filter {}` block to the lifecycle rule. An empty filter explicitly means "apply to all objects" -- same behavior, no warning.
+
+**Takeaway:**
+Always run `terraform validate` after writing code. Even valid HCL can produce warnings that indicate future breaking changes. An empty block `filter {}` is different from no block at all in Terraform's type system.
+
+---
+
+## #12 - Terraform: Comments as a Learning Tool
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+The initial Terraform modules had basic header comments but lacked detailed inline explanations. When reviewing the code, it was hard to understand *why* specific values were chosen (e.g., why `cidrsubnet("10.0.0.0/16", 8, 10)`, why `create_before_destroy`, why `signing_behavior = "always"`).
+
+**Decision:**
+Enhanced all 29 Terraform files with detailed learning-oriented comments. Each resource explains:
+- What it does and why it's needed
+- How it connects to other resources
+- Cost implications
+- Security reasoning
+- Practical examples (CLI commands, URLs)
+
+**Takeaway:**
+Code comments aren't just for other developers -- they're a learning tool for yourself. Writing "why" comments forces you to understand the reasoning, not just the syntax. When revisiting infrastructure months later, these comments are invaluable. For a portfolio project, well-commented code demonstrates deep understanding, not just copy-paste skills.
+
+---

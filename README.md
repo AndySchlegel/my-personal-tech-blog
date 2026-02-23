@@ -3,7 +3,7 @@
 > **Cloud-native tech blog on AWS EKS, documenting my journey from zero to cloud engineer in one year.**
 
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
-[![Terraform](https://img.shields.io/badge/Terraform-100%25%20IaC-blue)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-8%20Modules%20IaC-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
@@ -16,6 +16,7 @@
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Features](#features)
+- [Infrastructure](#infrastructure)
 - [Screenshots](#screenshots)
 - [Security](#security)
 - [Getting Started](#getting-started)
@@ -45,22 +46,31 @@ This blog tells a real story: starting with a Synology NAS and a basic router, b
 ## Architecture
 
 ```
-Route 53 (DNS)
+Route 53 (DNS: blog.his4irness23.de)
     |
-CloudFront (CDN + TLS via ACM)
+CloudFront (CDN + TLS via ACM, PriceClass_100)
     |
-ALB (AWS Load Balancer Controller)
+    +-- S3 Origin (blog images, OAC-signed requests)
+    +-- ALB Origin (dynamic content, added after EKS deploy)
     |
-EKS Cluster (eu-central-1)
+ALB (AWS Load Balancer Controller, managed via IRSA)
+    |
+EKS Cluster (eu-central-1, 2 AZs)
     |--- Frontend Pod (nginx + Tailwind CSS)
     |--- Backend Pod (Express + TypeScript)
     |--- HPA (auto-scaling)
     |
-RDS PostgreSQL (private subnet)
+    +-- Private Subnets (10.0.10.0/24, 10.0.11.0/24)
+    |       |--- EKS Nodes (Spot: t3.medium + t3a.medium)
+    |       |--- RDS PostgreSQL 16 (db.t3.micro)
+    |
+    +-- Public Subnets (10.0.1.0/24, 10.0.2.0/24)
+            |--- ALB
+            |--- NAT Gateway (conditional)
+    |
+Cognito (Admin JWT authentication)
     |
 Amazon Comprehend (ML: auto-tags + sentiment)
-    |
-S3 (image uploads via CloudFront)
 ```
 
 ---
@@ -71,14 +81,14 @@ S3 (image uploads via CloudFront)
 |-----------|-----------|
 | Backend | Node.js, Express, TypeScript |
 | Frontend | Tailwind CSS, Tabler Icons, nginx |
-| Database | PostgreSQL (RDS) |
+| Database | PostgreSQL 16 (RDS) |
 | Content | Markdown (stored in DB, rendered in frontend) |
-| Auth | AWS Cognito |
+| Auth | AWS Cognito (OAuth 2.0, SRP, optional TOTP MFA) |
 | ML | Amazon Comprehend (key phrases + sentiment) |
-| Images | S3 upload + CloudFront CDN |
-| IaC | Terraform (modular, from scratch) |
+| Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
+| IaC | Terraform (8 modules, from scratch, 2,600+ lines) |
 | CI/CD | GitHub Actions with OIDC |
-| Container | Docker (multi-stage builds), EKS |
+| Container | Docker (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
 
 ---
@@ -87,20 +97,50 @@ S3 (image uploads via CloudFront)
 
 ### Public
 - Blog posts with Markdown rendering and syntax highlighting
+- Search and category filtering (debounced, server-side SQL filtering)
 - Auto-generated tags via Amazon Comprehend
 - Comment system with sentiment analysis
 - About page with personal journey timeline, animated counters, and quote block
 - Skills page with priority labels, proficiency-based skill rows, cert roadmap, and animated progress stats
-- Search and category filtering
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
 
 ### Admin Dashboard (Cognito-protected)
 - Create and edit posts (Markdown editor with live preview)
-- Image uploads to S3
+- Image uploads to S3 via pre-signed URLs
 - Comment moderation with sentiment overview
 - ML results display (auto-tags, sentiment scores)
 - Basic statistics (posts, comments, top tags)
+
+---
+
+## Infrastructure
+
+### Terraform Modules (8 modules, all written from scratch)
+
+| Module | Purpose | Key Resources |
+|--------|---------|---------------|
+| **VPC** | Network foundation | VPC, 2 public + 2 private subnets, IGW, conditional NAT GW |
+| **Security Groups** | Layered firewall | ALB SG, EKS Node SG, RDS SG (defense in depth) |
+| **ECR** | Docker registry | 2 repos (frontend + backend), lifecycle policies |
+| **S3** | Image storage | Assets bucket, versioning, encryption, CORS, all public access blocked |
+| **Cognito** | Admin auth | User pool, OAuth code flow, app client, admin group |
+| **RDS** | Database | PostgreSQL 16, db.t3.micro, private subnets, 7-day backups |
+| **EKS** | Kubernetes | Cluster, spot node group, KMS encryption, OIDC/IRSA, add-ons |
+| **CloudFront** | CDN | Distribution, ACM cert, OAC for S3, Route 53 DNS |
+
+### Wave Deployment Strategy
+
+Infrastructure is deployed in cost-controlled waves to avoid unnecessary charges:
+
+| Wave | Resources | Monthly Cost | When |
+|------|-----------|-------------|------|
+| 0 | Bootstrap (S3 state + DynamoDB) | $0 | One-time setup |
+| 1 | VPC, SGs, ECR, S3, Cognito | ~$0.50 | Anytime |
+| 2 | RDS | ~$13 (stoppable) | When DB needed |
+| 3 | EKS + NAT GW + CloudFront | ~$126 | Sprint only |
+
+After sprint: destroy EKS, disable NAT GW, stop RDS -> back to ~$0.65/month.
 
 ---
 
@@ -127,7 +167,17 @@ Automated security scanning on every push - set up before the first line of appl
 
 All security findings are uploaded to the GitHub Security tab via SARIF format.
 
-**Cost:** $0.00/month (GitHub Actions free tier)
+### Infrastructure Security
+
+- All S3 public access blocked (CloudFront OAC only)
+- RDS in private subnets, accessible only from EKS nodes (SG-to-SG rules)
+- EKS secrets encrypted at rest via KMS
+- IRSA for pod-level IAM (least privilege per service)
+- TLS 1.2+ enforced on CloudFront
+- Cognito with strong password policy + optional TOTP MFA
+- No AWS credentials in CI/CD (OIDC federation)
+
+**Cost:** $0.00/month (GitHub Actions free tier + AWS free tier for security features)
 
 ---
 
@@ -166,6 +216,30 @@ npm run dev
 
 ## Deployment
 
+### Terraform Setup
+
+```bash
+# 1. Bootstrap remote state (one-time)
+chmod +x terraform/bootstrap-state.sh
+./terraform/bootstrap-state.sh
+
+# 2. Initialize Terraform
+cd terraform
+terraform init
+
+# 3. Deploy in waves
+# Wave 1: Free/cheap resources
+terraform apply -target=module.vpc -target=module.security_groups \
+  -target=module.ecr -target=module.s3 -target=module.cognito
+
+# Wave 2: Database (~$13/month)
+terraform apply -target=module.rds
+
+# Wave 3: Kubernetes + CDN (~$126/month)
+# First: set enable_nat_gateway = true in terraform.tfvars
+terraform apply
+```
+
 ### CI/CD Pipeline
 
 ```
@@ -186,16 +260,21 @@ Authentication via OIDC - no long-lived AWS credentials stored in GitHub.
 
 ## Cost Analysis
 
-| Service | Estimated Monthly Cost |
-|---------|----------------------|
-| EKS Control Plane | ~$72 (destroy after work) |
-| EKS Nodes (2x t3.medium) | ~$65 (scale to 0 after work) |
-| RDS db.t3.micro | ~$12 (stop when not needed) |
-| CloudFront | Minimal |
-| Route 53 | ~$0.50 |
-| S3 | Minimal |
-| Cognito | Free (<50K MAUs) |
-| **Strategy** | **~$2/day when actively working** |
+| Service | Monthly Cost | Notes |
+|---------|-------------|-------|
+| EKS Control Plane | ~$73 | Destroy after sprint |
+| EKS Nodes (2x spot) | ~$19 | Spot = 70% savings |
+| NAT Gateway | ~$35 | Conditional, off in Wave 1-2 |
+| RDS db.t3.micro | ~$13 | Stop when not needed (up to 7 days) |
+| CloudFront | ~$1-5 | Based on traffic |
+| Route 53 | ~$0.50 | Hosted zone |
+| S3 | ~$0.05 | Image storage |
+| Cognito | Free | <50K MAUs |
+| KMS | ~$1 | EKS secrets key |
+| **Full deployment** | **~$143** | **All services running** |
+| **After sprint** | **~$0.65** | **Only Route 53 + S3** |
+
+**Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after.
 
 ---
 
@@ -203,7 +282,12 @@ Authentication via OIDC - no long-lived AWS credentials stored in GitHub.
 
 Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
 
-*Highlights will be added here as the project progresses.*
+Key highlights:
+- **#1** Security scanning from day 1 costs nothing but catches issues early
+- **#4** Separate app from server for testability (Express pattern)
+- **#8** Hot-reload with `podman cp` for visual development
+- **#10** Write IaC first, deploy later -- iterate for free
+- **#12** Code comments as a learning tool, not just documentation
 
 ---
 
@@ -212,11 +296,12 @@ Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
 | Metric | Value |
 |--------|-------|
 | Development Duration | 4 weeks (Feb-Mar 2026) |
-| Terraform Modules | 8 planned |
-| AWS Services | 10+ |
+| Terraform Modules | 8 (29 files, 2,600+ lines) |
+| AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 19 (health, posts, comments, categories) |
-| Lessons Learned | 9 documented |
+| Lessons Learned | 12 documented |
+| Commits | 10+ |
 
 *Updated as the project progresses.*
 
@@ -231,6 +316,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 2-3: Backend API + Frontend, About/Skills done)
-**Last Updated:** 2026-02-22
+**Project Status:** In Development (Phase 4 done, next: Admin Dashboard + K8s Manifests)
+**Last Updated:** 2026-02-23
 **AWS Region:** eu-central-1 (Frankfurt)
