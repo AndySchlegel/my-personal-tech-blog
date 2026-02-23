@@ -88,7 +88,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
 | IaC | Terraform (8 modules, from scratch, 2,600+ lines) |
 | CI/CD | GitHub Actions with OIDC |
-| Container | Docker (multi-stage builds), EKS (Spot instances) |
+| Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
 
 ---
@@ -106,11 +106,11 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 - Fully responsive (mobile-first)
 
 ### Admin Dashboard (Cognito-protected)
-- Create and edit posts (Markdown editor with live preview)
-- Image uploads to S3 via pre-signed URLs
-- Comment moderation with sentiment overview
-- ML results display (auto-tags, sentiment scores)
-- Basic statistics (posts, comments, top tags)
+- Login via Cognito Hosted UI (OAuth 2.0 code flow) with dev mode bypass
+- Dashboard overview with stat cards (posts, published, pending comments, views)
+- Recent posts and comments activity feed
+- Sidebar navigation with responsive mobile layout
+- *Coming in Teil 2:* Post editor, comment moderation, S3 image uploads
 
 ---
 
@@ -186,21 +186,21 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 ### Prerequisites
 
 - **Node.js** 22.x
-- **Docker** (for containerized development)
+- **Podman** (for containerized development)
 - **Terraform** 1.5+ (for infrastructure)
 - **AWS CLI** v2 (configured with credentials)
 
 ### Local Development
 
 ```bash
-# Option 1: Docker Compose (recommended - runs everything)
-docker compose up --build
-# Or with Podman:
+# Option 1: Podman Compose (recommended - runs everything)
+podman machine start
 podman-compose up --build
 
-# Frontend: http://localhost:8080
-# Backend API: http://localhost:3000/api
-# PostgreSQL: localhost:5432
+# Frontend:        http://localhost:8080
+# Admin Dashboard: http://localhost:8080/admin/login.html
+# Backend API:     http://localhost:3000/api
+# PostgreSQL:      localhost:5432
 
 # Option 2: Frontend only (just open in browser)
 open frontend/src/index.html
@@ -299,7 +299,7 @@ Key highlights:
 | Terraform Modules | 8 (29 files, 2,600+ lines) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
-| Unit Tests | 19 (health, posts, comments, categories) |
+| Unit Tests | 26 (health, posts, comments, categories, auth) |
 | Lessons Learned | 12 documented |
 | Commits | 10+ |
 
@@ -316,6 +316,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 4 done, next: Admin Dashboard + K8s Manifests)
+**Project Status:** In Development (Phase 5 in progress: Admin Dashboard Teil 1 done, next: Teil 2 + K8s Manifests)
 **Last Updated:** 2026-02-23
 **AWS Region:** eu-central-1 (Frankfurt)

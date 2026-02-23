@@ -221,3 +221,19 @@ Enhanced all 29 Terraform files with detailed learning-oriented comments. Each r
 Code comments aren't just for other developers -- they're a learning tool for yourself. Writing "why" comments forces you to understand the reasoning, not just the syntax. When revisiting infrastructure months later, these comments are invaluable. For a portfolio project, well-commented code demonstrates deep understanding, not just copy-paste skills.
 
 ---
+
+## #13 - Auth: Dev Mode Bypass for Local Development
+
+**Date:** 2026-02-23
+**Phase:** Admin Dashboard
+
+**Context:**
+The admin dashboard needs Cognito JWT authentication in production, but Docker Compose has no Cognito instance. Without a bypass mechanism, you can't develop or test the admin UI locally at all.
+
+**Decision:**
+The `requireAuth` middleware checks if `COGNITO_USER_POOL_ID` is set. If not, it bypasses all auth checks and attaches a mock admin user to the request. The frontend `auth.js` does the same: when Cognito config is empty, `isAuthenticated()` returns true and `login()` redirects straight to the dashboard.
+
+**Takeaway:**
+Design auth with two clear modes from the start: production (real JWT validation) and dev (bypass with mock data). The switch should be based on environment variables, not code changes. This way the same codebase works everywhere -- locally, in CI tests, and on EKS -- without any modifications.
+
+---
