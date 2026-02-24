@@ -109,8 +109,10 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 - Login via Cognito Hosted UI (OAuth 2.0 code flow) with dev mode bypass
 - Dashboard overview with stat cards (posts, published, pending comments, views)
 - Recent posts and comments activity feed
+- Post management: create, edit, delete with side-by-side Markdown editor + live preview
+- Comment moderation: approve, flag, delete with status filtering
 - Sidebar navigation with responsive mobile layout
-- *Coming in Teil 2:* Post editor, comment moderation, S3 image uploads
+- *Coming later:* S3 image uploads (needs EKS deployment)
 
 ---
 
@@ -288,6 +290,7 @@ Key highlights:
 - **#8** Hot-reload with `podman cp` for visual development
 - **#10** Write IaC first, deploy later -- iterate for free
 - **#12** Code comments as a learning tool, not just documentation
+- **#14** Tailwind CDN overrides custom CSS -- use utility classes directly on elements
 
 ---
 
@@ -299,8 +302,8 @@ Key highlights:
 | Terraform Modules | 8 (29 files, 2,600+ lines) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
-| Unit Tests | 26 (health, posts, comments, categories, auth) |
-| Lessons Learned | 12 documented |
+| Unit Tests | 31 (health, posts, comments, categories, auth) |
+| Lessons Learned | 14 documented |
 | Commits | 10+ |
 
 *Updated as the project progresses.*
@@ -316,6 +319,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 5 in progress: Admin Dashboard Teil 1 done, next: Teil 2 + K8s Manifests)
-**Last Updated:** 2026-02-23
+**Project Status:** In Development (Admin Dashboard complete, next: K8s Manifests + CI/CD)
+**Last Updated:** 2026-02-24
 **AWS Region:** eu-central-1 (Frankfurt)

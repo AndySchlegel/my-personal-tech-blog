@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Terraform done, next: Admin Dashboard + Auth or K8s manifests
-**Last Updated:** 2026-02-23 (Session 5)
+**Current Phase:** Admin Dashboard complete, next: K8s Manifests + CI/CD
+**Last Updated:** 2026-02-24 (Session 6)
 
 ---
 
@@ -15,8 +15,8 @@
 | Phase | Status | Target |
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
-| 2. Backend API | ~90% Done (Auth + S3 open) | Week 1-2 |
-| 3. Frontend | ~85% Done (Admin Dashboard open) | Week 1-2 |
+| 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
+| 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | Not Started | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
@@ -44,10 +44,11 @@
 - [x] PostgreSQL schema design (6 tables: users, categories, posts, tags, post_tags, comments)
 - [x] Express routes: CRUD posts, comments, categories (11 endpoints)
 - [x] Search + filter query params (?search, ?category, ?tag with dynamic SQL WHERE)
-- [ ] Auth middleware (Cognito JWT validation)
+- [x] Auth middleware (Cognito JWT validation + dev bypass)
 - [ ] S3 image upload service (pre-signed URLs)
-- [x] Unit tests (19 tests: health, posts, comments, categories)
+- [x] Unit tests (31 tests: health, posts, comments, categories, auth)
 - [x] Seed data (12 articles, 6 categories, 28 tags from old blog)
+- [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
 
 ## Phase 3: Frontend (~85% Done)
 
@@ -66,7 +67,10 @@
 - [x] counter.js (Intersection Observer scroll-triggered animated counters)
 - [x] Design upgrade v3 (hero gradients, alternating BGs, proficiency icons, priority labels)
 - [x] Search and category filtering (search bar + category pills + debounced API filtering)
-- [ ] Admin dashboard (post editor, comment moderation, image uploads)
+- [x] Admin dashboard overview (stat cards, recent posts/comments)
+- [x] Admin post management (list, create, edit, delete with Markdown editor)
+- [x] Admin comment moderation (list, approve, flag, delete with status filter)
+- [ ] Admin S3 image uploads (needs EKS deployment)
 
 ## Phase 4: Terraform Infrastructure (Done)
 
@@ -130,22 +134,21 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-### Option A: Admin Dashboard + Auth (Frontend/Backend focus)
-Build the admin dashboard and Cognito JWT authentication. This completes
-the application logic before deploying to AWS. Pro: Can test everything
-locally with Docker Compose before spending any money on AWS.
-
-### Option B: K8s Manifests + CI/CD (DevOps focus)
+### Option A: K8s Manifests + CI/CD (DevOps focus)
 Write Kubernetes deployments, services, and ingress. Set up the GitHub
 Actions pipeline. Pro: Gets the infrastructure pipeline ready so we can
 deploy as soon as Terraform is applied.
 
-### Option C: Bootstrap + Wave 1 Apply (Infrastructure focus)
+### Option B: Bootstrap + Wave 1 Apply (Infrastructure focus)
 Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito).
 Pro: Validates Terraform code against real AWS, costs almost nothing.
 
-Recommended: **Option A** (Admin Dashboard) -> then B -> then C.
-Reason: Complete the app first, then deploy. Less risk, less cost.
+### Option C: S3 Image Uploads (Frontend/Backend focus)
+Add image upload support to the post editor. Requires S3 bucket to be
+deployed (Wave 1) for pre-signed URL generation.
+
+Recommended: **Option A** (K8s Manifests) -> then B -> then C.
+Reason: App logic is complete, now get the deployment pipeline ready.
 
 ---
 
@@ -180,3 +183,6 @@ Reason: Complete the app first, then deploy. Less risk, less cost.
 | 2026-02-23 | OAC over OAI for CloudFront | Newer, more secure S3 access pattern (SigV4 signing) |
 | 2026-02-23 | IRSA for pod-level IAM | Fine-grained permissions per pod, not per node |
 | 2026-02-23 | Detailed Terraform comments | Learning-oriented code for better understanding |
+| 2026-02-24 | Side-by-side Markdown editor | Write left, preview right, stacks on mobile -- best UX for content creation |
+| 2026-02-24 | Tailwind classes over custom CSS | Tailwind CDN overrides custom CSS classes -- use utility classes directly on elements |
+| 2026-02-24 | Admin endpoints separate from public | GET /api/admin/posts returns all statuses, GET /api/posts only published |

@@ -237,3 +237,36 @@ The `requireAuth` middleware checks if `COGNITO_USER_POOL_ID` is set. If not, it
 Design auth with two clear modes from the start: production (real JWT validation) and dev (bypass with mock data). The switch should be based on environment variables, not code changes. This way the same codebase works everywhere -- locally, in CI tests, and on EKS -- without any modifications.
 
 ---
+
+## #14 - Tailwind CDN Overrides Custom CSS Classes
+
+**Date:** 2026-02-24
+**Phase:** Admin Dashboard
+
+**Context:**
+The post editor's form inputs and side-by-side Markdown layout were built with custom CSS classes (`.admin-form-input`, `.admin-editor-layout` with `display: grid`). In the browser, none of the styling applied: inputs had white backgrounds in dark mode (unreadable text), and the grid layout was completely ignored -- Markdown and Preview stacked vertically with a tiny textarea.
+
+**Root Cause:**
+Tailwind CSS CDN generates styles at runtime that compete with custom CSS. The Tailwind preflight reset and utility layer override custom properties like `background`, `color`, and `display`. Custom class specificity (`.dark .admin-form-input`) was not high enough to win against Tailwind's generated output.
+
+**Solution:**
+Removed all custom CSS classes for form inputs and the editor layout. Replaced them with Tailwind utility classes directly on the HTML elements:
+```html
+<!-- Before: custom class, broken in dark mode -->
+<input class="admin-form-input w-full" />
+
+<!-- After: Tailwind utilities, works everywhere -->
+<input class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200
+  dark:border-slate-600 bg-slate-50 dark:bg-slate-900
+  text-slate-900 dark:text-slate-100" />
+```
+
+For the editor grid, changed from `.admin-editor-layout` with custom CSS to inline Tailwind:
+```html
+<div class="grid grid-cols-1 lg:grid-cols-2" style="min-height: 500px;">
+```
+
+**Takeaway:**
+When using Tailwind CDN (not the build tool), custom CSS classes are unreliable for properties that Tailwind also controls. Always use Tailwind utility classes directly on elements for layout, colors, and spacing. Reserve custom CSS only for things Tailwind genuinely cannot do (complex animations, pseudo-elements, scrollbar styling). This is a CDN-specific issue -- with Tailwind's build tool, custom CSS has more predictable specificity.
+
+---
