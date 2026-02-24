@@ -1008,6 +1008,113 @@ nav a {
   background-color: rgba(148, 163, 184, 0.04);
 }
 
+/* --- Admin editor: Markdown textarea monospace font --- */
+textarea.font-mono {
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+}
+
+/* --- Admin table rows --- */
+.admin-table-row {
+  transition: background-color 0.15s ease;
+}
+
+.admin-table-row:hover {
+  background-color: rgba(148, 163, 184, 0.05);
+}
+
+.dark .admin-table-row:hover {
+  background-color: rgba(148, 163, 184, 0.04);
+}
+
+/* --- Admin action buttons (edit, delete, approve, flag) --- */
+.admin-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  color: #94a3b8;
+}
+
+.admin-action-btn:hover {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #64748b;
+}
+
+.dark .admin-action-btn:hover {
+  background-color: rgba(148, 163, 184, 0.08);
+  color: #cbd5e1;
+}
+
+/* Edit button: sky accent on hover */
+.admin-action-edit:hover {
+  background-color: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+}
+
+/* Delete button: red accent on hover */
+.admin-action-delete:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Approve button: green accent on hover */
+.admin-action-approve:hover {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+/* Flag button: red accent on hover */
+.admin-action-flag:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* --- Admin primary button (used in JS innerHTML) --- */
+.admin-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  background-color: #0ea5e9;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-btn-primary:hover {
+  background-color: #0284c7;
+}
+
+/* --- Comment card transition --- */
+.admin-comment-card {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-comment-card:hover {
+  border-color: rgba(148, 163, 184, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.dark .admin-comment-card:hover {
+  border-color: rgba(51, 65, 85, 0.8);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
 /* --- Responsive: sidebar collapses on mobile --- */
 @media (max-width: 768px) {
   .admin-sidebar {

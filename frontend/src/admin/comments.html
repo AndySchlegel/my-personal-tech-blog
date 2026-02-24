@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Andy.dev Admin</title>
+    <title>Comments - Andy.dev Admin</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -80,7 +80,7 @@
 
           <!-- Navigation -->
           <nav class="flex-1 p-4 space-y-1">
-            <a href="/admin/index.html" class="admin-nav-link admin-nav-active">
+            <a href="/admin/index.html" class="admin-nav-link">
               <i class="ti ti-dashboard text-lg"></i>
               Dashboard
             </a>
@@ -88,7 +88,10 @@
               <i class="ti ti-article text-lg"></i>
               Posts
             </a>
-            <a href="/admin/comments.html" class="admin-nav-link">
+            <a
+              href="/admin/comments.html"
+              class="admin-nav-link admin-nav-active"
+            >
               <i class="ti ti-message-2 text-lg"></i>
               Comments
             </a>
@@ -148,102 +151,47 @@
       <!-- ==================== MAIN CONTENT ==================== -->
       <main class="admin-main">
         <!-- Header -->
-        <div class="mb-8 fade-in">
+        <div class="mb-6 fade-in">
           <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-            Dashboard
+            Comments
           </h1>
-          <p
-            id="welcome-msg"
-            class="text-sm text-slate-500 dark:text-slate-400 mt-1"
-          >
-            Welcome back
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Moderate reader comments
           </p>
         </div>
 
-        <!-- Stat Cards -->
-        <div id="stat-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <!-- Skeleton cards while loading -->
-          <div class="admin-stat-card">
-            <div
-              class="skeleton h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-3"
-            ></div>
-            <div
-              class="skeleton h-8 w-12 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
-          </div>
-          <div class="admin-stat-card">
-            <div
-              class="skeleton h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-3"
-            ></div>
-            <div
-              class="skeleton h-8 w-12 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
-          </div>
-          <div class="admin-stat-card">
-            <div
-              class="skeleton h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-3"
-            ></div>
-            <div
-              class="skeleton h-8 w-12 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
-          </div>
-          <div class="admin-stat-card">
-            <div
-              class="skeleton h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-3"
-            ></div>
-            <div
-              class="skeleton h-8 w-12 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
-          </div>
+        <!-- Filter buttons -->
+        <div
+          id="comment-filters"
+          class="flex flex-wrap gap-2 mb-6 fade-in"
+          style="animation-delay: 0.05s"
+        >
+          <button class="filter-btn filter-btn-active" data-status="all">
+            All
+          </button>
+          <button class="filter-btn" data-status="pending">Pending</button>
+          <button class="filter-btn" data-status="approved">Approved</button>
+          <button class="filter-btn" data-status="flagged">Flagged</button>
         </div>
 
-        <!-- Recent Posts -->
-        <div class="mb-8 fade-in" style="animation-delay: 0.1s">
-          <h2
-            class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-4"
-          >
-            <i class="ti ti-article text-sky-500"></i>
-            Recent Posts
-          </h2>
+        <!-- Comment list -->
+        <div
+          id="comment-list"
+          class="space-y-3 fade-in"
+          style="animation-delay: 0.1s"
+        >
           <div
-            id="recent-posts"
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden"
+            class="p-6 text-center text-sm text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
           >
-            <!-- Populated by admin.js -->
-            <div
-              class="p-6 text-center text-sm text-slate-400 dark:text-slate-500"
-            >
-              Loading...
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Comments -->
-        <div class="fade-in" style="animation-delay: 0.2s">
-          <h2
-            class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-4"
-          >
-            <i class="ti ti-message-2 text-sky-500"></i>
-            Recent Comments
-          </h2>
-          <div
-            id="recent-comments"
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden"
-          >
-            <!-- Populated by admin.js -->
-            <div
-              class="p-6 text-center text-sm text-slate-400 dark:text-slate-500"
-            >
-              Loading...
-            </div>
+            Loading...
           </div>
         </div>
       </main>
     </div>
 
-    <!-- Auth module (must load before admin.js) -->
+    <!-- Auth module (must load before comments.js) -->
     <script src="./js/auth.js"></script>
-    <script src="./js/admin.js"></script>
+    <script src="./js/comments.js"></script>
 
     <!-- Mobile sidebar toggle -->
     <script>

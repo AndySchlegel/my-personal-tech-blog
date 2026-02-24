@@ -114,6 +114,128 @@ describe('Auth middleware - Dev mode', () => {
   });
 });
 
+describe('Admin posts endpoint - Dev mode', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return all posts via GET /api/admin/posts', async () => {
+    const { query } = require('../src/models/database');
+    query.mockResolvedValueOnce({
+      rows: [
+        { id: 1, title: 'Published Post', status: 'published', category_name: 'DevOps' },
+        { id: 2, title: 'Draft Post', status: 'draft', category_name: null },
+      ],
+      command: 'SELECT',
+      rowCount: 2,
+      oid: 0,
+      fields: [],
+    });
+
+    const response = await request(app).get('/api/admin/posts');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
+    expect(response.body[0].title).toBe('Published Post');
+    expect(response.body[1].status).toBe('draft');
+  });
+
+  it('should return a single post with content via GET /api/admin/posts/:id', async () => {
+    const { query } = require('../src/models/database');
+
+    // First query: post data
+    query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: 1, title: 'Test Post', slug: 'test-post', content: '# Hello',
+          status: 'published', category_id: 1, category_name: 'DevOps',
+        },
+      ],
+      command: 'SELECT',
+      rowCount: 1,
+      oid: 0,
+      fields: [],
+    });
+    // Second query: tags
+    query.mockResolvedValueOnce({
+      rows: [{ name: 'aws', slug: 'aws' }],
+      command: 'SELECT',
+      rowCount: 1,
+      oid: 0,
+      fields: [],
+    });
+
+    const response = await request(app).get('/api/admin/posts/1');
+
+    expect(response.status).toBe(200);
+    expect(response.body.title).toBe('Test Post');
+    expect(response.body.content).toBe('# Hello');
+    expect(response.body.tags).toHaveLength(1);
+    expect(response.body.tags[0].name).toBe('aws');
+  });
+
+  it('should return 404 for non-existent post via GET /api/admin/posts/:id', async () => {
+    const { query } = require('../src/models/database');
+    query.mockResolvedValueOnce({
+      rows: [],
+      command: 'SELECT',
+      rowCount: 0,
+      oid: 0,
+      fields: [],
+    });
+
+    const response = await request(app).get('/api/admin/posts/999');
+
+    expect(response.status).toBe(404);
+  });
+});
+
+describe('Admin comments endpoint - Dev mode', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return all comments via GET /api/admin/comments', async () => {
+    const { query } = require('../src/models/database');
+    query.mockResolvedValueOnce({
+      rows: [
+        { id: 1, author_name: 'Max', content: 'Great post!', status: 'pending', post_title: 'Test', post_id: 1 },
+        { id: 2, author_name: 'Lisa', content: 'Thanks!', status: 'approved', post_title: 'Test', post_id: 1 },
+      ],
+      command: 'SELECT',
+      rowCount: 2,
+      oid: 0,
+      fields: [],
+    });
+
+    const response = await request(app).get('/api/admin/comments');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
+    expect(response.body[0].author_name).toBe('Max');
+    expect(response.body[0].status).toBe('pending');
+  });
+
+  it('should filter comments by status via GET /api/admin/comments?status=pending', async () => {
+    const { query } = require('../src/models/database');
+    query.mockResolvedValueOnce({
+      rows: [
+        { id: 1, author_name: 'Max', content: 'Great post!', status: 'pending', post_title: 'Test', post_id: 1 },
+      ],
+      command: 'SELECT',
+      rowCount: 1,
+      oid: 0,
+      fields: [],
+    });
+
+    const response = await request(app).get('/api/admin/comments?status=pending');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].status).toBe('pending');
+  });
+});
+
 describe('Auth middleware - Production mode', () => {
   // To test production mode, we need to set COGNITO env vars
   // and mock the verifier. We'll test this by manually checking
