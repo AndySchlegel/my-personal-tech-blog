@@ -35,3 +35,7 @@ coverage/
 
 # Docker
 docker-compose.override.yml
+
+# AI / Claude Code (local only)
+CLAUDE.md
+.claude/
