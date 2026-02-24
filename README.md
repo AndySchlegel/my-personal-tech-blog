@@ -86,7 +86,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | Auth | AWS Cognito (OAuth 2.0, SRP, optional TOTP MFA) |
 | ML | Amazon Comprehend (key phrases + sentiment) |
 | Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
-| IaC | Terraform (8 modules, from scratch, 2,600+ lines) |
+| IaC | Terraform (9 modules, from scratch, 2,800+ lines) |
 | CI/CD | GitHub Actions with OIDC |
 | Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
@@ -118,7 +118,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 
 ## Infrastructure
 
-### Terraform Modules (8 modules, all written from scratch)
+### Terraform Modules (9 modules, all written from scratch)
 
 | Module | Purpose | Key Resources |
 |--------|---------|---------------|
@@ -127,6 +127,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | **ECR** | Docker registry | 2 repos (frontend + backend), lifecycle policies |
 | **S3** | Image storage | Assets bucket, versioning, encryption, CORS, all public access blocked |
 | **Cognito** | Admin auth | User pool, OAuth code flow, app client, admin group |
+| **GitHub OIDC** | CI/CD auth | OIDC provider, IAM role, least-privilege policy for ECR + EKS |
 | **RDS** | Database | PostgreSQL 16, db.t3.micro, private subnets, 7-day backups |
 | **EKS** | Kubernetes | Cluster, spot node group, KMS encryption, OIDC/IRSA, add-ons |
 | **CloudFront** | CDN | Distribution, ACM cert, OAC for S3, Route 53 DNS |
@@ -138,7 +139,7 @@ Infrastructure is deployed in cost-controlled waves to avoid unnecessary charges
 | Wave | Resources | Monthly Cost | When |
 |------|-----------|-------------|------|
 | 0 | Bootstrap (S3 state + DynamoDB) | $0 | One-time setup |
-| 1 | VPC, SGs, ECR, S3, Cognito | ~$0.50 | Anytime |
+| 1 | VPC, SGs, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Anytime |
 | 2 | RDS | ~$13 (stoppable) | When DB needed |
 | 3 | EKS + NAT GW + CloudFront | ~$126 | Sprint only |
 
@@ -232,7 +233,8 @@ terraform init
 # 3. Deploy in waves
 # Wave 1: Free/cheap resources
 terraform apply -target=module.vpc -target=module.security_groups \
-  -target=module.ecr -target=module.s3 -target=module.cognito
+  -target=module.ecr -target=module.s3 -target=module.cognito \
+  -target=module.github_oidc
 
 # Wave 2: Database (~$13/month)
 terraform apply -target=module.rds
@@ -244,19 +246,36 @@ terraform apply
 
 ### CI/CD Pipeline
 
+**Deploy workflow** (`workflow_dispatch` -- manual trigger only):
+
 ```
-Push to develop
+Manual Trigger (GitHub UI "Run workflow")
     |
-    +-- Code Quality (ESLint + Prettier)
-    +-- Security Scanning (tfsec + Checkov + Trufflehog)
-    +-- Backend Tests (Jest)
+    Job 1: TEST (skippable for hotfixes)
+    +-- ESLint + Prettier + Jest unit tests
     |
-    +-- Build Docker Images (tagged with git SHA)
-    +-- Push to ECR
-    +-- Deploy to EKS (kubectl apply + rollout status)
+    Job 2: BUILD
+    +-- OIDC auth (short-lived AWS credentials)
+    +-- Build Docker images (backend + frontend)
+    +-- Push to ECR (tagged: sha-<hash> + latest)
+    |
+    Job 3: DEPLOY
+    +-- OIDC auth + kubectl config
+    +-- Apply K8s manifests (namespace, config, secrets, services, deployments)
+    +-- Update container images (rolling update)
+    +-- Apply ingress (sed replaces placeholders with real values)
+    +-- Wait for rollout + print status
 ```
 
-Authentication via OIDC - no long-lived AWS credentials stored in GitHub.
+**Continuous quality** (automatic on push to main/develop):
+
+```
+Code changes  -> ESLint + Prettier + Jest (backend/)
+Terraform changes -> tfsec + Checkov (terraform/)
+All pushes -> Trufflehog secret scanning
+```
+
+Authentication via OIDC federation -- no long-lived AWS credentials stored in GitHub.
 
 ---
 
@@ -299,7 +318,7 @@ Key highlights:
 | Metric | Value |
 |--------|-------|
 | Development Duration | 4 weeks (Feb-Mar 2026) |
-| Terraform Modules | 8 (29 files, 2,600+ lines) |
+| Terraform Modules | 9 (32 files, 2,800+ lines) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
@@ -319,6 +338,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (K8s Manifests complete, next: CI/CD Pipeline + Terraform Apply)
+**Project Status:** In Development (CI/CD Pipeline complete, next: Terraform Apply)
 **Last Updated:** 2026-02-24
 **AWS Region:** eu-central-1 (Frankfurt)

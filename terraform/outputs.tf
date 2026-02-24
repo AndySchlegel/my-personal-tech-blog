@@ -72,6 +72,27 @@ output "cloudfront_domain" {
   value       = module.cloudfront.distribution_domain_name
 }
 
+# --- GitHub OIDC ---
+# Set this as the AWS_ROLE_ARN secret in your GitHub repository settings.
+# The deploy workflow uses this role for OIDC authentication.
+output "github_actions_role_arn" {
+  description = "IAM role ARN for GitHub Actions (set as AWS_ROLE_ARN secret)"
+  value       = module.github_oidc.role_arn
+}
+
+# --- Ingress placeholders ---
+# These outputs provide the values needed to replace REPLACE_* placeholders
+# in k8s/07-ingress.yaml. Set them as GitHub Secrets.
+output "alb_sg_id" {
+  description = "ALB security group ID (for ingress annotation)"
+  value       = module.security_groups.alb_sg_id
+}
+
+output "public_subnet_ids" {
+  description = "Comma-separated public subnet IDs (for ingress annotation)"
+  value       = join(",", module.vpc.public_subnet_ids)
+}
+
 # The final blog URL -- this is what users type in their browser.
 output "blog_url" {
   description = "Blog URL"

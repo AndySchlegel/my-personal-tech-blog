@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** K8s Manifests complete, next: CI/CD Pipeline + Terraform Apply
-**Last Updated:** 2026-02-24 (Session 7)
+**Current Phase:** CI/CD Pipeline complete, next: Terraform Apply (Wave 1-3)
+**Last Updated:** 2026-02-24 (Session 8)
 
 ---
 
@@ -18,7 +18,7 @@
 | 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
 | 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
-| 5. Kubernetes + CI/CD | ~50% Done (Manifests done, CI/CD open) | Week 3 |
+| 5. Kubernetes + CI/CD | ~90% Done (CI/CD pipeline written) | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
 | 7. Polish + Presentation | Not Started | Week 4 |
 
@@ -85,7 +85,8 @@
 - [x] EKS module (cluster, spot nodes, KMS encryption, OIDC/IRSA)
 - [x] CloudFront module (CDN, ACM cert, OAC, Route 53 DNS)
 - [x] Root module wiring (main.tf with Wave 1/2/3 structure)
-- [x] Detailed learning-oriented comments in all 29 files
+- [x] Detailed learning-oriented comments in all 32 files
+- [x] GitHub OIDC module (github-oidc: OIDC provider, IAM role, least-privilege policy)
 - [x] terraform validate + terraform fmt = clean
 - [ ] Bootstrap remote state (run bootstrap-state.sh)
 - [ ] Wave 1 apply (VPC, SGs, ECR, S3, Cognito)
@@ -93,7 +94,7 @@
 - [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
 - [ ] tfsec + Checkov CI integration
 
-## Phase 5: Kubernetes + CI/CD (~50% Done)
+## Phase 5: Kubernetes + CI/CD (~90% Done)
 
 - [x] Kubernetes manifests (namespace, deployments, services, ingress, db-init job)
 - [x] ConfigMap + Secrets (PORT, CORS, NODE_ENV, DB URL, Cognito IDs with REPLACE_ME placeholders)
@@ -101,8 +102,8 @@
 - [x] Schema.sql made idempotent (IF NOT EXISTS for safe re-runs)
 - [x] DB initialization (Job + ConfigMap with embedded schema + seed SQL)
 - [x] k8s/README.md deploy guide (prerequisites, placeholder replacement, troubleshooting)
-- [ ] GitHub Actions pipeline (test -> build -> push ECR -> deploy EKS)
-- [ ] OIDC authentication (no AWS keys in GitHub)
+- [x] GitHub Actions deploy pipeline (workflow_dispatch: test -> build -> push ECR -> deploy EKS)
+- [x] OIDC authentication (github-oidc Terraform module, no AWS keys in GitHub)
 - [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
 
 ## Phase 6: ML Integration
@@ -127,7 +128,7 @@
 | Wave | What | Monthly Cost | Status |
 |------|------|-------------|--------|
 | **0** | Bootstrap (S3 state + DynamoDB) | $0 | Ready (script written) |
-| **1** | VPC, Security Groups, ECR, S3, Cognito | ~$0.50 | Code done |
+| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Code done |
 | **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Code done |
 | **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
 
@@ -137,21 +138,21 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-### Option A: CI/CD Pipeline (DevOps focus)
-GitHub Actions workflow: test -> build Docker images -> push to ECR -> deploy to EKS.
-OIDC authentication so no AWS keys are stored in GitHub.
-Pro: Completes the deployment pipeline end-to-end.
+### Option A: Bootstrap + Wave 1 Apply (Infrastructure focus)
+Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito, GitHub OIDC).
+Pro: Validates Terraform code against real AWS, costs almost nothing (~$0.50/month).
 
-### Option B: Bootstrap + Wave 1 Apply (Infrastructure focus)
-Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito).
-Pro: Validates Terraform code against real AWS, costs almost nothing.
+### Option B: Wave 2-3 Apply + First Deploy (Full deployment)
+Apply RDS (Wave 2), then EKS + CloudFront (Wave 3).
+Set up GitHub Secrets, run `workflow_dispatch` deploy.
+Pro: Blog goes live on EKS.
 
 ### Option C: S3 Image Uploads (Frontend/Backend focus)
 Add image upload support to the post editor. Requires S3 bucket to be
 deployed (Wave 1) for pre-signed URL generation.
 
-Recommended: **Option A** (CI/CD Pipeline) -> then B -> then C.
-Reason: K8s manifests are ready, now automate the deployment.
+Recommended: **Option A** (Bootstrap + Wave 1) -> then B -> then C.
+Reason: CI/CD pipeline is written, now validate infrastructure against real AWS.
 
 ---
 
@@ -194,3 +195,9 @@ Reason: K8s manifests are ready, now automate the deployment.
 | 2026-02-24 | All traffic through frontend nginx | ALB -> nginx -> /api/* proxy to backend (mirrors docker-compose) |
 | 2026-02-24 | DB init via K8s Job | postgres:16-alpine runs psql against RDS, idempotent schema + seed |
 | 2026-02-24 | Numbered K8s file prefixes | 00- to 09- for self-documenting apply order |
+| 2026-02-24 | workflow_dispatch only | Manual deploy trigger, nothing deploys automatically |
+| 2026-02-24 | OIDC federation (no keys) | Short-lived credentials, no secrets rotation needed |
+| 2026-02-24 | Separate github-oidc module | Different from EKS OIDC (IRSA), belongs in Wave 1 (free) |
+| 2026-02-24 | sha-<hash> + latest tags | Traceability to exact commit, ECR lifecycle matches sha-* prefix |
+| 2026-02-24 | kubectl create secret --dry-run | Real values from GitHub Secrets, never hardcoded in manifests |
+| 2026-02-24 | DB init job NOT in workflow | One-time manual step, not every deploy |

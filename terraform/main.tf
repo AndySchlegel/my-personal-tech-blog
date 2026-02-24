@@ -11,9 +11,10 @@
 # We don't deploy everything at once. Instead, we use -target flags
 # to deploy in waves, controlling costs at each stage.
 #
-# Wave 1 (free/cheap): VPC, Security Groups, ECR, S3, Cognito
+# Wave 1 (free/cheap): VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC
 #   terraform apply -target=module.vpc -target=module.security_groups \
-#     -target=module.ecr -target=module.s3 -target=module.cognito
+#     -target=module.ecr -target=module.s3 -target=module.cognito \
+#     -target=module.github_oidc
 #
 # Wave 2 (~$13/month): RDS
 #   terraform apply -target=module.rds
@@ -70,6 +71,20 @@ module "ecr" {
   source = "./modules/ecr"
 
   project_name = var.project_name
+}
+
+# GitHub OIDC: Keyless authentication for CI/CD pipeline.
+# Creates an IAM role that GitHub Actions can assume via OIDC federation.
+# No long-lived AWS credentials needed -- just set the role ARN as a GitHub Secret.
+# After apply: terraform output -raw github_actions_role_arn -> set as AWS_ROLE_ARN secret.
+module "github_oidc" {
+  source = "./modules/github-oidc"
+
+  project_name      = var.project_name
+  github_repository = var.github_repository
+  aws_region        = var.aws_region
+  eks_cluster_name  = "${var.project_name}-eks-${var.environment}"
+  ecr_repo_arns     = [module.ecr.frontend_repo_arn, module.ecr.backend_repo_arn]
 }
 
 # S3: Bucket for blog image uploads (served through CloudFront).

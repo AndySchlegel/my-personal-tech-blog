@@ -111,3 +111,10 @@ variable "db_password" {
   # No default! Forces you to set this in terraform.tfvars.
   # Use a strong password: at least 16 chars, mix of letters/numbers/symbols.
 }
+
+# --- CI/CD ---
+variable "github_repository" {
+  description = "GitHub repository for OIDC trust (format: owner/repo)"
+  type        = string
+  default     = "AndySchlegel/my-personal-tech-blog"
+}
