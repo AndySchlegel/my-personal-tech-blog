@@ -1,0 +1,66 @@
+# Frontend Deployment -- nginx serving static files
+#
+# Runs 2 replicas with health probes and AZ spread.
+# Nginx proxies /api/* requests to the "backend" Service (see 04-backend-service.yaml).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-frontend
+  namespace: blog
+  labels:
+    app: blog-frontend
+    app.kubernetes.io/part-of: techblog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blog-frontend
+  template:
+    metadata:
+      labels:
+        app: blog-frontend
+        app.kubernetes.io/part-of: techblog
+    spec:
+      # Prefer spreading pods across availability zones for resilience
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - blog-frontend
+                topologyKey: topology.kubernetes.io/zone
+      containers:
+        - name: frontend
+          # REPLACE: Set your ECR image URI
+          # From: terraform output -raw ecr_frontend_url
+          image: ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/blog-frontend:latest
+          ports:
+            - containerPort: 80
+          # Liveness: restart pod if nginx stops responding
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            failureThreshold: 3
+          # Readiness: only send traffic when nginx is serving
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi

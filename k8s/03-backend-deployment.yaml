@@ -1,0 +1,78 @@
+# Backend Deployment -- Express + TypeScript API
+#
+# Runs 2 replicas with health probes, resource limits, and AZ spread.
+# Reads config from blog-config ConfigMap and blog-secrets Secret.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-backend
+  namespace: blog
+  labels:
+    app: blog-backend
+    app.kubernetes.io/part-of: techblog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blog-backend
+  template:
+    metadata:
+      labels:
+        app: blog-backend
+        app.kubernetes.io/part-of: techblog
+    spec:
+      # Security: run as non-root user (matches Dockerfile appuser UID 1001)
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      # Prefer spreading pods across availability zones for resilience
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - blog-backend
+                topologyKey: topology.kubernetes.io/zone
+      containers:
+        - name: backend
+          # REPLACE: Set your ECR image URI
+          # From: terraform output -raw ecr_backend_url
+          image: ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/blog-backend:latest
+          ports:
+            - containerPort: 3000
+          # Load non-sensitive config from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: blog-config
+            - secretRef:
+                name: blog-secrets
+          # Liveness: restart pod if backend stops responding
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # Readiness: only send traffic when backend is ready
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

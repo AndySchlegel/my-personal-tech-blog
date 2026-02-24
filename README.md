@@ -319,6 +319,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Admin Dashboard complete, next: K8s Manifests + CI/CD)
+**Project Status:** In Development (K8s Manifests complete, next: CI/CD Pipeline + Terraform Apply)
 **Last Updated:** 2026-02-24
 **AWS Region:** eu-central-1 (Frankfurt)

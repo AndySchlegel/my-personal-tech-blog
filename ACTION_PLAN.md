@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Admin Dashboard complete, next: K8s Manifests + CI/CD
-**Last Updated:** 2026-02-24 (Session 6)
+**Current Phase:** K8s Manifests complete, next: CI/CD Pipeline + Terraform Apply
+**Last Updated:** 2026-02-24 (Session 7)
 
 ---
 
@@ -18,7 +18,7 @@
 | 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
 | 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
-| 5. Kubernetes + CI/CD | Not Started | Week 3 |
+| 5. Kubernetes + CI/CD | ~50% Done (Manifests done, CI/CD open) | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
 | 7. Polish + Presentation | Not Started | Week 4 |
 
@@ -93,14 +93,17 @@
 - [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
 - [ ] tfsec + Checkov CI integration
 
-## Phase 5: Kubernetes + CI/CD
+## Phase 5: Kubernetes + CI/CD (~50% Done)
 
-- [ ] Kubernetes manifests (deployments, services, ingress, HPA)
-- [ ] ConfigMap + Secrets (RDS endpoint, Cognito IDs, ECR URLs)
-- [ ] Liveness + Readiness probes
+- [x] Kubernetes manifests (namespace, deployments, services, ingress, db-init job)
+- [x] ConfigMap + Secrets (PORT, CORS, NODE_ENV, DB URL, Cognito IDs with REPLACE_ME placeholders)
+- [x] Liveness + Readiness probes (HTTP /health for backend, TCP + HTTP / for frontend)
+- [x] Schema.sql made idempotent (IF NOT EXISTS for safe re-runs)
+- [x] DB initialization (Job + ConfigMap with embedded schema + seed SQL)
+- [x] k8s/README.md deploy guide (prerequisites, placeholder replacement, troubleshooting)
 - [ ] GitHub Actions pipeline (test -> build -> push ECR -> deploy EKS)
 - [ ] OIDC authentication (no AWS keys in GitHub)
-- [ ] ALB Ingress controller setup
+- [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
 
 ## Phase 6: ML Integration
 
@@ -134,10 +137,10 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-### Option A: K8s Manifests + CI/CD (DevOps focus)
-Write Kubernetes deployments, services, and ingress. Set up the GitHub
-Actions pipeline. Pro: Gets the infrastructure pipeline ready so we can
-deploy as soon as Terraform is applied.
+### Option A: CI/CD Pipeline (DevOps focus)
+GitHub Actions workflow: test -> build Docker images -> push to ECR -> deploy to EKS.
+OIDC authentication so no AWS keys are stored in GitHub.
+Pro: Completes the deployment pipeline end-to-end.
 
 ### Option B: Bootstrap + Wave 1 Apply (Infrastructure focus)
 Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito).
@@ -147,8 +150,8 @@ Pro: Validates Terraform code against real AWS, costs almost nothing.
 Add image upload support to the post editor. Requires S3 bucket to be
 deployed (Wave 1) for pre-signed URL generation.
 
-Recommended: **Option A** (K8s Manifests) -> then B -> then C.
-Reason: App logic is complete, now get the deployment pipeline ready.
+Recommended: **Option A** (CI/CD Pipeline) -> then B -> then C.
+Reason: K8s manifests are ready, now automate the deployment.
 
 ---
 
@@ -186,3 +189,8 @@ Reason: App logic is complete, now get the deployment pipeline ready.
 | 2026-02-24 | Side-by-side Markdown editor | Write left, preview right, stacks on mobile -- best UX for content creation |
 | 2026-02-24 | Tailwind classes over custom CSS | Tailwind CDN overrides custom CSS classes -- use utility classes directly on elements |
 | 2026-02-24 | Admin endpoints separate from public | GET /api/admin/posts returns all statuses, GET /api/posts only published |
+| 2026-02-24 | Backend Service named "backend" | Matches nginx proxy_pass http://backend:3000 -- zero code changes needed |
+| 2026-02-24 | ALB target-type: ip | More efficient than NodePort, VPC CNI routes directly to pod IPs |
+| 2026-02-24 | All traffic through frontend nginx | ALB -> nginx -> /api/* proxy to backend (mirrors docker-compose) |
+| 2026-02-24 | DB init via K8s Job | postgres:16-alpine runs psql against RDS, idempotent schema + seed |
+| 2026-02-24 | Numbered K8s file prefixes | 00- to 09- for self-documenting apply order |
