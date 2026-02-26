@@ -93,6 +93,7 @@ resource "aws_security_group" "eks_nodes" {
 
 # Accept traffic from ALB only (SG-to-SG reference, same pattern as above)
 resource "aws_vpc_security_group_ingress_rule" "nodes_from_alb" {
+  #checkov:skip=CKV_AWS_260:Port 80 is SG-to-SG only (ALB->nodes), not open to internet
   security_group_id            = aws_security_group.eks_nodes.id
   description                  = "Traffic from ALB"
   referenced_security_group_id = aws_security_group.alb.id

@@ -83,6 +83,7 @@ resource "aws_eks_cluster" "main" {
 # Cost: $1/month per key + $0.03 per 10,000 API calls (negligible).
 # enable_key_rotation automatically rotates the key annually for security.
 resource "aws_kms_key" "eks" {
+  #checkov:skip=CKV2_AWS_64:KMS default key policy sufficient for EKS secrets encryption
   description             = "KMS key for EKS secrets encryption"
   deletion_window_in_days = 7 # Wait 7 days before permanently deleting (safety net)
   enable_key_rotation     = true
