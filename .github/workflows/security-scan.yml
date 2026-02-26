@@ -1,6 +1,14 @@
 # Security Scanning Pipeline
-# Trufflehog scans for leaked secrets on every push.
-# tfsec and Checkov will be enabled when Terraform code exists.
+#
+# Runs on every push and PR to main/develop.
+# Three independent jobs (run in parallel):
+#   1. Trufflehog - Scans git history for leaked secrets
+#   2. tfsec     - Static security analysis for Terraform code
+#   3. Checkov   - Policy-as-code checks (CIS, AWS best practices)
+#
+# These are PR guardrails -- soft_fail is false so findings block merges.
+# For the terraform.yml pipeline, tfsec/Checkov use soft_fail=true during
+# initial triage. Here they're strict because PRs should be clean.
 
 name: "Security Scanning"
 
@@ -30,3 +38,40 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           extra_args: --only-verified
+
+  # -----------------------------------------------
+  # tfsec - Static security scanner for Terraform
+  # Catches issues like open security groups, unencrypted
+  # storage, overly permissive IAM policies, etc.
+  # -----------------------------------------------
+  tfsec:
+    name: Terraform Security (tfsec)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: terraform
+          soft_fail: false
+
+  # -----------------------------------------------
+  # Checkov - Policy-as-code for Terraform
+  # Checks against CIS benchmarks, AWS security best
+  # practices, and common misconfigurations.
+  # -----------------------------------------------
+  checkov:
+    name: Policy Checks (Checkov)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform
+          framework: terraform
+          soft_fail: false

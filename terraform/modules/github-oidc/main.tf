@@ -91,14 +91,9 @@ resource "aws_iam_role" "github_actions" {
   }
 }
 
-# --- IAM Policy ---
-# Defines exactly what GitHub Actions can do in AWS.
-# Following least privilege: only the permissions needed for CI/CD.
-#
-# Three permission groups:
-#   1. ECR: push/pull Docker images (build + deploy jobs)
-#   2. EKS: get cluster info for kubectl (deploy job)
-#   3. ECR Auth: get login token (required before any ECR operation)
+# --- IAM Policy: CI/CD (deploy.yml) ---
+# Permissions for the deploy pipeline: push Docker images to ECR,
+# describe the EKS cluster for kubectl, and authenticate to ECR.
 resource "aws_iam_role_policy" "github_actions" {
   name = "${var.project_name}-github-actions-policy"
   role = aws_iam_role.github_actions.id
@@ -152,6 +147,411 @@ resource "aws_iam_role_policy" "github_actions" {
           "eks:DescribeCluster"
         ]
         Resource = "arn:aws:eks:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${var.eks_cluster_name}"
+      }
+    ]
+  })
+}
+
+# --- IAM Policy: Terraform (terraform.yml) ---
+# Permissions for the Terraform pipeline to manage all infrastructure.
+# Split into logical groups matching AWS service boundaries.
+#
+# Why a separate policy? The deploy pipeline only needs ECR push + EKS describe.
+# Terraform needs much broader permissions to create/modify/destroy resources.
+# Keeping them separate makes it clear which permissions serve which purpose.
+resource "aws_iam_role_policy" "terraform" {
+  name = "${var.project_name}-terraform-policy"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      # --- Terraform State ---
+      # S3: read/write state file. DynamoDB: acquire/release state lock.
+      # Without these, terraform init fails because it can't access the backend.
+      {
+        Sid    = "TerraformState"
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.project_name}-terraform-state-his4irness23",
+          "arn:aws:s3:::${var.project_name}-terraform-state-his4irness23/*"
+        ]
+      },
+      {
+        Sid    = "TerraformLock"
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem"
+        ]
+        Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.project_name}-terraform-locks"
+      },
+
+      # --- STS ---
+      # Terraform calls GetCallerIdentity to verify credentials and get account ID.
+      # Used by data.aws_caller_identity in multiple modules.
+      {
+        Sid      = "STS"
+        Effect   = "Allow"
+        Action   = "sts:GetCallerIdentity"
+        Resource = "*"
+      },
+
+      # --- VPC + Networking ---
+      # Create/manage VPC, subnets, internet gateway, NAT gateway, route tables,
+      # elastic IPs, and all associated tags. This is the foundation for everything.
+      {
+        Sid    = "VPCNetworking"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateVpc",
+          "ec2:DeleteVpc",
+          "ec2:DescribeVpcs",
+          "ec2:ModifyVpcAttribute",
+          "ec2:CreateSubnet",
+          "ec2:DeleteSubnet",
+          "ec2:DescribeSubnets",
+          "ec2:ModifySubnetAttribute",
+          "ec2:CreateInternetGateway",
+          "ec2:DeleteInternetGateway",
+          "ec2:AttachInternetGateway",
+          "ec2:DetachInternetGateway",
+          "ec2:DescribeInternetGateways",
+          "ec2:CreateNatGateway",
+          "ec2:DeleteNatGateway",
+          "ec2:DescribeNatGateways",
+          "ec2:AllocateAddress",
+          "ec2:ReleaseAddress",
+          "ec2:DescribeAddresses",
+          "ec2:CreateRouteTable",
+          "ec2:DeleteRouteTable",
+          "ec2:DescribeRouteTables",
+          "ec2:CreateRoute",
+          "ec2:DeleteRoute",
+          "ec2:AssociateRouteTable",
+          "ec2:DisassociateRouteTable",
+          "ec2:CreateTags",
+          "ec2:DeleteTags",
+          "ec2:DescribeTags",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeAccountAttributes",
+          "ec2:DescribeNetworkInterfaces"
+        ]
+        Resource = "*"
+      },
+
+      # --- Security Groups ---
+      # Create/manage security groups and their ingress/egress rules.
+      # Terraform needs full CRUD to manage the ALB, EKS node, and RDS SGs.
+      {
+        Sid    = "SecurityGroups"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateSecurityGroup",
+          "ec2:DeleteSecurityGroup",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSecurityGroupRules",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress"
+        ]
+        Resource = "*"
+      },
+
+      # --- ECR Management ---
+      # Terraform creates/deletes the ECR repositories themselves.
+      # Different from ECRPushPull above which only pushes images INTO repos.
+      {
+        Sid    = "ECRManagement"
+        Effect = "Allow"
+        Action = [
+          "ecr:CreateRepository",
+          "ecr:DeleteRepository",
+          "ecr:DescribeRepositories",
+          "ecr:ListTagsForResource",
+          "ecr:TagResource",
+          "ecr:UntagResource",
+          "ecr:PutLifecyclePolicy",
+          "ecr:GetLifecyclePolicy",
+          "ecr:DeleteLifecyclePolicy",
+          "ecr:PutImageScanningConfiguration",
+          "ecr:PutImageTagMutability"
+        ]
+        Resource = "*"
+      },
+
+      # --- S3 Management ---
+      # Terraform creates the blog image upload bucket (not the state bucket!).
+      # Includes versioning, encryption, CORS, and bucket policies.
+      {
+        Sid    = "S3Management"
+        Effect = "Allow"
+        Action = [
+          "s3:CreateBucket",
+          "s3:DeleteBucket",
+          "s3:ListBucket",
+          "s3:GetBucketLocation",
+          "s3:GetBucketPolicy",
+          "s3:PutBucketPolicy",
+          "s3:DeleteBucketPolicy",
+          "s3:GetBucketVersioning",
+          "s3:PutBucketVersioning",
+          "s3:GetEncryptionConfiguration",
+          "s3:PutEncryptionConfiguration",
+          "s3:GetBucketCORS",
+          "s3:PutBucketCORS",
+          "s3:DeleteBucketCORS",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:PutBucketPublicAccessBlock",
+          "s3:GetBucketAcl",
+          "s3:PutBucketAcl",
+          "s3:GetBucketTagging",
+          "s3:PutBucketTagging",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:PutLifecycleConfiguration"
+        ]
+        Resource = "*"
+      },
+
+      # --- Cognito ---
+      # Create/manage the user pool for admin dashboard authentication.
+      # Includes the app client, domain, and user groups.
+      {
+        Sid    = "Cognito"
+        Effect = "Allow"
+        Action = [
+          "cognito-idp:CreateUserPool",
+          "cognito-idp:DeleteUserPool",
+          "cognito-idp:DescribeUserPool",
+          "cognito-idp:UpdateUserPool",
+          "cognito-idp:ListUserPools",
+          "cognito-idp:CreateUserPoolClient",
+          "cognito-idp:DeleteUserPoolClient",
+          "cognito-idp:DescribeUserPoolClient",
+          "cognito-idp:UpdateUserPoolClient",
+          "cognito-idp:CreateUserPoolDomain",
+          "cognito-idp:DeleteUserPoolDomain",
+          "cognito-idp:DescribeUserPoolDomain",
+          "cognito-idp:CreateGroup",
+          "cognito-idp:DeleteGroup",
+          "cognito-idp:GetGroup",
+          "cognito-idp:ListTagsForResource",
+          "cognito-idp:TagResource",
+          "cognito-idp:UntagResource"
+        ]
+        Resource = "*"
+      },
+
+      # --- RDS ---
+      # Create/manage PostgreSQL instance, subnet groups, and parameter groups.
+      # Scoped to our project by naming convention in the Terraform modules.
+      {
+        Sid    = "RDS"
+        Effect = "Allow"
+        Action = [
+          "rds:CreateDBInstance",
+          "rds:DeleteDBInstance",
+          "rds:DescribeDBInstances",
+          "rds:ModifyDBInstance",
+          "rds:ListTagsForResource",
+          "rds:AddTagsToResource",
+          "rds:RemoveTagsFromResource",
+          "rds:CreateDBSubnetGroup",
+          "rds:DeleteDBSubnetGroup",
+          "rds:DescribeDBSubnetGroups",
+          "rds:ModifyDBSubnetGroup",
+          "rds:CreateDBParameterGroup",
+          "rds:DeleteDBParameterGroup",
+          "rds:DescribeDBParameterGroups",
+          "rds:DescribeDBParameters",
+          "rds:ModifyDBParameterGroup"
+        ]
+        Resource = "*"
+      },
+
+      # --- EKS Full ---
+      # Create/manage the Kubernetes cluster, managed node groups, and addons.
+      # The deploy.yml only needs DescribeCluster; Terraform needs full CRUD.
+      {
+        Sid    = "EKSFull"
+        Effect = "Allow"
+        Action = [
+          "eks:CreateCluster",
+          "eks:DeleteCluster",
+          "eks:DescribeCluster",
+          "eks:UpdateClusterConfig",
+          "eks:UpdateClusterVersion",
+          "eks:ListClusters",
+          "eks:TagResource",
+          "eks:UntagResource",
+          "eks:CreateNodegroup",
+          "eks:DeleteNodegroup",
+          "eks:DescribeNodegroup",
+          "eks:UpdateNodegroupConfig",
+          "eks:UpdateNodegroupVersion",
+          "eks:ListNodegroups",
+          "eks:CreateAddon",
+          "eks:DeleteAddon",
+          "eks:DescribeAddon",
+          "eks:DescribeAddonVersions",
+          "eks:UpdateAddon",
+          "eks:ListAddons",
+          "eks:AssociateAccessPolicy",
+          "eks:ListAccessPolicies"
+        ]
+        Resource = "*"
+      },
+
+      # --- IAM ---
+      # Terraform creates IAM roles for EKS (cluster role, node role),
+      # attaches policies, manages OIDC providers, and passes roles to services.
+      # This includes the OIDC role itself (self-modification -- safe for plan/apply,
+      # but NEVER destroy module.github_oidc from the pipeline!).
+      {
+        Sid    = "IAM"
+        Effect = "Allow"
+        Action = [
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:GetRole",
+          "iam:UpdateRole",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListInstanceProfilesForRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:GetRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:TagRole",
+          "iam:UntagRole",
+          "iam:PassRole",
+          "iam:CreateOpenIDConnectProvider",
+          "iam:DeleteOpenIDConnectProvider",
+          "iam:GetOpenIDConnectProvider",
+          "iam:TagOpenIDConnectProvider",
+          "iam:ListOpenIDConnectProviders",
+          "iam:CreateServiceLinkedRole",
+          "iam:GetPolicy",
+          "iam:ListPolicyVersions"
+        ]
+        Resource = "*"
+      },
+
+      # --- KMS ---
+      # EKS uses a KMS key for secrets encryption at rest.
+      # Terraform needs to create the key and manage grants.
+      {
+        Sid    = "KMS"
+        Effect = "Allow"
+        Action = [
+          "kms:CreateKey",
+          "kms:DescribeKey",
+          "kms:GetKeyPolicy",
+          "kms:GetKeyRotationStatus",
+          "kms:ListResourceTags",
+          "kms:ScheduleKeyDeletion",
+          "kms:TagResource",
+          "kms:UntagResource",
+          "kms:CreateAlias",
+          "kms:DeleteAlias",
+          "kms:ListAliases",
+          "kms:CreateGrant",
+          "kms:ListGrants",
+          "kms:RevokeGrant"
+        ]
+        Resource = "*"
+      },
+
+      # --- CloudFront ---
+      # CDN distribution for blog assets (images from S3).
+      # Includes Origin Access Control for secure S3 access.
+      {
+        Sid    = "CloudFront"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:CreateDistribution",
+          "cloudfront:DeleteDistribution",
+          "cloudfront:GetDistribution",
+          "cloudfront:UpdateDistribution",
+          "cloudfront:ListDistributions",
+          "cloudfront:TagResource",
+          "cloudfront:UntagResource",
+          "cloudfront:ListTagsForResource",
+          "cloudfront:CreateOriginAccessControl",
+          "cloudfront:DeleteOriginAccessControl",
+          "cloudfront:GetOriginAccessControl",
+          "cloudfront:UpdateOriginAccessControl",
+          "cloudfront:ListOriginAccessControls",
+          "cloudfront:CreateCachePolicy",
+          "cloudfront:GetCachePolicy",
+          "cloudfront:GetOriginAccessControlConfig"
+        ]
+        Resource = "*"
+      },
+
+      # --- ACM ---
+      # SSL certificates for blog.his4irness23.de.
+      # CloudFront needs a cert in us-east-1, ALB needs one in eu-central-1.
+      {
+        Sid    = "ACM"
+        Effect = "Allow"
+        Action = [
+          "acm:RequestCertificate",
+          "acm:DeleteCertificate",
+          "acm:DescribeCertificate",
+          "acm:ListCertificates",
+          "acm:ListTagsForCertificate",
+          "acm:AddTagsToCertificate",
+          "acm:GetCertificate"
+        ]
+        Resource = "*"
+      },
+
+      # --- Route 53 ---
+      # DNS records for certificate validation (CNAME) and CloudFront alias (A/AAAA).
+      # Read access to hosted zones for data source lookups.
+      {
+        Sid    = "Route53"
+        Effect = "Allow"
+        Action = [
+          "route53:ChangeResourceRecordSets",
+          "route53:GetChange",
+          "route53:GetHostedZone",
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets",
+          "route53:ListTagsForResource"
+        ]
+        Resource = "*"
+      },
+
+      # --- CloudWatch Logs ---
+      # EKS control plane logging writes to CloudWatch Log Groups.
+      # Terraform needs to create/manage these log groups.
+      {
+        Sid    = "CloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:DeleteLogGroup",
+          "logs:DescribeLogGroups",
+          "logs:PutRetentionPolicy",
+          "logs:ListTagsForResource",
+          "logs:TagResource",
+          "logs:UntagResource",
+          "logs:ListTagsLogGroup",
+          "logs:TagLogGroup"
+        ]
+        Resource = "*"
       }
     ]
   })

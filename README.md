@@ -3,7 +3,7 @@
 > **Cloud-native tech blog on AWS EKS, documenting my journey from zero to cloud engineer in one year.**
 
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
-[![Terraform](https://img.shields.io/badge/Terraform-8%20Modules%20IaC-blue)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20IaC-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
@@ -127,7 +127,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | **ECR** | Docker registry | 2 repos (frontend + backend), lifecycle policies |
 | **S3** | Image storage | Assets bucket, versioning, encryption, CORS, all public access blocked |
 | **Cognito** | Admin auth | User pool, OAuth code flow, app client, admin group |
-| **GitHub OIDC** | CI/CD auth | OIDC provider, IAM role, least-privilege policy for ECR + EKS |
+| **GitHub OIDC** | CI/CD auth | OIDC provider, IAM role, 2 policies (deploy: ECR+EKS, terraform: 14 statements for full infra) |
 | **RDS** | Database | PostgreSQL 16, db.t3.micro, private subnets, 7-day backups |
 | **EKS** | Kubernetes | Cluster, spot node group, KMS encryption, OIDC/IRSA, add-ons |
 | **CloudFront** | CDN | Distribution, ACM cert, OAC for S3, Route 53 DNS |
@@ -161,9 +161,9 @@ Automated security scanning on every push - set up before the first line of appl
 
 | Tool | What it does | Runs on |
 |------|-------------|---------|
-| **tfsec** | Scans Terraform for security misconfigurations | Push to main/develop (when terraform/ changes) |
-| **Checkov** | Validates AWS infrastructure against best practices | Push to main/develop (when terraform/ changes) |
-| **Trufflehog** | Detects accidentally committed secrets | Every push |
+| **tfsec** | Scans Terraform for security misconfigurations | Push/PR to main/develop + Terraform pipeline validate |
+| **Checkov** | Validates AWS infrastructure against best practices | Push/PR to main/develop + Terraform pipeline validate |
+| **Trufflehog** | Detects accidentally committed secrets | Push/PR to main/develop |
 | **ESLint** | Catches code errors and bad patterns | Push to main/develop (when backend/ changes) |
 | **Prettier** | Enforces consistent code formatting | Push to main/develop (when backend/ changes) |
 | **Husky** | Pre-commit hooks - blocks bad commits locally | Before every commit |
@@ -244,9 +244,11 @@ terraform apply -target=module.rds
 terraform apply
 ```
 
-### CI/CD Pipeline
+### CI/CD Pipelines
 
-**Deploy workflow** (`workflow_dispatch` -- manual trigger only):
+Three workflows, all using OIDC federation (no long-lived AWS credentials):
+
+**Deploy workflow** (`deploy.yml` -- manual trigger):
 
 ```
 Manual Trigger (GitHub UI "Run workflow")
@@ -267,15 +269,43 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- Wait for rollout + print status
 ```
 
-**Continuous quality** (automatic on push to main/develop):
+**Terraform workflow** (`terraform.yml` -- manual trigger):
 
 ```
-Code changes  -> ESLint + Prettier + Jest (backend/)
-Terraform changes -> tfsec + Checkov (terraform/)
-All pushes -> Trufflehog secret scanning
+Manual Trigger with inputs:
+  action: validate | plan | apply | destroy
+  wave:   wave-1 | wave-2 | wave-3 | all
+    |
+    Job 1: VALIDATE (no AWS creds needed)
+    +-- terraform fmt -check -recursive
+    +-- terraform init -backend=false + validate
+    +-- tfsec + Checkov (soft_fail=true during triage)
+    |
+    Job 2: PLAN (OIDC auth)
+    +-- terraform init (S3 backend)
+    +-- Build wave-specific -target flags
+    +-- terraform plan -out=tfplan (+ -destroy flag for destroy action)
+    +-- Upload plan as artifact
+    |
+    Job 3: APPLY (only when action=apply, environment: production)
+    +-- Download plan artifact
+    +-- terraform apply tfplan
+    +-- Show outputs
+    |
+    Job 4: DESTROY (only when action=destroy + "DESTROY" confirmation)
+    +-- Download plan artifact
+    +-- terraform apply tfplan (destroy plan)
 ```
 
-Authentication via OIDC federation -- no long-lived AWS credentials stored in GitHub.
+**Security scanning** (`security-scan.yml` -- automatic on push/PR):
+
+```
+Push to main/develop or PR
+    |
+    Job 1: Trufflehog (secret detection)     -- parallel
+    Job 2: tfsec (Terraform security)         -- parallel
+    Job 3: Checkov (policy-as-code checks)    -- parallel
+```
 
 ---
 
@@ -338,6 +368,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (CI/CD Pipeline complete, next: Terraform Apply)
-**Last Updated:** 2026-02-24
+**Project Status:** In Development (CI/CD + Terraform Pipeline complete, next: Terraform Apply Wave 1)
+**Last Updated:** 2026-02-26
 **AWS Region:** eu-central-1 (Frankfurt)
