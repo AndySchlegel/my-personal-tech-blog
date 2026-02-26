@@ -1,0 +1,9 @@
+# Namespace for all blog resources
+# Matches project_name = "blog" from Terraform configuration.
+# Enables clean teardown: kubectl delete namespace blog
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blog
+  labels:
+    app.kubernetes.io/part-of: techblog

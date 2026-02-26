@@ -1,0 +1,16 @@
+# Non-sensitive configuration shared by backend pods
+# These values are safe to commit -- no secrets here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blog-config
+  namespace: blog
+  labels:
+    app.kubernetes.io/part-of: techblog
+data:
+  # Backend Express listen port
+  PORT: "3000"
+  # CORS allowed origin (production domain)
+  CORS_ORIGIN: "https://blog.his4irness23.de"
+  # Express production mode (disables stack traces, enables caching)
+  NODE_ENV: "production"

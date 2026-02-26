@@ -1,0 +1,276 @@
+# Deploy Pipeline - Build Docker images and deploy to EKS
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- nothing deploys unless you
+# click "Run workflow" in the GitHub Actions UI.
+#
+# Three jobs in sequence:
+#   1. TEST  - Run ESLint, Prettier, and Jest unit tests (skippable for hotfixes)
+#   2. BUILD - Build Docker images and push to ECR (tagged with git SHA + latest)
+#   3. DEPLOY - Apply K8s manifests and roll out new images to EKS
+#
+# Authentication: OIDC federation (no long-lived AWS keys).
+# The github-oidc Terraform module creates the IAM role that this workflow assumes.
+#
+# Required GitHub Secrets (set after Terraform apply):
+#   AWS_ACCOUNT_ID    - 12-digit AWS account ID
+#   AWS_ROLE_ARN      - terraform output -raw github_actions_role_arn
+#   DB_PASSWORD       - Same password from terraform.tfvars
+#   RDS_ENDPOINT      - terraform output -raw rds_endpoint
+#   COGNITO_USER_POOL_ID - terraform output -raw cognito_user_pool_id
+#   COGNITO_CLIENT_ID    - terraform output -raw cognito_client_id
+#   ACM_CERT_ARN      - ACM certificate ARN for blog.his4irness23.de
+#   PUBLIC_SUBNET_IDS - terraform output -raw public_subnet_ids
+#   ALB_SG_ID         - terraform output -raw alb_sg_id
+#
+# Post-deploy manual step (one-time):
+#   The GitHub Actions IAM role must be added to the aws-auth ConfigMap
+#   so kubectl commands work from the workflow:
+#     kubectl edit configmap aws-auth -n kube-system
+#     # Add under mapRoles:
+#     - rolearn: <AWS_ROLE_ARN>
+#       username: github-actions
+#       groups:
+#         - system:masters
+
+name: Deploy to EKS
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests (for hotfix deploys)'
+        required: false
+        type: boolean
+        default: false
+
+# OIDC requires these permissions to request and present the JWT token.
+# id-token: write  -> allows requesting the OIDC JWT from GitHub
+# contents: read   -> allows checking out the repository code
+permissions:
+  id-token: write
+  contents: read
+
+# Prevent concurrent deploys to avoid race conditions on the cluster.
+# If a new deploy is triggered while one is running, the new one queues.
+concurrency:
+  group: deploy-eks
+  cancel-in-progress: false
+
+# Reusable values shared across jobs.
+# ECR URLs follow the pattern: <account_id>.dkr.ecr.<region>.amazonaws.com/<repo_name>
+env:
+  AWS_REGION: eu-central-1
+  EKS_CLUSTER_NAME: blog-eks-dev
+  K8S_NAMESPACE: blog
+
+jobs:
+  # ===== Job 1: TEST =====
+  # Runs lint, format check, and unit tests.
+  # Can be skipped via the "skip_tests" toggle for emergency hotfixes.
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    # Skip this job if the "skip tests" checkbox was checked
+    if: ${{ !inputs.skip_tests }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: backend/
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: backend/
+        run: npm run lint
+
+      - name: Check formatting
+        working-directory: backend/
+        run: npm run format:check
+
+      - name: Run unit tests
+        working-directory: backend/
+        run: npm test
+
+  # ===== Job 2: BUILD =====
+  # Builds Docker images for frontend and backend, pushes to ECR.
+  # Each image gets two tags:
+  #   - sha-<7-char-hash> : unique, traceable to the exact commit
+  #   - latest            : convenience tag, always points to newest build
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    # Always depends on test job. If tests were skipped, this still runs
+    # because skipped jobs count as "successful" in GitHub Actions.
+    needs: test
+    outputs:
+      image_tag: ${{ steps.vars.outputs.image_tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Generate the image tag from the git commit SHA.
+      # Short SHA (7 chars) is enough to be unique and human-readable.
+      # Example: sha-a1b2c3d
+      - name: Set image tag
+        id: vars
+        run: echo "image_tag=sha-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      # OIDC authentication: exchange GitHub JWT for temporary AWS credentials.
+      # This uses the IAM role created by the github-oidc Terraform module.
+      # No AWS access keys needed -- the trust policy validates the JWT.
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Get a Docker login token for ECR. Valid for 12 hours.
+      # This allows docker push to our private ECR repositories.
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build and push backend image (multi-stage: TypeScript compile + production runtime)
+      - name: Build and push backend
+        working-directory: backend/
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ steps.vars.outputs.image_tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/blog-backend:$IMAGE_TAG -t $ECR_REGISTRY/blog-backend:latest .
+          docker push $ECR_REGISTRY/blog-backend:$IMAGE_TAG
+          docker push $ECR_REGISTRY/blog-backend:latest
+
+      # Build and push frontend image (nginx + static files)
+      - name: Build and push frontend
+        working-directory: frontend/
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ steps.vars.outputs.image_tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/blog-frontend:$IMAGE_TAG -t $ECR_REGISTRY/blog-frontend:latest .
+          docker push $ECR_REGISTRY/blog-frontend:$IMAGE_TAG
+          docker push $ECR_REGISTRY/blog-frontend:latest
+
+  # ===== Job 3: DEPLOY =====
+  # Applies K8s manifests and rolls out new images to EKS.
+  #
+  # Important: This does NOT apply 09-db-init-job.yaml!
+  # The DB init job is a one-time manual step:
+  #   kubectl apply -f k8s/09-db-init-job.yaml
+  # Run it once after RDS is provisioned, not on every deploy.
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # OIDC authentication (same as build job -- credentials are per-job)
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Configure kubectl to connect to our EKS cluster.
+      # This writes ~/.kube/config with the cluster endpoint and CA cert.
+      # After this, all kubectl commands target our cluster.
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      # Step 1: Create namespace and apply non-sensitive config.
+      # These are safe to apply from the git manifests directly.
+      - name: Apply namespace and ConfigMap
+        run: |
+          kubectl apply -f k8s/00-namespace.yaml
+          kubectl apply -f k8s/01-configmap.yaml
+
+      # Step 2: Create secrets with real values from GitHub Secrets.
+      # Uses --dry-run=client to generate YAML, then pipes to kubectl apply.
+      # This pattern avoids hardcoding secrets in the manifest files.
+      #
+      # The DATABASE_URL format: postgresql://user:password@host:5432/dbname
+      # RDS_ENDPOINT already includes the port (e.g. blog-rds-dev.abc.rds.amazonaws.com:5432)
+      - name: Create secrets
+        run: |
+          kubectl create secret generic blog-secrets \
+            --namespace ${{ env.K8S_NAMESPACE }} \
+            --from-literal=DATABASE_URL="postgresql://bloguser:${{ secrets.DB_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}/techblog" \
+            --from-literal=COGNITO_USER_POOL_ID="${{ secrets.COGNITO_USER_POOL_ID }}" \
+            --from-literal=COGNITO_CLIENT_ID="${{ secrets.COGNITO_CLIENT_ID }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      # Step 3: Apply services (must exist before deployments reference them).
+      - name: Apply services
+        run: |
+          kubectl apply -f k8s/04-backend-service.yaml
+          kubectl apply -f k8s/06-frontend-service.yaml
+
+      # Step 4: Apply deployments (pods that run the containers).
+      - name: Apply deployments
+        run: |
+          kubectl apply -f k8s/03-backend-deployment.yaml
+          kubectl apply -f k8s/05-frontend-deployment.yaml
+
+      # Step 5: Update container images to the newly built version.
+      # kubectl set image updates the deployment spec with the new ECR image tag.
+      # This triggers a rolling update -- old pods are replaced one by one.
+      - name: Update container images
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+        run: |
+          kubectl set image deployment/blog-backend \
+            backend=$ECR_REGISTRY/blog-backend:$IMAGE_TAG \
+            --namespace ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/blog-frontend \
+            frontend=$ECR_REGISTRY/blog-frontend:$IMAGE_TAG \
+            --namespace ${{ env.K8S_NAMESPACE }}
+
+      # Step 6: Apply ingress with real values replacing placeholders.
+      # The manifest has REPLACE_* placeholders for values that come from
+      # Terraform outputs (stored as GitHub Secrets).
+      # sed replaces them inline before applying.
+      - name: Apply ingress
+        run: |
+          sed -e "s|REPLACE_SUBNET_IDS|${{ secrets.PUBLIC_SUBNET_IDS }}|g" \
+              -e "s|REPLACE_ALB_SG_ID|${{ secrets.ALB_SG_ID }}|g" \
+              -e "s|REPLACE_ACM_CERT_ARN|${{ secrets.ACM_CERT_ARN }}|g" \
+              k8s/07-ingress.yaml | kubectl apply -f -
+
+      # Step 7: Wait for both deployments to complete their rollout.
+      # --timeout=300s gives pods 5 minutes to pull images and start.
+      # If a pod fails to start (crash loop, image pull error), this step fails
+      # and the workflow reports the deployment as failed.
+      - name: Wait for rollout
+        run: |
+          echo "Waiting for backend rollout..."
+          kubectl rollout status deployment/blog-backend --namespace ${{ env.K8S_NAMESPACE }} --timeout=300s
+          echo "Waiting for frontend rollout..."
+          kubectl rollout status deployment/blog-frontend --namespace ${{ env.K8S_NAMESPACE }} --timeout=300s
+
+      # Step 8: Print current cluster state for debugging.
+      # This appears in the GitHub Actions log for easy troubleshooting.
+      - name: Print deployment status
+        if: always()
+        run: |
+          echo "=== Pods ==="
+          kubectl get pods --namespace ${{ env.K8S_NAMESPACE }} -o wide
+          echo ""
+          echo "=== Services ==="
+          kubectl get svc --namespace ${{ env.K8S_NAMESPACE }}
+          echo ""
+          echo "=== Ingress ==="
+          kubectl get ingress --namespace ${{ env.K8S_NAMESPACE }}

@@ -1,0 +1,16 @@
+# terraform.tfvars.example - Template for environment-specific values
+#
+# Copy this file to terraform.tfvars and fill in real values:
+#   cp terraform.tfvars.example terraform.tfvars
+#
+# NEVER commit terraform.tfvars to git!
+
+# Database password (required, no default)
+db_password = "CHANGE_ME_use_a_strong_password"
+
+# Optional overrides (uncomment to change from defaults)
+# aws_region          = "eu-central-1"
+# project_name        = "blog"
+# environment         = "dev"
+# enable_nat_gateway  = false    # Set to true for Wave 3 (EKS deployment)
+# rds_instance_class  = "db.t3.micro"

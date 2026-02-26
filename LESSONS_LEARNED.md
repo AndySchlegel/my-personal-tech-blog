@@ -141,3 +141,132 @@ Changes are visible after a browser hard-reload - no rebuild, no restart. When s
 For visual iteration (CSS, JS, HTML), copy files into running containers instead of rebuilding. Save full rebuilds for structural changes (Dockerfile, dependencies, config). The fastest feedback loop wins during design work.
 
 ---
+
+## #9 - Content Ownership: Never Assume, Always Ask
+
+**Date:** 2026-02-22
+**Phase:** Frontend
+
+**Context:**
+While building the Skills page "Certification Roadmap" section, a "CKA or Security+" card was added as a placeholder for future certifications. This was entirely fabricated -- the user had never mentioned these specific certifications as goals. When confronted, it turned out the actual next step was a Berufsspezialist IHK certification in a completely different direction.
+
+**Decision:**
+Two rules established:
+1. **Never add content about the user's career plans, certifications, or personal goals without explicit confirmation** -- even if it seems like a logical assumption
+2. **Placeholder content must be clearly marked as TODO** -- not filled with made-up data that looks real
+
+**Takeaway:**
+A portfolio website represents a real person. Made-up content on a resume-like page is worse than a blank space. When in doubt, ask. A TODO placeholder is honest; a fabricated certification roadmap is misleading.
+
+---
+
+## #10 - Terraform: Write Code First, Deploy Later
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+EKS is expensive (~$126/month with NAT Gateway). Writing and immediately applying Terraform would mean paying for infrastructure that isn't needed yet -- the application code (admin dashboard, auth) isn't even complete.
+
+**Decision:**
+Wave-based deployment strategy: write ALL 8 Terraform modules upfront but validate them with `terraform validate` and `terraform fmt` only. Actual `terraform apply` happens in cost-controlled waves:
+- Wave 1 (free): VPC, SGs, ECR, S3, Cognito (~$0.50/month)
+- Wave 2: RDS (~$13/month, can be stopped)
+- Wave 3: EKS + NAT GW + CloudFront (~$126/month, sprint only)
+
+After a deployment sprint (8 hours), destroy EKS and disable NAT GW -> back to ~$0.65/month.
+
+**Takeaway:**
+Infrastructure code and infrastructure cost are separate concerns. You can write, review, and validate IaC without deploying anything. This is especially important when learning -- iterate on the code for free, deploy only when ready.
+
+---
+
+## #11 - Terraform: Empty filter Block for Lifecycle Rules
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+The S3 lifecycle rule for transitioning objects to Infrequent Access did not include a `filter` attribute. `terraform validate` returned a warning:
+```
+Warning: Attribute "filter" is not specified
+```
+Without a filter, Terraform implicitly applies the rule to all objects, but newer versions of the AWS provider require the filter to be explicit.
+
+**Decision:**
+Added an empty `filter {}` block to the lifecycle rule. An empty filter explicitly means "apply to all objects" -- same behavior, no warning.
+
+**Takeaway:**
+Always run `terraform validate` after writing code. Even valid HCL can produce warnings that indicate future breaking changes. An empty block `filter {}` is different from no block at all in Terraform's type system.
+
+---
+
+## #12 - Terraform: Comments as a Learning Tool
+
+**Date:** 2026-02-23
+**Phase:** Terraform Infrastructure
+
+**Context:**
+The initial Terraform modules had basic header comments but lacked detailed inline explanations. When reviewing the code, it was hard to understand *why* specific values were chosen (e.g., why `cidrsubnet("10.0.0.0/16", 8, 10)`, why `create_before_destroy`, why `signing_behavior = "always"`).
+
+**Decision:**
+Enhanced all 29 Terraform files with detailed learning-oriented comments. Each resource explains:
+- What it does and why it's needed
+- How it connects to other resources
+- Cost implications
+- Security reasoning
+- Practical examples (CLI commands, URLs)
+
+**Takeaway:**
+Code comments aren't just for other developers -- they're a learning tool for yourself. Writing "why" comments forces you to understand the reasoning, not just the syntax. When revisiting infrastructure months later, these comments are invaluable. For a portfolio project, well-commented code demonstrates deep understanding, not just copy-paste skills.
+
+---
+
+## #13 - Auth: Dev Mode Bypass for Local Development
+
+**Date:** 2026-02-23
+**Phase:** Admin Dashboard
+
+**Context:**
+The admin dashboard needs Cognito JWT authentication in production, but Docker Compose has no Cognito instance. Without a bypass mechanism, you can't develop or test the admin UI locally at all.
+
+**Decision:**
+The `requireAuth` middleware checks if `COGNITO_USER_POOL_ID` is set. If not, it bypasses all auth checks and attaches a mock admin user to the request. The frontend `auth.js` does the same: when Cognito config is empty, `isAuthenticated()` returns true and `login()` redirects straight to the dashboard.
+
+**Takeaway:**
+Design auth with two clear modes from the start: production (real JWT validation) and dev (bypass with mock data). The switch should be based on environment variables, not code changes. This way the same codebase works everywhere -- locally, in CI tests, and on EKS -- without any modifications.
+
+---
+
+## #14 - Tailwind CDN Overrides Custom CSS Classes
+
+**Date:** 2026-02-24
+**Phase:** Admin Dashboard
+
+**Context:**
+The post editor's form inputs and side-by-side Markdown layout were built with custom CSS classes (`.admin-form-input`, `.admin-editor-layout` with `display: grid`). In the browser, none of the styling applied: inputs had white backgrounds in dark mode (unreadable text), and the grid layout was completely ignored -- Markdown and Preview stacked vertically with a tiny textarea.
+
+**Root Cause:**
+Tailwind CSS CDN generates styles at runtime that compete with custom CSS. The Tailwind preflight reset and utility layer override custom properties like `background`, `color`, and `display`. Custom class specificity (`.dark .admin-form-input`) was not high enough to win against Tailwind's generated output.
+
+**Solution:**
+Removed all custom CSS classes for form inputs and the editor layout. Replaced them with Tailwind utility classes directly on the HTML elements:
+```html
+<!-- Before: custom class, broken in dark mode -->
+<input class="admin-form-input w-full" />
+
+<!-- After: Tailwind utilities, works everywhere -->
+<input class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200
+  dark:border-slate-600 bg-slate-50 dark:bg-slate-900
+  text-slate-900 dark:text-slate-100" />
+```
+
+For the editor grid, changed from `.admin-editor-layout` with custom CSS to inline Tailwind:
+```html
+<div class="grid grid-cols-1 lg:grid-cols-2" style="min-height: 500px;">
+```
+
+**Takeaway:**
+When using Tailwind CDN (not the build tool), custom CSS classes are unreliable for properties that Tailwind also controls. Always use Tailwind utility classes directly on elements for layout, colors, and spacing. Reserve custom CSS only for things Tailwind genuinely cannot do (complex animations, pseudo-elements, scrollbar styling). This is a CDN-specific issue -- with Tailwind's build tool, custom CSS has more predictable specificity.
+
+---

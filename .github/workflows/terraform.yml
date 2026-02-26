@@ -1,0 +1,309 @@
+# Terraform CI/CD Pipeline
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- nothing is planned or applied
+# unless you click "Run workflow" in the GitHub Actions UI.
+#
+# Four jobs in sequence:
+#   1. VALIDATE - Format check, init, validate, tfsec, Checkov (no AWS needed)
+#   2. PLAN    - terraform plan with wave targeting (needs AWS via OIDC)
+#   3. APPLY   - terraform apply from saved plan (only when action=apply)
+#   4. DESTROY - terraform apply destroy plan (only when action=destroy + confirmation)
+#
+# Authentication: OIDC federation (same IAM role as deploy.yml).
+# The github-oidc Terraform module creates the IAM role with full Terraform permissions.
+#
+# Wave system (cost-controlled rollout):
+#   Wave 1 (free/cheap): VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC
+#   Wave 2 (~$13/month): RDS
+#   Wave 3 (~$126/month): EKS + CloudFront (enable_nat_gateway=true!)
+#   All: everything at once (no -target flags)
+#
+# Required GitHub Secrets:
+#   AWS_ROLE_ARN  - IAM role ARN from terraform output github_actions_role_arn
+#   DB_PASSWORD   - Database master password (same as terraform.tfvars)
+
+name: Terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        type: choice
+        options:
+          - validate
+          - plan
+          - apply
+          - destroy
+      wave:
+        description: 'Which wave to target (ignored for validate)'
+        required: true
+        type: choice
+        options:
+          - wave-1
+          - wave-2
+          - wave-3
+          - all
+        default: wave-1
+      enable_nat_gateway:
+        description: 'Enable NAT Gateway (required for Wave 3 / EKS)'
+        required: false
+        type: boolean
+        default: false
+      confirm_destroy:
+        description: 'Type DESTROY to confirm (required for destroy action)'
+        required: false
+        type: string
+        default: ''
+
+# OIDC requires these permissions to request and present the JWT token.
+permissions:
+  id-token: write
+  contents: read
+
+# Prevent concurrent Terraform operations to avoid state conflicts.
+# If a new run is triggered while one is running, the new one queues.
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-central-1
+  TF_WORKING_DIR: terraform
+
+jobs:
+  # ===== Job 1: VALIDATE =====
+  # Runs format check, init (without backend), validate, tfsec, and Checkov.
+  # No AWS credentials needed -- this is pure static analysis.
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      # Check that all .tf files follow canonical formatting.
+      # Fails if someone forgot to run 'terraform fmt' before committing.
+      - name: Terraform fmt
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform fmt -check -recursive
+
+      # Initialize without backend -- we just need providers for validation.
+      # -backend=false skips S3 backend config (no AWS creds needed).
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -backend=false
+
+      # Validate syntax and internal consistency of all .tf files.
+      - name: Terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate
+
+      # tfsec: static security scanner for Terraform code.
+      # Catches issues like open security groups, unencrypted storage, etc.
+      # soft_fail=true: report findings but don't fail the pipeline (yet).
+      # Once we triage all findings, we'll set this to false.
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: ${{ env.TF_WORKING_DIR }}
+          soft_fail: true
+
+      # Checkov: policy-as-code scanner for Terraform.
+      # Checks against CIS benchmarks, AWS best practices, etc.
+      # soft_fail=true: same reason as tfsec -- triage first.
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ${{ env.TF_WORKING_DIR }}
+          framework: terraform
+          soft_fail: true
+
+  # ===== Job 2: PLAN =====
+  # Runs terraform plan with wave targeting.
+  # Uploads the plan as an artifact for apply/destroy to consume.
+  # Skipped when action=validate (no AWS creds needed for validate).
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    needs: validate
+    if: ${{ inputs.action != 'validate' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      # OIDC authentication: exchange GitHub JWT for temporary AWS credentials.
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Full init with S3 backend (needs AWS creds for state access).
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      # Build the -target flags based on selected wave.
+      # Each wave targets specific modules to control cost rollout.
+      # "all" uses no targets = plan everything.
+      - name: Build target flags
+        id: targets
+        run: |
+          case "${{ inputs.wave }}" in
+            wave-1)
+              echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc" >> "$GITHUB_OUTPUT"
+              ;;
+            wave-2)
+              echo "flags=-target=module.rds" >> "$GITHUB_OUTPUT"
+              ;;
+            wave-3)
+              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront" >> "$GITHUB_OUTPUT"
+              ;;
+            all)
+              echo "flags=" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      # Generate the execution plan.
+      # -out=tfplan saves the plan to a file (required for apply).
+      # For destroy: -destroy flag generates a destruction plan.
+      # TF_VAR_* env vars pass secrets without tfvars files in CI.
+      - name: Terraform plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: ${{ inputs.enable_nat_gateway }}
+        run: |
+          DESTROY_FLAG=""
+          if [ "${{ inputs.action }}" = "destroy" ]; then
+            DESTROY_FLAG="-destroy"
+          fi
+
+          terraform plan \
+            ${{ steps.targets.outputs.flags }} \
+            $DESTROY_FLAG \
+            -out=tfplan
+
+      # Show the plan in human-readable format in the workflow log.
+      - name: Show plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan
+
+      # Upload plan as artifact so apply/destroy jobs can use it.
+      # Retention: 1 day (plans should be applied promptly).
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}/tfplan
+          retention-days: 1
+
+  # ===== Job 3: APPLY =====
+  # Downloads the plan artifact and applies it.
+  # Only runs when action=apply.
+  # Uses the "production" environment for GitHub's deployment protection rules.
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+    needs: plan
+    if: ${{ inputs.action == 'apply' }}
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      # Download the plan artifact from the plan job.
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}
+
+      # Apply the saved plan. No approval prompt needed because the plan
+      # file is passed directly -- Terraform skips confirmation for saved plans.
+      - name: Terraform apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: ${{ inputs.enable_nat_gateway }}
+        run: terraform apply tfplan
+
+      # Print all outputs after successful apply.
+      # Useful for capturing values needed as GitHub Secrets.
+      - name: Show outputs
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform output
+
+  # ===== Job 4: DESTROY =====
+  # Downloads the destroy plan artifact and applies it.
+  # Only runs when action=destroy AND confirm_destroy matches "DESTROY".
+  # This double-check prevents accidental infrastructure destruction.
+  destroy:
+    name: Destroy
+    runs-on: ubuntu-latest
+    needs: plan
+    if: ${{ inputs.action == 'destroy' && inputs.confirm_destroy == 'DESTROY' }}
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}
+
+      # Apply the destroy plan. The plan already contains -destroy operations.
+      - name: Terraform destroy
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: ${{ inputs.enable_nat_gateway }}
+        run: terraform apply tfplan

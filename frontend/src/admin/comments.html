@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comments - Andy.dev Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tabler Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen"
+  >
+    <div class="admin-layout">
+      <!-- ==================== SIDEBAR ==================== -->
+      <aside class="admin-sidebar">
+        <div class="flex flex-col h-full">
+          <!-- Logo area -->
+          <div class="p-5 border-b border-slate-200 dark:border-slate-800">
+            <a href="/admin/index.html" class="flex items-center gap-2.5">
+              <div
+                class="logo-icon w-9 h-9 bg-sky-500 rounded-xl flex items-center justify-center"
+              >
+                <i class="ti ti-terminal-2 text-white text-lg"></i>
+              </div>
+              <div>
+                <span class="font-bold text-slate-900 dark:text-white text-sm">
+                  Andy<span class="text-sky-500">.</span>dev
+                </span>
+                <span
+                  class="block text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold"
+                >
+                  Admin
+                </span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Dev mode indicator -->
+          <div
+            id="sidebar-dev-badge"
+            class="hidden mx-4 mt-4 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center"
+          >
+            <span
+              class="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider"
+            >
+              Dev Mode
+            </span>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin/index.html" class="admin-nav-link">
+              <i class="ti ti-dashboard text-lg"></i>
+              Dashboard
+            </a>
+            <a href="/admin/posts.html" class="admin-nav-link">
+              <i class="ti ti-article text-lg"></i>
+              Posts
+            </a>
+            <a
+              href="/admin/comments.html"
+              class="admin-nav-link admin-nav-active"
+            >
+              <i class="ti ti-message-2 text-lg"></i>
+              Comments
+            </a>
+          </nav>
+
+          <!-- Bottom links -->
+          <div
+            class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-1"
+          >
+            <!-- Theme toggle -->
+            <button
+              id="theme-toggle"
+              class="admin-nav-link w-full text-left"
+              aria-label="Toggle dark mode"
+            >
+              <i id="theme-icon-sun" class="ti ti-sun text-lg"></i>
+              <i id="theme-icon-moon" class="ti ti-moon text-lg hidden"></i>
+              <span id="theme-label">Light Mode</span>
+            </button>
+            <a href="../index.html" class="admin-nav-link">
+              <i class="ti ti-arrow-left text-lg"></i>
+              Back to Blog
+            </a>
+            <button
+              id="logout-btn"
+              class="admin-nav-link w-full text-left text-red-400 hover:text-red-300 hover:bg-red-500/10"
+            >
+              <i class="ti ti-logout text-lg"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile top bar (shown on small screens) -->
+      <div class="admin-mobile-header">
+        <div class="flex items-center justify-between px-4 h-14">
+          <a href="/admin/index.html" class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center"
+            >
+              <i class="ti ti-terminal-2 text-white text-base"></i>
+            </div>
+            <span class="font-bold text-sm text-slate-900 dark:text-white">
+              Admin
+            </span>
+          </a>
+          <button
+            id="mobile-sidebar-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== MAIN CONTENT ==================== -->
+      <main class="admin-main">
+        <!-- Header -->
+        <div class="mb-6 fade-in">
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+            Comments
+          </h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Moderate reader comments
+          </p>
+        </div>
+
+        <!-- Filter buttons -->
+        <div
+          id="comment-filters"
+          class="flex flex-wrap gap-2 mb-6 fade-in"
+          style="animation-delay: 0.05s"
+        >
+          <button class="filter-btn filter-btn-active" data-status="all">
+            All
+          </button>
+          <button class="filter-btn" data-status="pending">Pending</button>
+          <button class="filter-btn" data-status="approved">Approved</button>
+          <button class="filter-btn" data-status="flagged">Flagged</button>
+        </div>
+
+        <!-- Comment list -->
+        <div
+          id="comment-list"
+          class="space-y-3 fade-in"
+          style="animation-delay: 0.1s"
+        >
+          <div
+            class="p-6 text-center text-sm text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+          >
+            Loading...
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Auth module (must load before comments.js) -->
+    <script src="./js/auth.js"></script>
+    <script src="./js/comments.js"></script>
+
+    <!-- Mobile sidebar toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-sidebar-toggle");
+        var sidebar = document.querySelector(".admin-sidebar");
+        if (toggle && sidebar) {
+          toggle.addEventListener("click", function () {
+            sidebar.classList.toggle("admin-sidebar-open");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

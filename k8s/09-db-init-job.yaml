@@ -1,0 +1,54 @@
+# One-time Job to initialize the RDS database
+#
+# Runs schema creation and seed data against the RDS PostgreSQL instance.
+# Safe to re-run: schema uses IF NOT EXISTS, seed uses DELETE + re-INSERT.
+#
+# Usage:
+#   kubectl apply -f k8s/09-db-init-job.yaml
+#   kubectl logs -n blog job/db-init    # check output
+#
+# To re-run: delete the old job first, then re-apply:
+#   kubectl delete job db-init -n blog && kubectl apply -f k8s/09-db-init-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init
+  namespace: blog
+  labels:
+    app.kubernetes.io/part-of: techblog
+spec:
+  # Retry up to 3 times on failure
+  backoffLimit: 3
+  # Auto-cleanup completed job after 5 minutes
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-init
+          # postgres:16-alpine matches the RDS PostgreSQL version
+          image: postgres:16-alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Running schema creation..."
+              psql "$DATABASE_URL" -f /sql/01-schema.sql
+              echo "Running seed data..."
+              psql "$DATABASE_URL" -f /sql/02-seed.sql
+              echo "Database initialization complete."
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blog-secrets
+                  key: DATABASE_URL
+          # Mount SQL scripts from ConfigMap
+          volumeMounts:
+            - name: sql-scripts
+              mountPath: /sql
+              readOnly: true
+      volumes:
+        - name: sql-scripts
+          configMap:
+            name: db-init-scripts

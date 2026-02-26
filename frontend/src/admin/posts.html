@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts - Andy.dev Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tabler Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <!-- marked.js - Markdown to HTML (same CDN as post.html) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- highlight.js - Syntax highlighting for code blocks -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/prose.css" />
+    <script src="../js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen"
+  >
+    <div class="admin-layout">
+      <!-- ==================== SIDEBAR ==================== -->
+      <aside class="admin-sidebar">
+        <div class="flex flex-col h-full">
+          <!-- Logo area -->
+          <div class="p-5 border-b border-slate-200 dark:border-slate-800">
+            <a href="/admin/index.html" class="flex items-center gap-2.5">
+              <div
+                class="logo-icon w-9 h-9 bg-sky-500 rounded-xl flex items-center justify-center"
+              >
+                <i class="ti ti-terminal-2 text-white text-lg"></i>
+              </div>
+              <div>
+                <span class="font-bold text-slate-900 dark:text-white text-sm">
+                  Andy<span class="text-sky-500">.</span>dev
+                </span>
+                <span
+                  class="block text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold"
+                >
+                  Admin
+                </span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Dev mode indicator -->
+          <div
+            id="sidebar-dev-badge"
+            class="hidden mx-4 mt-4 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center"
+          >
+            <span
+              class="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider"
+            >
+              Dev Mode
+            </span>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="flex-1 p-4 space-y-1">
+            <a href="/admin/index.html" class="admin-nav-link">
+              <i class="ti ti-dashboard text-lg"></i>
+              Dashboard
+            </a>
+            <a href="/admin/posts.html" class="admin-nav-link admin-nav-active">
+              <i class="ti ti-article text-lg"></i>
+              Posts
+            </a>
+            <a href="/admin/comments.html" class="admin-nav-link">
+              <i class="ti ti-message-2 text-lg"></i>
+              Comments
+            </a>
+          </nav>
+
+          <!-- Bottom links -->
+          <div
+            class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-1"
+          >
+            <!-- Theme toggle -->
+            <button
+              id="theme-toggle"
+              class="admin-nav-link w-full text-left"
+              aria-label="Toggle dark mode"
+            >
+              <i id="theme-icon-sun" class="ti ti-sun text-lg"></i>
+              <i id="theme-icon-moon" class="ti ti-moon text-lg hidden"></i>
+              <span id="theme-label">Light Mode</span>
+            </button>
+            <a href="../index.html" class="admin-nav-link">
+              <i class="ti ti-arrow-left text-lg"></i>
+              Back to Blog
+            </a>
+            <button
+              id="logout-btn"
+              class="admin-nav-link w-full text-left text-red-400 hover:text-red-300 hover:bg-red-500/10"
+            >
+              <i class="ti ti-logout text-lg"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile top bar (shown on small screens) -->
+      <div class="admin-mobile-header">
+        <div class="flex items-center justify-between px-4 h-14">
+          <a href="/admin/index.html" class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center"
+            >
+              <i class="ti ti-terminal-2 text-white text-base"></i>
+            </div>
+            <span class="font-bold text-sm text-slate-900 dark:text-white">
+              Admin
+            </span>
+          </a>
+          <button
+            id="mobile-sidebar-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== MAIN CONTENT ==================== -->
+      <main class="admin-main">
+        <!-- ===== POST LIST VIEW ===== -->
+        <div id="post-list-view" class="fade-in">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+                Posts
+              </h1>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Manage your blog posts
+              </p>
+            </div>
+            <button id="new-post-btn" class="admin-btn-primary">
+              <i class="ti ti-plus text-base"></i>
+              New Post
+            </button>
+          </div>
+
+          <!-- Post table -->
+          <div
+            id="post-list"
+            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden"
+          >
+            <div
+              class="p-6 text-center text-sm text-slate-400 dark:text-slate-500"
+            >
+              Loading...
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== POST EDITOR VIEW (hidden by default) ===== -->
+        <div id="post-editor-view" class="hidden fade-in">
+          <!-- Editor header -->
+          <div class="flex items-center gap-3 mb-6">
+            <button
+              id="editor-back-btn"
+              class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              <i class="ti ti-arrow-left text-xl"></i>
+            </button>
+            <div>
+              <h1
+                id="editor-title"
+                class="text-2xl font-bold text-slate-900 dark:text-white"
+              >
+                New Post
+              </h1>
+              <p
+                id="editor-subtitle"
+                class="text-sm text-slate-500 dark:text-slate-400 mt-0.5"
+              >
+                Create a new blog post
+              </p>
+            </div>
+          </div>
+
+          <!-- Metadata card -->
+          <div
+            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-5 mb-6"
+          >
+            <h2
+              class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4"
+            >
+              <i class="ti ti-settings text-sm"></i>
+              Post Settings
+            </h2>
+
+            <div class="space-y-4">
+              <!-- Title -->
+              <div>
+                <label
+                  class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                  >Title</label
+                >
+                <input
+                  id="editor-field-title"
+                  type="text"
+                  class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                  placeholder="Enter post title..."
+                />
+              </div>
+
+              <!-- Row: Category + Status + Featured -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label
+                    class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                    >Category</label
+                  >
+                  <select
+                    id="editor-field-category"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                  >
+                    <option value="">Select category...</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                    >Status</label
+                  >
+                  <select
+                    id="editor-field-status"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                    >Options</label
+                  >
+                  <div class="flex items-center h-[38px]">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        id="editor-field-featured"
+                        type="checkbox"
+                        class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-sky-500 focus:ring-sky-500"
+                      />
+                      <span class="text-sm text-slate-600 dark:text-slate-300"
+                        >Featured post</span
+                      >
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Excerpt + Tags in two columns -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                  >
+                    Excerpt
+                    <span
+                      class="normal-case font-normal text-slate-400 dark:text-slate-500"
+                      >(optional)</span
+                    >
+                  </label>
+                  <input
+                    id="editor-field-excerpt"
+                    type="text"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                    placeholder="Short summary for post cards..."
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                  >
+                    Tags
+                    <span
+                      class="normal-case font-normal text-slate-400 dark:text-slate-500"
+                      >(comma-separated)</span
+                    >
+                  </label>
+                  <input
+                    id="editor-field-tags"
+                    type="text"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                    placeholder="e.g. aws, terraform, docker"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side-by-side Markdown editor -->
+          <div
+            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 overflow-hidden mb-6"
+          >
+            <!-- Editor grid: two columns side by side -->
+            <div
+              class="grid grid-cols-1 lg:grid-cols-2"
+              style="min-height: 500px"
+            >
+              <!-- Write side -->
+              <div
+                class="flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700/50"
+              >
+                <div
+                  class="flex items-center gap-1.5 px-4 py-2.5 border-b border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/50"
+                >
+                  <i class="ti ti-code text-xs text-slate-400"></i>
+                  <span
+                    class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                    >Markdown</span
+                  >
+                </div>
+                <textarea
+                  id="editor-field-content"
+                  class="flex-1 w-full p-4 text-[13px] leading-relaxed font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 outline-none resize-none"
+                  style="min-height: 450px"
+                  placeholder="Write your post in Markdown..."
+                ></textarea>
+              </div>
+              <!-- Preview side -->
+              <div class="flex flex-col">
+                <div
+                  class="flex items-center gap-1.5 px-4 py-2.5 border-b border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/50"
+                >
+                  <i class="ti ti-eye text-xs text-slate-400"></i>
+                  <span
+                    class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                    >Preview</span
+                  >
+                </div>
+                <div
+                  id="editor-preview"
+                  class="flex-1 p-4 overflow-y-auto prose"
+                  style="max-height: 500px"
+                >
+                  <p class="text-slate-400 dark:text-slate-500 text-sm italic">
+                    Preview will appear here...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save / Cancel buttons -->
+          <div class="flex items-center gap-3">
+            <button
+              id="editor-save-btn"
+              class="inline-flex items-center gap-1.5 px-5 py-2.5 bg-sky-500 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+            >
+              <i class="ti ti-device-floppy text-base"></i>
+              Save Post
+            </button>
+            <button
+              id="editor-cancel-btn"
+              class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Auth module (must load before posts.js) -->
+    <script src="./js/auth.js"></script>
+    <script src="./js/posts.js"></script>
+
+    <!-- Mobile sidebar toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-sidebar-toggle");
+        var sidebar = document.querySelector(".admin-sidebar");
+        if (toggle && sidebar) {
+          toggle.addEventListener("click", function () {
+            sidebar.classList.toggle("admin-sidebar-open");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
