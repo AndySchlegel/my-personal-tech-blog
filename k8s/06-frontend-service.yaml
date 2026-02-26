@@ -1,0 +1,20 @@
+# Frontend Service -- exposed via ALB Ingress
+#
+# ClusterIP type because ALB uses target-type: ip (routes directly to pod IPs).
+# No NodePort needed -- more efficient and avoids extra port allocation.
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: blog
+  labels:
+    app: blog-frontend
+    app.kubernetes.io/part-of: techblog
+spec:
+  type: ClusterIP
+  selector:
+    app: blog-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP

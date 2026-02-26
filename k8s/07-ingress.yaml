@@ -1,0 +1,45 @@
+# ALB Ingress -- internet-facing load balancer
+#
+# Routes all traffic to the frontend Service. Nginx handles /api/* proxy internally.
+# This matches the docker-compose architecture: single entry point through nginx.
+#
+# Prerequisites:
+#   1. AWS Load Balancer Controller installed via Helm
+#   2. Replace all REPLACE_* placeholders with real values from Terraform outputs
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blog-ingress
+  namespace: blog
+  labels:
+    app.kubernetes.io/part-of: techblog
+  annotations:
+    # Use AWS ALB (requires AWS Load Balancer Controller)
+    kubernetes.io/ingress.class: alb
+    # Internet-facing ALB (public traffic)
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Route directly to pod IPs (VPC CNI), no NodePort needed
+    alb.ingress.kubernetes.io/target-type: ip
+    # REPLACE: Public subnet IDs from terraform output -raw public_subnet_ids
+    alb.ingress.kubernetes.io/subnets: REPLACE_SUBNET_IDS
+    # REPLACE: ALB security group from terraform output -raw alb_security_group_id
+    alb.ingress.kubernetes.io/security-groups: REPLACE_ALB_SG_ID
+    # Listen on both HTTPS (443) and HTTP (80)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443},{"HTTP":80}]'
+    # REPLACE: ACM certificate ARN for your domain
+    alb.ingress.kubernetes.io/certificate-arn: REPLACE_ACM_CERT_ARN
+    # Redirect HTTP to HTTPS automatically
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # Health check hits the frontend root page
+    alb.ingress.kubernetes.io/healthcheck-path: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

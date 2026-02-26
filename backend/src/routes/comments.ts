@@ -10,6 +10,7 @@
 import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
 import { CreateCommentRequest } from '../models/types';
+import { requireAuth } from '../middleware/auth';
 
 export const commentsRouter = Router();
 
@@ -79,9 +80,9 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
  * PUT /comments/:id/status - Moderate a comment (approve, flag, delete)
  *
  * Changes the status of a comment.
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-commentsRouter.put('/comments/:id/status', async (req: Request, res: Response) => {
+commentsRouter.put('/comments/:id/status', requireAuth, async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
     const validStatuses = ['pending', 'approved', 'flagged', 'deleted'];

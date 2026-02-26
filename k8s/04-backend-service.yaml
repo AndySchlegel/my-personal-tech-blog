@@ -1,0 +1,21 @@
+# Backend Service -- MUST be named "backend"
+#
+# The frontend nginx config has: proxy_pass http://backend:3000
+# Kubernetes CoreDNS resolves "backend" to this Service's ClusterIP.
+# Same behavior as docker-compose DNS -- zero code changes needed.
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: blog
+  labels:
+    app: blog-backend
+    app.kubernetes.io/part-of: techblog
+spec:
+  type: ClusterIP
+  selector:
+    app: blog-backend
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP

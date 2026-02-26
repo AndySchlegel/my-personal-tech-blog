@@ -13,6 +13,7 @@ import { healthRouter } from './routes/health';
 import { postsRouter } from './routes/posts';
 import { commentsRouter } from './routes/comments';
 import { categoriesRouter } from './routes/categories';
+import { adminRouter } from './routes/admin';
 
 // Create the Express application
 const app = express();
@@ -48,5 +49,8 @@ app.use('/api/categories', categoriesRouter);
 
 // Comment routes are mounted at /api (because they use /posts/:postId/comments)
 app.use('/api', commentsRouter);
+
+// Admin dashboard routes (protected by auth middleware)
+app.use('/api/admin', adminRouter);
 
 export default app;

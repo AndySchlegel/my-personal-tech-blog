@@ -12,18 +12,52 @@
 import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
 import { CreatePostRequest } from '../models/types';
+import { requireAuth } from '../middleware/auth';
 
 export const postsRouter = Router();
 
 /**
- * GET /posts - List all published posts
+ * GET /posts - List published posts with optional filtering
+ *
+ * Query parameters:
+ *   ?search=terraform    - Search in title and excerpt (case-insensitive)
+ *   ?category=devops-ci-cd - Filter by category slug
+ *   ?tag=aws             - Filter by tag slug
  *
  * Returns posts sorted by publish date (newest first).
  * Includes category name and tags for each post.
  * Only returns published posts (not drafts or archived).
  */
-postsRouter.get('/', async (_req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request, res: Response) => {
   try {
+    const { search, category, tag } = req.query;
+
+    // Build WHERE clause dynamically with parameterized queries
+    const conditions: string[] = ["p.status = 'published'"];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (search && typeof search === 'string' && search.trim()) {
+      conditions.push(`(p.title ILIKE $${paramIndex} OR p.excerpt ILIKE $${paramIndex})`);
+      values.push(`%${search.trim()}%`);
+      paramIndex++;
+    }
+
+    if (category && typeof category === 'string' && category.trim()) {
+      conditions.push(`c.slug = $${paramIndex}`);
+      values.push(category.trim());
+      paramIndex++;
+    }
+
+    // Tag filter requires a subquery to check post_tags + tags
+    let tagJoinClause = '';
+    if (tag && typeof tag === 'string' && tag.trim()) {
+      tagJoinClause = `JOIN post_tags pt_filter ON p.id = pt_filter.post_id
+        JOIN tags t_filter ON pt_filter.tag_id = t_filter.id AND t_filter.slug = $${paramIndex}`;
+      values.push(tag.trim());
+      paramIndex++;
+    }
+
     const result = await query(
       `SELECT
         p.id, p.title, p.slug, p.excerpt, p.cover_image_url,
@@ -39,9 +73,11 @@ postsRouter.get('/', async (_req: Request, res: Response) => {
       LEFT JOIN users u ON p.author_id = u.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
-      WHERE p.status = 'published'
+      ${tagJoinClause}
+      WHERE ${conditions.join(' AND ')}
       GROUP BY p.id, c.name, c.slug, u.display_name
-      ORDER BY p.published_at DESC`
+      ORDER BY p.published_at DESC`,
+      values
     );
 
     res.json(result.rows);
@@ -106,9 +142,9 @@ postsRouter.get('/:slug', async (req: Request, res: Response) => {
  *
  * Expects JSON body with title, content, category_id.
  * Automatically generates a URL slug from the title.
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.post('/', async (req: Request, res: Response) => {
+postsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const { title, content, excerpt, category_id, status, featured, tags } =
       req.body as CreatePostRequest;
@@ -184,9 +220,9 @@ postsRouter.post('/', async (req: Request, res: Response) => {
  * PUT /posts/:id - Update an existing post
  *
  * Accepts partial updates (only send the fields you want to change).
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.put('/:id', async (req: Request, res: Response) => {
+postsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, content, excerpt, category_id, status, featured } = req.body;
@@ -263,9 +299,9 @@ postsRouter.put('/:id', async (req: Request, res: Response) => {
  *
  * Permanently removes the post and its tag associations.
  * Comments are also deleted (CASCADE in schema).
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-postsRouter.delete('/:id', async (req: Request, res: Response) => {
+postsRouter.delete('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const result = await query('DELETE FROM posts WHERE id = $1 RETURNING id', [req.params.id]);
 

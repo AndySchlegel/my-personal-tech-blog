@@ -8,6 +8,7 @@
 
 import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
+import { requireAuth } from '../middleware/auth';
 
 export const categoriesRouter = Router();
 
@@ -39,9 +40,9 @@ categoriesRouter.get('/', async (_req: Request, res: Response) => {
 /**
  * POST /categories - Create a new category
  *
- * TODO: Add Cognito auth middleware (admin only)
+ * Protected: requires valid Cognito JWT (admin only).
  */
-categoriesRouter.post('/', async (req: Request, res: Response) => {
+categoriesRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const { name, description } = req.body;
 

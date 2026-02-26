@@ -97,6 +97,22 @@ export interface Comment {
   created_at: Date;
 }
 
+// ----- Auth Types -----
+
+// Decoded JWT payload from Cognito token
+export interface TokenPayload {
+  sub: string; // Cognito user ID
+  email: string;
+  'cognito:groups'?: string[];
+}
+
+// Express Request with authenticated user attached by auth middleware
+import { Request } from 'express';
+
+export interface AuthenticatedRequest extends Request {
+  user?: TokenPayload;
+}
+
 // ----- API Request/Response Types -----
 
 // What the frontend sends when creating a new post
