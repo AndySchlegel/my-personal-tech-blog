@@ -322,7 +322,12 @@ resource "aws_iam_role_policy" "terraform" {
           "s3:GetBucketObjectLockConfiguration",
           "s3:GetLifecycleConfiguration",
           "s3:PutLifecycleConfiguration",
-          "s3:GetBucketWebsite"
+          "s3:GetBucketWebsite",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetBucketLogging",
+          "s3:GetBucketNotification",
+          "s3:GetBucketRequestPayment",
+          "s3:GetReplicationConfiguration"
         ]
         Resource = "*"
       },
