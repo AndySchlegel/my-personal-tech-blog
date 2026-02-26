@@ -341,6 +341,7 @@ Key highlights:
 - **#12** Code comments as a learning tool, not just documentation
 - **#14** Tailwind CDN overrides custom CSS -- use utility classes directly on elements
 - **#15** Checkov triage: fix, suppress, or defer -- answer every finding explicitly
+- **#16** IAM permissions: add all read permissions at once to avoid iteration cycles
 
 ---
 
@@ -353,7 +354,7 @@ Key highlights:
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 15 documented |
+| Lessons Learned | 16 documented |
 | Commits | 10+ |
 
 *Updated as the project progresses.*
@@ -369,6 +370,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (CI/CD + Terraform Pipeline complete, next: Terraform Apply Wave 1)
+**Project Status:** In Development (Wave 1 tested + pipeline verified, next: full deployment sprint Wave 1-3)
 **Last Updated:** 2026-02-26
 **AWS Region:** eu-central-1 (Frankfurt)

@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** CI/CD Pipeline complete, security triage done, next: Terraform Apply (Wave 1-3)
-**Last Updated:** 2026-02-26 (Session 9)
+**Current Phase:** Wave 1 tested + destroyed, pipeline verified green, next: real deployment (Wave 1-3)
+**Last Updated:** 2026-02-26 (Session 10)
 
 ---
 
@@ -88,8 +88,11 @@
 - [x] Detailed learning-oriented comments in all 32 files
 - [x] GitHub OIDC module (github-oidc: OIDC provider, IAM role, least-privilege policy)
 - [x] terraform validate + terraform fmt = clean
-- [ ] Bootstrap remote state (run bootstrap-state.sh)
-- [ ] Wave 1 apply (VPC, SGs, ECR, S3, Cognito)
+- [x] Bootstrap remote state (S3 bucket + DynamoDB table)
+- [x] Wave 1 apply locally (44 resources: VPC, SGs, ECR, S3, Cognito, OIDC)
+- [x] Wave 1 pipeline test (validate + plan green after 3 IAM permission iterations)
+- [x] Wave 1 destroyed (test complete, no running costs)
+- [ ] Wave 1 re-apply (when ready for real deployment)
 - [ ] Wave 2 apply (RDS)
 - [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
 - [x] tfsec + Checkov CI integration (soft_fail=false, all 42 findings triaged)
@@ -127,8 +130,8 @@
 
 | Wave | What | Monthly Cost | Status |
 |------|------|-------------|--------|
-| **0** | Bootstrap (S3 state + DynamoDB) | $0 | Ready (script written) |
-| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Code done |
+| **0** | Bootstrap (S3 state + DynamoDB) | $0 | Done |
+| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Tested + destroyed |
 | **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Code done |
 | **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
 
@@ -138,21 +141,22 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-### Option A: Bootstrap + Wave 1 Apply (Infrastructure focus)
-Run bootstrap-state.sh, then apply Wave 1 (VPC, SGs, ECR, S3, Cognito, GitHub OIDC).
-Pro: Validates Terraform code against real AWS, costs almost nothing (~$0.50/month).
+### Option A: Full Deploy Sprint (Wave 1-3 + first blog live)
+Re-apply Wave 1, then Wave 2 (RDS), then Wave 3 (EKS + CloudFront).
+All via pipeline (OIDC auth verified). Blog goes live on EKS.
+Pro: Everything is tested and ready, just needs the deployment sprint.
 
-### Option B: Wave 2-3 Apply + First Deploy (Full deployment)
-Apply RDS (Wave 2), then EKS + CloudFront (Wave 3).
-Set up GitHub Secrets, run `workflow_dispatch` deploy.
-Pro: Blog goes live on EKS.
-
-### Option C: S3 Image Uploads (Frontend/Backend focus)
+### Option B: S3 Image Uploads (Frontend/Backend focus)
 Add image upload support to the post editor. Requires S3 bucket to be
 deployed (Wave 1) for pre-signed URL generation.
 
-Recommended: **Option A** (Bootstrap + Wave 1) -> then B -> then C.
-Reason: CI/CD pipeline is written, now validate infrastructure against real AWS.
+### Option C: ML Integration (Comprehend)
+Add auto-tagging and comment sentiment analysis.
+Requires EKS deployment (Wave 3) + IRSA role.
+
+Recommended: **Option A** (Full Deploy Sprint) when ready to commit to ~$143/month.
+Wave 1 can be applied via pipeline now (OIDC auth works). Wave 1 locally only
+needed the first time (chicken-and-egg solved).
 
 ---
 
@@ -203,3 +207,7 @@ Reason: CI/CD pipeline is written, now validate infrastructure against real AWS.
 | 2026-02-24 | DB init job NOT in workflow | One-time manual step, not every deploy |
 | 2026-02-26 | Checkov triage: 3 fix, 39 suppress, 0 defer | Every finding explicitly answered with inline skip comments |
 | 2026-02-26 | security-scan.yml soft_fail=false | Strict PR guardrail after triage, new findings block PRs |
+| 2026-02-26 | Wave 1 test deploy + destroy | Validated all Terraform against real AWS, pipeline green |
+| 2026-02-26 | Domain changed to aws.his4irness23.de | Route 53 zone is aws.his4irness23.de, blog at blog.aws.his4irness23.de |
+| 2026-02-26 | OIDC provider is per-account, roles per-project | One provider serves blog + ecokart (different accounts though) |
+| 2026-02-26 | IAM permissions: add all reads at once | Avoid iteration: add all S3 Get* permissions together, not one at a time |
