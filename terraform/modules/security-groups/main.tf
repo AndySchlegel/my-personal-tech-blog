@@ -19,6 +19,7 @@
 # The Application Load Balancer is the entry point from the internet.
 # It accepts HTTP (port 80) and HTTPS (port 443) from anywhere.
 resource "aws_security_group" "alb" {
+  #checkov:skip=CKV2_AWS_5:SG attached to ALB via EKS/K8s ingress controller (cross-module reference)
   # name_prefix instead of name: Terraform appends random chars (e.g. "blog-alb-a1b2c3")
   # This prevents naming conflicts during create_before_destroy lifecycle.
   name_prefix = "${var.project_name}-alb-"
@@ -38,6 +39,7 @@ resource "aws_security_group" "alb" {
 
 # Allow HTTP traffic from anywhere (will be redirected to HTTPS by ALB)
 resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+  #checkov:skip=CKV_AWS_260:ALB must accept HTTP from 0.0.0.0/0 (public blog, redirects to HTTPS)
   security_group_id = aws_security_group.alb.id
   description       = "HTTP from internet"
   cidr_ipv4         = "0.0.0.0/0" # 0.0.0.0/0 = "from anywhere on the internet"
@@ -48,6 +50,7 @@ resource "aws_vpc_security_group_ingress_rule" "alb_http" {
 
 # Allow HTTPS traffic from anywhere (the main entry point for the blog)
 resource "aws_vpc_security_group_ingress_rule" "alb_https" {
+  #checkov:skip=CKV_AWS_260:ALB must accept HTTPS from 0.0.0.0/0 (public blog)
   security_group_id = aws_security_group.alb.id
   description       = "HTTPS from internet"
   cidr_ipv4         = "0.0.0.0/0"
@@ -74,6 +77,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_nodes" {
 # They accept traffic from the ALB and communicate with each other
 # (node-to-node communication is required for Kubernetes networking).
 resource "aws_security_group" "eks_nodes" {
+  #checkov:skip=CKV2_AWS_5:SG attached to EKS node group via eks module (cross-module reference)
   name_prefix = "${var.project_name}-eks-nodes-"
   description = "Security group for EKS worker nodes"
   vpc_id      = var.vpc_id
@@ -126,6 +130,7 @@ resource "aws_vpc_security_group_egress_rule" "nodes_all" {
 # It ONLY accepts PostgreSQL connections (port 5432) from EKS nodes.
 # No internet access, no access from ALB, no access from other services.
 resource "aws_security_group" "rds" {
+  #checkov:skip=CKV2_AWS_5:SG attached to RDS instance via rds module (cross-module reference)
   name_prefix = "${var.project_name}-rds-"
   description = "Security group for RDS PostgreSQL"
   vpc_id      = var.vpc_id

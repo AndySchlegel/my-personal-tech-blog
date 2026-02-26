@@ -117,6 +117,12 @@ resource "aws_cloudfront_origin_access_control" "s3" {
 # =============================================================================
 
 resource "aws_cloudfront_distribution" "main" {
+  #checkov:skip=CKV_AWS_68:WAF costs ~$5+/month minimum, not needed for a blog
+  #checkov:skip=CKV2_AWS_47:No WAF deployed, Log4j AMR rule not applicable
+  #checkov:skip=CKV_AWS_310:Origin failover needs 2nd origin, single S3 bucket sufficient
+  #checkov:skip=CKV_AWS_86:Access logging needs dedicated S3 bucket, deferred to production
+  #checkov:skip=CKV_AWS_374:Geo restriction not needed for public blog
+  #checkov:skip=CKV2_AWS_32:Response headers policy deferred, security headers set via nginx
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"

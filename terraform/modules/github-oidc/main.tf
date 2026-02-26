@@ -160,6 +160,9 @@ resource "aws_iam_role_policy" "github_actions" {
 # Terraform needs much broader permissions to create/modify/destroy resources.
 # Keeping them separate makes it clear which permissions serve which purpose.
 resource "aws_iam_role_policy" "terraform" {
+  #checkov:skip=CKV_AWS_289:Terraform pipeline must manage all infrastructure resources
+  #checkov:skip=CKV_AWS_355:Resource=* unavoidable for ec2/iam/rds (no resource-level scoping)
+  #checkov:skip=CKV_AWS_290:Terraform must create/modify resources, write access is its purpose
   name = "${var.project_name}-terraform-policy"
   role = aws_iam_role.github_actions.id
 

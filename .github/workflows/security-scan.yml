@@ -6,10 +6,8 @@
 #   2. tfsec     - Static security analysis for Terraform code
 #   3. Checkov   - Policy-as-code checks (CIS, AWS best practices)
 #
-# tfsec/Checkov use soft_fail=true until initial triage is complete.
-# After triage: suppress accepted findings with inline comments,
-# then switch to soft_fail=false to enforce as PR guardrails.
-# TODO: set soft_fail: false after Checkov findings triage
+# All findings triaged: real fixes applied, accepted risks suppressed
+# with inline #checkov:skip comments. soft_fail=false enforces as PR guardrails.
 
 name: "Security Scanning"
 
@@ -56,7 +54,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: terraform
-          soft_fail: true
+          soft_fail: false
 
   # -----------------------------------------------
   # Checkov - Policy-as-code for Terraform
@@ -75,4 +73,4 @@ jobs:
         with:
           directory: terraform
           framework: terraform
-          soft_fail: true
+          soft_fail: false
