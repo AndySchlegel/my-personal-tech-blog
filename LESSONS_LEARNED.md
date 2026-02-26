@@ -291,3 +291,21 @@ After triage, `soft_fail` was set back to `false` in security-scan.yml. The pipe
 Security scanner findings are not bugs -- they are questions. "Did you consider this?" The answer can be "yes, fixed", "yes, accepted the risk", or "not yet, will address later". The key is to answer every question explicitly. Inline `#checkov:skip` comments are documentation: they tell future reviewers (and your future self) that the finding was seen, evaluated, and consciously accepted. A clean scan with 39 suppressions is more secure than 42 ignored warnings on `soft_fail: true`.
 
 ---
+
+## #16 - IAM Permissions: Add All Read Permissions at Once
+
+**Date:** 2026-02-26
+**Phase:** Terraform Pipeline
+
+**Context:**
+The Terraform pipeline's `terraform plan` step kept failing with `AccessDenied` errors. Each failure revealed one missing IAM read permission (e.g., `s3:GetAccelerateConfiguration`). Fixing one permission and re-running the pipeline would reveal the next missing one. This led to 3 iterations (PRs #3, #4, #5) before the pipeline was green.
+
+The root cause: when Terraform refreshes resource state during `plan`, it queries ALL configuration attributes from AWS -- even ones we don't use. For an S3 bucket, this means GetAccelerateConfiguration, GetBucketLogging, GetBucketNotification, etc. Each of these requires its own IAM permission.
+
+**Decision:**
+On the third iteration, instead of adding just the one failing permission, we added all remaining S3 `Get*` permissions at once (5 permissions). This broke the cycle of fix-one-fail-on-next.
+
+**Takeaway:**
+When building IAM policies for Terraform, anticipate that `terraform plan` needs ALL read permissions for every resource attribute, not just the ones you explicitly configure. For S3 alone, there are 15+ `GetBucket*` permissions. When you hit the first missing permission, add all related read permissions in one go. The alternative -- fixing them one at a time -- means one commit-push-merge-deploy cycle per missing permission. AWS doesn't offer `s3:GetBucket*` wildcards in IAM, so you must list each one explicitly.
+
+---
