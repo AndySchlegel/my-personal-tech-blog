@@ -18,6 +18,8 @@
 
 # --- Frontend Repository (nginx + static files) ---
 resource "aws_ecr_repository" "frontend" {
+  #checkov:skip=CKV_AWS_136:KMS encryption costs ~$1/key/month, AES256 sufficient for dev
+  #checkov:skip=CKV_AWS_51:Mutable tags needed for latest tag in CI/CD pipeline
   name = "${var.project_name}-frontend"
 
   # MUTABLE: allows overwriting the "latest" tag on every push.
@@ -39,6 +41,8 @@ resource "aws_ecr_repository" "frontend" {
 
 # --- Backend Repository (Node.js/Express API) ---
 resource "aws_ecr_repository" "backend" {
+  #checkov:skip=CKV_AWS_136:KMS encryption costs ~$1/key/month, AES256 sufficient for dev
+  #checkov:skip=CKV_AWS_51:Mutable tags needed for latest tag in CI/CD pipeline
   name                 = "${var.project_name}-backend"
   image_tag_mutability = "MUTABLE"
 

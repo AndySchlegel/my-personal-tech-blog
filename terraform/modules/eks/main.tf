@@ -30,6 +30,10 @@
 # It decides which pods run where, handles API requests (kubectl),
 # and maintains the desired state of all workloads.
 resource "aws_eks_cluster" "main" {
+  #checkov:skip=CKV_AWS_39:Public endpoint needed for kubectl from local + GitHub Actions
+  #checkov:skip=CKV_AWS_38:CIDR restriction not feasible with dynamic GitHub Actions IPs
+  #checkov:skip=CKV_AWS_37:Control plane logging ~$0.50/GB, enable during sprint only
+  #checkov:skip=CKV2_AWS_64:KMS default key policy sufficient for EKS secrets encryption
   name     = "${var.project_name}-eks-${var.environment}"
   version  = var.cluster_version      # Kubernetes version (1.31)
   role_arn = aws_iam_role.cluster.arn # IAM role that EKS assumes (see iam.tf)
@@ -79,6 +83,7 @@ resource "aws_eks_cluster" "main" {
 # Cost: $1/month per key + $0.03 per 10,000 API calls (negligible).
 # enable_key_rotation automatically rotates the key annually for security.
 resource "aws_kms_key" "eks" {
+  #checkov:skip=CKV2_AWS_64:KMS default key policy sufficient for EKS secrets encryption
   description             = "KMS key for EKS secrets encryption"
   deletion_window_in_days = 7 # Wait 7 days before permanently deleting (safety net)
   enable_key_rotation     = true

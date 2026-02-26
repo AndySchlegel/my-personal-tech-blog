@@ -17,6 +17,10 @@
 # Bucket names must be globally unique across ALL AWS accounts.
 # We append a unique suffix to ensure no collision.
 resource "aws_s3_bucket" "assets" {
+  #checkov:skip=CKV_AWS_144:Cross-region replication overkill for blog images, single bucket sufficient
+  #checkov:skip=CKV_AWS_18:Access logging needs dedicated bucket, deferred to production
+  #checkov:skip=CKV_AWS_145:KMS encryption costs extra, SSE-S3 (AES256) sufficient for dev
+  #checkov:skip=CKV2_AWS_62:S3 event notifications not needed, no Lambda triggers planned
   bucket = "${var.project_name}-assets-his4irness23"
 
   tags = {
@@ -113,6 +117,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets" {
     transition {
       days          = 90
       storage_class = "STANDARD_IA"
+    }
+
+    # Clean up incomplete multipart uploads after 7 days.
+    # Without this, abandoned uploads consume storage indefinitely.
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
     }
   }
 }
