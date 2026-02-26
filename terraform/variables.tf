@@ -32,7 +32,7 @@ variable "environment" {
 variable "domain_name" {
   description = "Base domain name (existing Route 53 hosted zone)"
   type        = string
-  default     = "his4irness23.de"
+  default     = "aws.his4irness23.de"
 }
 
 variable "blog_subdomain" {
