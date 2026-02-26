@@ -36,6 +36,7 @@ locals {
 # Think of it as our own private data center in the cloud.
 # CIDR 10.0.0.0/16 gives us 65,536 IP addresses to work with.
 resource "aws_vpc" "main" {
+  #checkov:skip=CKV2_AWS_11:VPC flow logs ~$0.50/GB, enable during deployment sprint
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true # Required for RDS -- creates DNS names like mydb.abc123.eu-central-1.rds.amazonaws.com
   enable_dns_support   = true # Required for DNS resolution within the VPC
@@ -65,6 +66,7 @@ resource "aws_internet_gateway" "main" {
 # cidrsubnet("10.0.0.0/16", 8, 2) -> "10.0.2.0/24" (AZ b)
 # The "8" adds 8 bits to the /16 prefix, making it /24.
 resource "aws_subnet" "public" {
+  #checkov:skip=CKV_AWS_130:Public subnets need public IPs for ALB, that is their purpose
   count = var.az_count
 
   vpc_id                  = aws_vpc.main.id
@@ -198,4 +200,17 @@ resource "aws_route_table_association" "private" {
 
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
+}
+
+# --- Default Security Group (deny-all) ---
+# Every VPC comes with a default SG that allows all inbound/outbound traffic
+# between members of the same SG. This is a security risk if resources
+# accidentally use it. By claiming it in Terraform with NO rules,
+# we ensure the default SG blocks all traffic (deny-all baseline).
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "${var.project_name}-default-sg-deny-all"
+  }
 }

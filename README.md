@@ -279,7 +279,7 @@ Manual Trigger with inputs:
     Job 1: VALIDATE (no AWS creds needed)
     +-- terraform fmt -check -recursive
     +-- terraform init -backend=false + validate
-    +-- tfsec + Checkov (soft_fail=true during triage)
+    +-- tfsec + Checkov (soft_fail=true, advisory for pipeline)
     |
     Job 2: PLAN (OIDC auth)
     +-- terraform init (S3 backend)
@@ -340,6 +340,7 @@ Key highlights:
 - **#10** Write IaC first, deploy later -- iterate for free
 - **#12** Code comments as a learning tool, not just documentation
 - **#14** Tailwind CDN overrides custom CSS -- use utility classes directly on elements
+- **#15** Checkov triage: fix, suppress, or defer -- answer every finding explicitly
 
 ---
 
@@ -352,7 +353,7 @@ Key highlights:
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 14 documented |
+| Lessons Learned | 15 documented |
 | Commits | 10+ |
 
 *Updated as the project progresses.*

@@ -270,3 +270,24 @@ For the editor grid, changed from `.admin-editor-layout` with custom CSS to inli
 When using Tailwind CDN (not the build tool), custom CSS classes are unreliable for properties that Tailwind also controls. Always use Tailwind utility classes directly on elements for layout, colors, and spacing. Reserve custom CSS only for things Tailwind genuinely cannot do (complex animations, pseudo-elements, scrollbar styling). This is a CDN-specific issue -- with Tailwind's build tool, custom CSS has more predictable specificity.
 
 ---
+
+## #15 - Checkov Findings Triage: Fix, Suppress, or Defer
+
+**Date:** 2026-02-26
+**Phase:** CI/CD Security
+
+**Context:**
+Checkov reported 42 failed checks against our Terraform code (142 passed). The initial reaction was to set `soft_fail: true` in the security-scan pipeline to unblock PRs. But leaving it on `true` indefinitely defeats the purpose of security scanning -- new real issues would slip through unnoticed.
+
+**Decision:**
+Triaged all 42 findings into three categories:
+1. **Fix (3):** Real improvements that cost nothing -- `copy_tags_to_snapshot` on RDS, `abort_incomplete_multipart_upload` lifecycle rule on S3, deny-all default security group on VPC.
+2. **Suppress (39):** Conscious design decisions for a dev/portfolio project. Each finding got a `#checkov:skip=CKV_XXX:reason` comment directly on the resource. Reasons include cost savings (WAF, Multi-AZ, KMS encryption), dev workflow needs (mutable ECR tags, deletion protection off), and architectural constraints (ALB controller needs Resource=*, Terraform needs broad permissions).
+3. **Defer (0):** Nothing deferred -- every finding was either fixed or explicitly accepted.
+
+After triage, `soft_fail` was set back to `false` in security-scan.yml. The pipeline is now a strict PR guardrail again: any NEW Checkov finding will block the PR.
+
+**Takeaway:**
+Security scanner findings are not bugs -- they are questions. "Did you consider this?" The answer can be "yes, fixed", "yes, accepted the risk", or "not yet, will address later". The key is to answer every question explicitly. Inline `#checkov:skip` comments are documentation: they tell future reviewers (and your future self) that the finding was seen, evaluated, and consciously accepted. A clean scan with 39 suppressions is more secure than 42 ignored warnings on `soft_fail: true`.
+
+---

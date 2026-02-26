@@ -213,6 +213,9 @@ resource "aws_iam_role" "alb_controller" {
 # manage security groups for ALB targets, and read ACM certificates.
 # This is a simplified version of the official AWS policy document.
 resource "aws_iam_role_policy" "alb_controller" {
+  #checkov:skip=CKV_AWS_289:ALB controller needs broad ELB permissions per AWS official docs
+  #checkov:skip=CKV_AWS_355:ALB controller Resource=* required per AWS official IAM policy
+  #checkov:skip=CKV_AWS_290:ALB controller write access is its core purpose (create/manage ALBs)
   name = "${var.project_name}-alb-controller-policy"
   role = aws_iam_role.alb_controller.id
 

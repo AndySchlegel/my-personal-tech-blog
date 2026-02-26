@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** CI/CD Pipeline complete, next: Terraform Apply (Wave 1-3)
-**Last Updated:** 2026-02-24 (Session 8)
+**Current Phase:** CI/CD Pipeline complete, security triage done, next: Terraform Apply (Wave 1-3)
+**Last Updated:** 2026-02-26 (Session 9)
 
 ---
 
@@ -92,7 +92,7 @@
 - [ ] Wave 1 apply (VPC, SGs, ECR, S3, Cognito)
 - [ ] Wave 2 apply (RDS)
 - [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
-- [ ] tfsec + Checkov CI integration
+- [x] tfsec + Checkov CI integration (soft_fail=false, all 42 findings triaged)
 
 ## Phase 5: Kubernetes + CI/CD (~90% Done)
 
@@ -201,3 +201,5 @@ Reason: CI/CD pipeline is written, now validate infrastructure against real AWS.
 | 2026-02-24 | sha-<hash> + latest tags | Traceability to exact commit, ECR lifecycle matches sha-* prefix |
 | 2026-02-24 | kubectl create secret --dry-run | Real values from GitHub Secrets, never hardcoded in manifests |
 | 2026-02-24 | DB init job NOT in workflow | One-time manual step, not every deploy |
+| 2026-02-26 | Checkov triage: 3 fix, 39 suppress, 0 defer | Every finding explicitly answered with inline skip comments |
+| 2026-02-26 | security-scan.yml soft_fail=false | Strict PR guardrail after triage, new findings block PRs |
