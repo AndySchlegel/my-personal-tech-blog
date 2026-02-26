@@ -245,7 +245,8 @@ resource "aws_iam_role_policy" "terraform" {
           "ec2:DescribeTags",
           "ec2:DescribeAvailabilityZones",
           "ec2:DescribeAccountAttributes",
-          "ec2:DescribeNetworkInterfaces"
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeVpcAttribute"
         ]
         Resource = "*"
       },
@@ -320,7 +321,8 @@ resource "aws_iam_role_policy" "terraform" {
           "s3:PutBucketTagging",
           "s3:GetBucketObjectLockConfiguration",
           "s3:GetLifecycleConfiguration",
-          "s3:PutLifecycleConfiguration"
+          "s3:PutLifecycleConfiguration",
+          "s3:GetBucketWebsite"
         ]
         Resource = "*"
       },
@@ -347,6 +349,7 @@ resource "aws_iam_role_policy" "terraform" {
           "cognito-idp:CreateGroup",
           "cognito-idp:DeleteGroup",
           "cognito-idp:GetGroup",
+          "cognito-idp:GetUserPoolMfaConfig",
           "cognito-idp:ListTagsForResource",
           "cognito-idp:TagResource",
           "cognito-idp:UntagResource"
