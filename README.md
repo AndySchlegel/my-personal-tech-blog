@@ -262,10 +262,12 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- Push to ECR (tagged: sha-<hash> + latest)
     |
     Job 3: DEPLOY
-    +-- OIDC auth + kubectl config
-    +-- Apply K8s manifests (namespace, config, secrets, services, deployments)
-    +-- Update container images (rolling update)
-    +-- Apply ingress (sed replaces placeholders with real values)
+    +-- OIDC auth
+    +-- Read infra values from Terraform state (RDS, Cognito, ECR, subnets, ALB SG, ACM)
+    +-- kubectl config + apply K8s manifests
+    +-- Create secrets (DB_PASSWORD from GitHub Secret, rest from Terraform)
+    +-- Update container images (ECR URLs from Terraform)
+    +-- Apply ingress (placeholders replaced with Terraform values)
     +-- Wait for rollout + print status
 ```
 
@@ -342,6 +344,7 @@ Key highlights:
 - **#14** Tailwind CDN overrides custom CSS -- use utility classes directly on elements
 - **#15** Checkov triage: fix, suppress, or defer -- answer every finding explicitly
 - **#16** IAM permissions: add all read permissions at once to avoid iteration cycles
+- **#17** Deploy pipeline reads infra values from Terraform state -- no manual secret updates after destroy+apply
 
 ---
 
@@ -354,7 +357,7 @@ Key highlights:
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 16 documented |
+| Lessons Learned | 17 documented |
 | Commits | 10+ |
 
 *Updated as the project progresses.*
@@ -371,5 +374,5 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 ---
 
 **Project Status:** In Development (Wave 1 tested + pipeline verified, next: full deployment sprint Wave 1-3)
-**Last Updated:** 2026-02-26
+**Last Updated:** 2026-02-27
 **AWS Region:** eu-central-1 (Frankfurt)

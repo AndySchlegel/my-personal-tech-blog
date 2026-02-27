@@ -6,7 +6,7 @@
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
 **Current Phase:** Wave 1 tested + destroyed, pipeline verified green, next: real deployment (Wave 1-3)
-**Last Updated:** 2026-02-26 (Session 10)
+**Last Updated:** 2026-02-27 (Session 11)
 
 ---
 
@@ -18,7 +18,7 @@
 | 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
 | 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
-| 5. Kubernetes + CI/CD | ~90% Done (CI/CD pipeline written) | Week 3 |
+| 5. Kubernetes + CI/CD | ~95% Done (CI/CD pipeline written) | Week 3 |
 | 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
 | 7. Polish + Presentation | Not Started | Week 4 |
 
@@ -97,7 +97,7 @@
 - [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
 - [x] tfsec + Checkov CI integration (soft_fail=false, all 42 findings triaged)
 
-## Phase 5: Kubernetes + CI/CD (~90% Done)
+## Phase 5: Kubernetes + CI/CD (~95% Done)
 
 - [x] Kubernetes manifests (namespace, deployments, services, ingress, db-init job)
 - [x] ConfigMap + Secrets (PORT, CORS, NODE_ENV, DB URL, Cognito IDs with REPLACE_ME placeholders)
@@ -107,6 +107,7 @@
 - [x] k8s/README.md deploy guide (prerequisites, placeholder replacement, troubleshooting)
 - [x] GitHub Actions deploy pipeline (workflow_dispatch: test -> build -> push ECR -> deploy EKS)
 - [x] OIDC authentication (github-oidc Terraform module, no AWS keys in GitHub)
+- [x] Deploy pipeline reads infra values dynamically from Terraform state (PR #8)
 - [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
 
 ## Phase 6: ML Integration
@@ -155,8 +156,9 @@ Add auto-tagging and comment sentiment analysis.
 Requires EKS deployment (Wave 3) + IRSA role.
 
 Recommended: **Option A** (Full Deploy Sprint) when ready to commit to ~$143/month.
-Wave 1 can be applied via pipeline now (OIDC auth works). Wave 1 locally only
-needed the first time (chicken-and-egg solved).
+Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
+other infra values dynamically from Terraform remote state. Wave 1 locally only
+needed the first time (chicken-and-egg: OIDC role doesn't exist yet).
 
 ---
 
@@ -211,3 +213,4 @@ needed the first time (chicken-and-egg solved).
 | 2026-02-26 | Domain changed to aws.his4irness23.de | Route 53 zone is aws.his4irness23.de, blog at blog.aws.his4irness23.de |
 | 2026-02-26 | OIDC provider is per-account, roles per-project | One provider serves blog + ecokart (different accounts though) |
 | 2026-02-26 | IAM permissions: add all reads at once | Avoid iteration: add all S3 Get* permissions together, not one at a time |
+| 2026-02-27 | Dynamic Terraform outputs in deploy pipeline | Pipeline reads all infra values from Terraform remote state (S3) instead of 9 static GitHub Secrets -- fully reproducible after destroy+apply with only 2 secrets |
