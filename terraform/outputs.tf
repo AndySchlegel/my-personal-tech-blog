@@ -72,6 +72,11 @@ output "cloudfront_domain" {
   value       = module.cloudfront.distribution_domain_name
 }
 
+output "acm_certificate_arn" {
+  description = "ACM certificate ARN for blog domain (for ALB HTTPS)"
+  value       = module.cloudfront.acm_certificate_arn
+}
+
 # --- GitHub OIDC ---
 # Set this as the AWS_ROLE_ARN secret in your GitHub repository settings.
 # The deploy workflow uses this role for OIDC authentication.
