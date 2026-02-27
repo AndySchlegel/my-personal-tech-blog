@@ -1,0 +1,130 @@
+# Infrastructure Teardown Pipeline
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- destroys all infrastructure
+# except the OIDC provider in one pipeline run.
+#
+# Destruction order matters (dependency chain):
+#   1. Wave 2 first (RDS depends on VPC subnets + security groups)
+#   2. Wave 1 second (OIDC explicitly excluded to keep pipeline auth alive)
+#
+# After completion, only github_oidc resources should remain in state.
+# Use terraform.yml for individual wave operations.
+#
+# Authentication: OIDC federation (same IAM role as other workflows).
+#
+# Required GitHub Secrets:
+#   AWS_ROLE_ARN  - IAM role ARN from terraform output github_actions_role_arn
+#   DB_PASSWORD   - Database master password (needed even for destroy plans)
+
+name: Infrastructure Teardown
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type DESTROY to confirm teardown of all infrastructure'
+        required: true
+        type: string
+        default: ''
+
+# OIDC requires these permissions to request and present the JWT token.
+permissions:
+  id-token: write
+  contents: read
+
+# Same concurrency group as terraform.yml -- prevents state conflicts.
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-central-1
+  TF_WORKING_DIR: terraform
+
+jobs:
+  # ===== Single Job: Teardown Wave 1+2 =====
+  # Destroys Wave 2 first (RDS), then Wave 1 (VPC, SGs, ECR, S3, Cognito).
+  # OIDC module is explicitly excluded from Wave 1 destroy targets.
+  teardown:
+    name: Teardown Wave 1+2
+    runs-on: ubuntu-latest
+    if: ${{ inputs.confirm_destroy == 'DESTROY' }}
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      # --- Wave 2 destroy (RDS) ---
+      # Must be destroyed FIRST because RDS depends on VPC subnets
+      # and security groups from Wave 1.
+      - name: Plan destroy Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.rds \
+            -out=tfplan-wave2
+
+      - name: Show plan Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave2
+
+      - name: Destroy Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-wave2
+
+      # --- Wave 1 destroy (without OIDC) ---
+      # Explicitly targets each module EXCEPT github_oidc.
+      # OIDC must survive to keep pipeline auth + other projects working.
+      - name: Plan destroy Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.vpc \
+            -target=module.security_groups \
+            -target=module.ecr \
+            -target=module.s3 \
+            -target=module.cognito \
+            -out=tfplan-wave1
+
+      - name: Show plan Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave1
+
+      - name: Destroy Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-wave1
+
+      # --- Verify: only OIDC resources should remain ---
+      - name: Verify remaining state
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "=== Remaining resources in state ==="
+          terraform state list
+          echo ""
+          echo "Only github_oidc resources should be listed above."
