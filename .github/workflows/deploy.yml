@@ -11,16 +11,11 @@
 # Authentication: OIDC federation (no long-lived AWS keys).
 # The github-oidc Terraform module creates the IAM role that this workflow assumes.
 #
-# Required GitHub Secrets (set after Terraform apply):
-#   AWS_ACCOUNT_ID    - 12-digit AWS account ID
-#   AWS_ROLE_ARN      - terraform output -raw github_actions_role_arn
-#   DB_PASSWORD       - Same password from terraform.tfvars
-#   RDS_ENDPOINT      - terraform output -raw rds_endpoint
-#   COGNITO_USER_POOL_ID - terraform output -raw cognito_user_pool_id
-#   COGNITO_CLIENT_ID    - terraform output -raw cognito_client_id
-#   ACM_CERT_ARN      - ACM certificate ARN for blog.his4irness23.de
-#   PUBLIC_SUBNET_IDS - terraform output -raw public_subnet_ids
-#   ALB_SG_ID         - terraform output -raw alb_sg_id
+# 2 GitHub Secrets required: AWS_ROLE_ARN, DB_PASSWORD.
+# All other infrastructure values (RDS endpoint, Cognito IDs, ECR URLs,
+# subnet IDs, ALB SG, ACM cert) are read dynamically from Terraform state.
+# This makes the pipeline fully reproducible after a destroy + apply cycle
+# without manual secret updates.
 #
 # Post-deploy manual step (one-time):
 #   The GitHub Actions IAM role must be added to the aws-auth ConfigMap
@@ -57,7 +52,6 @@ concurrency:
   cancel-in-progress: false
 
 # Reusable values shared across jobs.
-# ECR URLs follow the pattern: <account_id>.dkr.ecr.<region>.amazonaws.com/<repo_name>
 env:
   AWS_REGION: eu-central-1
   EKS_CLUSTER_NAME: blog-eks-dev
@@ -184,6 +178,32 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      # Setup Terraform CLI so we can read outputs from the remote state.
+      # terraform_wrapper: false is required -- the wrapper adds extra output
+      # that breaks 'terraform output -raw' (which must return clean strings).
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      # Read all infrastructure values from the Terraform remote state.
+      # These replace the 7 static GitHub Secrets that previously had to be
+      # updated manually after every destroy + apply cycle.
+      # The IAM role already has S3 read access to the state bucket.
+      - name: Read infrastructure values from Terraform state
+        id: tf
+        working-directory: terraform/
+        run: |
+          terraform init -input=false
+          echo "rds_endpoint=$(terraform output -raw rds_endpoint)" >> "$GITHUB_OUTPUT"
+          echo "cognito_user_pool_id=$(terraform output -raw cognito_user_pool_id)" >> "$GITHUB_OUTPUT"
+          echo "cognito_client_id=$(terraform output -raw cognito_client_id)" >> "$GITHUB_OUTPUT"
+          echo "public_subnet_ids=$(terraform output -raw public_subnet_ids)" >> "$GITHUB_OUTPUT"
+          echo "alb_sg_id=$(terraform output -raw alb_sg_id)" >> "$GITHUB_OUTPUT"
+          echo "acm_certificate_arn=$(terraform output -raw acm_certificate_arn)" >> "$GITHUB_OUTPUT"
+          echo "ecr_backend_url=$(terraform output -raw ecr_backend_url)" >> "$GITHUB_OUTPUT"
+          echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> "$GITHUB_OUTPUT"
+
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
       # After this, all kubectl commands target our cluster.
@@ -197,9 +217,10 @@ jobs:
           kubectl apply -f k8s/00-namespace.yaml
           kubectl apply -f k8s/01-configmap.yaml
 
-      # Step 2: Create secrets with real values from GitHub Secrets.
+      # Step 2: Create secrets with real values.
+      # DB_PASSWORD comes from GitHub Secrets (sensitive, not in Terraform state).
+      # All other values come from Terraform outputs (read in the step above).
       # Uses --dry-run=client to generate YAML, then pipes to kubectl apply.
-      # This pattern avoids hardcoding secrets in the manifest files.
       #
       # The DATABASE_URL format: postgresql://user:password@host:5432/dbname
       # RDS_ENDPOINT already includes the port (e.g. blog-rds-dev.abc.rds.amazonaws.com:5432)
@@ -207,9 +228,9 @@ jobs:
         run: |
           kubectl create secret generic blog-secrets \
             --namespace ${{ env.K8S_NAMESPACE }} \
-            --from-literal=DATABASE_URL="postgresql://bloguser:${{ secrets.DB_PASSWORD }}@${{ secrets.RDS_ENDPOINT }}/techblog" \
-            --from-literal=COGNITO_USER_POOL_ID="${{ secrets.COGNITO_USER_POOL_ID }}" \
-            --from-literal=COGNITO_CLIENT_ID="${{ secrets.COGNITO_CLIENT_ID }}" \
+            --from-literal=DATABASE_URL="postgresql://bloguser:${{ secrets.DB_PASSWORD }}@${{ steps.tf.outputs.rds_endpoint }}/techblog" \
+            --from-literal=COGNITO_USER_POOL_ID="${{ steps.tf.outputs.cognito_user_pool_id }}" \
+            --from-literal=COGNITO_CLIENT_ID="${{ steps.tf.outputs.cognito_client_id }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       # Step 3: Apply services (must exist before deployments reference them).
@@ -225,29 +246,29 @@ jobs:
           kubectl apply -f k8s/05-frontend-deployment.yaml
 
       # Step 5: Update container images to the newly built version.
-      # kubectl set image updates the deployment spec with the new ECR image tag.
+      # ECR URLs come from Terraform outputs (e.g. 123456789.dkr.ecr.eu-central-1.amazonaws.com/blog-backend).
+      # kubectl set image updates the deployment spec with the new tag.
       # This triggers a rolling update -- old pods are replaced one by one.
       - name: Update container images
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
           IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
         run: |
           kubectl set image deployment/blog-backend \
-            backend=$ECR_REGISTRY/blog-backend:$IMAGE_TAG \
+            backend=${{ steps.tf.outputs.ecr_backend_url }}:$IMAGE_TAG \
             --namespace ${{ env.K8S_NAMESPACE }}
           kubectl set image deployment/blog-frontend \
-            frontend=$ECR_REGISTRY/blog-frontend:$IMAGE_TAG \
+            frontend=${{ steps.tf.outputs.ecr_frontend_url }}:$IMAGE_TAG \
             --namespace ${{ env.K8S_NAMESPACE }}
 
       # Step 6: Apply ingress with real values replacing placeholders.
       # The manifest has REPLACE_* placeholders for values that come from
-      # Terraform outputs (stored as GitHub Secrets).
+      # Terraform outputs (read dynamically from the remote state).
       # sed replaces them inline before applying.
       - name: Apply ingress
         run: |
-          sed -e "s|REPLACE_SUBNET_IDS|${{ secrets.PUBLIC_SUBNET_IDS }}|g" \
-              -e "s|REPLACE_ALB_SG_ID|${{ secrets.ALB_SG_ID }}|g" \
-              -e "s|REPLACE_ACM_CERT_ARN|${{ secrets.ACM_CERT_ARN }}|g" \
+          sed -e "s|REPLACE_SUBNET_IDS|${{ steps.tf.outputs.public_subnet_ids }}|g" \
+              -e "s|REPLACE_ALB_SG_ID|${{ steps.tf.outputs.alb_sg_id }}|g" \
+              -e "s|REPLACE_ACM_CERT_ARN|${{ steps.tf.outputs.acm_certificate_arn }}|g" \
               k8s/07-ingress.yaml | kubectl apply -f -
 
       # Step 7: Wait for both deployments to complete their rollout.
