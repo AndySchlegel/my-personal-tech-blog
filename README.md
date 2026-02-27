@@ -246,7 +246,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Three workflows, all using OIDC federation (no long-lived AWS credentials):
+Five workflows, all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -297,6 +297,36 @@ Manual Trigger with inputs:
     Job 4: DESTROY (only when action=destroy + "DESTROY" confirmation)
     +-- Download plan artifact
     +-- terraform apply tfplan (destroy plan)
+```
+
+**Infrastructure Teardown** (`infra-destroy.yml` -- manual trigger):
+
+```
+Manual Trigger (type "DESTROY" to confirm)
+    |
+    Job 1: TEARDOWN (environment: production)
+    +-- OIDC auth
+    +-- Destroy Wave 2 first (RDS depends on VPC/SGs)
+    +-- Destroy Wave 1 (OIDC excluded -- keeps pipeline auth alive)
+    +-- Verify: terraform state list (only OIDC should remain)
+```
+
+**Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
+
+```
+Manual Trigger
+    |
+    Job 1: VALIDATE (no AWS creds needed)
+    +-- terraform fmt + init + validate
+    |
+    Job 2: SECURITY SCAN
+    +-- tfsec + Checkov (soft_fail=false, strict guardrail)
+    |
+    Job 3: PROVISION (environment: production)
+    +-- OIDC auth
+    +-- Apply Wave 1 (VPC, SGs, ECR, S3, Cognito, OIDC)
+    +-- Apply Wave 2 (RDS)
+    +-- Show terraform output
 ```
 
 **Security scanning** (`security-scan.yml` -- automatic on push/PR):
