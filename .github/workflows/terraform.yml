@@ -165,7 +165,13 @@ jobs:
         run: |
           case "${{ inputs.wave }}" in
             wave-1)
-              echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc" >> "$GITHUB_OUTPUT"
+              if [ "${{ inputs.action }}" = "destroy" ]; then
+                # Exclude github_oidc from destroy -- OIDC provider must survive
+                # to keep pipeline auth + other projects (ecokart) working.
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito" >> "$GITHUB_OUTPUT"
+              else
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc" >> "$GITHUB_OUTPUT"
+              fi
               ;;
             wave-2)
               echo "flags=-target=module.rds" >> "$GITHUB_OUTPUT"
