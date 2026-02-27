@@ -325,3 +325,28 @@ Refactored the deploy pipeline to read all infrastructure values dynamically fro
 If your CI/CD pipeline depends on infrastructure values, read them from the source of truth (Terraform state) instead of copying them into a second system (GitHub Secrets). Every manual copy step is a reproducibility risk -- it adds a human to the critical path and creates drift between what's deployed and what the pipeline thinks is deployed. The rule: if Terraform manages it, Terraform should serve it.
 
 ---
+
+## #18 - Terraform State Save Failure: Pin a Stable Version
+
+**Date:** 2026-02-27
+**Phase:** CI/CD
+
+**Context:**
+The first run of `infra-destroy.yml` successfully destroyed all Wave 1+2 resources in AWS. But after the last resource was deleted, Terraform failed to upload the updated state back to S3:
+```
+Error: Failed to save state
+Error saving state: failed to upload state: operation error S3: PutObject,
+failed to rewind transport stream for retry, request stream is not seekable
+```
+All infrastructure was gone, but the state file still listed the destroyed resources. This is a known bug in Terraform 1.7.0 with the S3 backend -- when the state upload needs a retry (e.g., brief network hiccup or session token nearing expiry), it fails because the request body stream cannot be rewound.
+
+**Recovery:**
+Running `terraform refresh` locally detected that the resources no longer existed and automatically removed them from state. Quick 30-second fix, but manual intervention that breaks the "fully automated" promise.
+
+**Decision:**
+Upgraded Terraform from 1.7.0 to 1.9.0 in all three workflow files (terraform.yml, infra-destroy.yml, infra-provision.yml). The `required_version = ">= 1.5"` constraint in versions.tf already allowed it. Second infra-destroy run with 1.9.0 completed cleanly.
+
+**Takeaway:**
+Pin your CI/CD tool versions to a known-stable release, not just any version that works. Terraform 1.7.0 was fine for plan/apply but had a state persistence bug that only surfaced during destroy operations with many resources. When a tool version causes a sporadic failure, upgrade rather than work around it. The fix was a one-line change in 3 files -- far cheaper than debugging state inconsistencies after every destroy cycle.
+
+---

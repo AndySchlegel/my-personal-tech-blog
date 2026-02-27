@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Wave 1 tested + destroyed, pipeline verified green, next: real deployment (Wave 1-3)
-**Last Updated:** 2026-02-27 (Session 11)
+**Current Phase:** Lifecycle workflows done + verified, infra fully destroyed, next: deploy Wave 1+2 via infra-provision
+**Last Updated:** 2026-02-27 (Session 12)
 
 ---
 
@@ -133,8 +133,8 @@
 | Wave | What | Monthly Cost | Status |
 |------|------|-------------|--------|
 | **0** | Bootstrap (S3 state + DynamoDB) | $0 | Done |
-| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Tested + destroyed |
-| **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Code done |
+| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Destroyed (lifecycle verified) |
+| **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Destroyed (lifecycle verified) |
 | **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
 
 After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.65/month.
@@ -216,3 +216,4 @@ needed the first time (chicken-and-egg: OIDC role doesn't exist yet).
 | 2026-02-26 | IAM permissions: add all reads at once | Avoid iteration: add all S3 Get* permissions together, not one at a time |
 | 2026-02-27 | Dynamic Terraform outputs in deploy pipeline | Pipeline reads all infra values from Terraform remote state (S3) instead of 9 static GitHub Secrets -- fully reproducible after destroy+apply with only 2 secrets |
 | 2026-02-27 | Infrastructure lifecycle workflows | Two purpose-built workflows (infra-destroy + infra-provision) automate full destroy/rebuild cycle instead of 4 manual terraform.yml runs |
+| 2026-02-27 | Terraform 1.7.0 -> 1.9.0 | Fix sporadic S3 state save failure (failed to rewind transport stream) during destroy operations |
