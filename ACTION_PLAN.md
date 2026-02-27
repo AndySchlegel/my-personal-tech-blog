@@ -108,6 +108,7 @@
 - [x] GitHub Actions deploy pipeline (workflow_dispatch: test -> build -> push ECR -> deploy EKS)
 - [x] OIDC authentication (github-oidc Terraform module, no AWS keys in GitHub)
 - [x] Deploy pipeline reads infra values dynamically from Terraform state (PR #8)
+- [x] Infrastructure lifecycle workflows: infra-destroy.yml + infra-provision.yml (PR #10)
 - [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
 
 ## Phase 6: ML Integration
@@ -143,9 +144,9 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 ## What's Next? (Priority Order)
 
 ### Option A: Full Deploy Sprint (Wave 1-3 + first blog live)
-Re-apply Wave 1, then Wave 2 (RDS), then Wave 3 (EKS + CloudFront).
-All via pipeline (OIDC auth verified). Blog goes live on EKS.
-Pro: Everything is tested and ready, just needs the deployment sprint.
+Trigger `infra-provision.yml` to rebuild Wave 1+2 in one run, then Wave 3 via `terraform.yml`.
+Blog goes live on EKS. Teardown via `infra-destroy.yml` when done.
+Pro: Everything is tested and ready, lifecycle fully automated.
 
 ### Option B: S3 Image Uploads (Frontend/Backend focus)
 Add image upload support to the post editor. Requires S3 bucket to be
@@ -214,3 +215,4 @@ needed the first time (chicken-and-egg: OIDC role doesn't exist yet).
 | 2026-02-26 | OIDC provider is per-account, roles per-project | One provider serves blog + ecokart (different accounts though) |
 | 2026-02-26 | IAM permissions: add all reads at once | Avoid iteration: add all S3 Get* permissions together, not one at a time |
 | 2026-02-27 | Dynamic Terraform outputs in deploy pipeline | Pipeline reads all infra values from Terraform remote state (S3) instead of 9 static GitHub Secrets -- fully reproducible after destroy+apply with only 2 secrets |
+| 2026-02-27 | Infrastructure lifecycle workflows | Two purpose-built workflows (infra-destroy + infra-provision) automate full destroy/rebuild cycle instead of 4 manual terraform.yml runs |
