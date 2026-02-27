@@ -190,7 +190,7 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 
 - **Node.js** 22.x
 - **Podman** (for containerized development)
-- **Terraform** 1.5+ (for infrastructure)
+- **Terraform** 1.9+ (for infrastructure)
 - **AWS CLI** v2 (configured with credentials)
 
 ### Local Development
@@ -375,6 +375,7 @@ Key highlights:
 - **#15** Checkov triage: fix, suppress, or defer -- answer every finding explicitly
 - **#16** IAM permissions: add all read permissions at once to avoid iteration cycles
 - **#17** Deploy pipeline reads infra values from Terraform state -- no manual secret updates after destroy+apply
+- **#18** Pin stable Terraform versions in CI/CD -- 1.7.0 had state save bug on destroy, fixed by upgrading to 1.9.0
 
 ---
 
@@ -387,7 +388,7 @@ Key highlights:
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 12 (migrated from previous project) |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 17 documented |
+| Lessons Learned | 18 documented |
 | Commits | 10+ |
 
 *Updated as the project progresses.*
