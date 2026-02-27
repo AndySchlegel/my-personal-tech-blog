@@ -309,3 +309,19 @@ On the third iteration, instead of adding just the one failing permission, we ad
 When building IAM policies for Terraform, anticipate that `terraform plan` needs ALL read permissions for every resource attribute, not just the ones you explicitly configure. For S3 alone, there are 15+ `GetBucket*` permissions. When you hit the first missing permission, add all related read permissions in one go. The alternative -- fixing them one at a time -- means one commit-push-merge-deploy cycle per missing permission. AWS doesn't offer `s3:GetBucket*` wildcards in IAM, so you must list each one explicitly.
 
 ---
+
+## #17 - Deploy Pipeline: Dynamic Terraform Outputs for Reproducibility
+
+**Date:** 2026-02-27
+**Phase:** CI/CD
+
+**Context:**
+The deploy pipeline originally required 9 static GitHub Secrets for infrastructure values (RDS endpoint, Cognito User Pool ID, Cognito Client ID, ECR URLs, subnet IDs, ALB security group, ACM certificate ARN). After every `terraform destroy` + `terraform apply` cycle, all 9 values changed and had to be manually copied from Terraform output into GitHub Secrets. This broke the "fully reproducible" requirement -- a human had to update secrets every time.
+
+**Decision:**
+Refactored the deploy pipeline to read all infrastructure values dynamically from Terraform remote state (S3 backend). The deploy job runs `terraform init` + `terraform output -raw <key>` to fetch each value at deploy time. Only 2 GitHub Secrets remain: `AWS_ROLE_ARN` (OIDC role, protected from destroy) and `DB_PASSWORD` (user-chosen, never in Terraform state). Used `hashicorp/setup-terraform@v3` with `terraform_wrapper: false` because the wrapper adds decoration to output that breaks `-raw` mode.
+
+**Takeaway:**
+If your CI/CD pipeline depends on infrastructure values, read them from the source of truth (Terraform state) instead of copying them into a second system (GitHub Secrets). Every manual copy step is a reproducibility risk -- it adds a human to the critical path and creates drift between what's deployed and what the pipeline thinks is deployed. The rule: if Terraform manages it, Terraform should serve it.
+
+---
