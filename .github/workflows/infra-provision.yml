@@ -157,6 +157,14 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: terraform apply tfplan-wave0
 
+      # IAM policy changes are eventually consistent (typically 5-10 seconds).
+      # Without this pause, Wave 1 may start before AWS has propagated
+      # the updated permissions from Wave 0, causing AccessDenied errors.
+      - name: Wait for IAM propagation
+        run: |
+          echo "Waiting 15s for IAM policy propagation (eventual consistency)..."
+          sleep 15
+
       # --- Wave 1 apply (base infrastructure) ---
       # VPC, Security Groups, ECR, S3, Cognito, and OIDC.
       # OIDC included here for completeness (no-op after Wave 0).
