@@ -9,7 +9,7 @@
 #   3. PROVISION     - Apply Wave 0 (OIDC/IAM) then Wave 1 then Wave 2
 #
 # Provision order matters (dependency chain):
-#   0. Wave 0 first (OIDC module only -- updates IAM policy before anything else)
+#   0. Wave 0 first (IAM policies only -- updates permissions before anything else)
 #   1. Wave 1 second (VPC, SGs, ECR, S3, Cognito, OIDC -- OIDC is no-op here)
 #   2. Wave 2 third (RDS depends on VPC subnets + security groups)
 #
@@ -130,23 +130,26 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
-      # --- Wave 0 apply (OIDC + IAM policy) ---
-      # Must run BEFORE Wave 1. The OIDC module contains the IAM policy
-      # that grants permissions for all other Terraform operations.
-      # If the policy was updated in code (new permissions added),
-      # this step ensures the policy is active in AWS before Terraform
-      # tries to create/modify resources that need those permissions.
-      # Idempotent: no-op if nothing changed in the OIDC module.
-      - name: Plan Wave 0 (OIDC)
+      # --- Wave 0 apply (IAM policies only) ---
+      # Must run BEFORE Wave 1. These inline IAM policies define what
+      # the pipeline is allowed to do. If new permissions were added in
+      # code, this step activates them in AWS before Terraform tries to
+      # create/modify resources that need those permissions.
+      # Target the policy RESOURCES specifically (not the whole module)
+      # because other resources in the OIDC module (like the OIDC provider
+      # itself) may need the updated permissions to be applied first.
+      # Idempotent: no-op if nothing changed in the policies.
+      - name: Plan Wave 0 (IAM policies)
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: |
           terraform plan \
-            -target=module.github_oidc \
+            -target=module.github_oidc.aws_iam_role_policy.terraform \
+            -target=module.github_oidc.aws_iam_role_policy.github_actions \
             -out=tfplan-wave0
 
-      - name: Apply Wave 0 (OIDC)
+      - name: Apply Wave 0 (IAM policies)
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
