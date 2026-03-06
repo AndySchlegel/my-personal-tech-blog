@@ -370,26 +370,40 @@ Any GitHub Action that downloads releases from the GitHub API should use `github
 
 ---
 
-## #20 - IAM Permissions Evolve: Audit After Every Failure
+## #20 - IAM Permissions Evolve: Add Permission Pairs
 
 **Date:** 2026-03-06
 **Phase:** Terraform Pipeline
 
 **Context:**
-After fixing the tfsec rate limit issue (#19), the second `infra-provision.yml` run failed during Wave 1 apply with two `AccessDeniedException` errors:
-1. `cognito-idp:SetUserPoolMfaConfig` -- Terraform tried to configure MFA settings on the Cognito User Pool
-2. `iam:UntagOpenIDConnectProvider` -- Terraform tried to update tags on the OIDC provider
-
-Both operations had worked fine during the original Wave 1 test deploy (Session 10). Between then and now, the Terraform AWS provider may have changed which API calls it makes for the same resources, or the re-apply (vs first-time create) triggers different code paths (e.g., updating tags on an existing resource requires `Untag` + `Tag`, but creating only needs `Tag`).
+After the tfsec rate limit fix (#19), `infra-provision.yml` failed with two `AccessDeniedException` errors: `cognito-idp:SetUserPoolMfaConfig` and `iam:UntagOpenIDConnectProvider`. Both had worked during the original Wave 1 test deploy. Re-applying (vs first-time create) triggers different AWS API calls -- updating an existing resource requires `Untag` + `Tag`, but creating only needs `Tag`.
 
 **Decision:**
-Added both missing permissions to the `terraform-policy` in `terraform/modules/github-oidc/main.tf`:
-- `cognito-idp:SetUserPoolMfaConfig` (next to existing `GetUserPoolMfaConfig`)
-- `iam:UntagOpenIDConnectProvider` (next to existing `TagOpenIDConnectProvider`)
-
-Also established a pattern: for every IAM action that has a Get/Set or Tag/Untag pair, always include BOTH halves. Terraform may need either one depending on whether it's creating, updating, or destroying resources.
+Added both missing permissions to `terraform-policy`. Established a rule: for every IAM action with a Get/Set or Tag/Untag pair, always include BOTH halves from the start.
 
 **Takeaway:**
-IAM policies for Terraform are not "write once, done forever". Provider updates, Terraform version changes, and different operation types (create vs update vs destroy) can require new permissions. When you add a `Get*` permission, also add the corresponding `Set*`. When you add `Tag*`, also add `Untag*`. These pairs cost nothing in IAM but prevent pipeline failures on operations you haven't tested yet. The lesson from #16 (add all reads at once) extends here: add all permission pairs at once.
+IAM policies for Terraform are not "write once, done forever". Different operation types (create vs update vs destroy) can require different permissions. When you add `Get*`, also add `Set*`. When you add `Tag*`, also add `Untag*`. These pairs cost nothing in IAM but prevent pipeline failures.
+
+---
+
+## #21 - Circular Dependency: OIDC Provider and IAM Policy Deadlock
+
+**Date:** 2026-03-06
+**Phase:** Terraform Pipeline
+
+**Context:**
+After adding the missing permissions (#20), the pipeline still failed -- 6 consecutive runs. The new permissions were in the Terraform code, but could never be applied. Root cause: a circular dependency.
+
+Terraform's dependency chain: IAM Policy -> IAM Role -> OIDC Provider. The OIDC provider had pending changes (tag drift from `default_tags`, thumbprint drift). Terraform resolves the full dependency chain before applying, so it tried to modify the OIDC provider FIRST -- but modifying it required the permissions that were in the IAM policy being updated. Deadlock.
+
+No workflow ordering or `-target` flags could break this, because Terraform always pulls in dependencies automatically. Targeting just the IAM policy resource still pulled in the IAM role, which pulled in the OIDC provider.
+
+**Decision:**
+Two-part fix:
+1. `lifecycle { ignore_changes = all }` on the OIDC provider resource. This singleton persists across destroy cycles, was bootstrapped locally, and config changes are extremely rare. Terraform will never try to modify it, breaking the circular dependency.
+2. **Wave 0** in `infra-provision.yml` applies only the IAM policy resources before Wave 1. This ensures new permissions are active before other resources need them.
+
+**Takeaway:**
+When a Terraform module manages its own IAM permissions (self-referential), any pending change on a resource in the dependency chain creates a deadlock. The fix: use `lifecycle { ignore_changes = all }` on resources that are bootstrapped once and rarely change. This is not a hack -- it's a conscious architectural decision that the resource is managed differently (locally bootstrapped, pipeline-immutable). Document the reasoning in the lifecycle block comment so future readers understand why.
 
 ---

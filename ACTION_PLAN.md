@@ -5,7 +5,7 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Phase 6 (blog content) done, IAM fix pending apply, next: provision Wave 1+2 via infra-provision
+**Current Phase:** Phase 6 done, destroy+rebuild verified, next: Wave 3 EKS + deploy
 **Last Updated:** 2026-03-06 (Session 13)
 
 ---
@@ -122,7 +122,9 @@
 - [x] Integrated into k8s/08-db-init-configmap.yaml (schema + seed in one ConfigMap)
 - [x] Post 12 reserved as live proof-of-concept via admin dashboard
 - [x] Fix tfsec GitHub API rate limiting (github_token in all 3 workflows, PR #15)
-- [x] Fix IAM permissions: SetUserPoolMfaConfig + UntagOpenIDConnectProvider
+- [x] Fix IAM permissions: SetUserPoolMfaConfig + UntagOpenIDConnectProvider (PR #16)
+- [x] Fix circular OIDC/IAM dependency: ignore_changes=all + Wave 0 (PRs #17-#20)
+- [x] Destroy+rebuild cycle verified (destroy green, provision green)
 
 ## Phase 7: ML Integration
 
@@ -145,8 +147,9 @@
 | Wave | What | Monthly Cost | Status |
 |------|------|-------------|--------|
 | **0** | Bootstrap (S3 state + DynamoDB) | $0 | Done |
-| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Destroyed (lifecycle verified) |
-| **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Destroyed (lifecycle verified) |
+| **0** | IAM policies (pre-step in provision) | $0 | Applied (ensures permissions before Wave 1) |
+| **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Destroy+rebuild verified |
+| **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Destroy+rebuild verified |
 | **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
 
 After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.65/month.
@@ -155,13 +158,12 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **Merge IAM fix + re-run infra-provision.yml** -- Wave 1+2 rebuild (VPC, SGs, ECR, S3, Cognito, RDS)
-2. **Wave 3 via terraform.yml** -- EKS + NAT GW + CloudFront (~$126/month)
-3. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
-4. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
-5. **Post 12 via admin dashboard** -- proof-of-concept live editing
-6. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
-7. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires Wave 3 EKS + IRSA)
+1. **Wave 3 via terraform.yml** -- EKS + NAT GW + CloudFront (~$126/month)
+2. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
+3. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
+4. **Post 12 via admin dashboard** -- proof-of-concept live editing
+5. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
+6. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires Wave 3 EKS + IRSA)
 
 Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
 other infra values dynamically from Terraform remote state.
@@ -228,3 +230,6 @@ other infra values dynamically from Terraform remote state.
 | 2026-03-06 | Post 12 = live proof-of-concept | Reserved for writing directly through admin dashboard after full deploy |
 | 2026-03-06 | github_token for tfsec-action | Prevents GitHub API rate limiting (60/h anonymous -> 5000/h authenticated) |
 | 2026-03-06 | IAM permission pairs (Get+Set, Tag+Untag) | Always add both halves to prevent failures on create vs update vs destroy |
+| 2026-03-06 | OIDC provider ignore_changes=all | Break circular dependency: OIDC provider is singleton, bootstrapped locally, immutable from pipeline |
+| 2026-03-06 | Wave 0 in infra-provision.yml | Apply IAM policies before any other resources to ensure permissions are current |
+| 2026-03-06 | Destroy+rebuild cycle verified | infra-destroy (green) -> infra-provision (green) with Wave 0+1+2 |
