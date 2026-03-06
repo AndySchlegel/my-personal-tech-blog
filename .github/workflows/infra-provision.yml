@@ -135,9 +135,8 @@ jobs:
       # the pipeline is allowed to do. If new permissions were added in
       # code, this step activates them in AWS before Terraform tries to
       # create/modify resources that need those permissions.
-      # Target the policy RESOURCES specifically (not the whole module)
-      # because other resources in the OIDC module (like the OIDC provider
-      # itself) may need the updated permissions to be applied first.
+      # Targets only the policy resources (not the whole OIDC module)
+      # to avoid pulling in other resources via Terraform's dependency chain.
       # Idempotent: no-op if nothing changed in the policies.
       - name: Plan Wave 0 (IAM policies)
         working-directory: ${{ env.TF_WORKING_DIR }}
