@@ -306,7 +306,8 @@ Manual Trigger (type "DESTROY" to confirm)
     |
     Job 1: TEARDOWN (environment: production)
     +-- OIDC auth
-    +-- Destroy Wave 2 first (RDS depends on VPC/SGs)
+    +-- Destroy Wave 3 first (EKS + CloudFront, no-op if not deployed)
+    +-- Destroy Wave 2 (RDS depends on VPC/SGs)
     +-- Destroy Wave 1 (OIDC excluded -- keeps pipeline auth alive)
     +-- Verify: terraform state list (only OIDC should remain)
 ```
@@ -314,7 +315,7 @@ Manual Trigger (type "DESTROY" to confirm)
 **Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
 
 ```
-Manual Trigger
+Manual Trigger (optional: include Wave 3 checkbox)
     |
     Job 1: VALIDATE (no AWS creds needed)
     +-- terraform fmt + init + validate
@@ -325,8 +326,10 @@ Manual Trigger
     Job 3: PROVISION (environment: production)
     +-- OIDC auth
     +-- Wave 0: Apply IAM policies only (ensures permissions are current)
+    +-- 15s IAM propagation delay (eventual consistency)
     +-- Wave 1: Apply VPC, SGs, ECR, S3, Cognito, OIDC
     +-- Wave 2: Apply RDS
+    +-- Wave 3: Apply EKS + CloudFront + NAT GW (only when checkbox set)
     +-- Show terraform output
 ```
 
@@ -380,6 +383,7 @@ Key highlights:
 - **#19** tfsec GitHub API rate limiting -- anonymous requests limited to 60/h, always pass `github_token` for 5,000/h
 - **#20** IAM permission pairs -- always add both Get+Set and Tag+Untag, provider updates call different APIs on create vs update
 - **#21** Circular dependency deadlock -- self-referential IAM module creates unresolvable dependency chain, fixed with `lifecycle { ignore_changes = all }` on OIDC provider + Wave 0 pre-step
+- **#22** IAM eventual consistency -- policy updates take seconds to propagate, add sleep between update and usage in automated pipelines
 
 ---
 
@@ -394,8 +398,8 @@ Key highlights:
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 21 documented |
-| Commits | 55+ |
+| Lessons Learned | 22 documented |
+| Commits | 60+ |
 
 *Updated as the project progresses.*
 
@@ -410,6 +414,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 6 done, destroy+rebuild cycle verified, next: Wave 3 EKS + deploy)
+**Project Status:** In Development (Wave 0-3 deployed, all infra live, next: deploy app)
 **Last Updated:** 2026-03-06
 **AWS Region:** eu-central-1 (Frankfurt)
