@@ -98,6 +98,14 @@ output "public_subnet_ids" {
   value       = join(",", module.vpc.public_subnet_ids)
 }
 
+# --- EKS ALB Controller ---
+# The IRSA role ARN that the AWS Load Balancer Controller pod uses
+# to create and manage ALBs. Passed to Helm during controller install.
+output "alb_controller_role_arn" {
+  description = "ALB controller IRSA role ARN (for Helm install)"
+  value       = module.eks.alb_controller_role_arn
+}
+
 # The final blog URL -- this is what users type in their browser.
 output "blog_url" {
   description = "Blog URL"

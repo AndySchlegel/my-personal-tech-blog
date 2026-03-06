@@ -6,26 +6,19 @@
 # Three jobs in sequence:
 #   1. TEST  - Run ESLint, Prettier, and Jest unit tests (skippable for hotfixes)
 #   2. BUILD - Build Docker images and push to ECR (tagged with git SHA + latest)
-#   3. DEPLOY - Apply K8s manifests and roll out new images to EKS
+#   3. DEPLOY - Install ALB controller, apply K8s manifests, roll out images,
+#              and optionally initialize the database
 #
 # Authentication: OIDC federation (no long-lived AWS keys).
 # The github-oidc Terraform module creates the IAM role that this workflow assumes.
+# The same role created the EKS cluster (via infra-provision.yml), so kubectl
+# access works automatically -- no aws-auth ConfigMap changes needed.
 #
 # 2 GitHub Secrets required: AWS_ROLE_ARN, DB_PASSWORD.
 # All other infrastructure values (RDS endpoint, Cognito IDs, ECR URLs,
-# subnet IDs, ALB SG, ACM cert) are read dynamically from Terraform state.
-# This makes the pipeline fully reproducible after a destroy + apply cycle
-# without manual secret updates.
-#
-# Post-deploy manual step (one-time):
-#   The GitHub Actions IAM role must be added to the aws-auth ConfigMap
-#   so kubectl commands work from the workflow:
-#     kubectl edit configmap aws-auth -n kube-system
-#     # Add under mapRoles:
-#     - rolearn: <AWS_ROLE_ARN>
-#       username: github-actions
-#       groups:
-#         - system:masters
+# subnet IDs, ALB SG, ACM cert, ALB controller role) are read dynamically
+# from Terraform state. This makes the pipeline fully reproducible after
+# a destroy + apply cycle without manual secret updates.
 
 name: Deploy to EKS
 
@@ -34,6 +27,11 @@ on:
     inputs:
       skip_tests:
         description: 'Skip tests (for hotfix deploys)'
+        required: false
+        type: boolean
+        default: false
+      run_db_init:
+        description: 'Initialize database (schema + seed data, first deploy only)'
         required: false
         type: boolean
         default: false
@@ -155,14 +153,10 @@ jobs:
           docker push $ECR_REGISTRY/blog-frontend:latest
 
   # ===== Job 3: DEPLOY =====
-  # Applies K8s manifests and rolls out new images to EKS.
-  #
-  # Important: This does NOT apply 09-db-init-job.yaml!
-  # The DB init job is a one-time manual step:
-  #   kubectl apply -f k8s/09-db-init-job.yaml
-  # Run it once after RDS is provisioned, not on every deploy.
+  # Installs ALB controller (idempotent), applies K8s manifests, rolls out
+  # new images, and optionally seeds the database.
   deploy:
-    name: Deploy to EKS
+    name: "Deploy to EKS${{ inputs.run_db_init && ' + DB Init' || '' }}"
     runs-on: ubuntu-latest
     needs: build
     environment: production
@@ -187,9 +181,8 @@ jobs:
           terraform_wrapper: false
 
       # Read all infrastructure values from the Terraform remote state.
-      # These replace the 7 static GitHub Secrets that previously had to be
-      # updated manually after every destroy + apply cycle.
-      # The IAM role already has S3 read access to the state bucket.
+      # These replace static GitHub Secrets that would need manual updating
+      # after every destroy + apply cycle.
       - name: Read infrastructure values from Terraform state
         id: tf
         working-directory: terraform/
@@ -203,12 +196,36 @@ jobs:
           echo "acm_certificate_arn=$(terraform output -raw acm_certificate_arn)" >> "$GITHUB_OUTPUT"
           echo "ecr_backend_url=$(terraform output -raw ecr_backend_url)" >> "$GITHUB_OUTPUT"
           echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> "$GITHUB_OUTPUT"
+          echo "vpc_id=$(terraform output -raw vpc_id)" >> "$GITHUB_OUTPUT"
+          echo "alb_controller_role_arn=$(terraform output -raw alb_controller_role_arn)" >> "$GITHUB_OUTPUT"
 
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
       # After this, all kubectl commands target our cluster.
       - name: Configure kubectl
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      # --- AWS Load Balancer Controller (Helm) ---
+      # This controller watches for Ingress resources and creates real AWS ALBs.
+      # Without it, our Ingress YAML is accepted by Kubernetes but nothing happens.
+      # Uses 'helm upgrade --install' which is idempotent:
+      #   - First run: installs the controller
+      #   - Later runs: updates if chart version changed, no-op otherwise
+      # The IRSA role (from Terraform) gives the controller pod permissions
+      # to create/manage ALBs without giving the entire node those permissions.
+      - name: Install AWS Load Balancer Controller
+        run: |
+          helm repo add eks https://aws.github.io/eks-charts
+          helm repo update eks
+          helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
+            --namespace kube-system \
+            --set clusterName=${{ env.EKS_CLUSTER_NAME }} \
+            --set serviceAccount.create=true \
+            --set serviceAccount.name=aws-load-balancer-controller \
+            --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=${{ steps.tf.outputs.alb_controller_role_arn }} \
+            --set region=${{ env.AWS_REGION }} \
+            --set vpcId=${{ steps.tf.outputs.vpc_id }} \
+            --wait --timeout 5m0s
 
       # Step 1: Create namespace and apply non-sensitive config.
       # These are safe to apply from the git manifests directly.
@@ -282,6 +299,31 @@ jobs:
           echo "Waiting for frontend rollout..."
           kubectl rollout status deployment/blog-frontend --namespace ${{ env.K8S_NAMESPACE }} --timeout=300s
 
+      # --- Database initialization (optional, first deploy only) ---
+      # Runs schema creation + seed data (11 blog posts, categories, tags)
+      # against RDS. Safe to re-run: schema uses IF NOT EXISTS, seed uses
+      # DELETE + re-INSERT.
+      # Only runs when the "Initialize database" checkbox is checked.
+      - name: Apply DB init ConfigMap
+        if: ${{ inputs.run_db_init }}
+        run: kubectl apply -f k8s/08-db-init-configmap.yaml
+
+      - name: Run DB init job
+        if: ${{ inputs.run_db_init }}
+        run: |
+          kubectl delete job db-init --namespace ${{ env.K8S_NAMESPACE }} --ignore-not-found
+          kubectl apply -f k8s/09-db-init-job.yaml
+
+      - name: Wait for DB init
+        if: ${{ inputs.run_db_init }}
+        run: |
+          echo "Waiting for database initialization..."
+          kubectl wait --for=condition=complete job/db-init \
+            --namespace ${{ env.K8S_NAMESPACE }} --timeout=120s
+          echo ""
+          echo "=== DB Init Logs ==="
+          kubectl logs job/db-init --namespace ${{ env.K8S_NAMESPACE }}
+
       # Step 8: Print current cluster state for debugging.
       # This appears in the GitHub Actions log for easy troubleshooting.
       - name: Print deployment status
@@ -295,3 +337,6 @@ jobs:
           echo ""
           echo "=== Ingress ==="
           kubectl get ingress --namespace ${{ env.K8S_NAMESPACE }}
+          echo ""
+          echo "=== ALB Controller ==="
+          kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
