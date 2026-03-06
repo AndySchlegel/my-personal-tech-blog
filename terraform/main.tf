@@ -142,6 +142,22 @@ module "eks" {
   node_max               = var.eks_node_max
 }
 
+# Cross-module SG rule: allow EKS pods to reach RDS on port 5432.
+# EKS creates its own "cluster security group" and attaches it to all nodes.
+# Our custom EKS node SG (from security-groups module) is passed to the
+# cluster config but NOT used by managed node groups. So the existing
+# RDS ingress rule (which references our custom SG) doesn't match.
+# This rule adds the EKS-managed cluster SG as a second allowed source.
+# Lives in root main.tf because it connects two modules (EKS + SG).
+resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
+  security_group_id            = module.security_groups.rds_sg_id
+  description                  = "PostgreSQL from EKS cluster SG (pods)"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 5432
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
+}
+
 # CloudFront: CDN for serving blog assets (images) with HTTPS.
 # Depends on S3 (origin bucket) and Route 53 (DNS zone for the domain).
 # The providers block passes both the default and us-east-1 provider
