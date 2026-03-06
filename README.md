@@ -376,6 +376,8 @@ Key highlights:
 - **#16** IAM permissions: add all read permissions at once to avoid iteration cycles
 - **#17** Deploy pipeline reads infra values from Terraform state -- no manual secret updates after destroy+apply
 - **#18** Pin stable Terraform versions in CI/CD -- 1.7.0 had state save bug on destroy, fixed by upgrading to 1.9.0
+- **#19** tfsec GitHub API rate limiting -- anonymous requests limited to 60/h, always pass `github_token` for 5,000/h
+- **#20** IAM permission pairs -- always add both Get+Set and Tag+Untag, provider updates call different APIs on create vs update
 
 ---
 
@@ -386,10 +388,12 @@ Key highlights:
 | Development Duration | 4 weeks (Feb-Mar 2026) |
 | Terraform Modules | 9 (32 files, 2,800+ lines) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
-| Blog Articles | 12 (migrated from previous project) |
+| Blog Articles | 11 (German, real content) + 1 reserved for live PoC |
+| Categories | 7 (each with unique color system) |
+| Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 18 documented |
-| Commits | 10+ |
+| Lessons Learned | 20 documented |
+| Commits | 55+ |
 
 *Updated as the project progresses.*
 
@@ -404,6 +408,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Wave 1 tested + pipeline verified, next: full deployment sprint Wave 1-3)
-**Last Updated:** 2026-02-27
+**Project Status:** In Development (Phase 6 done: 11 blog posts seeded, IAM fix pending, next: provision Wave 1+2 + deploy)
+**Last Updated:** 2026-03-06
 **AWS Region:** eu-central-1 (Frankfurt)

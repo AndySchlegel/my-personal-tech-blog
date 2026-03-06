@@ -355,6 +355,7 @@ resource "aws_iam_role_policy" "terraform" {
           "cognito-idp:DeleteGroup",
           "cognito-idp:GetGroup",
           "cognito-idp:GetUserPoolMfaConfig",
+          "cognito-idp:SetUserPoolMfaConfig",
           "cognito-idp:ListTagsForResource",
           "cognito-idp:TagResource",
           "cognito-idp:UntagResource"
@@ -450,6 +451,7 @@ resource "aws_iam_role_policy" "terraform" {
           "iam:DeleteOpenIDConnectProvider",
           "iam:GetOpenIDConnectProvider",
           "iam:TagOpenIDConnectProvider",
+          "iam:UntagOpenIDConnectProvider",
           "iam:ListOpenIDConnectProviders",
           "iam:CreateServiceLinkedRole",
           "iam:GetPolicy",
