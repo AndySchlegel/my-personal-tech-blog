@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Phase 6 done, destroy+rebuild verified, next: Wave 3 EKS + deploy
-**Last Updated:** 2026-03-06 (Session 13)
+**Current Phase:** Wave 0-3 deployed, all infra live, next: deploy app via deploy.yml
+**Last Updated:** 2026-03-06 (Session 14)
 
 ---
 
@@ -93,9 +93,9 @@
 - [x] Wave 1 apply locally (44 resources: VPC, SGs, ECR, S3, Cognito, OIDC)
 - [x] Wave 1 pipeline test (validate + plan green after 3 IAM permission iterations)
 - [x] Wave 1 destroyed (test complete, no running costs)
-- [ ] Wave 1 re-apply (when ready for real deployment)
-- [ ] Wave 2 apply (RDS)
-- [ ] Wave 3 apply (EKS + NAT GW + CloudFront)
+- [x] Wave 1 re-apply (infra-provision.yml, green)
+- [x] Wave 2 apply (RDS, infra-provision.yml, green)
+- [x] Wave 3 apply (EKS + NAT GW + CloudFront, infra-provision.yml with checkbox, green)
 - [x] tfsec + Checkov CI integration (soft_fail=false, all 42 findings triaged)
 
 ## Phase 5: Kubernetes + CI/CD (~95% Done)
@@ -125,6 +125,8 @@
 - [x] Fix IAM permissions: SetUserPoolMfaConfig + UntagOpenIDConnectProvider (PR #16)
 - [x] Fix circular OIDC/IAM dependency: ignore_changes=all + Wave 0 (PRs #17-#20)
 - [x] Destroy+rebuild cycle verified (destroy green, provision green)
+- [x] Fix IAM eventual consistency: 15s sleep between Wave 0 and Wave 1 (PR #25)
+- [x] Wave 3 deployed via infra-provision.yml with optional checkbox (PR #23-#25)
 
 ## Phase 7: ML Integration
 
@@ -150,7 +152,7 @@
 | **0** | IAM policies (pre-step in provision) | $0 | Applied (ensures permissions before Wave 1) |
 | **1** | VPC, Security Groups, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Destroy+rebuild verified |
 | **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Destroy+rebuild verified |
-| **3** | EKS + NAT GW + CloudFront | ~$126 | Code done |
+| **3** | EKS + NAT GW + CloudFront | ~$126 | Deployed (optional checkbox in provision workflow) |
 
 After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.65/month.
 
@@ -158,12 +160,12 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **Wave 3 via terraform.yml** -- EKS + NAT GW + CloudFront (~$126/month)
-2. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
-3. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
-4. **Post 12 via admin dashboard** -- proof-of-concept live editing
-5. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
-6. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires Wave 3 EKS + IRSA)
+1. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
+2. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
+3. **Post 12 via admin dashboard** -- proof-of-concept live editing
+4. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
+5. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires EKS + IRSA)
+6. **Polish + Presentation** -- screenshots, architecture diagram, slides
 
 Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
 other infra values dynamically from Terraform remote state.
@@ -233,3 +235,6 @@ other infra values dynamically from Terraform remote state.
 | 2026-03-06 | OIDC provider ignore_changes=all | Break circular dependency: OIDC provider is singleton, bootstrapped locally, immutable from pipeline |
 | 2026-03-06 | Wave 0 in infra-provision.yml | Apply IAM policies before any other resources to ensure permissions are current |
 | 2026-03-06 | Destroy+rebuild cycle verified | infra-destroy (green) -> infra-provision (green) with Wave 0+1+2 |
+| 2026-03-06 | Optional Wave 3 checkbox in provision workflow | Single workflow handles Wave 0-2 or Wave 0-3 based on user choice |
+| 2026-03-06 | IAM propagation delay (15s sleep) | Eventual consistency: Wave 0 policy update needs time before Wave 1 uses new permissions |
+| 2026-03-06 | Wave 3 destroy always runs first | Destroy workflow tries Wave 3 first (no-op if not deployed), then Wave 2, then Wave 1 |
