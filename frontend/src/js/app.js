@@ -34,6 +34,7 @@
     "networking-security": "red",
     "tools-productivity": "purple",
     "aws-cloud": "orange",
+    "career-learning": "teal",
   };
 
   // --- Demo posts shown when the API is not reachable ---
@@ -174,12 +175,18 @@
       glow: "glow-orange",
       tag: "text-orange-500/70",
     },
+    "Career & Learning": {
+      badge: "bg-teal-500/20 text-teal-400",
+      border: "border-t-teal-500",
+      glow: "glow-teal",
+      tag: "text-teal-500/70",
+    },
     // Fallback for demo posts and unknown categories
     Career: {
-      badge: "bg-purple-500/20 text-purple-400",
-      border: "border-t-purple-500",
-      glow: "glow-purple",
-      tag: "text-purple-500/70",
+      badge: "bg-teal-500/20 text-teal-400",
+      border: "border-t-teal-500",
+      glow: "glow-teal",
+      tag: "text-teal-500/70",
     },
     Security: {
       badge: "bg-red-500/20 text-red-400",
