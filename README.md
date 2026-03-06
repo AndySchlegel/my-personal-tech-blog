@@ -324,8 +324,9 @@ Manual Trigger
     |
     Job 3: PROVISION (environment: production)
     +-- OIDC auth
-    +-- Apply Wave 1 (VPC, SGs, ECR, S3, Cognito, OIDC)
-    +-- Apply Wave 2 (RDS)
+    +-- Wave 0: Apply IAM policies only (ensures permissions are current)
+    +-- Wave 1: Apply VPC, SGs, ECR, S3, Cognito, OIDC
+    +-- Wave 2: Apply RDS
     +-- Show terraform output
 ```
 
@@ -378,6 +379,7 @@ Key highlights:
 - **#18** Pin stable Terraform versions in CI/CD -- 1.7.0 had state save bug on destroy, fixed by upgrading to 1.9.0
 - **#19** tfsec GitHub API rate limiting -- anonymous requests limited to 60/h, always pass `github_token` for 5,000/h
 - **#20** IAM permission pairs -- always add both Get+Set and Tag+Untag, provider updates call different APIs on create vs update
+- **#21** Circular dependency deadlock -- self-referential IAM module creates unresolvable dependency chain, fixed with `lifecycle { ignore_changes = all }` on OIDC provider + Wave 0 pre-step
 
 ---
 
@@ -392,7 +394,7 @@ Key highlights:
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 20 documented |
+| Lessons Learned | 21 documented |
 | Commits | 55+ |
 
 *Updated as the project progresses.*
@@ -408,6 +410,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Phase 6 done: 11 blog posts seeded, IAM fix pending, next: provision Wave 1+2 + deploy)
+**Project Status:** In Development (Phase 6 done, destroy+rebuild cycle verified, next: Wave 3 EKS + deploy)
 **Last Updated:** 2026-03-06
 **AWS Region:** eu-central-1 (Frankfurt)
