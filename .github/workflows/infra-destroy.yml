@@ -3,9 +3,10 @@
 # MANUAL TRIGGER ONLY (workflow_dispatch) -- destroys all infrastructure
 # except the OIDC provider in one pipeline run.
 #
-# Destruction order matters (dependency chain):
-#   1. Wave 2 first (RDS depends on VPC subnets + security groups)
-#   2. Wave 1 second (OIDC explicitly excluded to keep pipeline auth alive)
+# Destruction order matters (reverse dependency chain):
+#   1. Wave 3 first (EKS + CloudFront -- depend on VPC, skipped if not deployed)
+#   2. Wave 2 second (RDS depends on VPC subnets + security groups)
+#   3. Wave 1 third (OIDC explicitly excluded to keep pipeline auth alive)
 #
 # After completion, only github_oidc resources should remain in state.
 # Use terraform.yml for individual wave operations.
@@ -42,11 +43,8 @@ env:
   TF_WORKING_DIR: terraform
 
 jobs:
-  # ===== Single Job: Teardown Wave 1+2 =====
-  # Destroys Wave 2 first (RDS), then Wave 1 (VPC, SGs, ECR, S3, Cognito).
-  # OIDC module is explicitly excluded from Wave 1 destroy targets.
   teardown:
-    name: Teardown Wave 1+2
+    name: Teardown All Waves
     runs-on: ubuntu-latest
     if: ${{ inputs.confirm_destroy == 'DESTROY' }}
     environment: production
@@ -70,9 +68,36 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
+      # --- Wave 3 destroy (EKS + CloudFront) ---
+      # Must be destroyed FIRST because EKS depends on VPC subnets.
+      # If Wave 3 was never deployed, the plan is empty and apply is a no-op.
+      # enable_nat_gateway=true so Terraform includes NAT GW in the plan.
+      - name: Plan destroy Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: "true"
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.eks \
+            -target=module.cloudfront \
+            -out=tfplan-wave3
+
+      - name: Show plan Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave3
+
+      - name: Destroy Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: "true"
+        run: terraform apply tfplan-wave3
+
       # --- Wave 2 destroy (RDS) ---
-      # Must be destroyed FIRST because RDS depends on VPC subnets
-      # and security groups from Wave 1.
+      # Must be destroyed BEFORE Wave 1 because RDS depends on VPC subnets
+      # and security groups.
       - name: Plan destroy Wave 2
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
@@ -96,6 +121,7 @@ jobs:
       # --- Wave 1 destroy (without OIDC) ---
       # Explicitly targets each module EXCEPT github_oidc.
       # OIDC must survive to keep pipeline auth + other projects working.
+      # VPC destruction includes NAT GW if it was enabled.
       - name: Plan destroy Wave 1
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
