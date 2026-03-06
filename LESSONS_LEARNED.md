@@ -407,3 +407,22 @@ Two-part fix:
 When a Terraform module manages its own IAM permissions (self-referential), any pending change on a resource in the dependency chain creates a deadlock. The fix: use `lifecycle { ignore_changes = all }` on resources that are bootstrapped once and rarely change. This is not a hack -- it's a conscious architectural decision that the resource is managed differently (locally bootstrapped, pipeline-immutable). Document the reasoning in the lifecycle block comment so future readers understand why.
 
 ---
+
+## #22 - IAM Eventual Consistency: Sleep Between Policy Update and Usage
+
+**Date:** 2026-03-06
+**Phase:** Terraform Pipeline
+
+**Context:**
+The `infra-provision.yml` workflow uses a Wave 0 pre-step to apply IAM policy changes before creating infrastructure in Wave 1. After adding new permissions (`ec2:DescribeAddressesAttribute`, `kms:EnableKeyRotation`) in Wave 0, Wave 1 immediately failed with `AccessDenied` on those exact permissions. Logs showed Wave 0 Apply completed at 15:15:33 and Wave 1 Plan started at 15:15:34 -- a 1-second gap.
+
+**Root Cause:**
+AWS IAM is eventually consistent. When you update an IAM policy, the change is saved to the IAM control plane but takes 5-15 seconds to propagate to all AWS service endpoints. If Terraform calls `ec2:DescribeAddressesAttribute` within that window, the EC2 endpoint may still see the old policy without that permission.
+
+**Decision:**
+Added a `sleep 15` step between Wave 0 Apply and Wave 1 Plan. 15 seconds is generous enough for IAM propagation (AWS says "within seconds", but we add margin for safety). The sleep has a clear comment explaining why it exists.
+
+**Takeaway:**
+IAM policy changes are not instant. If your pipeline updates permissions in one step and uses them in the next, add a brief delay between the two. This is a well-documented AWS behavior (IAM eventual consistency model), but easy to miss in automated pipelines where steps execute in rapid succession. A 15-second sleep costs nothing in pipeline time but prevents flaky permission errors that are hard to debug because they only happen sometimes.
+
+---
