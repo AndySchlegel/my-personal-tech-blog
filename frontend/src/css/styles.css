@@ -108,6 +108,12 @@ html.transition-theme *::after {
     0 0 40px rgba(249, 115, 22, 0.35),
     0 0 80px rgba(249, 115, 22, 0.15);
 }
+.dark .post-card[class*="border-t-teal"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(20, 184, 166, 0.35),
+    0 0 80px rgba(20, 184, 166, 0.15);
+}
 
 /* Title gets gradient color on hover */
 .post-card h2 {
@@ -155,6 +161,10 @@ html.transition-theme *::after {
 /* Orange (AWS) */
 .post-card.glow-orange:hover h2 .title-text {
   background-image: linear-gradient(135deg, #fb923c, #fbbf24);
+}
+/* Teal (Career) */
+.post-card.glow-teal:hover h2 .title-text {
+  background-image: linear-gradient(135deg, #2dd4bf, #22d3ee);
 }
 
 /* Excerpt text brightens on hover */
@@ -375,6 +385,13 @@ html.transition-theme *::after {
   border-color: rgba(249, 115, 22, 0.4);
   color: #fb923c;
   box-shadow: 0 0 12px rgba(249, 115, 22, 0.15);
+}
+
+.filter-btn-active[data-color="teal"] {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.4);
+  color: #2dd4bf;
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.15);
 }
 
 /* Light mode adjustments for filter buttons */
