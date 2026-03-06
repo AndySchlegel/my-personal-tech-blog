@@ -115,6 +115,7 @@ jobs:
         with:
           working_directory: ${{ env.TF_WORKING_DIR }}
           soft_fail: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # Checkov: policy-as-code scanner for Terraform.
       # Checks against CIS benchmarks, AWS best practices, etc.

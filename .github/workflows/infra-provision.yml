@@ -86,6 +86,7 @@ jobs:
         with:
           working_directory: ${{ env.TF_WORKING_DIR }}
           soft_fail: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # Checkov: CIS benchmarks, AWS best practices.
       - name: Run Checkov
