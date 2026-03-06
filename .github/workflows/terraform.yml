@@ -178,7 +178,9 @@ jobs:
               echo "flags=-target=module.rds" >> "$GITHUB_OUTPUT"
               ;;
             wave-3)
-              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront" >> "$GITHUB_OUTPUT"
+              # Root-level rds_from_eks_cluster_sg connects EKS cluster SG -> RDS.
+              # Must be explicitly targeted because it's not inside any module.
+              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg" >> "$GITHUB_OUTPUT"
               ;;
             all)
               echo "flags=" >> "$GITHUB_OUTPUT"

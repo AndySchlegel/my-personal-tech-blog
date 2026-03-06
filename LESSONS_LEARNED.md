@@ -426,3 +426,57 @@ Added a `sleep 15` step between Wave 0 Apply and Wave 1 Plan. 15 seconds is gene
 IAM policy changes are not instant. If your pipeline updates permissions in one step and uses them in the next, add a brief delay between the two. This is a well-documented AWS behavior (IAM eventual consistency model), but easy to miss in automated pipelines where steps execute in rapid succession. A 15-second sleep costs nothing in pipeline time but prevents flaky permission errors that are hard to debug because they only happen sometimes.
 
 ---
+
+## #23 - EKS Managed Nodes Use a Different Security Group Than Expected
+
+**Date:** 2026-03-06
+**Phase:** EKS Deployment
+
+**Context:**
+The first deploy to EKS succeeded -- pods were running, services were up -- but the database initialization job timed out with `psql: connection to server ... timed out`. The RDS security group only allowed inbound traffic from our custom EKS nodes security group (created in the `security-groups` module). Pods should be running on EKS nodes, so the SG rule should have matched. But it didn't.
+
+**Root Cause:**
+EKS automatically creates its own "cluster security group" and attaches it to all managed node group instances. Our custom EKS nodes security group (`security_group_ids` in `vpc_config`) is applied to the EKS control plane ENIs, but NOT to the managed node group instances. So when a pod on a managed node tries to connect to RDS, the outbound traffic uses the EKS-managed cluster SG -- not our custom SG. The RDS ingress rule only referenced our custom SG, so the traffic was denied.
+
+Two different security groups:
+- **Custom SG** (from `security-groups` module): applied to EKS control plane ENIs
+- **Cluster SG** (auto-created by EKS): applied to managed node group instances (where pods run)
+
+**Decision:**
+Added a cross-module security group rule in `terraform/main.tf` that allows ingress on port 5432 from the EKS-managed cluster SG to the RDS SG. Also added a new output (`cluster_security_group_id`) to the EKS module to expose this auto-created SG ID.
+
+```hcl
+resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
+  security_group_id            = module.security_groups.rds_sg_id
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 5432
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
+}
+```
+
+The rule lives in root `main.tf` (not in either module) because it connects two modules -- this is the standard Terraform pattern for cross-module references.
+
+**Takeaway:**
+EKS managed node groups do NOT use the security groups you pass to the cluster's `vpc_config`. EKS creates its own cluster security group and attaches it to all managed nodes. Any SG rules that need to allow traffic FROM pods must reference this auto-created cluster SG (available via `aws_eks_cluster.main.vpc_config[0].cluster_security_group_id`), not your custom SG. This is a well-documented AWS behavior but easy to miss because the `security_group_ids` parameter name suggests it applies to nodes. Always verify which SG is actually attached to the instances.
+
+---
+
+## #24 - Terraform -target Skips Root-Level Resources
+
+**Date:** 2026-03-06
+**Phase:** Terraform Pipeline
+
+**Context:**
+PR #28 added a cross-module security group rule (`aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg`) to root `main.tf` to allow EKS pods to reach RDS. The `terraform.yml` workflow was run with `action=apply`, `wave=wave-3`. Result: "Apply complete! Resources: 0 added, 0 changed, 0 destroyed." The SG rule was never created, and the DB init job timed out again with `connection timed out`.
+
+**Root Cause:**
+Wave 3 targets were `-target=module.vpc -target=module.eks -target=module.cloudfront`. The new SG rule is a ROOT-LEVEL resource (not inside any module). Terraform's `-target` flag only includes resources that match the target or are dependencies of the target. A root-level resource that DEPENDS ON modules is not included when you target those modules -- the dependency goes the wrong direction.
+
+**Decision:**
+Added `-target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg` to Wave 3 targets in all three workflows: `terraform.yml`, `infra-provision.yml`, `infra-destroy.yml`.
+
+**Takeaway:**
+When using Terraform's `-target` flag for wave deployments, root-level resources are invisible unless explicitly targeted. Module-level targeting (`-target=module.eks`) only includes resources INSIDE that module and their dependencies -- not resources that depend ON the module. Any cross-module "glue" resource in root `main.tf` must be added as its own `-target` entry. This is easy to forget because `terraform apply` without targets works fine (it sees everything).
+
+---

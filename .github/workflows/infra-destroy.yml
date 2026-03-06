@@ -82,6 +82,7 @@ jobs:
             -destroy \
             -target=module.eks \
             -target=module.cloudfront \
+            -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
             -out=tfplan-wave3
 
       - name: Show plan Wave 3
