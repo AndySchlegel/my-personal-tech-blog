@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Lifecycle workflows done + verified, infra fully destroyed, next: deploy Wave 1+2 via infra-provision
-**Last Updated:** 2026-02-27 (Session 12)
+**Current Phase:** Phase 6 (blog content) done, IAM fix pending apply, next: provision Wave 1+2 via infra-provision
+**Last Updated:** 2026-03-06 (Session 13)
 
 ---
 
@@ -19,8 +19,9 @@
 | 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | ~95% Done (CI/CD pipeline written) | Week 3 |
-| 6. ML Integration (Comprehend) | Not Started | Week 3-4 |
-| 7. Polish + Presentation | Not Started | Week 4 |
+| 6. Blog Content + Seed Script | Done | Week 3 |
+| 7. ML Integration (Comprehend) | Not Started | Week 3-4 |
+| 8. Polish + Presentation | Not Started | Week 4 |
 
 ---
 
@@ -47,7 +48,7 @@
 - [x] Auth middleware (Cognito JWT validation + dev bypass)
 - [ ] S3 image upload service (pre-signed URLs)
 - [x] Unit tests (31 tests: health, posts, comments, categories, auth)
-- [x] Seed data (12 articles, 6 categories, 28 tags from old blog)
+- [x] Seed data (11 articles, 7 categories, 32 tags -- real content from blog project)
 - [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
 
 ## Phase 3: Frontend (~85% Done)
@@ -111,18 +112,29 @@
 - [x] Infrastructure lifecycle workflows: infra-destroy.yml + infra-provision.yml (PR #10)
 - [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
 
-## Phase 6: ML Integration
+## Phase 6: Blog Content + Seed Script (Done)
+
+- [x] Convert 11 German Markdown posts from project-blog-content into SQL seed script
+- [x] Add 7th category "Career & Learning" with teal color system (CSS + JS)
+- [x] 32 tags, 53 post-tag links, sequence resets for reproducibility
+- [x] Local SQL validation against PostgreSQL 16 Alpine container
+- [x] Category slug mismatch fix (DB slugs aligned to frontend JS keys)
+- [x] Integrated into k8s/08-db-init-configmap.yaml (schema + seed in one ConfigMap)
+- [x] Post 12 reserved as live proof-of-concept via admin dashboard
+- [x] Fix tfsec GitHub API rate limiting (github_token in all 3 workflows, PR #15)
+- [x] Fix IAM permissions: SetUserPoolMfaConfig + UntagOpenIDConnectProvider
+
+## Phase 7: ML Integration
 
 - [ ] Comprehend service (detectKeyPhrases for auto-tags)
 - [ ] Comprehend service (detectSentiment for comments)
 - [ ] IRSA role for Comprehend access (pod-level IAM)
 - [ ] Admin dashboard: ML results display
 
-## Phase 7: Polish + Presentation
+## Phase 8: Polish + Presentation
 
-- [ ] Final README (ecokart-style with screenshots)
+- [ ] Final README with screenshots
 - [ ] Architecture diagram
-- [ ] Demo data (3-5 polished articles)
 - [ ] Presentation slides (20-30 min)
 - [ ] Cost documentation
 
@@ -143,23 +155,16 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-### Option A: Full Deploy Sprint (Wave 1-3 + first blog live)
-Trigger `infra-provision.yml` to rebuild Wave 1+2 in one run, then Wave 3 via `terraform.yml`.
-Blog goes live on EKS. Teardown via `infra-destroy.yml` when done.
-Pro: Everything is tested and ready, lifecycle fully automated.
+1. **Merge IAM fix + re-run infra-provision.yml** -- Wave 1+2 rebuild (VPC, SGs, ECR, S3, Cognito, RDS)
+2. **Wave 3 via terraform.yml** -- EKS + NAT GW + CloudFront (~$126/month)
+3. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
+4. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
+5. **Post 12 via admin dashboard** -- proof-of-concept live editing
+6. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
+7. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires Wave 3 EKS + IRSA)
 
-### Option B: S3 Image Uploads (Frontend/Backend focus)
-Add image upload support to the post editor. Requires S3 bucket to be
-deployed (Wave 1) for pre-signed URL generation.
-
-### Option C: ML Integration (Comprehend)
-Add auto-tagging and comment sentiment analysis.
-Requires EKS deployment (Wave 3) + IRSA role.
-
-Recommended: **Option A** (Full Deploy Sprint) when ready to commit to ~$143/month.
 Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
-other infra values dynamically from Terraform remote state. Wave 1 locally only
-needed the first time (chicken-and-egg: OIDC role doesn't exist yet).
+other infra values dynamically from Terraform remote state.
 
 ---
 
@@ -217,3 +222,9 @@ needed the first time (chicken-and-egg: OIDC role doesn't exist yet).
 | 2026-02-27 | Dynamic Terraform outputs in deploy pipeline | Pipeline reads all infra values from Terraform remote state (S3) instead of 9 static GitHub Secrets -- fully reproducible after destroy+apply with only 2 secrets |
 | 2026-02-27 | Infrastructure lifecycle workflows | Two purpose-built workflows (infra-destroy + infra-provision) automate full destroy/rebuild cycle instead of 4 manual terraform.yml runs |
 | 2026-02-27 | Terraform 1.7.0 -> 1.9.0 | Fix sporadic S3 state save failure (failed to rewind transport stream) during destroy operations |
+| 2026-03-06 | 11 real blog posts as seed SQL | German Markdown posts from project-blog-content, stored as TEXT in PostgreSQL, rendered client-side |
+| 2026-03-06 | Career & Learning category (teal) | 7th category added with full color system (badge, border, glow, gradient, filter button) |
+| 2026-03-06 | Category slugs match frontend JS keys | DB slugs aligned to CATEGORY_COLORS keys (e.g., devops-ci-cd not devops) for zero-mapping lookups |
+| 2026-03-06 | Post 12 = live proof-of-concept | Reserved for writing directly through admin dashboard after full deploy |
+| 2026-03-06 | github_token for tfsec-action | Prevents GitHub API rate limiting (60/h anonymous -> 5000/h authenticated) |
+| 2026-03-06 | IAM permission pairs (Get+Set, Tag+Untag) | Always add both halves to prevent failures on create vs update vs destroy |

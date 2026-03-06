@@ -350,3 +350,46 @@ Upgraded Terraform from 1.7.0 to 1.9.0 in all three workflow files (terraform.ym
 Pin your CI/CD tool versions to a known-stable release, not just any version that works. Terraform 1.7.0 was fine for plan/apply but had a state persistence bug that only surfaced during destroy operations with many resources. When a tool version causes a sporadic failure, upgrade rather than work around it. The fix was a one-line change in 3 files -- far cheaper than debugging state inconsistencies after every destroy cycle.
 
 ---
+
+## #19 - tfsec GitHub API Rate Limiting
+
+**Date:** 2026-03-06
+**Phase:** CI/CD
+
+**Context:**
+The `infra-provision.yml` workflow failed at the Security Scan step. The tfsec-action step crashed with an HTTP 403 error while trying to download its binary from the GitHub Releases API. The error message referenced API rate limiting.
+
+**Root Cause:**
+GitHub's REST API limits anonymous requests to 60 per hour per IP address. The `tfsec-action` downloads its binary from GitHub Releases on every run. Without authentication, this counts against the anonymous limit. GitHub Actions runners share IP pools, so other workflows on the same runner can exhaust the limit before our workflow runs. The `terraform.yml` workflow already had `github_token` configured (from initial setup), but `security-scan.yml` and `infra-provision.yml` did not.
+
+**Decision:**
+Added `github_token: ${{ secrets.GITHUB_TOKEN }}` to the tfsec-action step in all three workflows that use it: `security-scan.yml`, `infra-provision.yml`, and `terraform.yml`. The `GITHUB_TOKEN` is automatically provided by GitHub Actions -- no new secrets needed. Authenticated requests get 5,000 requests per hour instead of 60.
+
+**Takeaway:**
+Any GitHub Action that downloads releases from the GitHub API should use `github_token` for authentication. The free tier anonymous limit (60/h) is easily exhausted on shared runners. This is a one-line fix per workflow, but without it, your pipeline becomes flaky in a way that's hard to debug -- it works fine 9 times, then randomly fails on the 10th.
+
+---
+
+## #20 - IAM Permissions Evolve: Audit After Every Failure
+
+**Date:** 2026-03-06
+**Phase:** Terraform Pipeline
+
+**Context:**
+After fixing the tfsec rate limit issue (#19), the second `infra-provision.yml` run failed during Wave 1 apply with two `AccessDeniedException` errors:
+1. `cognito-idp:SetUserPoolMfaConfig` -- Terraform tried to configure MFA settings on the Cognito User Pool
+2. `iam:UntagOpenIDConnectProvider` -- Terraform tried to update tags on the OIDC provider
+
+Both operations had worked fine during the original Wave 1 test deploy (Session 10). Between then and now, the Terraform AWS provider may have changed which API calls it makes for the same resources, or the re-apply (vs first-time create) triggers different code paths (e.g., updating tags on an existing resource requires `Untag` + `Tag`, but creating only needs `Tag`).
+
+**Decision:**
+Added both missing permissions to the `terraform-policy` in `terraform/modules/github-oidc/main.tf`:
+- `cognito-idp:SetUserPoolMfaConfig` (next to existing `GetUserPoolMfaConfig`)
+- `iam:UntagOpenIDConnectProvider` (next to existing `TagOpenIDConnectProvider`)
+
+Also established a pattern: for every IAM action that has a Get/Set or Tag/Untag pair, always include BOTH halves. Terraform may need either one depending on whether it's creating, updating, or destroying resources.
+
+**Takeaway:**
+IAM policies for Terraform are not "write once, done forever". Provider updates, Terraform version changes, and different operation types (create vs update vs destroy) can require new permissions. When you add a `Get*` permission, also add the corresponding `Set*`. When you add `Tag*`, also add `Untag*`. These pairs cost nothing in IAM but prevent pipeline failures on operations you haven't tested yet. The lesson from #16 (add all reads at once) extends here: add all permission pairs at once.
+
+---
