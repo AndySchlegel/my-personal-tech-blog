@@ -247,6 +247,7 @@ resource "aws_iam_role_policy" "terraform" {
           "ec2:DescribeNatGateways",
           "ec2:AllocateAddress",
           "ec2:ReleaseAddress",
+          "ec2:DisassociateAddress",
           "ec2:DescribeAddresses",
           "ec2:DescribeAddressesAttribute",
           "ec2:CreateRouteTable",
