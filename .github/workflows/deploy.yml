@@ -205,6 +205,27 @@ jobs:
       - name: Configure kubectl
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
+      # Grant local kubectl access to the cluster admin user.
+      # The cluster was created by the OIDC role (via infra-provision.yml),
+      # so only that role has access by default. This adds the admin IAM user
+      # to the aws-auth ConfigMap so we can run kubectl locally for debugging.
+      # Only adds mapUsers -- does not touch mapRoles (used by node group).
+      - name: Grant local kubectl access
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ADMIN_ARN="arn:aws:iam::${ACCOUNT_ID}:user/andy-admin"
+
+          # Check if already configured
+          if kubectl get configmap aws-auth -n kube-system -o jsonpath='{.data.mapUsers}' 2>/dev/null | grep -q "andy-admin"; then
+            echo "andy-admin already has kubectl access"
+          else
+            echo "Adding andy-admin to aws-auth ConfigMap..."
+            kubectl get configmap aws-auth -n kube-system -o json | \
+              jq --arg arn "$ADMIN_ARN" '.data.mapUsers = "[{\"userarn\": \"" + $arn + "\", \"username\": \"andy-admin\", \"groups\": [\"system:masters\"]}]"' | \
+              kubectl apply -f -
+            echo "Done -- andy-admin can now use kubectl locally"
+          fi
+
       # --- AWS Load Balancer Controller (Helm) ---
       # This controller watches for Ingress resources and creates real AWS ALBs.
       # Without it, our Ingress YAML is accepted by Kubernetes but nothing happens.
@@ -319,10 +340,21 @@ jobs:
         run: |
           echo "Waiting for database initialization..."
           kubectl wait --for=condition=complete job/db-init \
-            --namespace ${{ env.K8S_NAMESPACE }} --timeout=120s
+            --namespace ${{ env.K8S_NAMESPACE }} --timeout=180s
+
+      # Show DB init logs regardless of success/failure.
+      # If psql hangs or crashes, the logs reveal the root cause.
+      - name: DB init logs
+        if: ${{ inputs.run_db_init && always() }}
+        run: |
+          echo "=== DB Init Pod Status ==="
+          kubectl get pods -n ${{ env.K8S_NAMESPACE }} -l job-name=db-init
           echo ""
-          echo "=== DB Init Logs ==="
-          kubectl logs job/db-init --namespace ${{ env.K8S_NAMESPACE }}
+          echo "=== DB Init Pod Logs ==="
+          kubectl logs job/db-init --namespace ${{ env.K8S_NAMESPACE }} || echo "No logs available yet"
+          echo ""
+          echo "=== DB Init Pod Describe ==="
+          kubectl describe pod -n ${{ env.K8S_NAMESPACE }} -l job-name=db-init | tail -30
 
       # Step 8: Print current cluster state for debugging.
       # This appears in the GitHub Actions log for easy troubleshooting.
