@@ -47,14 +47,19 @@ resource "aws_iam_openid_connect_provider" "github" {
     Name = "${var.project_name}-github-oidc"
   }
 
-  # Ignore tag changes on the OIDC provider. This is a singleton resource
-  # (one per AWS account) that persists across destroy cycles. Tag drift
-  # from default_tags causes Terraform to attempt UntagOpenIDConnectProvider,
-  # but that permission can only be granted by updating the IAM policy in
-  # THIS module -- creating a circular dependency that no workflow ordering
-  # can resolve. Tags on the OIDC provider are cosmetic (no functional impact).
+  # Ignore ALL changes on the OIDC provider after creation.
+  # This resource is a singleton (one per AWS account) that persists across
+  # destroy cycles. ANY modification to it (tags, thumbprint, client_id_list)
+  # creates a circular dependency: the IAM policy granting modification
+  # permissions depends on the IAM role, which depends on this provider.
+  # Terraform resolves the full dependency chain before applying, so the
+  # provider modification runs before the policy update -- and fails.
+  # This is safe because:
+  #   - The provider is bootstrapped locally (correct config from creation)
+  #   - Config changes (URL, thumbprint, audience) are extremely rare
+  #   - If a change IS needed, apply locally (same as initial bootstrap)
   lifecycle {
-    ignore_changes = [tags, tags_all]
+    ignore_changes = all
   }
 }
 
