@@ -180,6 +180,7 @@ jobs:
             -target=module.s3 \
             -target=module.cognito \
             -target=module.github_oidc \
+            -target=aws_acm_certificate_validation.alb \
             -out=tfplan-wave1
 
       - name: Show plan Wave 1

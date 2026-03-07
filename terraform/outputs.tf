@@ -73,8 +73,13 @@ output "cloudfront_domain" {
 }
 
 output "acm_certificate_arn" {
-  description = "ACM certificate ARN for blog domain (for ALB HTTPS)"
+  description = "ACM certificate ARN for CloudFront (us-east-1)"
   value       = module.cloudfront.acm_certificate_arn
+}
+
+output "alb_acm_certificate_arn" {
+  description = "ACM certificate ARN for ALB (eu-central-1)"
+  value       = aws_acm_certificate_validation.alb.certificate_arn
 }
 
 # --- GitHub OIDC ---
@@ -104,6 +109,19 @@ output "public_subnet_ids" {
 output "alb_controller_role_arn" {
   description = "ALB controller IRSA role ARN (for Helm install)"
   value       = module.eks.alb_controller_role_arn
+}
+
+# --- Route 53 ---
+# Zone ID needed by the deploy pipeline to update DNS (point to ALB).
+output "route53_zone_id" {
+  description = "Route 53 hosted zone ID for DNS updates"
+  value       = data.aws_route53_zone.main.zone_id
+}
+
+# Blog domain without protocol -- used by deploy pipeline for Route 53 record name.
+output "blog_domain" {
+  description = "Blog domain name (e.g. blog.aws.his4irness23.de)"
+  value       = local.blog_domain
 }
 
 # The final blog URL -- this is what users type in their browser.

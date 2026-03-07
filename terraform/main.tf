@@ -104,6 +104,55 @@ module "cognito" {
   domain_name  = local.blog_domain # For callback URLs
 }
 
+# ALB ACM Certificate: SSL cert for the Application Load Balancer.
+# This is a SEPARATE cert from the CloudFront cert (which is in us-east-1).
+# ALBs can only use certificates from their own region (eu-central-1 here).
+# Both certs cover the same domain but serve different AWS services.
+# ACM certs are free -- no additional cost for having two.
+# The DNS validation CNAME is identical to the CloudFront cert's
+# (same domain = same validation record), so allow_overwrite = true.
+resource "aws_acm_certificate" "alb" {
+  domain_name       = local.blog_domain
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name = "${var.project_name}-alb-cert"
+  }
+}
+
+# DNS validation record for the ALB cert.
+# ACM uses the same CNAME for the same domain regardless of region,
+# so this record is identical to the CloudFront cert validation record.
+# allow_overwrite = true prevents conflicts.
+resource "aws_route53_record" "alb_cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.alb.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  ttl     = 60
+  records = [each.value.record]
+
+  allow_overwrite = true
+}
+
+# Wait for ACM to validate the ALB certificate.
+# Blocks until the DNS record is verified and the cert is issued.
+resource "aws_acm_certificate_validation" "alb" {
+  certificate_arn         = aws_acm_certificate.alb.arn
+  validation_record_fqdns = [for record in aws_route53_record.alb_cert_validation : record.fqdn]
+}
+
 # ==================== WAVE 2: Database (~$13/month) ====================
 
 # RDS: Managed PostgreSQL database.
