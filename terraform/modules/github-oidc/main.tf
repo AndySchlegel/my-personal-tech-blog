@@ -567,6 +567,22 @@ resource "aws_iam_role_policy" "terraform" {
         Resource = "*"
       },
 
+      # --- ELB Cleanup ---
+      # The ALB Controller (running inside EKS) creates ALBs and target groups
+      # that are NOT managed by Terraform. Before destroying EKS, the pipeline
+      # deletes these resources to prevent orphaned ENIs blocking VPC deletion.
+      {
+        Sid    = "ELBCleanup"
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DeleteLoadBalancer",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DeleteTargetGroup"
+        ]
+        Resource = "*"
+      },
+
       # --- CloudWatch Logs ---
       # EKS control plane logging writes to CloudWatch Log Groups.
       # Terraform needs to create/manage these log groups.
