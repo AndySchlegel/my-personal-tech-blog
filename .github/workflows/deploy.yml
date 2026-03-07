@@ -183,11 +183,17 @@ jobs:
       # Read all infrastructure values from the Terraform remote state.
       # These replace static GitHub Secrets that would need manual updating
       # after every destroy + apply cycle.
+      # refresh-only ensures ALL outputs are up to date in the state file.
+      # Without it, new outputs added after a targeted apply (-target) may
+      # be missing from state (targeted applies don't refresh all outputs).
       - name: Read infrastructure values from Terraform state
         id: tf
         working-directory: terraform/
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: |
           terraform init -input=false
+          terraform apply -refresh-only -auto-approve
           echo "rds_endpoint=$(terraform output -raw rds_endpoint)" >> "$GITHUB_OUTPUT"
           echo "cognito_user_pool_id=$(terraform output -raw cognito_user_pool_id)" >> "$GITHUB_OUTPUT"
           echo "cognito_client_id=$(terraform output -raw cognito_client_id)" >> "$GITHUB_OUTPUT"
