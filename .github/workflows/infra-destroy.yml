@@ -83,6 +83,8 @@ jobs:
             -target=module.eks \
             -target=module.cloudfront \
             -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
+            -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg \
+            -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb \
             -out=tfplan-wave3
 
       - name: Show plan Wave 3
