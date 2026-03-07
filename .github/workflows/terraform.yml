@@ -311,6 +311,40 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
+      # Clean up ALB Controller resources before destroying EKS (wave-3/all).
+      # The ALB is created by the controller inside EKS, not by Terraform.
+      # If EKS is destroyed first, orphaned ALB ENIs block VPC deletion.
+      - name: Clean up ALB Controller resources
+        if: ${{ inputs.wave == 'wave-3' || inputs.wave == 'all' }}
+        run: |
+          echo "Looking for ALBs created by ALB Controller..."
+          ALB_ARNS=$(aws elbv2 describe-load-balancers --region ${{ env.AWS_REGION }} \
+            --query 'LoadBalancers[?starts_with(LoadBalancerName, `k8s-`)].LoadBalancerArn' \
+            --output text)
+
+          if [ -z "$ALB_ARNS" ]; then
+            echo "No ALB Controller load balancers found -- skipping"
+          else
+            for ARN in $ALB_ARNS; do
+              echo "Deleting ALB: $ARN"
+              aws elbv2 delete-load-balancer --load-balancer-arn "$ARN" --region ${{ env.AWS_REGION }}
+            done
+
+            echo "Waiting 15s for ALB ENIs to detach..."
+            sleep 15
+
+            echo "Cleaning up target groups..."
+            TG_ARNS=$(aws elbv2 describe-target-groups --region ${{ env.AWS_REGION }} \
+              --query 'TargetGroups[?starts_with(TargetGroupName, `k8s-`)].TargetGroupArn' \
+              --output text)
+            for ARN in $TG_ARNS; do
+              echo "Deleting target group: $ARN"
+              aws elbv2 delete-target-group --target-group-arn "$ARN" --region ${{ env.AWS_REGION }} || true
+            done
+
+            echo "ALB Controller resources cleaned up"
+          fi
+
       # Apply the destroy plan. The plan already contains -destroy operations.
       - name: Terraform destroy
         working-directory: ${{ env.TF_WORKING_DIR }}

@@ -68,6 +68,42 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
+      # --- Pre-cleanup: delete ALB + target groups created by ALB Controller ---
+      # The ALB Controller (running inside EKS) creates ALBs from Ingress resources.
+      # These are NOT managed by Terraform. When EKS is destroyed, the controller
+      # is gone and can't clean up. Orphaned ALB ENIs block VPC deletion later.
+      # Fix: delete all ALBs tagged by the controller BEFORE destroying EKS.
+      # Safe to run when no ALBs exist (loop simply doesn't execute).
+      - name: Clean up ALB Controller resources
+        run: |
+          echo "Looking for ALBs created by ALB Controller..."
+          ALB_ARNS=$(aws elbv2 describe-load-balancers --region ${{ env.AWS_REGION }} \
+            --query 'LoadBalancers[?starts_with(LoadBalancerName, `k8s-`)].LoadBalancerArn' \
+            --output text)
+
+          if [ -z "$ALB_ARNS" ]; then
+            echo "No ALB Controller load balancers found -- skipping"
+          else
+            for ARN in $ALB_ARNS; do
+              echo "Deleting ALB: $ARN"
+              aws elbv2 delete-load-balancer --load-balancer-arn "$ARN" --region ${{ env.AWS_REGION }}
+            done
+
+            echo "Waiting 15s for ALB ENIs to detach..."
+            sleep 15
+
+            echo "Cleaning up target groups..."
+            TG_ARNS=$(aws elbv2 describe-target-groups --region ${{ env.AWS_REGION }} \
+              --query 'TargetGroups[?starts_with(TargetGroupName, `k8s-`)].TargetGroupArn' \
+              --output text)
+            for ARN in $TG_ARNS; do
+              echo "Deleting target group: $ARN"
+              aws elbv2 delete-target-group --target-group-arn "$ARN" --region ${{ env.AWS_REGION }} || true
+            done
+
+            echo "ALB Controller resources cleaned up"
+          fi
+
       # --- Wave 3 destroy (EKS + CloudFront) ---
       # Must be destroyed FIRST because EKS depends on VPC subnets.
       # If Wave 3 was never deployed, the plan is empty and apply is a no-op.
