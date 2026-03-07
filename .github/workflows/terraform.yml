@@ -182,7 +182,7 @@ jobs:
             wave-3)
               # Root-level rds_from_eks_cluster_sg connects EKS cluster SG -> RDS.
               # Must be explicitly targeted because it's not inside any module.
-              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg" >> "$GITHUB_OUTPUT"
+              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb" >> "$GITHUB_OUTPUT"
               ;;
             all)
               echo "flags=" >> "$GITHUB_OUTPUT"

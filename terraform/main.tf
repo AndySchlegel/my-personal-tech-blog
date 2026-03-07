@@ -207,6 +207,32 @@ resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
   ip_protocol                  = "tcp"
 }
 
+# Cross-module SG rules: allow ALB to reach pods on port 80.
+# Same issue as the RDS rule above (Lesson #23): EKS managed node groups
+# use the auto-created cluster SG, not our custom eks_nodes SG.
+# The ALB egress rule in security-groups module references the custom SG,
+# so it doesn't match. These rules connect ALB SG to the actual cluster SG.
+# When security-groups annotation is set on the Ingress, the ALB Controller
+# does NOT auto-manage SG rules -- we must add them ourselves.
+resource "aws_vpc_security_group_egress_rule" "alb_to_eks_cluster_sg" {
+  security_group_id            = module.security_groups.alb_sg_id
+  description                  = "Forward traffic to EKS pods (cluster SG)"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks_cluster_sg_from_alb" {
+  #checkov:skip=CKV_AWS_260:Port 80 is SG-to-SG only (ALB->pods), not open to internet
+  security_group_id            = module.eks.cluster_security_group_id
+  description                  = "HTTP from ALB (target-type ip)"
+  referenced_security_group_id = module.security_groups.alb_sg_id
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+}
+
 # CloudFront: CDN for serving blog assets (images) with HTTPS.
 # Depends on S3 (origin bucket) and Route 53 (DNS zone for the domain).
 # The providers block passes both the default and us-east-1 provider
