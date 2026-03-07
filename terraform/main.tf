@@ -224,6 +224,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_eks_cluster_sg" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "eks_cluster_sg_from_alb" {
+  #checkov:skip=CKV_AWS_260:Port 80 is SG-to-SG only (ALB->pods), not open to internet
   security_group_id            = module.eks.cluster_security_group_id
   description                  = "HTTP from ALB (target-type ip)"
   referenced_security_group_id = module.security_groups.alb_sg_id
