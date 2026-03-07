@@ -244,6 +244,11 @@ resource "aws_route53_record" "blog" {
   name    = var.domain_name
   type    = "A"
 
+  # Allow overwrite if the record already exists in Route 53.
+  # This happens when the record survives a destroy cycle (e.g., created
+  # by deploy.yml's DNS update step, which is outside Terraform state).
+  allow_overwrite = true
+
   alias {
     name                   = aws_cloudfront_distribution.main.domain_name
     zone_id                = aws_cloudfront_distribution.main.hosted_zone_id
