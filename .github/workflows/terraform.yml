@@ -169,9 +169,11 @@ jobs:
               if [ "${{ inputs.action }}" = "destroy" ]; then
                 # Exclude github_oidc from destroy -- OIDC provider must survive
                 # to keep pipeline auth + other projects (ecokart) working.
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito" >> "$GITHUB_OUTPUT"
+                # Target aws_acm_certificate.alb (cascades to validation + DNS records).
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=aws_acm_certificate.alb" >> "$GITHUB_OUTPUT"
               else
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc" >> "$GITHUB_OUTPUT"
+                # Target aws_acm_certificate_validation.alb (pulls in cert + DNS as dependencies).
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc -target=aws_acm_certificate_validation.alb" >> "$GITHUB_OUTPUT"
               fi
               ;;
             wave-2)

@@ -193,11 +193,13 @@ jobs:
           echo "cognito_client_id=$(terraform output -raw cognito_client_id)" >> "$GITHUB_OUTPUT"
           echo "public_subnet_ids=$(terraform output -raw public_subnet_ids)" >> "$GITHUB_OUTPUT"
           echo "alb_sg_id=$(terraform output -raw alb_sg_id)" >> "$GITHUB_OUTPUT"
-          echo "acm_certificate_arn=$(terraform output -raw acm_certificate_arn)" >> "$GITHUB_OUTPUT"
+          echo "alb_acm_certificate_arn=$(terraform output -raw alb_acm_certificate_arn)" >> "$GITHUB_OUTPUT"
           echo "ecr_backend_url=$(terraform output -raw ecr_backend_url)" >> "$GITHUB_OUTPUT"
           echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> "$GITHUB_OUTPUT"
           echo "vpc_id=$(terraform output -raw vpc_id)" >> "$GITHUB_OUTPUT"
           echo "alb_controller_role_arn=$(terraform output -raw alb_controller_role_arn)" >> "$GITHUB_OUTPUT"
+          echo "route53_zone_id=$(terraform output -raw route53_zone_id)" >> "$GITHUB_OUTPUT"
+          echo "blog_domain=$(terraform output -raw blog_domain)" >> "$GITHUB_OUTPUT"
 
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
@@ -306,7 +308,7 @@ jobs:
         run: |
           sed -e "s|REPLACE_SUBNET_IDS|${{ steps.tf.outputs.public_subnet_ids }}|g" \
               -e "s|REPLACE_ALB_SG_ID|${{ steps.tf.outputs.alb_sg_id }}|g" \
-              -e "s|REPLACE_ACM_CERT_ARN|${{ steps.tf.outputs.acm_certificate_arn }}|g" \
+              -e "s|REPLACE_ACM_CERT_ARN|${{ steps.tf.outputs.alb_acm_certificate_arn }}|g" \
               k8s/07-ingress.yaml | kubectl apply -f -
 
       # Step 7: Wait for both deployments to complete their rollout.
@@ -319,6 +321,57 @@ jobs:
           kubectl rollout status deployment/blog-backend --namespace ${{ env.K8S_NAMESPACE }} --timeout=300s
           echo "Waiting for frontend rollout..."
           kubectl rollout status deployment/blog-frontend --namespace ${{ env.K8S_NAMESPACE }} --timeout=300s
+
+      # --- DNS Update: point blog domain to ALB ---
+      # After ingress is applied, the ALB Controller creates an AWS ALB.
+      # It takes a few minutes for the ALB to get a hostname. Once available,
+      # we update Route 53 to point blog.aws.his4irness23.de to the ALB.
+      # This overwrites the CloudFront alias record (which has ignore_changes
+      # in Terraform, so it won't revert on next terraform apply).
+      # ALB hosted zone ID for eu-central-1 is a well-known AWS constant.
+      - name: Update DNS to ALB
+        env:
+          ZONE_ID: ${{ steps.tf.outputs.route53_zone_id }}
+          BLOG_DOMAIN: ${{ steps.tf.outputs.blog_domain }}
+          ALB_HOSTED_ZONE_ID: Z215JYRZR1TBD5
+        run: |
+          echo "Waiting for ALB address..."
+          ALB_HOST=""
+          for i in $(seq 1 30); do
+            ALB_HOST=$(kubectl get ingress blog-ingress -n ${{ env.K8S_NAMESPACE }} \
+              -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
+            if [ -n "$ALB_HOST" ]; then
+              echo "ALB hostname: $ALB_HOST"
+              break
+            fi
+            echo "  Attempt $i/30 -- ALB not ready yet, waiting 10s..."
+            sleep 10
+          done
+
+          if [ -z "$ALB_HOST" ]; then
+            echo "ERROR: ALB address not available after 5 minutes"
+            echo "Check ALB Controller logs: kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller"
+            exit 1
+          fi
+
+          echo "Updating Route 53: $BLOG_DOMAIN -> $ALB_HOST"
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id "$ZONE_ID" \
+            --change-batch '{
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "'"$BLOG_DOMAIN"'",
+                  "Type": "A",
+                  "AliasTarget": {
+                    "HostedZoneId": "'"$ALB_HOSTED_ZONE_ID"'",
+                    "DNSName": "'"$ALB_HOST"'",
+                    "EvaluateTargetHealth": false
+                  }
+                }
+              }]
+            }'
+          echo "DNS updated successfully!"
 
       # --- Database initialization (optional, first deploy only) ---
       # Runs schema creation + seed data (11 blog posts, categories, tags)

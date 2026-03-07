@@ -544,6 +544,7 @@ resource "aws_iam_role_policy" "terraform" {
           "acm:ListCertificates",
           "acm:ListTagsForCertificate",
           "acm:AddTagsToCertificate",
+          "acm:RemoveTagsFromCertificate",
           "acm:GetCertificate"
         ]
         Resource = "*"

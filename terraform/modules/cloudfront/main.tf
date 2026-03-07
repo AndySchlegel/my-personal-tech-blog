@@ -249,4 +249,12 @@ resource "aws_route53_record" "blog" {
     zone_id                = aws_cloudfront_distribution.main.hosted_zone_id
     evaluate_target_health = false # CloudFront handles its own health checks
   }
+
+  # Ignore all changes after creation. The deploy pipeline (deploy.yml)
+  # overwrites this record to point at the ALB instead of CloudFront.
+  # Without ignore_changes, Terraform would revert DNS back to CloudFront
+  # on every apply, breaking the blog until the next deploy.
+  lifecycle {
+    ignore_changes = all
+  }
 }

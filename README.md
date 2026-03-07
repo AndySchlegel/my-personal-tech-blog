@@ -398,7 +398,7 @@ Key highlights:
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 22 documented |
+| Lessons Learned | 24 documented |
 | Commits | 60+ |
 
 *Updated as the project progresses.*
@@ -414,6 +414,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Wave 0-3 deployed, all infra live, next: deploy app)
+**Project Status:** Live on EKS (first successful deploy, blog running at blog.aws.his4irness23.de)
 **Last Updated:** 2026-03-06
 **AWS Region:** eu-central-1 (Frankfurt)
