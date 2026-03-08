@@ -31,6 +31,11 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
+    <!-- Devicon (colored tech/brand icons) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
 
     <!-- marked.js - Converts Markdown to HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -58,31 +63,34 @@
       <div
         class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <a href="./index.html" class="flex items-center gap-2.5 group">
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
           <div
             class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
           >
-            <i class="ti ti-terminal-2 text-white text-lg"></i>
+            <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
-          <span class="font-bold text-lg text-slate-900 dark:text-white">
-            Andy<span class="text-sky-500">.</span>dev
-          </span>
         </a>
         <nav class="hidden sm:flex items-center gap-6">
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
           >
         </nav>
         <button
@@ -99,9 +107,9 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <!-- Back link (uses browser history if available, fallback to index) -->
+        <!-- Back link (uses browser history if available, fallback to blog) -->
         <a
-          href="./index.html"
+          href="./blog.html"
           onclick="
             if (history.length > 1) {
               history.back();
@@ -211,9 +219,7 @@
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
-            <span
-              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
-            >
+            <span>2026 Andy Schlegel</span>
           </div>
           <div class="flex items-center gap-4 text-sm">
             <a
@@ -229,10 +235,10 @@
           </div>
           <div class="flex items-center gap-4">
             <a
-              href="https://github.com/AndySchlegel"
+              href="https://github.com/his4irness"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <i class="ti ti-brand-github text-xl"></i>
             </a>
@@ -240,7 +246,7 @@
               href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <i class="ti ti-brand-linkedin text-xl"></i>
             </a>
