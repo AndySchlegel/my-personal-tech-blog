@@ -3,7 +3,7 @@
 > **Cloud-native tech blog on AWS EKS, documenting my journey from zero to cloud engineer in one year.**
 
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
-[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20IaC-blue)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
@@ -86,7 +86,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | Auth | AWS Cognito (OAuth 2.0, SRP, optional TOTP MFA) |
 | ML | Amazon Comprehend (key phrases + sentiment) |
 | Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
-| IaC | Terraform (9 modules, from scratch, 2,800+ lines) |
+| IaC | Terraform (9 modules, from scratch, 25+ across all projects) |
 | CI/CD | GitHub Actions with OIDC |
 | Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
@@ -100,8 +100,8 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 - Search and category filtering (debounced, server-side SQL filtering)
 - Auto-generated tags via Amazon Comprehend
 - Comment system with sentiment analysis
-- About page with personal journey timeline, animated counters, and quote block
-- Skills page with priority labels, proficiency-based skill rows, cert roadmap, and animated progress stats
+- About page ("Sales DNA meets Cloud Architecture") with titled story sections, Roadmap timeline, animated counters, and quote block
+- Skills page with 8 skill cards, badge labels (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE), Credly cert images, project highlights, and animated progress stats
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
 
@@ -392,14 +392,14 @@ Key highlights:
 | Metric | Value |
 |--------|-------|
 | Development Duration | 4 weeks (Feb-Mar 2026) |
-| Terraform Modules | 9 (32 files, 2,800+ lines) |
+| Terraform Modules | 9 in this project (25+ across all projects) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
 | Blog Articles | 11 (German, real content) + 1 reserved for live PoC |
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 24 documented |
-| Commits | 60+ |
+| Lessons Learned | 27 documented |
+| Commits | 80+ |
 
 *Updated as the project progresses.*
 
@@ -414,6 +414,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** Live on EKS (first successful deploy, blog running at blog.aws.his4irness23.de)
-**Last Updated:** 2026-03-06
+**Project Status:** Frontend overhaul complete (PR #37), infra currently torn down, ready for next deploy cycle
+**Last Updated:** 2026-03-08
 **AWS Region:** eu-central-1 (Frankfurt)

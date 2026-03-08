@@ -480,3 +480,53 @@ Added `-target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg` to W
 When using Terraform's `-target` flag for wave deployments, root-level resources are invisible unless explicitly targeted. Module-level targeting (`-target=module.eks`) only includes resources INSIDE that module and their dependencies -- not resources that depend ON the module. Any cross-module "glue" resource in root `main.tf` must be added as its own `-target` entry. This is easy to forget because `terraform apply` without targets works fine (it sees everything).
 
 ---
+
+## #25 - SSL Toggle: Use NODE_ENV, Not Hostname Detection
+
+**Date:** 2026-03-07
+**Phase:** Backend / Local Development
+
+**Context:**
+The backend's `database.ts` toggled SSL for PostgreSQL connections by checking if the `DATABASE_URL` contained `localhost`. In Docker Compose, the hostname is `db` (the service name), not `localhost`. So the SSL check `!process.env.DATABASE_URL.includes('localhost')` evaluated to `true`, enabling SSL for the local PostgreSQL container -- which doesn't support SSL. Result: `ECONNREFUSED` on every database connection.
+
+**Decision:**
+Changed the SSL toggle to `process.env.NODE_ENV === 'production'`. The K8s ConfigMap sets `NODE_ENV=production` for EKS, and Docker Compose does not set it (defaults to undefined). This cleanly separates production (SSL required for RDS) from local development (no SSL for container DB).
+
+**Takeaway:**
+Environment detection should use explicit environment variables, not infrastructure-specific assumptions (hostnames, ports, IPs). Hostnames change between Docker Compose (`db`), Kubernetes (`backend`), and local development (`localhost`). `NODE_ENV` is a single source of truth that works everywhere.
+
+---
+
+## #26 - ALB Controller Creates Resources Outside Terraform
+
+**Date:** 2026-03-07
+**Phase:** Infrastructure Teardown
+
+**Context:**
+After destroying EKS via `terraform destroy`, orphaned ALBs and their associated security groups, target groups, and listeners remained in AWS. These resources were created by the AWS Load Balancer Controller (a Kubernetes add-on) in response to Kubernetes Ingress resources -- not by Terraform. Terraform had no knowledge of them and could not destroy them.
+
+The orphaned ALBs blocked subsequent VPC destruction (`DependencyViolation`) because ENIs from the ALB were still attached to the subnets.
+
+**Decision:**
+Added ALB cleanup steps to `infra-destroy.yml` and `terraform.yml` that run BEFORE EKS destruction: find ALBs by VPC tag, delete listeners, target groups, and finally the ALBs themselves using AWS CLI. Then wait for ENIs to release before proceeding with Terraform destroy.
+
+**Takeaway:**
+When using Kubernetes controllers that create AWS resources (ALB Controller, External DNS, etc.), those resources exist outside Terraform's state. A clean teardown must delete controller-managed resources BEFORE destroying the cluster that manages them. Otherwise you get orphaned resources that block the rest of the teardown and accumulate costs.
+
+---
+
+## #27 - CloudFront and ALB Need Separate ACM Certificates
+
+**Date:** 2026-03-07
+**Phase:** EKS Deployment
+
+**Context:**
+After deploying to EKS, the ALB Ingress needed an ACM certificate for HTTPS termination. The project already had an ACM certificate for CloudFront, but it was in `us-east-1` (CloudFront requirement). The ALB runs in `eu-central-1` and can only use certificates from the same region. Using the CloudFront cert ARN in the ALB Ingress annotation resulted in `certificate not found`.
+
+**Decision:**
+Created a second ACM certificate in `eu-central-1` for the ALB. Both certificates cover `blog.aws.his4irness23.de`, both are free (AWS ACM public certs have no cost), and both validate via the same Route 53 DNS record. Added the ALB cert ARN as a Terraform output so the deploy pipeline can reference it.
+
+**Takeaway:**
+CloudFront requires ACM certificates in `us-east-1` regardless of where your infrastructure runs. ALBs require certificates in the same region as the ALB. For a single domain, you need TWO certificates in different regions. This is a well-documented AWS constraint but easy to miss when you already have "a certificate" and assume it works everywhere. Both certs are free and auto-renew independently.
+
+---

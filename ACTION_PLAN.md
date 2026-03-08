@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Wave 0-3 deployed, all infra live, next: deploy app via deploy.yml
-**Last Updated:** 2026-03-06 (Session 14)
+**Current Phase:** Frontend overhaul complete, infra torn down, ready for next deploy cycle
+**Last Updated:** 2026-03-08 (Session 19)
 
 ---
 
@@ -16,12 +16,12 @@
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
 | 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
-| 3. Frontend | ~95% Done (S3 image uploads open) | Week 1-2 |
+| 3. Frontend | ~98% Done (photo decision + CV download open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
-| 5. Kubernetes + CI/CD | ~95% Done (CI/CD pipeline written) | Week 3 |
+| 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
 | 7. ML Integration (Comprehend) | Not Started | Week 3-4 |
-| 8. Polish + Presentation | Not Started | Week 4 |
+| 8. Polish + Presentation | In Progress (frontend overhaul done) | Week 4 |
 
 ---
 
@@ -51,26 +51,32 @@
 - [x] Seed data (11 articles, 7 categories, 32 tags -- real content from blog project)
 - [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
 
-## Phase 3: Frontend (~85% Done)
+## Phase 3: Frontend (~98% Done)
 
 - [x] Blog homepage (post list with demo data, category badges, reading time)
 - [x] Single post view (Markdown rendered via marked.js + highlight.js)
 - [x] Dark mode toggle (localStorage, dark default)
 - [x] Mobile responsive (all pages, mobile menu)
-- [x] Impressum + Datenschutz (German legal requirement)
+- [x] Impressum + Datenschutz (German legal requirement, real data)
 - [x] Scroll position memory (sessionStorage)
 - [x] Animations (slide-in hero, scale-up badges, fade-in cards, hover effects)
 - [x] Category color system (colored badges, borders, tags, glows per category)
 - [x] Visual polish (magnifying glass hover, gradient titles, glowing stat badges)
-- [x] Connect to real API via Docker Compose (12 articles from PostgreSQL)
-- [x] About page (personal journey, timeline, quote block, animated counters, Quick Facts)
-- [x] Skills page (7 skill cards with priority labels, skill-item rows, cert split, Current Progress counters)
+- [x] Connect to real API via Docker Compose (11 articles from PostgreSQL)
+- [x] About page ("Sales DNA meets Cloud Architecture" -- titled story, Roadmap timeline, animated counters)
+- [x] Skills page (8 skill cards, badge labels, Credly cert images, project highlights with LIVE badges)
 - [x] counter.js (Intersection Observer scroll-triggered animated counters)
 - [x] Design upgrade v3 (hero gradients, alternating BGs, proficiency icons, priority labels)
 - [x] Search and category filtering (search bar + category pills + debounced API filtering)
 - [x] Admin dashboard overview (stat cards, recent posts/comments)
 - [x] Admin post management (list, create, edit, delete with Markdown editor)
 - [x] Admin comment moderation (list, approve, flag, delete with status filter)
+- [x] Frontend overhaul: LP, About, Skills, Blog consistency (PR #37, Sessions 16-19)
+- [x] External admin config for Cognito values (EKS-ready, config.js + ConfigMap)
+- [x] German locale: date format, search placeholder, section headers
+- [x] Nav consistency across all 7 HTML pages
+- [ ] About page photo decision (same vs different vs remove)
+- [ ] CV download button (simplified version)
 - [ ] Admin S3 image uploads (needs EKS deployment)
 
 ## Phase 4: Terraform Infrastructure (Done)
@@ -98,7 +104,7 @@
 - [x] Wave 3 apply (EKS + NAT GW + CloudFront, infra-provision.yml with checkbox, green)
 - [x] tfsec + Checkov CI integration (soft_fail=false, all 42 findings triaged)
 
-## Phase 5: Kubernetes + CI/CD (~95% Done)
+## Phase 5: Kubernetes + CI/CD (Done)
 
 - [x] Kubernetes manifests (namespace, deployments, services, ingress, db-init job)
 - [x] ConfigMap + Secrets (PORT, CORS, NODE_ENV, DB URL, Cognito IDs with REPLACE_ME placeholders)
@@ -110,7 +116,12 @@
 - [x] OIDC authentication (github-oidc Terraform module, no AWS keys in GitHub)
 - [x] Deploy pipeline reads infra values dynamically from Terraform state (PR #8)
 - [x] Infrastructure lifecycle workflows: infra-destroy.yml + infra-provision.yml (PR #10)
-- [ ] ALB Ingress controller setup (Helm chart, documented in k8s/README.md)
+- [x] First successful EKS deploy (Session 14, blog live at blog.aws.his4irness23.de)
+- [x] SSL fix for RDS connections (NODE_ENV toggle, PR #37)
+- [x] ALB orphan cleanup in destroy workflow (PR #36)
+- [x] Dual ACM certs (us-east-1 for CloudFront, eu-central-1 for ALB, PR #31)
+- [x] Full destroy+rebuild+deploy cycle verified (Session 15)
+- [x] ConfigMap dates synced with seed.sql (11 posts, Feb 14 - Mar 12)
 
 ## Phase 6: Blog Content + Seed Script (Done)
 
@@ -135,8 +146,11 @@
 - [ ] IRSA role for Comprehend access (pod-level IAM)
 - [ ] Admin dashboard: ML results display
 
-## Phase 8: Polish + Presentation
+## Phase 8: Polish + Presentation (In Progress)
 
+- [x] Frontend overhaul: LP, About, Skills, Blog pages (consistency, German locale, real data)
+- [x] Credly certification badge images
+- [x] External admin config (Cognito values via ConfigMap, EKS-ready)
 - [ ] Final README with screenshots
 - [ ] Architecture diagram
 - [ ] Presentation slides (20-30 min)
@@ -160,15 +174,21 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
-2. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
-3. **Post 12 via admin dashboard** -- proof-of-concept live editing
-4. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
-5. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires EKS + IRSA)
-6. **Polish + Presentation** -- screenshots, architecture diagram, slides
+1. **Merge PR #37** -- frontend overhaul (develop -> main)
+2. **Provision infrastructure** -- infra-provision.yml (Wave 1+2+3)
+3. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
+4. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
+5. **Post 12 via admin dashboard** -- proof-of-concept live editing
+6. **About page photo decision** -- same vs different vs remove from About hero
+7. **CV download button** -- simplified version without job-specific header
+8. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
+9. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires EKS + IRSA)
+10. **Screenshots + Architecture diagram** -- for README and presentation
 
 Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
 other infra values dynamically from Terraform remote state.
+
+**Current infra state:** All destroyed, only OIDC resources remain in Terraform state.
 
 ---
 
@@ -238,3 +258,10 @@ other infra values dynamically from Terraform remote state.
 | 2026-03-06 | Optional Wave 3 checkbox in provision workflow | Single workflow handles Wave 0-2 or Wave 0-3 based on user choice |
 | 2026-03-06 | IAM propagation delay (15s sleep) | Eventual consistency: Wave 0 policy update needs time before Wave 1 uses new permissions |
 | 2026-03-06 | Wave 3 destroy always runs first | Destroy workflow tries Wave 3 first (no-op if not deployed), then Wave 2, then Wave 1 |
+| 2026-03-06 | Dual ACM certificates | CloudFront cert in us-east-1 (requirement), ALB cert in eu-central-1 (same region) -- two free certs for same domain |
+| 2026-03-06 | ALB orphan cleanup in destroy | infra-destroy.yml + terraform.yml delete ALBs before EKS destroy (ALB Controller creates ALBs outside Terraform) |
+| 2026-03-06 | NODE_ENV for SSL toggle | database.ts uses `NODE_ENV === 'production'` instead of hostname check (Podman hostname `db` broke old logic) |
+| 2026-03-08 | External admin config (config.js) | Cognito values via external config file + K8s ConfigMap, not hardcoded in auth.js |
+| 2026-03-08 | German locale for public pages | Date format de-DE, German section headers, search placeholder -- blog is a German portfolio |
+| 2026-03-08 | Credly badge images for certs | Original Credly badge PNGs in frontend/src/img/certs/ -- visual proof of certifications |
+| 2026-03-08 | Badge label system on skill cards | Small pills (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE) for quick scanning by recruiters |
