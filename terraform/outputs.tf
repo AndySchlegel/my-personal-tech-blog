@@ -66,6 +66,11 @@ output "cognito_client_id" {
   value       = module.cognito.user_pool_client_id
 }
 
+output "cognito_domain" {
+  description = "Cognito domain prefix (for hosted login UI)"
+  value       = module.cognito.user_pool_domain
+}
+
 # --- CloudFront ---
 output "cloudfront_domain" {
   description = "CloudFront distribution domain"

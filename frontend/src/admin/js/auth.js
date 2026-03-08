@@ -10,13 +10,15 @@
   "use strict";
 
   // --- Cognito configuration ---
-  // In production these come from the deployed environment.
-  // In dev mode (docker compose), these are empty and auth is bypassed.
+  // Values come from window.BLOG_CONFIG, set by admin/config.js.
+  // In production (EKS), config.js is replaced by a ConfigMap with real values.
+  // In dev mode, config.js ships with empty values -> auth is bypassed.
+  var cfg = window.BLOG_CONFIG || {};
   var AUTH_CONFIG = {
-    userPoolId: "",
-    clientId: "",
+    userPoolId: cfg.cognitoUserPoolId || "",
+    clientId: cfg.cognitoClientId || "",
     region: "eu-central-1",
-    domain: "",
+    domain: cfg.cognitoDomain || "",
     redirectUri: window.location.origin + "/admin/callback.html",
     logoutUri: window.location.origin + "/admin/login.html",
   };
