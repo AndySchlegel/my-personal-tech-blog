@@ -282,7 +282,7 @@ html.transition-theme *::after {
   box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
 }
 
-/* --- Social link hover effects --- */
+/* --- Social link hover effects (icons only) --- */
 .social-link {
   transition:
     transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -293,6 +293,87 @@ html.transition-theme *::after {
 .social-link:hover {
   transform: translateY(-5px) scale(1.25);
   text-shadow: 0 0 16px currentColor;
+}
+
+/* --- Project card hover (same intensity as blog post-card) --- */
+.project-card {
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.project-card:hover {
+  transform: translateY(-16px) scale(1.07);
+  z-index: 10;
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 40px rgba(56, 189, 248, 0.1);
+}
+
+.dark .project-card:hover {
+  background-color: rgba(30, 41, 59, 0.95);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 0 50px rgba(56, 189, 248, 0.15);
+}
+
+/* Project card title slides on hover */
+.project-card h3 {
+  transition: transform 0.35s ease;
+}
+
+.project-card:hover h3 {
+  transform: translateX(6px);
+}
+
+/* Project card tech badges float on hover */
+.project-card .tech-badges span {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.project-card:hover .tech-badges span {
+  transform: translateY(-3px);
+  opacity: 1;
+}
+
+/* Project card color-specific glows (same intensity as post-card) */
+.dark .project-card[class*="border-t-orange"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(249, 115, 22, 0.35),
+    0 0 80px rgba(249, 115, 22, 0.15);
+}
+.dark .project-card[class*="border-t-sky"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(14, 165, 233, 0.35),
+    0 0 80px rgba(14, 165, 233, 0.15);
+}
+.dark .project-card[class*="border-t-green"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(34, 197, 94, 0.35),
+    0 0 80px rgba(34, 197, 94, 0.15);
+}
+.dark .project-card[class*="border-t-red"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(239, 68, 68, 0.35),
+    0 0 80px rgba(239, 68, 68, 0.15);
+}
+.dark .project-card[class*="border-t-teal"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(20, 184, 166, 0.35),
+    0 0 80px rgba(20, 184, 166, 0.15);
 }
 
 /* --- Tag hover effect --- */
@@ -514,66 +595,218 @@ nav a {
   background-color: rgba(239, 68, 68, 0.15);
 }
 
-/* --- Vertical timeline (About page) --- */
+/* --- Alternating timeline (About page) --- */
+/* Center-line layout: items alternate left/right on desktop, stack on mobile */
 .timeline {
   position: relative;
-  padding-left: 3rem;
+  max-width: 52rem;
+  margin: 0 auto;
 }
 
-/* The gradient line connecting all timeline dots */
+/* The gradient center line */
 .timeline::before {
   content: "";
   position: absolute;
-  left: 0.9375rem;
+  left: 50%;
+  transform: translateX(-50%);
   top: 0;
   bottom: 0;
   width: 2px;
   background: linear-gradient(
     to bottom,
-    rgba(56, 189, 248, 0.3),
+    rgba(56, 189, 248, 0.4),
     rgba(168, 85, 247, 0.3),
     rgba(249, 115, 22, 0.3),
-    rgba(56, 189, 248, 0.3)
+    rgba(34, 197, 94, 0.3),
+    rgba(56, 189, 248, 0.4)
   );
 }
 
-/* Each item in the timeline */
+/* Each timeline item -- alternating sides */
 .timeline-item {
   position: relative;
-  padding-bottom: 2.5rem;
+  width: 50%;
+  padding-bottom: 2rem;
   opacity: 0;
   animation: fadeIn 0.5s ease forwards;
 }
 
-/* The colored dot on the timeline line */
+/* Odd items (1,3,5...) on the left */
+.timeline-item:nth-child(odd) {
+  padding-right: 2.5rem;
+  text-align: right;
+  left: 0;
+}
+
+/* Even items (2,4,6...) on the right */
+.timeline-item:nth-child(even) {
+  padding-left: 2.5rem;
+  left: 50%;
+}
+
+/* The dot sits on the center line */
 .timeline-dot {
   position: absolute;
-  left: -2.25rem;
   top: 0.25rem;
-  width: 1.875rem;
-  height: 1.875rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid;
+  z-index: 2;
   transition:
     transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.3s ease;
 }
 
-/* Timeline dot pops up on hover */
+/* Dot position for odd (left-side) items */
+.timeline-item:nth-child(odd) .timeline-dot {
+  right: -1.125rem;
+}
+
+/* Dot position for even (right-side) items */
+.timeline-item:nth-child(even) .timeline-dot {
+  left: -1.125rem;
+}
+
+/* The card that holds the content */
+.timeline-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    background-color 0.3s ease;
+  cursor: default;
+}
+
+.dark .timeline-card {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+/* Detail text hidden by default, revealed on hover */
+.timeline-card .timeline-detail {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease,
+    margin-top 0.3s ease;
+  margin-top: 0;
+}
+
+.timeline-card:hover .timeline-detail {
+  max-height: 8rem;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+/* Card hover effects */
+.timeline-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(56, 189, 248, 0.15);
+}
+
+.dark .timeline-card:hover {
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 30px rgba(56, 189, 248, 0.08);
+}
+
+/* Dot pops up on card hover */
 .timeline-item:hover .timeline-dot {
-  transform: scale(1.3);
+  transform: scale(1.4);
 }
 
-/* Timeline text slides right on hover */
-.timeline-item:hover .timeline-content {
-  transform: translateX(4px);
+/* Title color on hover */
+.timeline-card:hover h3 {
+  color: #38bdf8;
 }
 
-.timeline-content {
-  transition: transform 0.3s ease;
+.timeline-card h3 {
+  transition: color 0.3s ease;
+}
+
+/* Speech bubble arrow pointing to center line */
+.timeline-item:nth-child(odd) .timeline-card::after {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  right: -0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-right: 1px solid rgba(226, 232, 240, 0.6);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  transform: rotate(-45deg);
+}
+
+.dark .timeline-item:nth-child(odd) .timeline-card::after {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+.timeline-item:nth-child(even) .timeline-card::after {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  left: -0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(226, 232, 240, 0.6);
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+  transform: rotate(-45deg);
+}
+
+.dark .timeline-item:nth-child(even) .timeline-card::after {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+/* Card needs relative for the arrow */
+.timeline-card {
+  position: relative;
+}
+
+/* Mobile: single column, all items stack left */
+@media (max-width: 640px) {
+  .timeline::before {
+    left: 1rem;
+    transform: none;
+  }
+
+  .timeline-item,
+  .timeline-item:nth-child(odd),
+  .timeline-item:nth-child(even) {
+    width: 100%;
+    left: 0;
+    padding-left: 3rem;
+    padding-right: 0;
+    text-align: left;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-dot,
+  .timeline-item:nth-child(even) .timeline-dot {
+    left: -0.125rem;
+    right: auto;
+  }
+
+  /* Hide speech bubble arrows on mobile */
+  .timeline-item:nth-child(odd) .timeline-card::after,
+  .timeline-item:nth-child(even) .timeline-card::after {
+    display: none;
+  }
 }
 
 /* Timeline dot color variants */
@@ -631,6 +864,24 @@ nav a {
   box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
 }
 
+.timeline-dot-slate {
+  background: rgba(100, 116, 139, 0.15);
+  border-color: rgba(100, 116, 139, 0.5);
+  color: #94a3b8;
+}
+.timeline-item:hover .timeline-dot-slate {
+  box-shadow: 0 0 20px rgba(100, 116, 139, 0.4);
+}
+
+.timeline-dot-teal {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.5);
+  color: #2dd4bf;
+}
+.timeline-item:hover .timeline-dot-teal {
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
+}
+
 /* --- Skill category card (Skills page) --- */
 .skill-card {
   transition:
@@ -675,6 +926,56 @@ nav a {
     0 20px 60px -15px rgba(0, 0, 0, 0.6),
     0 0 30px rgba(245, 158, 11, 0.25);
 }
+.dark .skill-card[class*="border-t-teal"]:hover {
+  box-shadow:
+    0 20px 60px -15px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(20, 184, 166, 0.25);
+}
+
+/* Skill card sub-item hover animations */
+.skill-card .space-y-2 > div {
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.skill-card:hover .space-y-2 > div {
+  transform: translateX(4px);
+}
+
+.skill-card .space-y-2 > div:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .skill-card .space-y-2 > div:hover {
+  background-color: rgba(51, 65, 85, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Skill card title slides on hover */
+.skill-card h3 {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.skill-card:hover h3 {
+  transform: translateX(4px);
+  color: #38bdf8;
+}
+
+/* Skill card subtitle slides on hover */
+.skill-card .text-xs.italic {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.skill-card:hover .text-xs.italic {
+  transform: translateX(3px);
+}
 
 /* --- Certification card (Skills page) --- */
 .cert-card {
@@ -709,57 +1010,134 @@ nav a {
 /* --- Tool pill (Skills page) --- */
 .tool-pill {
   transition:
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .tool-pill:hover {
-  transform: translateY(-4px) scale(1.08);
+  transform: translateY(-16px) scale(1.07);
+  z-index: 10;
   border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 40px rgba(56, 189, 248, 0.1);
 }
 
 .dark .tool-pill:hover {
+  background-color: rgba(30, 41, 59, 0.95);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    0 0 12px rgba(56, 189, 248, 0.15);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 0 50px rgba(56, 189, 248, 0.15);
 }
 
-/* --- About motivation card (About page) --- */
+/* Tool-pill text slides on hover */
+.tool-pill span {
+  transition:
+    transform 0.35s ease,
+    color 0.3s ease;
+}
+
+.tool-pill:hover span {
+  transform: translateX(4px);
+  color: #38bdf8;
+}
+
+/* --- About / Transferable Skills card (same intensity as post-card) --- */
 .about-card {
   transition:
     transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.4s ease,
-    border-color 0.4s ease;
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .about-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-16px) scale(1.07);
+  z-index: 10;
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 40px rgba(56, 189, 248, 0.1);
 }
 
 .dark .about-card:hover {
+  background-color: rgba(30, 41, 59, 0.95);
   box-shadow:
-    0 20px 60px -15px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(56, 189, 248, 0.15);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 0 50px rgba(56, 189, 248, 0.15);
 }
 
-/* About card color-specific glows */
+/* About card color-specific glows (all 6 colors for Transferable Skills) */
 .dark .about-card[class*="border-t-sky"]:hover {
   box-shadow:
-    0 20px 60px -15px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(14, 165, 233, 0.25);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(14, 165, 233, 0.35),
+    0 0 80px rgba(14, 165, 233, 0.15);
+}
+.dark .about-card[class*="border-t-purple"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(168, 85, 247, 0.35),
+    0 0 80px rgba(168, 85, 247, 0.15);
 }
 .dark .about-card[class*="border-t-green"]:hover {
   box-shadow:
-    0 20px 60px -15px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(34, 197, 94, 0.25);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(34, 197, 94, 0.35),
+    0 0 80px rgba(34, 197, 94, 0.15);
 }
 .dark .about-card[class*="border-t-red"]:hover {
   box-shadow:
-    0 20px 60px -15px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(239, 68, 68, 0.25);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(239, 68, 68, 0.35),
+    0 0 80px rgba(239, 68, 68, 0.15);
+}
+.dark .about-card[class*="border-t-amber"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(245, 158, 11, 0.35),
+    0 0 80px rgba(245, 158, 11, 0.15);
+}
+.dark .about-card[class*="border-t-orange"]:hover {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(249, 115, 22, 0.35),
+    0 0 80px rgba(249, 115, 22, 0.15);
+}
+
+/* About card title and description animate on hover */
+.about-card h3 {
+  transition:
+    transform 0.35s ease,
+    color 0.3s ease;
+}
+
+.about-card:hover h3 {
+  transform: translateX(6px);
+  color: #38bdf8;
+}
+
+.about-card p {
+  transition:
+    transform 0.35s ease,
+    color 0.3s ease;
+}
+
+.about-card:hover p {
+  transform: translateX(3px);
+}
+
+.dark .about-card:hover p {
+  color: #cbd5e1;
 }
 
 /* --- Pulse dot for "Currently Learning" items --- */
@@ -853,18 +1231,48 @@ nav a {
 .counter-card {
   transition:
     transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.4s ease;
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .counter-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-16px) scale(1.07);
+  z-index: 10;
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 0 40px rgba(56, 189, 248, 0.1);
 }
 
 .dark .counter-card:hover {
+  background-color: rgba(30, 41, 59, 0.95);
   box-shadow:
-    0 20px 50px -15px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(56, 189, 248, 0.15);
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 0 50px rgba(56, 189, 248, 0.15);
+}
+
+/* Counter number and label animate on hover */
+.counter-card [data-count-to] {
+  transition:
+    transform 0.35s ease,
+    color 0.3s ease;
+}
+
+.counter-card:hover [data-count-to] {
+  transform: scale(1.15);
+  color: #38bdf8;
+}
+
+.counter-card .text-xs {
+  transition: transform 0.35s ease;
+}
+
+.counter-card:hover .text-xs {
+  transform: translateY(2px);
 }
 
 /* --- Quote block accent --- */
@@ -1130,6 +1538,38 @@ textarea.font-mono {
 .dark .admin-comment-card:hover {
   border-color: rgba(51, 65, 85, 0.8);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Scroll Reveal Animations ===== */
+/* Elements start hidden and animate in when they enter the viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delays for child elements */
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+.reveal-delay-4 {
+  transition-delay: 0.4s;
+}
+.reveal-delay-5 {
+  transition-delay: 0.5s;
 }
 
 /* --- Responsive: sidebar collapses on mobile --- */

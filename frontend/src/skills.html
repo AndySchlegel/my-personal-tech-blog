@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="de" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Skills - Andy Schlegel Tech Blog</title>
     <meta
       name="description"
-      content="Technical skills and certifications of Andy Schlegel. AWS, Kubernetes, Terraform, Docker, CI/CD, and more."
+      content="Technische Skills und Zertifizierungen von Andy Schlegel. AWS, Kubernetes, Terraform, Docker, CI/CD und mehr."
     />
 
     <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
@@ -38,6 +38,12 @@
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
+    <!-- Devicon (colored tech/brand icons) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+
     <!-- Our custom styles + theme toggle -->
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="./js/theme.js"></script>
@@ -53,16 +59,13 @@
       <div
         class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo / Blog Name -->
-        <a href="./index.html" class="flex items-center gap-2.5 group">
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
           <div
             class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
           >
-            <i class="ti ti-terminal-2 text-white text-lg"></i>
+            <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
-          <span class="font-bold text-lg text-slate-900 dark:text-white">
-            Andy<span class="text-sky-500">.</span>dev
-          </span>
         </a>
 
         <!-- Navigation -->
@@ -70,17 +73,22 @@
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
           >
         </nav>
 
@@ -116,17 +124,22 @@
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400 py-2"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
           >
         </div>
       </nav>
@@ -145,14 +158,14 @@
             <h1
               class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
             >
-              Technical Skills
+              Technische Skills
             </h1>
             <p
               class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
               style="animation-delay: 0.1s; opacity: 0"
             >
-              One year of intensive training, real projects, and a homelab that
-              never sleeps. Here is what I work with every day.
+              12 Monate Hands-on-Projekte und produktives Homelab. Die Tools und
+              Systeme, mit denen ich täglich arbeite.
             </p>
           </div>
         </section>
@@ -163,19 +176,19 @@
             class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400"
           >
             <span class="font-medium text-slate-700 dark:text-slate-300"
-              >Proficiency:</span
+              >Kenntnisstand:</span
             >
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-trophy text-green-500 text-sm"></i>
-              Certified
+              Zertifiziert
             </span>
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-circle-check text-sky-500 text-sm"></i>
-              Competent
+              Kompetent
             </span>
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-loader text-amber-500 text-sm"></i>
-              In Progress
+              In Arbeit
             </span>
           </div>
         </section>
@@ -187,117 +200,164 @@
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
           >
-            <i class="ti ti-code text-sky-500"></i>
-            Technical Competencies
+            <span
+              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-code text-xl text-sky-500"></i>
+            </span>
+            Technische Kompetenzen
           </h2>
 
-          <div class="grid gap-4 sm:grid-cols-2">
-            <!-- Card 1: Cloud & AWS -- CRITICAL -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card 1: Cloud & AWS -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >CRITICAL</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-cloud text-xl text-orange-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+                  >
+                    <i
+                      class="devicon-amazonwebservices-plain-wordmark colored text-xl"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Cloud &amp; AWS
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Zertifizierte Cloud-Infrastruktur &amp; Security
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >5 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-orange-500/10 text-orange-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >AWS CERTIFIED</span
                 >
-                  Cloud &amp; AWS
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-certified flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-amber-500"
                 >
-                  <i class="ti ti-trophy text-green-500 text-lg"></i>
-                  <span
-                    class="text-sm font-semibold text-slate-900 dark:text-white"
-                    >AWS Foundation &amp; Architecture (CLP, SAA)</span
+                  <i class="ti ti-trophy text-sm text-amber-500 shrink-0"></i>
+                  <span class="text-sm font-bold text-slate-900 dark:text-white"
+                    >AWS Foundation &amp; Architecture</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-orange-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-orange-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Core Services (EC2, VPC, S3, IAM, RDS)</span
+                    >Kerndienste (EC2, VPC, S3, IAM, RDS)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-orange-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-orange-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Application Services (EKS, CloudFront, Cognito)</span
+                    >Anwendungsdienste (EKS, CloudFront, Cognito)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-orange-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-orange-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >ML &amp; Analytics (Comprehend, Key Phrases)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-orange-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-orange-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Security &amp; Compliance (IAM Policies, OIDC)</span
+                    >Sicherheit &amp; Compliance (IAM Policies, OIDC)</span
                   >
                 </div>
               </div>
             </div>
 
-            <!-- Card 2: Infrastructure as Code -- HIGH DEMAND -->
+            <!-- Card 2: Infrastructure as Code -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >HIGH DEMAND</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-brand-terraform text-xl text-purple-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"
+                  >
+                    <i class="devicon-terraform-plain colored text-xl"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Infrastructure as Code
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Reproduzierbare Infrastruktur mit Terraform
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >3 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-purple-500/10 text-purple-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >PRODUKTIV</span
                 >
-                  Infrastructure as Code
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-purple-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-purple-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Terraform (Modules, Remote State, Variables)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-purple-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-purple-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >CI/CD Integration (Plan, Apply, Destroy)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-purple-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-purple-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Security Scanning (tfsec, Checkov)</span
                   >
@@ -305,55 +365,78 @@
               </div>
             </div>
 
-            <!-- Card 3: Containers & Orchestration -- HIGH DEMAND -->
+            <!-- Card 3: Containers & Orchestration -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >HIGH DEMAND</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-brand-docker text-xl text-sky-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                  >
+                    <i class="devicon-docker-plain colored text-xl"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Containers &amp; Orchestration
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Docker, Kubernetes und Container-Ökosystem
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >4 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >HANDS-ON</span
                 >
-                  Containers &amp; Orchestration
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Docker (Multi-Stage Builds, Compose, 50+ Services)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-learning flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-loader text-amber-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Kubernetes / EKS (Deployments, Services, Ingress)</span
+                    >Kubernetes / EKS (Deployments, Services, Ingress, ALB
+                    Controller)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Podman (Rootless Containers)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Container Registries (ECR, Docker Hub)</span
                   >
@@ -361,241 +444,444 @@
               </div>
             </div>
 
-            <!-- Card 4: CI/CD & DevOps -- HIGH DEMAND -->
+            <!-- Card 4: CI/CD & DevOps -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >HIGH DEMAND</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-git-merge text-xl text-sky-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                  >
+                    <i
+                      class="devicon-githubactions-plain text-xl text-sky-500"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      CI/CD &amp; DevOps
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Automatisierte Pipelines und GitOps
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >5 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >PRODUKTIV</span
                 >
-                  CI/CD &amp; DevOps
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >GitHub Actions (OIDC, Multi-Stage Pipelines)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Automated Testing (Jest, Integration Tests)</span
+                    >Automatisierte Tests (Jest, Integration Tests)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Image Tagging &amp; Versioning (SHA, Semantic)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >GitOps Workflow (Branch Protection, PR Reviews)</span
                   >
                 </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-sky-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-sky-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >GitLab CI (Self-Hosted, Pipelines)</span
+                  >
+                </div>
               </div>
             </div>
 
-            <!-- Card 5: Monitoring & Security -- CRITICAL -->
+            <!-- Card 5: Monitoring & Sicherheit -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >CRITICAL</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-shield-check text-xl text-red-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
+                  >
+                    <i class="ti ti-shield-check text-xl text-red-500"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Monitoring &amp; Sicherheit
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Dreistufiges Monitoring und SIEM
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >5 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-red-500/10 text-red-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >HANDS-ON</span
                 >
-                  Monitoring &amp; Security
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-red-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-red-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >SIEM &amp; Threat Detection (Wazuh)</span
+                    >Prometheus &amp; Grafana (Metriken, Dashboards,
+                    Alerting)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-red-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-red-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Metrics &amp; Dashboards (Prometheus, Grafana)</span
+                    >Wazuh SIEM (Threat Detection, Container-Monitoring)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-red-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-red-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Uptime &amp; Alerting (UptimeKuma, Telegram)</span
+                    >Uptime Kuma (Verfügbarkeit, HTTP/TCP Checks)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-red-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-red-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >CloudWatch (Logs, Metriken, Alarme)</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-red-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-red-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >IaC Security (tfsec, Checkov, Trufflehog)</span
                   >
                 </div>
-                <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
-                >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Incident Response (Real-world experience)</span
-                  >
-                </div>
               </div>
             </div>
 
-            <!-- Card 6: Development -- GROWING -->
+            <!-- Card 6: Development -->
             <div
-              class="skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >GROWING</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-code text-xl text-green-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+                  >
+                    <i class="ti ti-braces text-xl text-green-500"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Development
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Backend, Frontend und Datenbanken
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >5 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >HANDS-ON</span
                 >
-                  Development
-                </h3>
               </div>
+              <!-- Skill items -->
               <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Node.js &amp; Express (REST APIs, Middleware)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >HTML / CSS / Tailwind (Responsive, Dark Mode)</span
+                    >Java &amp; Spring Boot (REST APIs, Backend)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >HTML/CSS/Tailwind (Responsive, Dark Mode)</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >PostgreSQL (Queries, Migrations, RDS)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Git &amp; Version Control (Branching, Rebasing)</span
+                    >Git &amp; Versionskontrolle</span
                   >
                 </div>
               </div>
             </div>
 
-            <!-- Card 7: Homelab & Networking (full width) -- SUPPORTING -->
+            <!-- Card 7: Methoden & Kommunikation -->
             <div
-              class="skill-card relative sm:col-span-2 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-amber-500 p-6"
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-teal-500 p-6"
             >
-              <span
-                class="priority-label absolute top-3 right-3 px-2.5 py-1 bg-slate-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >SUPPORTING</span
-              >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center"
-                >
-                  <i class="ti ti-home text-xl text-amber-500"></i>
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center"
+                  >
+                    <i class="ti ti-users-group text-xl text-teal-500"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Methoden &amp; Kommunikation
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Fast zwei Jahrzehnte B2B-Erfahrung
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >5 Skills</span
+                    >
+                  </div>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                <span
+                  class="px-2 py-0.5 bg-teal-500/10 text-teal-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >20 JAHRE</span
                 >
-                  Homelab &amp; Networking
-                </h3>
               </div>
-              <div class="grid sm:grid-cols-2 gap-2">
+              <!-- Skill items -->
+              <div class="space-y-2">
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-teal-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-teal-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Stakeholder-Kommunikation (C-Level, B2B)</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-teal-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-teal-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Anforderungsanalyse &amp; Lösungsdesign</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-teal-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-teal-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Prozessoptimierung &amp; Standardisierung</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-teal-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-teal-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Scrum / Agile Methoden</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-teal-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-teal-500 shrink-0"
+                  ></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                    >Jira, GitHub Issues, Dokumentation</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 8: Homelab & Networking -->
+            <div
+              class="reveal skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+            >
+              <!-- Header: icon + title + badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+                  >
+                    <i class="ti ti-server text-xl text-green-500"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Homelab &amp; Networking
+                    </h3>
+                    <p
+                      class="text-xs text-slate-500 dark:text-slate-400 italic"
+                    >
+                      Verteilte Infrastruktur über vier Standorte
+                    </p>
+                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                      >4 Skills</span
+                    >
+                  </div>
+                </div>
+                <span
+                  class="px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >LIVE</span
+                >
+              </div>
+              <!-- Skill items -->
+              <div class="space-y-2">
+                <div
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
+                >
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Synology NAS (Docker, GitLab, Storage)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
                     >Hetzner Cloud (Multi-Server, Deployments)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >UniFi Networking (VLAN, Firewall, WiFi)</span
+                    >UniFi (VLAN, Firewall, WiFi)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Tailscale VPN (Mesh Network, ACLs)</span
+                    >Tailscale VPN (Mesh, ACLs, Zero-Trust)</span
                   >
                 </div>
                 <div
-                  class="skill-item skill-item-competent flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 border-l-2 sm:col-span-2 sm:max-w-[50%]"
+                  class="flex items-center gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg border-l-2 border-green-500"
                 >
-                  <i class="ti ti-circle-check text-sky-500 text-lg"></i>
+                  <i
+                    class="ti ti-circle-check text-sm text-green-500 shrink-0"
+                  ></i>
                   <span class="text-sm text-slate-700 dark:text-slate-300"
-                    >Traefik (Reverse Proxy, Let's Encrypt, Labels)</span
+                    >Traefik (Reverse Proxy, Let's Encrypt)</span
                   >
                 </div>
               </div>
@@ -609,133 +895,183 @@
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
         >
-          <i class="ti ti-certificate text-sky-500"></i>
-          Earned Certifications
+          <span
+            class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-certificate text-xl text-amber-500"></i>
+          </span>
+          Erworbene Zertifizierungen
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="reveal grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <!-- Cert 1: AWS Cloud Practitioner -->
           <div
-            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+            class="cert-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
           >
-            <span
-              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-              >CERTIFIED</span
-            >
-            <div
-              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-orange-500/5 border border-orange-500/20 flex items-center justify-center text-orange-500"
-            >
-              <i class="ti ti-cloud text-3xl"></i>
+            <div class="flex justify-center mb-3">
+              <img
+                src="./img/certs/aws-certified-cloud-practitioner.png"
+                alt="AWS Cloud Practitioner"
+                class="h-20 w-auto drop-shadow-md"
+              />
             </div>
             <h3
-              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+              class="font-semibold text-slate-900 dark:text-white mb-2 text-center"
             >
               AWS Cloud Practitioner
             </h3>
-            <p
-              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
-            >
-              CLF-C02
-            </p>
+            <div class="flex justify-center mb-2">
+              <span
+                class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >ZERTIFIZIERT</span
+              >
+            </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
               >
                 <i class="ti ti-circle-check text-sm"></i>
-                Earned June 2025
+                Erworben Juni 2025
               </span>
             </div>
             <div class="text-center">
               <a
-                href="#"
-                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+                href="https://www.credly.com/badges/287b3212-4321-47c8-9a03-4344bdbfd89f/public_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                VIEW CERTIFICATE
+                ZERTIFIKAT ANSEHEN
               </a>
             </div>
           </div>
 
           <!-- Cert 2: LPI Linux Essentials -->
           <div
-            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+            class="cert-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
           >
-            <span
-              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-              >CERTIFIED</span
-            >
-            <div
-              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-green-500/5 border border-green-500/20 flex items-center justify-center text-green-500"
-            >
-              <i class="ti ti-brand-ubuntu text-3xl"></i>
+            <div class="flex justify-center mb-3">
+              <img
+                src="./img/certs/linux-essentials-certificate.9.png"
+                alt="LPI Linux Essentials"
+                class="h-20 w-auto drop-shadow-md"
+              />
             </div>
             <h3
-              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+              class="font-semibold text-slate-900 dark:text-white mb-2 text-center"
             >
               LPI Linux Essentials
             </h3>
-            <p
-              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
-            >
-              010-160
-            </p>
+            <div class="flex justify-center mb-2">
+              <span
+                class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >ZERTIFIZIERT</span
+              >
+            </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
               >
                 <i class="ti ti-circle-check text-sm"></i>
-                Earned July 2025
+                Erworben Juli 2025
               </span>
             </div>
             <div class="text-center">
               <a
-                href="#"
-                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+                href="https://www.credly.com/badges/a6995bd3-6f28-4d16-add8-435fff968c4c/public_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                VIEW CERTIFICATE
+                ZERTIFIKAT ANSEHEN
               </a>
             </div>
           </div>
 
           <!-- Cert 3: AWS Solutions Architect Associate -->
           <div
-            class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+            class="cert-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
           >
-            <span
-              class="absolute top-3 right-3 px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-              >CERTIFIED</span
-            >
-            <div
-              class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-orange-500/5 border border-orange-500/20 flex items-center justify-center text-orange-500"
-            >
-              <i class="ti ti-cloud text-3xl"></i>
+            <div class="flex justify-center mb-3">
+              <img
+                src="./img/certs/aws-certified-solutions-architect-associate.png"
+                alt="AWS Solutions Architect Associate"
+                class="h-20 w-auto drop-shadow-md"
+              />
             </div>
             <h3
-              class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
+              class="font-semibold text-slate-900 dark:text-white mb-2 text-center"
             >
               AWS Solutions Architect
             </h3>
-            <p
-              class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
-            >
-              SAA-C03
-            </p>
+            <div class="flex justify-center mb-2">
+              <span
+                class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >ZERTIFIZIERT</span
+              >
+            </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
               >
                 <i class="ti ti-circle-check text-sm"></i>
-                Earned February 2026
+                Erworben Februar 2026
+              </span>
+            </div>
+            <div class="text-center">
+              <a
+                href="https://www.credly.com/badges/ed096e21-8a20-4e36-992b-746f3e3fb84d/public_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              >
+                <i class="ti ti-external-link text-sm"></i>
+                ZERTIFIKAT ANSEHEN
+              </a>
+            </div>
+          </div>
+
+          <!-- Cert 4: GitHub Foundations -->
+          <div
+            class="cert-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-slate-500 p-6"
+          >
+            <div class="flex justify-center mb-3">
+              <div
+                class="h-20 w-20 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-600 dark:to-slate-800 border-2 border-slate-500/50 flex items-center justify-center drop-shadow-md"
+              >
+                <i class="devicon-github-original text-4xl text-white"></i>
+              </div>
+            </div>
+            <h3
+              class="font-semibold text-slate-900 dark:text-white mb-2 text-center"
+            >
+              GitHub Foundations
+            </h3>
+            <div class="flex justify-center mb-2">
+              <span
+                class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                >ZERTIFIZIERT</span
+              >
+            </div>
+            <div class="flex justify-center mb-3">
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+              >
+                <i class="ti ti-circle-check text-sm"></i>
+                Erworben März 2026
               </span>
             </div>
             <div class="text-center">
               <a
                 href="#"
-                class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                VIEW CERTIFICATE
+                ZERTIFIKAT ANSEHEN
               </a>
             </div>
           </div>
@@ -748,62 +1084,22 @@
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
           >
-            <i class="ti ti-map text-sky-500"></i>
-            Certification Roadmap
+            <span
+              class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-map text-xl text-purple-500"></i>
+            </span>
+            Zertifizierungs-Roadmap
           </h2>
 
-          <div class="grid gap-4 sm:grid-cols-2">
-            <!-- GitHub Foundations -- STARTED -->
-            <div
-              class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
-            >
-              <span
-                class="absolute top-3 right-3 px-2.5 py-1 bg-amber-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >STARTED</span
-              >
-              <div
-                class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex items-center justify-center text-purple-500"
-              >
-                <i class="ti ti-brand-github text-3xl"></i>
-              </div>
-              <h3
-                class="font-semibold text-slate-900 dark:text-white mb-1 text-center"
-              >
-                GitHub Foundations
-              </h3>
-              <p
-                class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
-              >
-                GitHub Certifications
-              </p>
-              <div class="flex justify-center mb-2">
-                <span
-                  class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-semibold"
-                >
-                  <i class="ti ti-loader text-sm"></i>
-                  In Progress
-                </span>
-              </div>
-              <p
-                class="text-xs text-slate-400 dark:text-slate-500 text-center italic"
-              >
-                Expected: Q1 2026
-              </p>
-              <div class="mt-3 flex justify-center">
-                <span
-                  class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
-                  >DevOps Essential</span
-                >
-              </div>
-            </div>
-
+          <div class="reveal grid gap-4 sm:grid-cols-1 max-w-md">
             <!-- Berufsspezialist -->
             <div
               class="cert-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
             >
               <span
                 class="absolute top-3 right-3 px-2.5 py-1 bg-sky-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
-                >STARTING</span
+                >GESTARTET</span
               >
               <div
                 class="cert-badge-placeholder w-20 h-20 mx-auto mb-4 rounded-lg bg-sky-500/5 border border-sky-500/20 flex items-center justify-center text-sky-500"
@@ -825,13 +1121,13 @@
                   class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-semibold"
                 >
                   <i class="ti ti-calendar text-sm"></i>
-                  Starting Feb 2026
+                  Start Feb 2026
                 </span>
               </div>
               <p
                 class="text-xs text-slate-400 dark:text-slate-500 text-center italic"
               >
-                7 months, part-time
+                7 Monate berufsbegleitend
               </p>
             </div>
           </div>
@@ -843,15 +1139,23 @@
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
         >
-          <i class="ti ti-briefcase text-sky-500"></i>
-          Project Highlights
+          <span
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-briefcase text-xl text-orange-500"></i>
+          </span>
+          Projekt-Highlights
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="reveal grid gap-4 sm:grid-cols-2">
           <!-- Project 1: ecokart Webshop -->
           <div
-            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
+            class="project-card skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
           >
+            <span
+              class="absolute top-3 right-3 px-2 py-0.5 bg-orange-500/10 text-orange-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >LIVE</span
+            >
             <div class="flex items-center gap-3 mb-3">
               <div
                 class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
@@ -865,18 +1169,19 @@
                   ecokart Webshop
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Production AWS E-Commerce Platform
+                  Produktive AWS E-Commerce Plattform
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
             >
-              Serverless webshop with 15 Terraform modules, CI/CD via GitHub
-              Actions with OIDC, Cognito auth. Fully reproducible infrastructure
-              &mdash; own AWS account.
+              Serverless Webshop mit 25+ Terraform Modulen, CI/CD via GitHub
+              Actions mit OIDC, Cognito Auth. 63 automatisierte Tests.
+              Vollständig reproduzierbare Infrastruktur &mdash; eigener AWS
+              Account.
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
+            <div class="tech-badges flex flex-wrap gap-1.5 mb-4">
               <span
                 class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
                 >Terraform</span
@@ -900,17 +1205,21 @@
             </div>
             <a
               href="#"
-              class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
             >
               <i class="ti ti-brand-github text-sm"></i>
-              VIEW ON GITHUB
+              AUF GITHUB ANSEHEN
             </a>
           </div>
 
           <!-- Project 2: Personal Tech Blog -->
           <div
-            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
+            class="project-card skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
           >
+            <span
+              class="absolute top-3 right-3 px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >LIVE</span
+            >
             <div class="flex items-center gap-3 mb-3">
               <div
                 class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
@@ -924,18 +1233,19 @@
                   Personal Tech Blog
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Full-Stack on AWS EKS
+                  Full-Stack auf AWS EKS
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
             >
-              The blog you are reading. Node.js + Express backend, Tailwind
-              frontend on nginx, PostgreSQL on RDS, Comprehend ML for sentiment
-              analysis. Deployed on EKS with Terraform.
+              Der Blog, den du gerade liest. Node.js + Express Backend, Tailwind
+              Frontend auf nginx, PostgreSQL auf RDS, Comprehend ML für
+              Sentiment-Analyse. 31 automatisierte Tests. Deployed auf EKS mit
+              Terraform.
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
+            <div class="tech-badges flex flex-wrap gap-1.5 mb-4">
               <span
                 class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
                 >EKS</span
@@ -961,14 +1271,18 @@
               class="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400"
             >
               <i class="ti ti-circle-check text-sm"></i>
-              YOU ARE HERE
+              DU BIST HIER
             </span>
           </div>
 
           <!-- Project 3: Agra Dashboard -->
           <div
-            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+            class="project-card skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
           >
+            <span
+              class="absolute top-3 right-3 px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >LIVE</span
+            >
             <div class="flex items-center gap-3 mb-3">
               <div
                 class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
@@ -982,18 +1296,18 @@
                   Agra Dashboard
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  ECS to Self-Hosted Migration
+                  ECS zu Self-Hosted Migration
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
             >
-              Dashboard originally built on AWS ECS, now self-hosted on Hetzner.
-              Static HTML/CSS served by nginx container via Traefik reverse
-              proxy.
+              Dashboard ursprünglich auf AWS ECS gebaut, jetzt self-hosted auf
+              Hetzner. Statisches HTML/CSS serviert via nginx Container über
+              Traefik Reverse Proxy.
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
+            <div class="tech-badges flex flex-wrap gap-1.5 mb-4">
               <span
                 class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
                 >ECS</span
@@ -1013,17 +1327,21 @@
             </div>
             <a
               href="#"
-              class="project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
+              class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
             >
               <i class="ti ti-brand-github text-sm"></i>
-              VIEW ON GITHUB
+              AUF GITHUB ANSEHEN
             </a>
           </div>
 
           <!-- Project 4: Monitoring & Security Stack -->
           <div
-            class="skill-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
+            class="project-card skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
           >
+            <span
+              class="absolute top-3 right-3 px-2 py-0.5 bg-red-500/10 text-red-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >LIVE</span
+            >
             <div class="flex items-center gap-3 mb-3">
               <div
                 class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
@@ -1037,7 +1355,7 @@
                   Monitoring &amp; Security Stack
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Multi-Server Infrastructure
+                  Multi-Server Infrastruktur
                 </p>
               </div>
             </div>
@@ -1045,10 +1363,10 @@
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
             >
               Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Prometheus, Grafana
-              across NAS and Hetzner servers. Telegram alerting. Born from real
-              security incidents.
+              verteilt auf NAS und Hetzner Server. Telegram-Benachrichtigungen.
+              Entstanden aus echten Sicherheitsvorfällen.
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
+            <div class="tech-badges flex flex-wrap gap-1.5 mb-4">
               <span
                 class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
                 >Wazuh</span
@@ -1074,7 +1392,60 @@
               class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500"
             >
               <i class="ti ti-lock text-sm"></i>
-              PRIVATE INFRASTRUCTURE
+              PRIVATE INFRASTRUKTUR
+            </span>
+          </div>
+
+          <!-- Project 5: SAB Pulse -->
+          <div
+            class="project-card skill-card relative bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-teal-500 p-6"
+          >
+            <span
+              class="absolute top-3 right-3 px-2 py-0.5 bg-teal-500/10 text-teal-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >PROTOTYP</span
+            >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-chart-dots text-xl text-teal-500"></i>
+              </div>
+              <div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  SAB Pulse
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Fördermittel-Dashboard für Bildungsträger
+                </p>
+              </div>
+            </div>
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+            >
+              Frühes Stadium &mdash; Datenextraktion und Analyse für
+              Förderprogramme.
+            </p>
+            <div class="tech-badges flex flex-wrap gap-1.5 mb-4">
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Python</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >Streamlit</span
+              >
+              <span
+                class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700/50 rounded text-xs text-slate-600 dark:text-slate-300"
+                >LLM</span
+              >
+            </div>
+            <span
+              class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500"
+            >
+              <i class="ti ti-lock text-sm"></i>
+              PRIVATE INFRASTRUKTUR
             </span>
           </div>
         </div>
@@ -1085,11 +1456,15 @@
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
         >
-          <i class="ti ti-chart-bar text-sky-500"></i>
-          Current Progress
+          <span
+            class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-chart-bar text-xl text-green-500"></i>
+          </span>
+          Aktueller Fortschritt
         </h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-4">
           <!-- Stat 1: Certifications -->
           <div
             class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
@@ -1101,17 +1476,17 @@
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="3"
+              data-count-to="4"
             >
               0
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Professional Certifications
+              Professionelle Zertifizierungen
             </div>
             <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Earned while rebuilding my career
+              Erworben während meines Karrierewechsels
             </div>
           </div>
 
@@ -1137,7 +1512,7 @@
               Docker Services
             </div>
             <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              From homelab to production
+              Vom Homelab in die Produktion
             </div>
           </div>
 
@@ -1159,10 +1534,10 @@
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Months Intensive Training
+              Monate intensives Training
             </div>
             <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              2,300 hours and counting
+              2.300 Stunden und es werden mehr
             </div>
           </div>
 
@@ -1173,21 +1548,21 @@
             <div
               class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
             >
-              <i class="ti ti-category text-2xl text-purple-500"></i>
+              <i class="ti ti-test-pipe text-2xl text-purple-500"></i>
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="7"
+              data-count-to="94"
             >
               0
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Technology Categories
+              Automatisierte Tests
             </div>
             <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Full-stack cloud mindset
+              31 Blog + 63 EcoKart
             </div>
           </div>
         </div>
@@ -1199,30 +1574,34 @@
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
           >
-            <i class="ti ti-tool text-sky-500"></i>
-            Tools I Use
+            <span
+              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-tool text-xl text-sky-500"></i>
+            </span>
+            Meine Tools
           </h2>
 
-          <div class="flex flex-wrap gap-3">
+          <div class="reveal flex flex-wrap gap-3">
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-brand-visual-studio text-sky-500"></i> VS Code
+              <i class="devicon-vscode-plain colored"></i> VS Code
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-git-branch text-orange-500"></i> Git
+              <i class="devicon-git-plain colored"></i> Git
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-brand-terraform text-purple-500"></i> Terraform
+              <i class="devicon-terraform-plain colored"></i> Terraform
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-brand-docker text-sky-500"></i> Docker
+              <i class="devicon-docker-plain colored"></i> Docker
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
@@ -1242,27 +1621,27 @@
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-brand-ubuntu text-red-500"></i> Linux
+              <i class="devicon-linux-plain colored"></i> Linux
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-brand-nodejs text-green-500"></i> Node.js
+              <i class="devicon-nodejs-plain colored"></i> Node.js
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-database text-sky-500"></i> PostgreSQL
+              <i class="devicon-postgresql-plain colored"></i> PostgreSQL
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-chart-line text-amber-500"></i> Prometheus
+              <i class="devicon-prometheus-plain colored"></i> Prometheus
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
             >
-              <i class="ti ti-dashboard text-purple-500"></i> Grafana
+              <i class="devicon-grafana-plain colored"></i> Grafana
             </div>
             <div
               class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
@@ -1284,6 +1663,16 @@
             >
               <i class="ti ti-lock text-green-500"></i> Tailscale
             </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="devicon-jira-plain colored"></i> Jira
+            </div>
+            <div
+              class="tool-pill inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm text-slate-700 dark:text-slate-300 cursor-default"
+            >
+              <i class="devicon-java-plain colored"></i> Java
+            </div>
           </div>
         </section>
       </div>
@@ -1293,72 +1682,80 @@
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
         >
-          <i class="ti ti-loader text-sky-500"></i>
-          Currently Learning
+          <span
+            class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-loader text-xl text-teal-500"></i>
+          </span>
+          Aktuelle Vertiefungen
         </h2>
 
-        <div class="space-y-4">
+        <div class="reveal space-y-4">
           <!-- Item 1 -->
           <div
-            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+            class="skill-card flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
           >
             <div class="pulse-dot shrink-0"></div>
-            <i class="ti ti-brand-github text-xl text-purple-500"></i>
+            <i class="devicon-kubernetes-plain colored text-xl"></i>
             <div>
               <p class="font-medium text-slate-900 dark:text-white">
-                GitHub Foundations Certification
+                Kubernetes vertiefen
               </p>
               <p class="text-sm text-slate-500 dark:text-slate-400">
-                Git workflows, Actions, security features, admin tasks
+                Fortgeschrittene Deployments, Helm Charts, Networking,
+                CKA-Vorbereitung
               </p>
             </div>
           </div>
 
           <!-- Item 2 -->
           <div
-            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+            class="skill-card flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
           >
             <div class="pulse-dot shrink-0"></div>
-            <i class="ti ti-brand-kubernetes text-xl text-sky-500"></i>
+            <i class="devicon-java-plain colored text-xl"></i>
             <div>
               <p class="font-medium text-slate-900 dark:text-white">
-                Deeper Kubernetes
+                Java &amp; Spring Boot
               </p>
               <p class="text-sm text-slate-500 dark:text-slate-400">
-                Advanced deployments, Helm charts, networking, CKA preparation
+                Deep Dive ab März/April 2026 im Rahmen der Java DevOps Engineer
+                Weiterbildung
               </p>
             </div>
           </div>
 
           <!-- Item 3 -->
           <div
-            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+            class="skill-card flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
           >
             <div class="pulse-dot shrink-0"></div>
-            <i class="ti ti-cloud text-xl text-orange-500"></i>
+            <i
+              class="devicon-amazonwebservices-plain-wordmark colored text-xl"
+            ></i>
             <div>
               <p class="font-medium text-slate-900 dark:text-white">
-                Advanced AWS
+                AWS vertiefen
               </p>
               <p class="text-sm text-slate-500 dark:text-slate-400">
-                Well-Architected Framework, cost optimization, multi-account
-                strategies
+                Well-Architected Framework, Kostenoptimierung, Multi-Account
+                Strategien
               </p>
             </div>
           </div>
 
           <!-- Item 4 -->
           <div
-            class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
+            class="skill-card flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
           >
             <div class="pulse-dot shrink-0"></div>
-            <i class="ti ti-brand-python text-xl text-green-500"></i>
+            <i class="devicon-python-plain colored text-xl"></i>
             <div>
               <p class="font-medium text-slate-900 dark:text-white">
-                Python for DevOps
+                Python für DevOps
               </p>
               <p class="text-sm text-slate-500 dark:text-slate-400">
-                Scripting, automation, Boto3 SDK, tooling
+                Scripting, Automatisierung, Boto3 SDK, Tooling
               </p>
             </div>
           </div>
@@ -1379,9 +1776,7 @@
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
-            <span
-              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
-            >
+            <span>2026 Andy Schlegel</span>
           </div>
 
           <!-- Center: legal links -->
@@ -1401,7 +1796,7 @@
           <!-- Right: social links -->
           <div class="flex items-center gap-4">
             <a
-              href="https://github.com/AndySchlegel"
+              href="https://github.com/his4irness"
               target="_blank"
               rel="noopener noreferrer"
               class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -1437,5 +1832,26 @@
 
     <!-- Animated counters (scroll-triggered) -->
     <script src="./js/counter.js"></script>
+
+    <!-- Scroll-reveal: animate elements into view -->
+    <script>
+      // Scroll-reveal: animate elements into view as they enter the viewport
+      document.addEventListener("DOMContentLoaded", function () {
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        document.querySelectorAll(".reveal").forEach(function (el) {
+          observer.observe(el);
+        });
+      });
+    </script>
   </body>
 </html>

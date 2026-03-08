@@ -125,11 +125,14 @@
     { name: "Career", slug: "career", post_count: 1 },
   ];
 
-  // --- Format a date string into a readable format ---
-  // "2026-02-15T10:00:00Z" -> "Feb 15, 2026"
+  // --- Sort order state (chronological = oldest first, default) ---
+  var sortNewest = false;
+
+  // --- Format a date string into German readable format ---
+  // "2026-02-15T10:00:00Z" -> "15. Feb 2026"
   function formatDate(dateString) {
     var date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("de-DE", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -305,11 +308,23 @@
     );
   }
 
+  // --- Sort posts by date ---
+  function sortPosts(posts) {
+    return posts.slice().sort(function (a, b) {
+      var da = new Date(a.published_at).getTime();
+      var db = new Date(b.published_at).getTime();
+      return sortNewest ? db - da : da - db;
+    });
+  }
+
   // --- Render all posts into the grid ---
   function renderPosts(posts) {
     var grid = document.getElementById("posts-grid");
     var loading = document.getElementById("posts-loading");
     var count = document.getElementById("post-count");
+
+    // Apply current sort order
+    posts = sortPosts(posts);
 
     if (!grid) return;
 
@@ -464,6 +479,7 @@
       })
       .then(function (data) {
         var posts = data.posts || data;
+        allPosts = posts;
         renderPosts(posts);
       })
       .catch(function () {
@@ -577,6 +593,33 @@
     });
   }
 
+  // --- Set up sort toggle ---
+  function setupSortToggle() {
+    var btn = document.getElementById("sort-toggle");
+    var label = document.getElementById("sort-label");
+    if (!btn) return;
+
+    btn.addEventListener("click", function () {
+      sortNewest = !sortNewest;
+      // Update icon and label
+      var icon = btn.querySelector("i");
+      if (icon) {
+        icon.className = sortNewest
+          ? "ti ti-arrow-down text-sm"
+          : "ti ti-arrow-up text-sm";
+      }
+      if (label) {
+        label.textContent = sortNewest ? "Neueste zuerst" : "Chronologisch";
+      }
+      // Re-render with current data
+      if (isDemo) {
+        renderPosts(filterDemoPosts());
+      } else {
+        renderPosts(allPosts);
+      }
+    });
+  }
+
   // --- Save scroll position before leaving the page ---
   // So when the user clicks "Back to all articles", we can
   // scroll them back to where they were in the post list.
@@ -611,6 +654,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     loadPosts();
     setupSearch();
+    setupSortToggle();
     setupScrollMemory();
     restoreScrollPosition();
   });

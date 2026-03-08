@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="de" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About - Andy Schlegel Tech Blog</title>
+    <title>About me - Andy Schlegel Tech Blog</title>
     <meta
       name="description"
-      content="The story of how Andy Schlegel went from Key Account Manager to Cloud Engineer in one year. Certifications, homelab, and the road to AWS."
+      content="Wie Andy Schlegel in einem Jahr vom Key Account Manager zum Cloud Engineer wurde. Zertifizierungen, Homelab und der Weg in die Cloud."
     />
 
     <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
@@ -38,6 +38,12 @@
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
+    <!-- Devicon (colored tech/brand icons) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+
     <!-- Our custom styles + theme toggle -->
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="./js/theme.js"></script>
@@ -53,16 +59,13 @@
       <div
         class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo / Blog Name -->
-        <a href="./index.html" class="flex items-center gap-2.5 group">
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
           <div
             class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
           >
-            <i class="ti ti-terminal-2 text-white text-lg"></i>
+            <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
-          <span class="font-bold text-lg text-slate-900 dark:text-white">
-            Andy<span class="text-sky-500">.</span>dev
-          </span>
         </a>
 
         <!-- Navigation -->
@@ -70,17 +73,22 @@
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
           >
         </nav>
 
@@ -116,17 +124,22 @@
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400 py-2"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
           >
         </div>
       </nav>
@@ -149,21 +162,22 @@
               <h1
                 class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
               >
-                About Me
+                About me
               </h1>
               <p
                 class="slide-in-left text-lg sm:text-xl text-sky-600 dark:text-sky-400 font-medium mb-3"
                 style="animation-delay: 0.1s; opacity: 0"
               >
-                From Key Account Manager to Cloud Engineer &mdash; in one year.
+                Fast zwei Jahrzehnte Lösungen für Kunden entwickelt — jetzt baue
+                ich die Systeme, die sie antreiben.
               </p>
               <p
                 class="slide-in-left text-base text-slate-600 dark:text-slate-400 leading-relaxed"
                 style="animation-delay: 0.15s; opacity: 0"
               >
-                Career changer, homelab enthusiast, and lifelong learner.
-                Building real infrastructure, surviving real incidents, and
-                writing about all of it.
+                Cloud &amp; DevOps Engineer mit praktischer Erfahrung in AWS,
+                Kubernetes und Terraform. Vertriebserfahrung als Basis,
+                technische Kompetenz als Ergebnis.
               </p>
 
               <!-- Mini stat badges -->
@@ -180,35 +194,38 @@
                   style="animation-delay: 0.4s"
                 >
                   <i class="ti ti-certificate text-base"></i>
-                  3x Certified
+                  4x Zertifiziert
                 </span>
                 <span
                   class="stat-badge stat-badge-green scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.5s"
                 >
-                  <i class="ti ti-brand-docker text-base"></i>
+                  <i class="devicon-docker-plain colored text-base"></i>
                   50+ Docker Services
                 </span>
                 <span
                   class="stat-badge stat-badge-purple scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.6s"
                 >
-                  <i class="ti ti-cloud text-base"></i>
-                  4 Environments
+                  <i
+                    class="devicon-amazonwebservices-plain-wordmark colored text-base"
+                  ></i>
+                  4 Umgebungen
                 </span>
               </div>
             </div>
 
-            <!-- Right: photo placeholder -->
-            <div
-              class="w-48 h-48 md:w-56 md:h-56 rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center justify-center gap-3 shrink-0"
-            >
-              <i
-                class="ti ti-camera text-4xl text-slate-300 dark:text-slate-600"
-              ></i>
-              <span class="text-xs text-slate-400 dark:text-slate-500"
-                >Photo coming soon</span
-              >
+            <!-- Right: photo with glow ring -->
+            <div class="shrink-0 relative">
+              <div
+                class="absolute -inset-1.5 bg-gradient-to-br from-sky-500 via-purple-500 to-sky-500 rounded-full opacity-25 blur-md"
+              ></div>
+              <img
+                src="./img/andy-schlegel.jpeg"
+                alt="Andy Schlegel"
+                class="relative w-52 h-52 md:w-64 md:h-64 rounded-full object-cover ring-2 ring-sky-500/30 shadow-2xl"
+                style="object-position: center 40%"
+              />
             </div>
           </div>
         </div>
@@ -216,67 +233,57 @@
 
       <!-- ===== My Story Section ===== -->
       <div class="bg-white dark:bg-slate-900">
-        <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 reveal">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
           >
-            <i class="ti ti-book text-sky-500"></i>
-            My Story
+            <span
+              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-book text-xl text-sky-500"></i>
+            </span>
+            Sales DNA meets Cloud Architecture
           </h2>
 
           <div
             class="space-y-6 text-base text-slate-600 dark:text-slate-400 leading-relaxed"
           >
-            <!-- The Before -->
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+              Von Kundenlösungen zu Cloud-Architekturen
+            </h3>
             <p>
-              For almost two decades, I worked in sales. Key Account Manager,
-              finance, real estate, car sales. Before that, six years in the
-              Bundeswehr. Technology was always something I used, but never
-              something I truly understood on a deeper level.
+              Fast zwei Jahrzehnte im Sales &mdash; vom direkten
+              Endkundengeschäft bis zu komplexen B2B-Projekten. Was mich dabei
+              immer angetrieben hat: Bedürfnisse verstehen, Rahmenbedingungen
+              einordnen und daraus pragmatische, tragfähige Lösungen entwickeln.
+              Diese Denkweise prägt mich bis heute &mdash; genauso wie sechs
+              Jahre Bundeswehr, in denen ich Verantwortung für ein kleines Team
+              übernommen und strukturiertes Handeln unter Druck gelernt habe.
             </p>
 
-            <!-- The Turning Point -->
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+              Neugier wird Neuanfang
+            </h3>
             <p>
-              In March 2025, I started a retraining program called
-              <span class="text-slate-900 dark:text-white font-medium"
-                >&ldquo;Java DevOps Engineer&rdquo;</span
-              >
-              through CloudHelden. 2,300 hours of training. Four modules. Zero
-              prior IT knowledge &mdash; just a gut feeling that this was the
-              right move.
+              Irgendwann reichte es nicht mehr, nur über Lösungen zu sprechen
+              &mdash; ich wollte verstehen, wie sie technisch entstehen. 2025
+              fiel der Startschuss in Richtung Cloud &amp; DevOps: Aus einem
+              einfachen NAS wurde ein Homelab, aus dem Homelab eine produktive
+              Infrastruktur über mehrere Standorte. Projekte wie EcoKart, ein
+              vollständig serverloser Webshop auf AWS, machten aus Neugier echte
+              Anwendung.
             </p>
 
-            <!-- The Spark -->
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+              Vom Experiment zur Expertise
+            </h3>
             <p>
-              The first weeks were abstract. Lots of theory, lots of &ldquo;why
-              does this matter?&rdquo; But around September 2025, something
-              clicked. I started building things beyond the curriculum. A NAS
-              became a homelab. A homelab became a multi-server infrastructure
-              across four environments. Problems became puzzles I actually
-              <span class="text-slate-900 dark:text-white font-medium"
-                >wanted</span
-              >
-              to solve.
-            </p>
-
-            <!-- The Incidents -->
-            <p>
-              Then in early 2026, my NAS MongoDB got cryptomined. My Hetzner
-              server got compromised through an open Portainer port. These were
-              not setbacks &mdash; they were the
-              <span class="text-slate-900 dark:text-white font-medium"
-                >best learning experiences</span
-              >
-              I could have asked for. Real incidents, real forensics, real
-              hardening.
-            </p>
-
-            <!-- Today -->
-            <p>
-              One year later: three certifications (with a fourth in progress),
-              a production AWS project, 50+ Docker services across four
-              environments, real incident response experience, and this blog.
-              Still learning every day.
+              Heute verbinde ich Praxiserfahrung in AWS, Kubernetes und
+              Terraform mit einem soliden Fundament aus Zertifizierungen in AWS,
+              Linux und GitHub. Parallel läuft die IHK-Qualifikation zum
+              Berufsspezialisten Systemintegration &mdash; der nächste Schritt,
+              um technisches Wissen strategisch zu vertiefen und dauerhaft auf
+              ein stabiles Fundament zu stellen.
             </p>
           </div>
 
@@ -285,17 +292,17 @@
             class="quote-block mt-10 border-l-4 border-sky-500 bg-slate-50 dark:bg-slate-800/30 rounded-r-xl p-6"
           >
             <div class="flex items-start gap-4">
-              <div
-                class="w-14 h-14 rounded-full bg-sky-500 flex items-center justify-center shrink-0"
-              >
-                <i class="ti ti-user text-white text-xl"></i>
-              </div>
+              <img
+                src="./img/andy-schlegel.jpeg"
+                alt="Andy Schlegel"
+                class="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
+                style="object-position: center 40%"
+              />
               <p
                 class="text-slate-600 dark:text-slate-300 italic leading-relaxed"
               >
-                &ldquo;I don&rsquo;t just deploy infrastructure &mdash; I defend
-                it. Getting hacked twice taught me more than any certification
-                ever could.&rdquo;
+                &ldquo;Cloud und DevOps, weil es genau dort beginnt, wo
+                Anforderungen zu funktionierenden Systemen werden.&rdquo;
               </p>
             </div>
           </div>
@@ -303,285 +310,263 @@
       </div>
 
       <!-- ===== Timeline Section ===== -->
-      <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 reveal">
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
         >
-          <i class="ti ti-timeline-event text-sky-500"></i>
-          The Journey
+          <span
+            class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-timeline-event text-xl text-sky-500"></i>
+          </span>
+          Meine Roadmap
         </h2>
 
-        <!-- Vertical timeline -->
+        <!-- Vertical alternating timeline -->
         <div class="timeline">
-          <!-- 1: 17 March 2025 - Training Start -->
+          <!-- 1: März 2025 - Weiterbildung gestartet -->
           <div class="timeline-item" style="animation-delay: 0.1s">
             <div class="timeline-dot timeline-dot-sky">
               <i class="ti ti-school text-xs"></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
-                >17 March 2025</span
+                >März 2025</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                Training Start
+                Weiterbildung gestartet
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Started the CloudHelden &ldquo;Java DevOps Engineer&rdquo;
-                Weiterbildung. 2,300 training hours. First 3 months: computer
-                science, networking, security, databases, AWS Cloud, GitHub.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  CloudHelden „Java DevOps Engineer" – Informatik, Netzwerke,
+                  AWS, Container von Grund auf.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- 2: 20 June 2025 - AWS CLP -->
-          <div class="timeline-item" style="animation-delay: 0.15s">
-            <div class="timeline-dot timeline-dot-amber">
-              <i class="ti ti-certificate text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-amber-500 uppercase tracking-wide"
-                >20 June 2025</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                AWS Cloud Practitioner &mdash; PASSED
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                First certification earned after just 3 months. CLF-C02 exam
-                passed. The cloud started making sense.
-              </p>
-            </div>
-          </div>
-
-          <!-- 3: 30 July 2025 - Linux Essentials -->
+          <!-- 2: Juni 2025 - AWS Cloud Practitioner -->
           <div class="timeline-item" style="animation-delay: 0.2s">
-            <div class="timeline-dot timeline-dot-green">
-              <i class="ti ti-brand-ubuntu text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-green-500 uppercase tracking-wide"
-                >30 July 2025</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                LPI Linux Essentials &mdash; PASSED
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Second certification. Linux fundamentals, terminal, shell
-                scripting, system administration. 010-160 exam passed.
-              </p>
-            </div>
-          </div>
-
-          <!-- 4: Aug/Sep 2025 - Deep Dive -->
-          <div class="timeline-item" style="animation-delay: 0.25s">
-            <div class="timeline-dot timeline-dot-green">
-              <i class="ti ti-code text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-green-500 uppercase tracking-wide"
-                >Aug / Sep 2025</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                Deep Dive: JS, Docker, Java
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                JavaScript, Docker, Java, and Spring Boot in the curriculum. The
-                building blocks for real-world development and containerization.
-              </p>
-            </div>
-          </div>
-
-          <!-- 5: September 2025 - First Homelab -->
-          <div class="timeline-item" style="animation-delay: 0.3s">
-            <div class="timeline-dot timeline-dot-orange">
-              <i class="ti ti-server text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-orange-500 uppercase tracking-wide"
-                >September 2025</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                First Homelab &amp; Hetzner Server
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Bought a Synology DS925+ NAS. Set up first Hetzner server with
-                n8n, Traefik, Tailscale VPN, Prometheus, Grafana, and Dashy.
-                Built the Agra Dashboard (ECS project, now self-hosted).
-                Pluralsight subscription started.
-              </p>
-            </div>
-          </div>
-
-          <!-- 6: November 2025 - UniFi -->
-          <div class="timeline-item" style="animation-delay: 0.35s">
             <div class="timeline-dot timeline-dot-amber">
-              <i class="ti ti-router text-xs"></i>
+              <i
+                class="devicon-amazonwebservices-plain-wordmark text-xs"
+                style="font-size: 0.7rem"
+              ></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-amber-500 uppercase tracking-wide"
-                >November 2025</span
+                >Juni 2025</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                UniFi Network Setup
+                AWS Cloud Practitioner
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Replaced Telekom router limitations with Ubiquiti UniFi
-                infrastructure. Full control over the home network.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Erste AWS-Zertifizierung – Cloud-Konzepte, IAM, VPC, S3
+                  verstanden.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- 7: Nov/Dec 2025 - ecokart -->
+          <!-- 3: Juli 2025 - LPI Linux Essentials -->
+          <div class="timeline-item" style="animation-delay: 0.3s">
+            <div class="timeline-dot timeline-dot-green">
+              <i class="devicon-linux-plain text-xs"></i>
+            </div>
+            <div class="timeline-card">
+              <span
+                class="text-xs font-semibold text-green-500 uppercase tracking-wide"
+                >Juli 2025</span
+              >
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+              >
+                LPI Linux Essentials
+              </h3>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  LPI Zertifizierung – Kommandozeile, Shell,
+                  Systemadministration gemeistert.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4: Sep 2025 - Homelab & Hetzner Server -->
           <div class="timeline-item" style="animation-delay: 0.4s">
             <div class="timeline-dot timeline-dot-orange">
-              <i class="ti ti-rocket text-xs"></i>
+              <i class="devicon-docker-plain text-xs"></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-orange-500 uppercase tracking-wide"
-                >Nov / Dec 2025</span
+                >Sep 2025</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                ecokart Webshop Goes Live
+                Homelab &amp; Hetzner Server
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                First production AWS project. 15 Terraform modules, full CI/CD
-                with OIDC, Cognito auth. Own AWS account. 100% reproducible
-                infrastructure.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Synology NAS aufgesetzt, erster Hetzner Cloud Server &mdash;
+                  Docker-Container, erste Services, Grundstein fürs Homelab.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- 8: Parallel 2025 - Knowledge Base -->
-          <div class="timeline-item" style="animation-delay: 0.45s">
+          <!-- 5: Nov 2025 - EcoKart auf AWS -->
+          <div class="timeline-item" style="animation-delay: 0.5s">
             <div class="timeline-dot timeline-dot-purple">
-              <i class="ti ti-book text-xs"></i>
+              <i class="devicon-terraform-plain text-xs"></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-purple-500 uppercase tracking-wide"
-                >Parallel 2025</span
+                >Nov 2025</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                Knowledge Base &amp; SAA Prep
+                EcoKart auf AWS
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Built interactive learning artifacts: 27 topics, 625 quiz
-                questions. Created 618 practice questions for the AWS Solutions
-                Architect exam. Self-driven expansion beyond the curriculum.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  25+ Terraform-Module, serverless AWS-Architektur, OIDC/CI/CD
+                  implementiert.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- 9: Jan/Feb 2026 - Security Incidents -->
-          <div class="timeline-item" style="animation-delay: 0.5s">
-            <div class="timeline-dot timeline-dot-red">
-              <i class="ti ti-shield-exclamation text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-red-500 uppercase tracking-wide"
-                >Jan / Feb 2026</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                Security Incidents
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Crypto miner on NAS MongoDB. Hetzner server compromised via open
-                Portainer port. macOS password glitch. Real incidents, real
-                forensics, real hardening.
-              </p>
-            </div>
-          </div>
-
-          <!-- 10: Second Server - Monitoring Stack -->
-          <div class="timeline-item" style="animation-delay: 0.55s">
-            <div class="timeline-dot timeline-dot-red">
-              <i class="ti ti-shield-check text-xs"></i>
-            </div>
-            <div class="timeline-content">
-              <span
-                class="text-xs font-semibold text-red-500 uppercase tracking-wide"
-                >Second Server</span
-              >
-              <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
-              >
-                Monitoring &amp; Security Stack
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Telegram
-                alerting. Multi-server monitoring and automation across NAS and
-                two Hetzner servers.
-              </p>
-            </div>
-          </div>
-
-          <!-- 11: 19 Feb 2026 - AWS SAA -->
+          <!-- 6: Nov 2025 - UniFi Netzwerk -->
           <div class="timeline-item" style="animation-delay: 0.6s">
-            <div class="timeline-dot timeline-dot-sky">
-              <i class="ti ti-cloud text-xs"></i>
+            <div class="timeline-dot timeline-dot-green">
+              <i class="ti ti-network text-xs"></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
-                class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
-                >19 Feb 2026</span
+                class="text-xs font-semibold text-green-500 uppercase tracking-wide"
+                >Nov 2025</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                AWS Solutions Architect &mdash; PASSED
+                UniFi Netzwerk
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                The big one. SAA-C03 exam passed. 618 practice questions built.
-                Third certification earned.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  VLANs, Firewall-Regeln, Tailscale VPN – Networking auf
+                  Profi-Niveau.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- 12: Now - This Blog -->
-          <div class="timeline-item" style="animation-delay: 0.65s">
-            <div class="timeline-dot timeline-dot-sky">
-              <i class="ti ti-writing text-xs"></i>
+          <!-- 7: Feb 2026 - AWS Solutions Architect -->
+          <div class="timeline-item" style="animation-delay: 0.7s">
+            <div class="timeline-dot timeline-dot-amber">
+              <i
+                class="devicon-amazonwebservices-plain-wordmark text-xs"
+                style="font-size: 0.7rem"
+              ></i>
             </div>
-            <div class="timeline-content">
+            <div class="timeline-card">
               <span
-                class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
-                >Now</span
+                class="text-xs font-semibold text-amber-500 uppercase tracking-wide"
+                >Feb 2026</span
               >
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mt-1"
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
               >
-                This Blog + What&rsquo;s Next
+                AWS Solutions Architect
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Full-stack blog on EKS with Terraform, CI/CD, PostgreSQL,
-                Comprehend ML. GitHub Foundations certification in progress.
-                Kubernetes deep dive ongoing.
-              </p>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Architektur-Entscheidungen in Sicherheit, Resilienz,
+                  Performance und Kostenoptimierung zertifiziert.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8: März 2026 - GitHub Foundations -->
+          <div class="timeline-item" style="animation-delay: 0.8s">
+            <div class="timeline-dot timeline-dot-slate">
+              <i class="devicon-github-original text-xs"></i>
+            </div>
+            <div class="timeline-card">
+              <span
+                class="text-xs font-semibold text-slate-500 uppercase tracking-wide"
+                >März 2026</span
+              >
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+              >
+                GitHub Foundations
+              </h3>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  GitHub-Ökosystem, Collaboration, Versionskontrolle
+                  zertifiziert.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9: Feb 2026 - IHK Berufsspezialist gestartet -->
+          <div class="timeline-item" style="animation-delay: 0.9s">
+            <div class="timeline-dot timeline-dot-teal">
+              <i class="ti ti-certificate text-xs"></i>
+            </div>
+            <div class="timeline-card">
+              <span
+                class="text-xs font-semibold text-teal-500 uppercase tracking-wide"
+                >Feb 2026</span
+              >
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+              >
+                IHK Berufsspezialist gestartet
+              </h3>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Strategische Weiterentwicklung &mdash; IHK-Qualifikation
+                  Systemintegration &amp; Vernetzung, berufsbegleitend.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10: März 2026 - Dieser Blog auf EKS -->
+          <div class="timeline-item" style="animation-delay: 1s">
+            <div class="timeline-dot timeline-dot-sky">
+              <i class="devicon-kubernetes-plain text-xs"></i>
+            </div>
+            <div class="timeline-card">
+              <span
+                class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
+                >März 2026</span
+              >
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+              >
+                Dieser Blog auf EKS
+              </h3>
+              <div class="timeline-detail">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Abschlussprojekt: 9 TF-Module, 6 CI/CD-Pipelines, Cloud-native
+                  AWS.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -589,16 +574,20 @@
 
       <!-- ===== What Drives Me Section ===== -->
       <div class="bg-white dark:bg-slate-900">
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 reveal">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
           >
-            <i class="ti ti-heart text-sky-500"></i>
-            What Drives Me
+            <span
+              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-heart text-xl text-sky-500"></i>
+            </span>
+            Was mich antreibt
           </h2>
 
           <div class="grid gap-4 sm:grid-cols-3">
-            <!-- Card 1: Learning by Doing -->
+            <!-- Card 1: Lernen durch Bauen -->
             <div
               class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6"
             >
@@ -610,59 +599,60 @@
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
               >
-                Learning by Doing
+                Lernen durch Bauen
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
               >
-                I don&rsquo;t learn from slides. I learn by breaking things,
-                fixing them, and writing about what happened. Every project is a
-                lesson.
+                Nicht Tutorials, sondern eigene Projekte. Jeder Blogpost
+                dokumentiert eine echte Entscheidung — mit realen Konsequenzen
+                und Lösungen, die funktionieren müssen.
               </p>
             </div>
 
-            <!-- Card 2: Building Real Things -->
+            <!-- Card 2: Echte Probleme lösen -->
             <div
-              class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6"
+              class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
             >
               <div
-                class="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center mb-4"
+                class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4"
               >
-                <i class="ti ti-building text-2xl text-green-500"></i>
+                <i class="ti ti-puzzle text-2xl text-orange-500"></i>
               </div>
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
               >
-                Building Real Things
+                Echte Probleme lösen
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
               >
-                No toy projects. Everything I build solves a real problem or
-                documents a real experience. This blog is not a demo &mdash; it
-                is my portfolio.
+                Sandbox-Wipe, SCP-Limitierungen, rotierende Endpoints — die
+                besten Lernmomente kamen ungeplant. Herausforderungen meistern
+                statt Aufgaben abarbeiten.
               </p>
             </div>
 
-            <!-- Card 3: Security First -->
+            <!-- Card 3: Tech trifft Business -->
             <div
-              class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6"
+              class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-6"
             >
               <div
-                class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center mb-4"
+                class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4"
               >
-                <i class="ti ti-shield-check text-2xl text-red-500"></i>
+                <i class="ti ti-arrows-exchange text-2xl text-purple-500"></i>
               </div>
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
               >
-                Security First
+                Tech trifft Business
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
               >
-                Getting hacked twice in one year teaches you something. Now
-                security is not an afterthought &mdash; it is the first thought.
+                Fast zwei Jahrzehnte Stakeholder-Kommunikation. Technische
+                Architekturen verständlich erklären — die Fähigkeit, die mich
+                von rein technischen Profilen abhebt.
               </p>
             </div>
           </div>
@@ -670,37 +660,38 @@
       </div>
 
       <!-- ===== Quick Facts Section (with animated counters) ===== -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-16">
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-16 reveal">
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
         >
-          <i class="ti ti-chart-bar text-sky-500"></i>
-          Quick Facts
+          <span
+            class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-chart-bar text-xl text-sky-500"></i>
+          </span>
+          Fakten im Überblick
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <!-- Stat 1: Certifications -->
+          <!-- Stat 1: Zertifizierungen -->
           <div
             class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
           >
             <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/10 flex items-center justify-center"
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center"
             >
-              <i class="ti ti-trophy text-2xl text-sky-500"></i>
+              <i class="ti ti-certificate text-2xl text-amber-500"></i>
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="3"
+              data-count-to="4"
             >
               0
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Professional Certifications
-            </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Earned while rebuilding my career
+              Zertifizierungen
             </div>
           </div>
 
@@ -711,7 +702,7 @@
             <div
               class="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/10 flex items-center justify-center"
             >
-              <i class="ti ti-brand-docker text-2xl text-green-500"></i>
+              <i class="devicon-docker-plain colored text-2xl"></i>
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
@@ -725,23 +716,20 @@
             >
               Docker Services
             </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Across 4 environments
-            </div>
           </div>
 
-          <!-- Stat 3: Terraform Modules -->
+          <!-- Stat 3: Terraform Module -->
           <div
             class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
           >
             <div
               class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
             >
-              <i class="ti ti-brand-terraform text-2xl text-purple-500"></i>
+              <i class="devicon-terraform-plain colored text-2xl"></i>
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="15"
+              data-count-to="25"
               data-count-suffix="+"
             >
               0
@@ -749,86 +737,73 @@
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Terraform Modules
-            </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Production-ready IaC
+              Terraform Module
             </div>
           </div>
 
-          <!-- Stat 4: Training Hours -->
-          <div
-            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-orange-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-clock text-2xl text-orange-500"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="2300"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-            >
-              Training Hours (UE)
-            </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              And still counting
-            </div>
-          </div>
-
-          <!-- Stat 5: Months Training -->
-          <div
-            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-bolt text-2xl text-amber-500"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="12"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-            >
-              Months Intensive Training
-            </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              From zero to cloud engineer
-            </div>
-          </div>
-
-          <!-- Stat 6: Git Repos -->
+          <!-- Stat 4: Automatisierte Tests -->
           <div
             class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
           >
             <div
               class="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/10 flex items-center justify-center"
             >
-              <i class="ti ti-git-merge text-2xl text-sky-500"></i>
+              <i class="ti ti-test-pipe text-2xl text-sky-500"></i>
             </div>
             <div
               class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="10"
-              data-count-suffix="+"
+              data-count-to="94"
             >
               0
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
             >
-              Git Repositories
+              Automatisierte Tests
             </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
-              Public and private
+          </div>
+
+          <!-- Stat 5: Umgebungen -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-server text-2xl text-purple-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="4"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Umgebungen
+            </div>
+          </div>
+
+          <!-- Stat 6: Blog Posts -->
+          <div
+            class="counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-teal-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-article text-2xl text-teal-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="11"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Blogposts
             </div>
           </div>
         </div>
@@ -848,9 +823,7 @@
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
-            <span
-              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
-            >
+            <span>2026 Andy Schlegel</span>
           </div>
 
           <!-- Center: legal links -->
@@ -870,7 +843,7 @@
           <!-- Right: social links -->
           <div class="flex items-center gap-4">
             <a
-              href="https://github.com/AndySchlegel"
+              href="https://github.com/his4irness"
               target="_blank"
               rel="noopener noreferrer"
               class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -906,5 +879,25 @@
 
     <!-- Animated counters (scroll-triggered) -->
     <script src="./js/counter.js"></script>
+
+    <!-- Scroll reveal: animate sections into view on scroll -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        document.querySelectorAll(".reveal").forEach(function (el) {
+          observer.observe(el);
+        });
+      });
+    </script>
   </body>
 </html>

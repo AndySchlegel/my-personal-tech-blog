@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="de" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andy Schlegel - Tech Blog</title>
+    <title>Andy Schlegel - Cloud & DevOps Engineer</title>
     <meta
       name="description"
-      content="From zero to Cloud Engineer - personal tech blog about AWS, DevOps, Homelab, and the journey of becoming a cloud engineer."
+      content="Cloud & DevOps Engineer mit Hands-on-Kompetenz in AWS, Kubernetes, Terraform und CI/CD. Portfolio und Projekte von Andy Schlegel."
     />
 
     <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Tailwind configuration
+      // Tailwind configuration -- same as all other pages
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -33,16 +33,20 @@
       rel="stylesheet"
     />
 
-    <!-- Tabler Icons (4900+ modern icons, 2px stroke) -->
+    <!-- Tabler Icons (UI icons: arrows, menu, theme toggle, etc.) -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
-    <!-- Our custom styles (minimal, Tailwind does the heavy lifting) -->
-    <link rel="stylesheet" href="./css/styles.css" />
+    <!-- Devicon (colored tech/brand icons: AWS, Docker, K8s, Terraform, etc.) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
 
-    <!-- Theme toggle script (loads early to prevent flash of wrong theme) -->
+    <!-- Custom styles and theme toggle (loads early to prevent flash) -->
+    <link rel="stylesheet" href="./css/styles.css" />
     <script src="./js/theme.js"></script>
   </head>
 
@@ -56,34 +60,36 @@
       <div
         class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo / Blog Name -->
-        <a href="./index.html" class="flex items-center gap-2.5 group">
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
           <div
             class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
           >
-            <i class="ti ti-terminal-2 text-white text-lg"></i>
+            <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
-          <span class="font-bold text-lg text-slate-900 dark:text-white">
-            Andy<span class="text-sky-500">.</span>dev
-          </span>
         </a>
 
-        <!-- Navigation -->
+        <!-- Desktop navigation -->
         <nav class="hidden sm:flex items-center gap-6">
           <a
             href="./index.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
           >
         </nav>
 
@@ -95,9 +101,7 @@
             class="theme-toggle-btn w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
             aria-label="Toggle dark mode"
           >
-            <!-- Sun icon (shown in dark mode - click to go light) -->
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
-            <!-- Moon icon (shown in light mode - click to go dark) -->
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
 
@@ -121,17 +125,22 @@
           <a
             href="./index.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400 py-2"
-            >Blog</a
+            >Home</a
           >
           <a
             href="./about.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
-            >About</a
+            >About me</a
           >
           <a
             href="./skills.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
             >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
           >
         </div>
       </nav>
@@ -139,162 +148,976 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
-      <!-- Hero Section -->
+      <!-- ===== SECTION 1: HERO ===== -->
+      <!-- Full-width hero with name, title, tagline, CTA buttons, photo placeholder, and cert badges -->
       <section
-        class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10"
+        class="bg-gradient-to-br from-sky-500/5 via-purple-500/5 to-transparent dark:from-sky-500/10 dark:via-purple-500/5 dark:to-transparent"
       >
-        <div class="max-w-2xl">
-          <h1
-            class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+        <div
+          class="max-w-5xl mx-auto px-4 sm:px-6 pt-14 pb-10 sm:pt-20 sm:pb-14"
+        >
+          <div
+            class="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12"
           >
-            From Zero to Cloud Engineer
-          </h1>
-          <p
-            class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
-            style="animation-delay: 0.1s; opacity: 0"
-          >
-            Personal blog about my journey into cloud engineering. AWS,
-            Kubernetes, Terraform, Security, and everything I learn along the
-            way.
-          </p>
+            <!-- Left: text content -->
+            <div class="flex-1 max-w-2xl">
+              <!-- Name -->
+              <h1
+                class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2"
+              >
+                Andy Schlegel
+              </h1>
 
-          <!-- Stats badges - individual certs + highlights -->
-          <div class="flex flex-wrap gap-3 mt-6">
-            <span
-              class="stat-badge stat-badge-sky scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 rounded-full text-sm font-medium cursor-default"
-              style="animation-delay: 0.3s"
-            >
-              <i class="ti ti-cloud text-base"></i>
-              AWS CLP
-            </span>
-            <span
-              class="stat-badge stat-badge-orange scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 rounded-full text-sm font-medium cursor-default"
-              style="animation-delay: 0.4s"
-            >
-              <i class="ti ti-cloud text-base"></i>
-              AWS SAA
-            </span>
-            <span
-              class="stat-badge stat-badge-green scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-sm font-medium cursor-default"
-              style="animation-delay: 0.5s"
-            >
-              <i class="ti ti-brand-ubuntu text-base"></i>
-              Linux Essentials
-            </span>
-            <span
-              class="stat-badge stat-badge-purple scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full text-sm font-medium cursor-default"
-              style="animation-delay: 0.6s"
-            >
-              <i class="ti ti-server text-base"></i>
-              Homelab Enthusiast
-            </span>
-            <span
-              class="stat-badge stat-badge-green scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-sm font-medium cursor-default"
-              style="animation-delay: 0.7s"
-            >
-              <i class="ti ti-brand-kubernetes text-base"></i>
-              EKS Deployed
-            </span>
+              <!-- Title -->
+              <p
+                class="slide-in-left text-xl sm:text-2xl text-sky-600 dark:text-sky-400 font-semibold mb-5"
+                style="animation-delay: 0.1s; opacity: 0"
+              >
+                Cloud &amp; DevOps Engineer | Sales Background
+              </p>
+
+              <!-- Tagline based on CV profile -->
+              <p
+                class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+                style="animation-delay: 0.15s; opacity: 0"
+              >
+                Technische Hands-on-Kompetenz (AWS SAA, EKS, Terraform) trifft
+                auf fast zwei Jahrzehnte Stakeholder-Kommunikation und
+                Prozessoptimierung. Multi-Cloud-Infrastruktur mit 50+ Services,
+                durchgängiges Monitoring, produktionsreife Deployments.
+              </p>
+
+              <!-- Quote -->
+              <div
+                class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 mb-6"
+                style="animation-delay: 0.2s; opacity: 0"
+              >
+                <p
+                  class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
+                >
+                  &ldquo;Cloud und DevOps, weil es genau an der Schnittstelle
+                  liegt: Systeme bauen, die Menschen, Prozesse und Technologie
+                  verbinden.&rdquo;
+                </p>
+              </div>
+
+              <!-- CTA buttons -->
+              <div
+                class="slide-in-left flex flex-wrap gap-3"
+                style="animation-delay: 0.25s; opacity: 0"
+              >
+                <a
+                  href="#projekte"
+                  class="social-link inline-flex items-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold rounded-lg"
+                >
+                  <i class="ti ti-arrow-down text-base"></i>
+                  Projekte ansehen
+                </a>
+                <a
+                  href="./skills.html"
+                  class="social-link inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400 text-sm font-semibold rounded-lg"
+                >
+                  <i class="ti ti-compass text-base"></i>
+                  Skills entdecken
+                </a>
+              </div>
+
+              <!-- Cert badges row (clean images without borders) -->
+              <div class="flex flex-wrap items-center gap-4 mt-7">
+                <!-- AWS Solutions Architect -->
+                <img
+                  src="./img/certs/aws-certified-solutions-architect-associate.png"
+                  alt="AWS Solutions Architect Associate"
+                  class="scale-up h-16 w-auto drop-shadow-md"
+                  style="animation-delay: 0.35s"
+                />
+                <!-- AWS Cloud Practitioner -->
+                <img
+                  src="./img/certs/aws-certified-cloud-practitioner.png"
+                  alt="AWS Cloud Practitioner"
+                  class="scale-up h-16 w-auto drop-shadow-md"
+                  style="animation-delay: 0.4s"
+                />
+                <!-- Linux Essentials -->
+                <img
+                  src="./img/certs/linux-essentials-certificate.9.png"
+                  alt="Linux Essentials"
+                  class="scale-up h-16 w-auto drop-shadow-md"
+                  style="animation-delay: 0.45s"
+                />
+                <!-- GitHub Foundations (placeholder until real Credly badge image) -->
+                <div
+                  class="scale-up h-16 w-16 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-600 dark:to-slate-800 border-2 border-slate-500/50 flex items-center justify-center cursor-default drop-shadow-md"
+                  style="animation-delay: 0.5s"
+                  title="GitHub Foundations"
+                >
+                  <i class="devicon-github-original text-3xl text-white"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: profile photo -->
+            <div class="shrink-0 relative">
+              <div
+                class="absolute -inset-1.5 bg-gradient-to-br from-sky-500 via-purple-500 to-sky-500 rounded-full opacity-25 blur-md"
+              ></div>
+              <img
+                src="./img/andy-schlegel.jpeg"
+                alt="Andy Schlegel"
+                class="relative w-52 h-52 md:w-64 md:h-64 rounded-full object-cover ring-2 ring-sky-500/30 shadow-2xl"
+                style="object-position: center 40%"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Filter Section (search + category pills) -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-6">
-        <!-- Search input -->
-        <div class="relative mb-4">
-          <i
-            class="ti ti-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-lg pointer-events-none"
-          ></i>
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Search articles..."
-            class="search-input w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none"
-          />
-          <button
-            id="search-clear"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors hidden"
-            aria-label="Clear search"
-          >
-            <i class="ti ti-x text-lg"></i>
-          </button>
-        </div>
-
-        <!-- Category filter pills (populated by app.js, "All" is static) -->
-        <div id="category-filters" class="flex flex-wrap gap-2">
-          <button class="filter-btn filter-btn-active" data-category="">
-            All
-          </button>
-        </div>
-      </section>
-
-      <!-- Posts Section -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
-        <!-- Section header with post count -->
-        <div class="flex items-center justify-between mb-6">
+      <!-- ===== SECTION 2: KEY COMPETENCIES ===== -->
+      <!-- Six core competency badges/pills in a centered layout -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
           <h2
-            class="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2"
+            class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center flex items-center justify-center gap-3"
           >
-            <i class="ti ti-article text-sky-500"></i>
-            Latest Articles
+            <span
+              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-stack-2 text-xl text-sky-500"></i>
+            </span>
+            Kernkompetenzen
           </h2>
+
+          <!-- Centered pill grid -->
+          <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
+            <!-- AWS Cloud Architecture -->
+            <div
+              class="reveal reveal-delay-1 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center"
+              >
+                <i
+                  class="devicon-amazonwebservices-plain-wordmark colored text-2xl"
+                ></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >AWS Cloud Architecture</span
+              >
+            </div>
+
+            <!-- Infrastructure as Code -->
+            <div
+              class="reveal reveal-delay-2 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-terraform-plain colored text-xl"></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Infrastructure as Code</span
+              >
+            </div>
+
+            <!-- Container & Kubernetes -->
+            <div
+              class="reveal reveal-delay-3 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-sky-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-kubernetes-plain colored text-xl"></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Container &amp; Kubernetes</span
+              >
+            </div>
+
+            <!-- CI/CD & DevSecOps -->
+            <div
+              class="reveal reveal-delay-4 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-githubactions-plain colored text-xl"></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >CI/CD &amp; DevSecOps</span
+              >
+            </div>
+
+            <!-- Security & Monitoring -->
+            <div
+              class="reveal reveal-delay-5 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-prometheus-plain colored text-xl"></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Security &amp; Monitoring</span
+              >
+            </div>
+
+            <!-- Linux & Networking -->
+            <div
+              class="reveal reveal-delay-5 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+            >
+              <div
+                class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-linux-plain text-xl text-amber-500"></i>
+              </div>
+              <span
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Linux &amp; Networking</span
+              >
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== SECTION 3: SHOWCASE PROJECTS ===== -->
+      <!-- Four project cards from CV with tech badges and status indicators -->
+      <section
+        id="projekte"
+        class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16"
+      >
+        <h2
+          class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
+        >
           <span
-            id="post-count"
-            class="text-sm text-slate-400 dark:text-slate-500"
-          ></span>
-        </div>
-
-        <!-- API status message (demo mode / connected) -->
-        <div id="api-status" class="mb-4"></div>
-
-        <!-- Loading skeleton (shown while posts load) -->
-        <div id="posts-loading" class="grid gap-4 sm:grid-cols-2">
-          <!-- Skeleton card 1 -->
-          <div
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6"
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0"
           >
-            <div
-              class="skeleton h-5 w-20 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"
-            ></div>
-            <div
-              class="skeleton h-6 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-2"
-            ></div>
-            <div
-              class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-1"
-            ></div>
-            <div
-              class="skeleton h-4 w-2/3 bg-slate-200 dark:bg-slate-700 rounded mb-4"
-            ></div>
-            <div
-              class="skeleton h-3 w-1/3 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
-          </div>
-          <!-- Skeleton card 2 -->
+            <i class="ti ti-code text-xl text-orange-500"></i>
+          </span>
+          Projekte
+        </h2>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          <!-- Project 1: EcoKart -->
           <div
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6"
+            class="reveal reveal-delay-1 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6 flex flex-col"
           >
+            <!-- Header with title and status badge -->
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+                >
+                  <i
+                    class="devicon-amazonwebservices-plain-wordmark colored text-2xl"
+                  ></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  EcoKart
+                </h3>
+              </div>
+              <span
+                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                Live
+              </span>
+            </div>
+
+            <!-- Subtitle -->
+            <p
+              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+            >
+              Serverless E-Commerce Platform
+            </p>
+
+            <!-- Description -->
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+            >
+              Komplette serverless AWS-Architektur von Grund auf designed,
+              implementiert und produktiv deployed.
+            </p>
+
+            <!-- Stats row -->
             <div
-              class="skeleton h-5 w-20 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"
-            ></div>
+              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="devicon-terraform-plain colored text-sm"></i>
+                15 TF-Module
+              </span>
+              <span class="flex items-center gap-1">
+                <i
+                  class="devicon-amazonwebservices-plain-wordmark colored text-sm"
+                ></i>
+                12 AWS-Services
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-test-pipe text-sky-500"></i>
+                63 Tests
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-git-merge text-green-500"></i>
+                8 GH-Actions
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-lock text-amber-500"></i>
+                OIDC
+              </span>
+            </div>
+
+            <!-- Tech badges -->
+            <div class="tech-badges flex flex-wrap gap-1.5">
+              <span
+                class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
+                >AWS</span
+              >
+              <span
+                class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
+                >Terraform</span
+              >
+              <span
+                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                >TypeScript</span
+              >
+              <span
+                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
+                >Next.js</span
+              >
+              <span
+                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                >DynamoDB</span
+              >
+              <span
+                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                >Lambda</span
+              >
+            </div>
+          </div>
+
+          <!-- Project 2: Personal Tech Blog -->
+          <div
+            class="reveal reveal-delay-2 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6 flex flex-col"
+          >
+            <!-- Header with title and status badge -->
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                >
+                  <i class="devicon-kubernetes-plain colored text-xl"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Tech Blog
+                </h3>
+              </div>
+              <span
+                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                Live
+              </span>
+            </div>
+
+            <!-- Subtitle -->
+            <p
+              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+            >
+              Cloud-Native auf AWS EKS
+            </p>
+
+            <!-- Description -->
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+            >
+              Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging
+              und PostgreSQL aufgebaut, betrieben und kontinuierlich deployed.
+            </p>
+
+            <!-- Stats row -->
             <div
-              class="skeleton h-6 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-2"
-            ></div>
+              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="devicon-kubernetes-plain colored text-sm"></i>
+                AWS EKS
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-server text-green-500"></i>
+                Express 5
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-database text-purple-500"></i>
+                PostgreSQL RDS
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-brain text-amber-500"></i>
+                Comprehend ML
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-test-pipe text-sky-500"></i>
+                31 Tests
+              </span>
+            </div>
+
+            <!-- Tech badges -->
+            <div class="tech-badges flex flex-wrap gap-1.5">
+              <span
+                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                >EKS</span
+              >
+              <span
+                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                >Kubernetes</span
+              >
+              <span
+                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
+                >TypeScript</span
+              >
+              <span
+                class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
+                >PostgreSQL</span
+              >
+              <span
+                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                >Comprehend</span
+              >
+            </div>
+          </div>
+
+          <!-- Project 3: Multi-Cloud HomeLab -->
+          <div
+            class="reveal reveal-delay-3 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6 flex flex-col"
+          >
+            <!-- Header with title and status badge -->
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+                >
+                  <i class="devicon-docker-plain colored text-xl"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Multi-Cloud HomeLab
+                </h3>
+              </div>
+              <span
+                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                Live
+              </span>
+            </div>
+
+            <!-- Subtitle -->
+            <p
+              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+            >
+              Verteilte Infrastruktur im Dauerbetrieb
+            </p>
+
+            <!-- Description -->
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+            >
+              Verteilte Infrastruktur wie ein internes Ops-Team aufgebaut: vier
+              Standorte per Tailscale vernetzt, 50+ containerisierte Services
+              und UniFi-Netzwerk im Dauerbetrieb.
+            </p>
+
+            <!-- Stats row -->
             <div
-              class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-1"
-            ></div>
+              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="ti ti-map-pin text-green-500"></i>
+                4 Standorte
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="devicon-docker-plain colored text-sm"></i>
+                50+ Services
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-router text-amber-500"></i>
+                UniFi Gateway
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-database text-orange-500"></i>
+                DS925+ (32GB)
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="devicon-gitlab-plain colored text-sm"></i>
+                GitLab CE
+              </span>
+            </div>
+
+            <!-- Tech badges -->
+            <div class="tech-badges flex flex-wrap gap-1.5">
+              <span
+                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                >Docker</span
+              >
+              <span
+                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
+                >Synology</span
+              >
+              <span
+                class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
+                >Hetzner</span
+              >
+              <span
+                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                >UniFi</span
+              >
+              <span
+                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                >Tailscale</span
+              >
+            </div>
+          </div>
+
+          <!-- Project 4: Monitoring & Alerting Stack -->
+          <div
+            class="reveal reveal-delay-4 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6 flex flex-col"
+          >
+            <!-- Header with title and status badge -->
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
+                >
+                  <i class="devicon-grafana-plain colored text-xl"></i>
+                </div>
+                <h3
+                  class="text-lg font-semibold text-slate-900 dark:text-white"
+                >
+                  Monitoring &amp; Alerting
+                </h3>
+              </div>
+              <span
+                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                Live
+              </span>
+            </div>
+
+            <!-- Subtitle -->
+            <p
+              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+            >
+              Zentrales Monitoring über alle Standorte
+            </p>
+
+            <!-- Description -->
+            <p
+              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+            >
+              Zentrales Monitoring über alle Standorte aufgebaut: Prometheus,
+              Grafana, Wazuh SIEM und dreistufiges Alerting für
+              Echtzeit-Detection.
+            </p>
+
+            <!-- Stats row -->
             <div
-              class="skeleton h-4 w-2/3 bg-slate-200 dark:bg-slate-700 rounded mb-4"
-            ></div>
-            <div
-              class="skeleton h-3 w-1/3 bg-slate-200 dark:bg-slate-700 rounded"
-            ></div>
+              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="devicon-prometheus-plain colored text-sm"></i>
+                Prometheus
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="devicon-grafana-plain colored text-sm"></i>
+                Grafana
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-shield-lock text-red-500"></i>
+                Wazuh SIEM
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-bell text-amber-500"></i>
+                3-Stufen-Alerting
+              </span>
+            </div>
+
+            <!-- Tech badges -->
+            <div class="tech-badges flex flex-wrap gap-1.5">
+              <span
+                class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
+                >Prometheus</span
+              >
+              <span
+                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                >Grafana</span
+              >
+              <span
+                class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
+                >Wazuh</span
+              >
+              <span
+                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                >Alertmanager</span
+              >
+              <span
+                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                >Node Exporter</span
+              >
+            </div>
           </div>
         </div>
-
-        <!-- Post grid (populated by app.js) -->
-        <div id="posts-grid" class="grid gap-4 sm:grid-cols-2"></div>
       </section>
+
+      <!-- ===== SECTION 4: KEY ACCOUNT STRENGTHS ===== -->
+      <!-- 2x3 grid of strengths from sales/military background -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2
+            class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
+          >
+            <span
+              class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-users text-xl text-green-500"></i>
+            </span>
+            Key Account Strengths
+          </h2>
+
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Stakeholder-Kommunikation -->
+            <div
+              class="reveal reveal-delay-1 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-messages text-xl text-sky-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Stakeholder-Kommunikation
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Fast zwei Jahrzehnte Abstimmung mit internen und externen
+                Entscheidern.
+              </p>
+            </div>
+
+            <!-- Prozessoptimierung -->
+            <div
+              class="reveal reveal-delay-2 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-arrows-sort text-xl text-purple-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Prozessoptimierung
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Abläufe analysiert, standardisiert und automatisiert.
+              </p>
+            </div>
+
+            <!-- Team Building -->
+            <div
+              class="reveal reveal-delay-3 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-user-plus text-xl text-green-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Team Building
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Vertriebseinheiten ausgebaut, Kollegen onboarded.
+              </p>
+            </div>
+
+            <!-- Krisenmanagement -->
+            <div
+              class="reveal reveal-delay-4 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-shield-exclamation text-xl text-red-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Krisenmanagement
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Sechs Jahre Bundeswehr -- strukturiertes Handeln unter Druck.
+              </p>
+            </div>
+
+            <!-- Eigeninitiative -->
+            <div
+              class="reveal reveal-delay-5 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-amber-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-bolt text-xl text-amber-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Eigeninitiative
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Multi-Cloud-Infrastruktur berufsbegleitend hands-on aufgebaut.
+              </p>
+            </div>
+
+            <!-- Selbständiges Arbeiten -->
+            <div
+              class="reveal reveal-delay-5 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-5"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3"
+              >
+                <i class="ti ti-compass text-xl text-orange-500"></i>
+              </div>
+              <h3
+                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+              >
+                Selbständiges Arbeiten
+              </h3>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+              >
+                Bundesweit remote -- eigenständige Planung und Umsetzung.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== SECTION 5: QUICK STATS ===== -->
+      <!-- Animated counters, scroll-triggered via counter.js -->
+      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <h2
+          class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0"
+          >
+            <i class="ti ti-chart-bar text-xl text-amber-500"></i>
+          </span>
+          Auf einen Blick
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <!-- Stat 1: Zertifizierungen -->
+          <div
+            class="reveal reveal-delay-1 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-certificate text-2xl text-amber-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="4"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Zertifizierungen
+            </div>
+          </div>
+
+          <!-- Stat 2: Services -->
+          <div
+            class="reveal reveal-delay-2 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/10 flex items-center justify-center"
+            >
+              <i class="devicon-docker-plain colored text-2xl"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="50"
+              data-count-suffix="+"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Services
+            </div>
+          </div>
+
+          <!-- Stat 3: Monate Training -->
+          <div
+            class="reveal reveal-delay-3 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-clock text-2xl text-sky-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="12"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Monate Training
+            </div>
+          </div>
+
+          <!-- Stat 4: Standorte -->
+          <div
+            class="reveal reveal-delay-4 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-map-pin text-2xl text-purple-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="4"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Umgebungen
+            </div>
+          </div>
+
+          <!-- Stat 5: Key Account Erfahrung -->
+          <div
+            class="reveal reveal-delay-5 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
+          >
+            <div
+              class="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-users text-2xl text-red-500"></i>
+            </div>
+            <div
+              class="text-3xl font-bold text-slate-900 dark:text-white"
+              data-count-to="18"
+              data-count-suffix="+"
+            >
+              0
+            </div>
+            <div
+              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Jahre Key Account &amp; Sales
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 6: CTA / CONTACT ===== -->
+      <!-- Call to action with contact links -->
+      <div class="bg-white dark:bg-slate-900">
+        <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div class="text-center">
+            <h2
+              class="reveal text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4"
+            >
+              Lass uns sprechen
+            </h2>
+            <p
+              class="reveal reveal-delay-1 text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-xl mx-auto"
+            >
+              Ab April 2026 offen für neue Herausforderungen. Cloud Engineering,
+              Solutions Architecture, Technical Consulting &mdash; oder die
+              passende Rolle dazwischen.
+            </p>
+
+            <!-- Contact links -->
+            <div
+              class="reveal reveal-delay-2 flex flex-wrap justify-center gap-4"
+            >
+              <!-- Email -->
+              <a
+                href="mailto:contact@his4irness23.de"
+                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+              >
+                <i class="ti ti-mail text-lg text-sky-500"></i>
+                contact@his4irness23.de
+              </a>
+
+              <!-- LinkedIn -->
+              <a
+                href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+              >
+                <i class="ti ti-brand-linkedin text-lg text-sky-500"></i>
+                LinkedIn
+              </a>
+
+              <!-- GitHub -->
+              <a
+                href="https://github.com/his4irness"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+              >
+                <i class="ti ti-brand-github text-lg text-sky-500"></i>
+                GitHub
+              </a>
+
+              <!-- Blog -->
+              <a
+                href="./blog.html"
+                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+              >
+                <i class="ti ti-article text-lg text-sky-500"></i>
+                Blog lesen
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
@@ -310,9 +1133,7 @@
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
-            <span
-              >2026 Andy Schlegel. Built with EKS, Express, and curiosity.</span
-            >
+            <span>2026 Andy Schlegel</span>
           </div>
 
           <!-- Center: legal links (required in Germany) -->
@@ -332,7 +1153,7 @@
           <!-- Right: social links -->
           <div class="flex items-center gap-4">
             <a
-              href="https://github.com/AndySchlegel"
+              href="https://github.com/his4irness"
               target="_blank"
               rel="noopener noreferrer"
               class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -366,7 +1187,29 @@
       });
     </script>
 
-    <!-- Main app script (loads posts from API) -->
-    <script src="./js/app.js"></script>
+    <!-- Animated counters (scroll-triggered) -->
+    <script src="./js/counter.js"></script>
+
+    <!-- Scroll-reveal: animate elements into view -->
+    <script>
+      // Scroll-reveal: animate elements into view as they enter the viewport
+      document.addEventListener("DOMContentLoaded", function () {
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        document.querySelectorAll(".reveal").forEach(function (el) {
+          observer.observe(el);
+        });
+      });
+    </script>
   </body>
 </html>
