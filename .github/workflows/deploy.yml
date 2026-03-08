@@ -206,6 +206,7 @@ jobs:
           echo "alb_controller_role_arn=$(terraform output -raw alb_controller_role_arn)" >> "$GITHUB_OUTPUT"
           echo "route53_zone_id=$(terraform output -raw route53_zone_id)" >> "$GITHUB_OUTPUT"
           echo "blog_domain=$(terraform output -raw blog_domain)" >> "$GITHUB_OUTPUT"
+          echo "cognito_domain=$(terraform output -raw cognito_domain)" >> "$GITHUB_OUTPUT"
 
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
@@ -262,6 +263,21 @@ jobs:
         run: |
           kubectl apply -f k8s/00-namespace.yaml
           kubectl apply -f k8s/01-configmap.yaml
+
+      # Step 1b: Create frontend config for admin auth (Cognito values).
+      # This ConfigMap is mounted into the frontend container as /admin/config.js.
+      # auth.js reads window.BLOG_CONFIG to get the Cognito domain, pool ID, etc.
+      - name: Create frontend admin config
+        run: |
+          COGNITO_FULL_DOMAIN="${{ steps.tf.outputs.cognito_domain }}.auth.${{ env.AWS_REGION }}.amazoncognito.com"
+          kubectl create configmap frontend-admin-config \
+            --namespace ${{ env.K8S_NAMESPACE }} \
+            --from-literal=config.js="window.BLOG_CONFIG = {
+            cognitoUserPoolId: \"${{ steps.tf.outputs.cognito_user_pool_id }}\",
+            cognitoClientId: \"${{ steps.tf.outputs.cognito_client_id }}\",
+            cognitoDomain: \"${COGNITO_FULL_DOMAIN}\",
+          };" \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       # Step 2: Create secrets with real values.
       # DB_PASSWORD comes from GitHub Secrets (sensitive, not in Terraform state).

@@ -41,6 +41,14 @@ spec:
           image: ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/blog-frontend:latest
           ports:
             - containerPort: 80
+          # Mount admin config (Cognito values) from ConfigMap.
+          # Overrides the default empty config.js baked into the Docker image.
+          # Created by deploy.yml with real Cognito values from Terraform outputs.
+          volumeMounts:
+            - name: admin-config
+              mountPath: /usr/share/nginx/html/admin/config.js
+              subPath: config.js
+              readOnly: true
           # Liveness: restart pod if nginx stops responding
           livenessProbe:
             tcpSocket:
@@ -64,3 +72,7 @@ spec:
             limits:
               cpu: 100m
               memory: 64Mi
+      volumes:
+        - name: admin-config
+          configMap:
+            name: frontend-admin-config
