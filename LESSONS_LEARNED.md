@@ -530,3 +530,54 @@ Created a second ACM certificate in `eu-central-1` for the ALB. Both certificate
 CloudFront requires ACM certificates in `us-east-1` regardless of where your infrastructure runs. ALBs require certificates in the same region as the ALB. For a single domain, you need TWO certificates in different regions. This is a well-documented AWS constraint but easy to miss when you already have "a certificate" and assume it works everywhere. Both certs are free and auto-renew independently.
 
 ---
+
+## #28 - Cognito OAuth Callback URLs Must Match Exactly
+
+**Date:** 2026-03-08
+**Phase:** EKS Deployment
+
+**Context:**
+After deploying the admin dashboard to EKS, the Cognito Hosted UI login flow failed with a `redirect_mismatch` error. The admin dashboard's `auth.js` was sending `redirect_uri` with `/admin/callback.html`, but the Terraform Cognito configuration had the callback URL set to `/admin/callback` (without the `.html` extension). Cognito validates the `redirect_uri` parameter against its configured callback URLs using exact string matching -- no pattern matching, no trailing slash normalization, no extension inference.
+
+**Decision:**
+Aligned the Terraform `callback_urls` and `logout_urls` with what `auth.js` actually sends. The client code is the source of truth for redirect URIs because it constructs the authorization URL that the browser follows to Cognito. The server-side configuration must match exactly.
+
+**Takeaway:**
+Cognito OAuth callback URL validation is an exact string match -- not a prefix match, not case-insensitive, not extension-agnostic. When debugging `redirect_mismatch` errors, always check both sides: what the client code sends as `redirect_uri` and what the identity provider has configured as allowed callbacks. A single character difference (like `.html`) is enough to break the entire login flow.
+
+---
+
+## #29 - Tailscale DNS Blocks External Domain Resolution
+
+**Date:** 2026-03-08
+**Phase:** EKS Deployment
+
+**Context:**
+After deploying the blog to EKS and confirming the ALB was healthy, the blog was unreachable from the local browser with `ERR_NAME_NOT_RESOLVED`. Running `dig blog.aws.his4irness23.de +short` returned empty results. The domain resolved correctly from other networks and from `dig @8.8.8.8`.
+
+**Root Cause:**
+Tailscale's "Use Tailscale DNS settings" option was enabled on macOS. This replaces the system DNS resolver with `100.100.100.100` (Tailscale's MagicDNS resolver). MagicDNS resolves Tailscale machine names and configured split DNS domains, but does NOT resolve arbitrary external domains like `blog.aws.his4irness23.de`. All external lookups silently failed.
+
+**Decision:**
+Disabled "Use Tailscale DNS settings" in the Tailscale macOS app. This restored the system's default DNS resolver (router-provided or manually configured) while keeping Tailscale connectivity for machine-to-machine traffic intact. Alternative fix: set a manual DNS server (e.g., `8.8.8.8`) in macOS network settings, which takes precedence.
+
+**Takeaway:**
+When DNS resolution fails for external domains but works when querying a public resolver directly (`dig @8.8.8.8`), the problem is your local DNS resolver. Tailscale's DNS override is a common culprit on developer machines -- it intercepts all DNS queries but only resolves Tailscale-known names. Quick diagnostic: `dig domain @8.8.8.8 +short` bypasses local DNS and confirms whether the domain exists. If that works but normal `dig` doesn't, your local resolver is the problem.
+
+---
+
+## #30 - Full Lifecycle Reproducibility Verified
+
+**Date:** 2026-03-08
+**Phase:** CI/CD
+
+**Context:**
+The project's core promise is full reproducibility: destroy all infrastructure, re-provision from scratch, deploy the application, and have everything working -- without manual secret updates or configuration drift. This was tested end-to-end with a complete destroy + provision + deploy + destroy cycle.
+
+**Decision:**
+The full lifecycle was verified successfully. Only 2 GitHub Secrets are needed: `AWS_ROLE_ARN` (OIDC-protected, survives destroy cycles) and `DB_PASSWORD` (user-chosen). All other infrastructure values (RDS endpoint, Cognito IDs, ECR URLs, subnet IDs, ALB security group, ACM cert ARN) are read dynamically from Terraform remote state at deploy time. Cognito users are deleted on teardown and must re-register via the Hosted UI after re-provision. The ALB cleanup step in destroy workflows prevents orphaned resources from blocking subsequent operations. Full teardown completes in approximately 13 minutes.
+
+**Takeaway:**
+Reproducibility is not a feature you claim -- it's a property you prove by running the full cycle. Each iteration uncovered edge cases (IAM eventual consistency #22, ALB orphans #26, Cognito callback mismatch #28) that only surface during destroy + recreate. A pipeline that has survived a full lifecycle test is fundamentally more trustworthy than one that has only ever applied to existing infrastructure. The 2-secret design (OIDC role + database password) is the minimum viable secret surface -- everything else is derived from infrastructure state.
+
+---

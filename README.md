@@ -414,6 +414,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** Frontend overhaul complete (PR #37), infra currently torn down, ready for next deploy cycle
+**Project Status:** Frontend overhaul complete (PR #37), Cognito callback URL fix (PR #39/#40). Full EKS deploy + teardown lifecycle verified (Session 20), admin Cognito login working, 100% reproducible with 2 GitHub Secrets
 **Last Updated:** 2026-03-08
 **AWS Region:** eu-central-1 (Frankfurt)
