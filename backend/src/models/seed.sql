@@ -1,22 +1,6 @@
--- =============================================================
--- Seed Data - 12 Blog Articles from the original blog
---
--- Populates the database with real content:
---   - 1 admin user
---   - 6 categories
---   - 12 published blog posts
---   - 25 tags linked to posts
---
--- Usage:
---   psql -d techblog -f seed.sql
---   OR: docker exec -i <db-container> psql -U bloguser -d techblog < seed.sql
--- =============================================================
-
--- Start a transaction so everything succeeds or nothing does
 BEGIN;
 
--- ----- CLEAN UP (safe to re-run) -----
--- Delete in reverse dependency order
+-- Clean slate (safe to re-run)
 DELETE FROM post_tags;
 DELETE FROM comments;
 DELETE FROM posts;
@@ -24,740 +8,951 @@ DELETE FROM tags;
 DELETE FROM categories;
 DELETE FROM users;
 
--- Reset auto-increment counters so IDs start from 1
+-- Reset auto-increment counters
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE categories_id_seq RESTART WITH 1;
 ALTER SEQUENCE posts_id_seq RESTART WITH 1;
 ALTER SEQUENCE tags_id_seq RESTART WITH 1;
 ALTER SEQUENCE comments_id_seq RESTART WITH 1;
 
--- ----- USER -----
--- Cognito ID is a placeholder until real Cognito is set up
+-- Admin user
 INSERT INTO users (cognito_id, email, display_name, role)
 VALUES ('seed-admin-placeholder', 'andy@schlegel.dev', 'Andy Schlegel', 'admin');
 
--- ----- CATEGORIES -----
+-- Categories
 INSERT INTO categories (name, slug, description) VALUES
-  ('AWS & Cloud',           'aws-cloud',      'AWS Certifications, Cloud Architecture and Best Practices'),
-  ('DevOps & CI/CD',        'devops',          'CI/CD, Docker, Kubernetes and Infrastructure as Code'),
-  ('Homelab & Self-Hosting', 'homelab',         'NAS Setup, Self-Hosted Services and Homelab Projects'),
-  ('Networking & Security',  'networking',      'VPN, Reverse Proxy, DNS and Security Best Practices'),
-  ('Tools & Productivity',   'tools',           'Development Tools, Terminal Setup and Workflow Automation'),
-  ('Certifications',         'certifications',  'Certifications, Study Plans and Exam Tips');
+  ('AWS & Cloud',            'aws-cloud',            'AWS Services, Cloud Architecture and Best Practices'),
+  ('DevOps & CI/CD',         'devops-ci-cd',         'CI/CD Pipelines, Docker, Kubernetes and Infrastructure as Code'),
+  ('Homelab & Self-Hosting',  'homelab-self-hosting', 'NAS, Server, Self-Hosted Services and Homelab Projects'),
+  ('Networking & Security',   'networking-security',  'VPN, Firewall, Monitoring and Security Best Practices'),
+  ('Tools & Productivity',    'tools-productivity',   'Development Tools, Terminal Setup and Workflow Automation'),
+  ('Certifications',          'certifications',       'AWS Certifications, Study Plans and Exam Tips'),
+  ('Career & Learning',       'career-learning',      'Career Change, Learning Journey and Professional Development');
 
--- ----- TAGS -----
+-- Tags
 INSERT INTO tags (name, slug, source) VALUES
-  ('Synology',      'synology',      'manual'),
-  ('NAS',           'nas',           'manual'),
-  ('Docker',        'docker',        'manual'),
-  ('Homelab',       'homelab',       'manual'),
-  ('DevOps',        'devops',        'manual'),
-  ('AWS',           'aws',           'manual'),
+  ('Career', 'career', 'manual'),
+  ('Cloud', 'cloud', 'manual'),
+  ('DevOps', 'devops', 'manual'),
+  ('Learning', 'learning', 'manual'),
+  ('AWS', 'aws', 'manual'),
   ('Certification', 'certification', 'manual'),
-  ('Cloud',         'cloud',         'manual'),
-  ('Learning',      'learning',      'manual'),
-  ('Tailscale',     'tailscale',     'manual'),
-  ('Traefik',       'traefik',       'manual'),
-  ('VPN',           'vpn',           'manual'),
-  ('Networking',    'networking',    'manual'),
-  ('n8n',           'n8n',           'manual'),
-  ('Automation',    'automation',    'manual'),
-  ('Hetzner',       'hetzner',       'manual'),
-  ('Self-Hosting',  'self-hosting',  'manual'),
-  ('Monitoring',    'monitoring',    'manual'),
-  ('Dashboard',     'dashboard',     'manual'),
-  ('GitHub',        'github',        'manual'),
-  ('Git',           'git',           'manual'),
-  ('Terminal',      'terminal',      'manual'),
-  ('Productivity',  'productivity',  'manual'),
-  ('DNS',           'dns',           'manual'),
-  ('Nginx',         'nginx',         'manual'),
-  ('Linux',         'linux',         'manual'),
-  ('Best Practices','best-practices','manual'),
-  ('Production',    'production',    'manual');
+  ('Linux', 'linux', 'manual'),
+  ('Docker', 'docker', 'manual'),
+  ('Homelab', 'homelab', 'manual'),
+  ('NAS', 'nas', 'manual'),
+  ('Synology', 'synology', 'manual'),
+  ('Networking', 'networking', 'manual'),
+  ('Monitoring', 'monitoring', 'manual'),
+  ('VPN', 'vpn', 'manual'),
+  ('Tailscale', 'tailscale', 'manual'),
+  ('Traefik', 'traefik', 'manual'),
+  ('DNS', 'dns', 'manual'),
+  ('Terraform', 'terraform', 'manual'),
+  ('CI/CD', 'ci-cd', 'manual'),
+  ('GitHub', 'github', 'manual'),
+  ('Serverless', 'serverless', 'manual'),
+  ('Cognito', 'cognito', 'manual'),
+  ('Stripe', 'stripe', 'manual'),
+  ('Self-Hosting', 'self-hosting', 'manual'),
+  ('Automation', 'automation', 'manual'),
+  ('Hetzner', 'hetzner', 'manual'),
+  ('Security', 'security', 'manual'),
+  ('Prometheus', 'prometheus', 'manual'),
+  ('Grafana', 'grafana', 'manual'),
+  ('Wazuh', 'wazuh', 'manual'),
+  ('Kubernetes', 'kubernetes', 'manual'),
+  ('EKS', 'eks', 'manual');
 
--- ----- POSTS -----
--- All 12 articles from the original blog, published with staggered dates
-
--- Post 1: Synology DS925+ Setup Guide (featured)
+-- Post 1: Erfahrung trifft Neuanfang -- mein Weg in Cloud & DevOps
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Synology DS925+ als DevOps Homelab: Der komplette Setup-Guide',
-  'synology-ds925-devops-homelab-setup',
-  'Die Synology DS925+ ist die perfekte Platform für DevOps Engineers. Mit AMD Ryzen V1500B (4 Cores), bis zu 32GB RAM und nativer Docker-Unterstützung bietet sie genug Power für produktive Workloads.
+  'Erfahrung trifft Neuanfang -- mein Weg in Cloud & DevOps',
+  'erfahrung-trifft-neuanfang',
+  '### Stabilität durch Veränderung
 
-## Setup in 5 Schritten
+In verschiedenen Branchen, über verschiedene Stationen hinweg, war eines immer gleich: Im Zentrum stand der Kunde. Erst im direkten Endkundengeschäft, später zunehmend im B2B-Umfeld. Bedürfnisse verstehen, Rahmenbedingungen kennen -- Vorgaben, Budgets, Einschränkungen -- und innerhalb dieses Rahmens alltagstaugliche Lösungen entwickeln. Das hat mich fast zwei Jahrzehnte lang geprägt und angetrieben.
 
-1. **Initial Setup**: Synology Assistant findet NAS automatisch, DSM 7.2 Installation dauert ca. 15 Min
-2. **Storage Pool**: RAID 5 für Balance zwischen Performance und Redundanz
-3. **Container Manager**: Docker aus Package Center installieren
-4. **SSH aktivieren**: Für Automation und Deployment
-5. **Erste Projekte**: Blog-App, Dashy, n8n deployen
+In den letzten Jahren kam ein zusätzlicher Fokus dazu. Die Themen wurden technischer. Gemeinsam mit Kunden, Teams aus Business Development, IT und Projektverantwortlichen haben wir Schnittstellenanbindungen konzipiert, Prozesse zwischen Dienstleister und Kunde effizienter gestaltet, Anforderungen und technische Möglichkeiten zusammengeführt.
 
-Der Container Manager macht Docker-Deployment super einfach. Alternativ bietet Portainer mehr Features für fortgeschrittene Setups.',
-  'Vom Unboxing bis zum ersten Docker-Container: Wie ich meine Synology DS925+ als zentrale Homelab-Platform eingerichtet habe.',
-  'published', true, 8, 1, 3,
-  '2026-01-10T10:00:00Z'
+Da fielen Begriffe wie API und Systemintegration -- und was auf der technischen Seite aus unseren Anforderungen entstand, hat mich zunehmend fasziniert.
+
+Die Neugier war geweckt!
+
+### Ein Impuls, der geblieben ist
+
+Dann begann eine Phase der Veränderung. Ich habe mir eine Auszeit genommen, einen Schritt zurückgetreten -- und mir Fragen gestellt, die im Alltag keinen Platz gehabt hatten. Will ich weiter ausschließlich im Vertrieb bleiben? Oder steckt in der Faszination für Technik mehr als nur Interesse -- nämlich ein echter nächster Schritt?
+
+Je ehrlicher ich hingeschaut habe, desto klarer wurde das Bild. Die technische Affinität war schon immer da. Die Gespräche mit IT-Abteilungen hatten Türen geöffnet. Und die Erkenntnis, dass meine bisherigen Fähigkeiten -- Anforderungen verstehen, in Lösungen denken, Perspektiven verbinden -- auch in der Tech-Welt gefragt sind, gab den Ausschlag.
+
+Cloud und DevOps, weil es genau an dieser Schnittstelle liegt: Dort, wo Systeme nicht nur gedacht, sondern gebaut und betrieben werden. Und ergebnisoffen -- ob der Weg beispielsweise als Cloud Engineer in eine technische Rolle führt, als Solutions Architect beide Welten verbindet oder Richtung Technical Consulting geht. Kein festgelegtes Ziel, sondern ein Fundament, das verschiedene Richtungen ermöglicht.
+
+### Vom weißen Blatt zur laufenden Infrastruktur
+
+Zwölf Monate voller Cloud- und DevOps-Praxis, in Vollzeit und ohne technische Vorerfahrung.
+
+Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services auf drei Standorten, das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für Serverless-Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf eigener Infrastruktur mit K3s.
+
+Jedes dieser Projekte hat seine eigene Geschichte. Dieser Blog erzählt sie.
+
+### Kein Abschluss, ein Zwischenschritt
+
+Direkt danach begann die IHK-Qualifikation zum Berufsspezialisten für Systemintegration und Vernetzung -- die gezielte Vertiefung, um das Gelernte auf ein formales Fundament mit Gewicht in der Branche zu stellen. Jeder Schritt baut auf dem vorherigen auf, und dieser Weg ist noch lange nicht zu Ende.
+
+### Ein Beitrag pro Etappe
+
+Entscheidungen und deren Begründungen. Lösungswege, die auf Anhieb funktioniert haben -- und andere, die mehrere Iterationen gebraucht haben. Von der ersten Kommandozeile bis zur Cloud-Native Anwendung auf Kubernetes.
+
+**Nächster Post:** Der Moment, an dem Theorie zu Praxis wird
+Grundlagen, Zertifizierungen und die Erkenntnis, dass echtes Lernen erst beginnt, wenn man selbst baut.',
+  'Fast 20 Jahre Vertriebserfahrung, verschiedene Branchen, ein Kern: in Lösungen denken. Dann die Entscheidung, die technische Seite nicht nur zu verstehen, sondern selbst zu bauen. Zwölf Monate später: vier Zertifizierungen, ein produktives Homelab mit über 50 Services, ein Webshop auf AWS -- und dieser Blog als Beweis dafür, dass Erfahrung und Neuanfang sich nicht ausschließen, sondern verstärken.',
+  'published', true, 5, 1, 7,
+  '2026-02-14T10:00:00Z'
 );
 
--- Post 2: AWS Cloud Practitioner (featured)
+-- Post 2: Der Moment, an dem Theorie zu Praxis wird
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'AWS Cloud Practitioner: Von Null zur Zertifizierung in 6 Wochen',
-  'aws-cloud-practitioner-guide',
-  'Die AWS Cloud Practitioner (CLF-C02) ist der perfekte Einstieg in AWS. Nach 6 Wochen Vorbereitung habe ich mit 850/1000 Punkten bestanden.
+  'Der Moment, an dem Theorie zu Praxis wird',
+  'theorie-zu-praxis',
+  '### Fundamente legen, ohne zu wissen, wohin
 
-## Mein Lernplan
+März 2025. Erster Tag der Weiterbildung. Die Entscheidung war gefallen -- es konnte losgehen.
 
-**Woche 1-2**: AWS Skill Builder Exam Prep (kostenlos) + "Overview of AWS" Whitepaper
-**Woche 3-4**: Udemy Kurs von Stephane Maarek + Hands-on im Free Tier
-**Woche 5**: Tutorials Dojo Practice Tests (6 Sets)
-**Woche 6**: Final Review aller Notizen
+Linux-Befehle, Networking-Basics, Cloud-Konzepte. Die Struktur war klar -- und das tat gut. Jeden Tag neue Themen, schnelles Tempo, viel Input.
 
-## Die 4 Exam-Domains
+Ich habe in den ersten Wochen viel mit Tutorials und Labs gearbeitet -- verschiedene Anbieter, verschiedene Plattformen. Das hat funktioniert, um die Grundlagen zu verstehen. `ls`, `cd`, `chmod`, erste AWS-Services, was ist eine VPC, was macht ein Load Balancer.
 
-1. Cloud Concepts (24%) - Shared Responsibility Model, 6 R''s of Migration
-2. Security & Compliance (30%) - IAM, GuardDuty, Shield, WAF
-3. Technology & Services (34%) - EC2, S3, RDS, Lambda, VPC
-4. Billing & Pricing (12%) - Support Plans, Cost Explorer
+Aber irgendwann merkt man: Tutorials zeigen dir die perfekte Welt. Schritt für Schritt, alles funktioniert, kein Fehler. Das echte Lernen beginnt erst da, wo man auf Probleme stößt, die nicht im Tutorial stehen.
 
-**Pro-Tipp**: Practice Exams sind Gold wert! Mindestens 3-4 vollständige Tests machen.',
-  'Mein kompletter Lernplan, Best Practices und Exam-Tipps für die AWS Cloud Practitioner Zertifizierung.',
-  'published', true, 12, 1, 6,
-  '2026-01-15T10:00:00Z'
+### Lernen, um weiterzukommen
+
+Juni 2025: AWS Cloud Practitioner bestanden. Das war der erste richtige Meilenstein. IAM, VPC, S3, EC2 -- nicht nur als Konzepte, sondern verstanden, was die Services tun und wie sie zusammenspielen.
+
+Juli 2025: Linux Essentials bestanden. Kommandozeile, Dateisystem, Paketmanagement, grundlegende Administration. Die Sicherheit, sich auf einem Linux-System bewegen zu können, ohne bei jedem Befehl nachschlagen zu müssen.
+
+Beide Zertifizierungen waren eine Mischung aus Kursarbeit und Selbststudium. Der Kurs hat die Grundlage gelegt, die Tiefe kam durch eigenes Vertiefen und Ausprobieren.
+
+Zertifizierungen zeigen Wissen -- aber Erfahrung beginnt erst, wenn man etwas Eigenes aufbaut.
+
+### Von Wissen zu Können
+
+Ausgangspunkt war ein Dashboard-Mockup, das nach konkreten Stakeholder-Anforderungen umgesetzt wurde -- ein kompaktes Übungsprojekt vom Entwurf bis zur Präsentation.
+
+Ich habe das Projekt weitergeführt. Das Dashboard lokal zum Laufen zu bringen war das eine -- aber ich wollte wissen, wie ich es in die Cloud bringe.
+
+Also habe ich es auf AWS mit ECS deployed: ein Dockerfile gebaut, das Image nach ECR gepusht, den ECS-Task konfiguriert und den Service gestartet. Mein erster echter Kontakt mit Containern und Cloud-Deployments -- kein Lab-Szenario, sondern mein eigenes Projekt.
+
+Es hat funktioniert. Und genau da hat sich etwas verändert. Ab dem Punkt habe ich angefangen, bewusst nach Möglichkeiten zu suchen, Theorie in Praxis umzusetzen. Erst über Labs und Übungsumgebungen, dann zunehmend über eigene Projekte und eigene Infrastruktur.
+
+### Der erste eigene Stack
+
+Das Dashboard lief auf ECS -- aber in der Sandbox-Umgebung der Weiterbildung. Abhängig von Kostenlimits, nicht dauerhaft verfügbar. Ich wollte das anders.
+
+Der Gedanke war: Ich möchte das agra-dashboard und ein Service-Dashboard dauerhaft laufen haben, auf eigener Infrastruktur, unter meiner Kontrolle. Gleichzeitig hatte ich n8n entdeckt -- ein Workflow-Automatisierungstool, das ich im Self-Hosting-Modus kostenlos nutzen konnte.
+
+Also habe ich für kleines Geld einen Hetzner Cloud Server aufgesetzt. Ubuntu drauf, Docker installiert, Services per Docker Compose konfiguriert, eine Domain gekauft und DNS eingerichtet.
+
+Das war ein komplett anderes Lernen als das ECS-Deployment. Auf AWS klickt man Services zusammen oder definiert sie in Konfigurationen. Auf einem eigenen Server bist du für alles verantwortlich: Betriebssystem, Updates, Firewall, Netzwerk, Backups. Wenn etwas nicht läuft, fängt dich kein Managed Service auf.
+
+### Weniger Theorie, mehr eigenes Setup
+
+Zwei Zertifizierungen. Ein Projekt, das sowohl auf AWS als auch auf eigenem Server lief. Erste Erfahrung mit Containern, Deployments, Domains und eigenverantworteter Infrastruktur. Und die Erkenntnis, die mich ab da begleitet hat: Lernen funktioniert für mich am besten, wenn ich etwas Echtes baue und betreibe.
+
+Die nächsten Monate sollten davon noch deutlich mehr bringen.
+
+**Nächster Post:** Blackbox kaputt
+Vom Provider-Router zum eigenen Netzwerk.',
+  'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde. Das Ergebnis: zunächst ein lokales Deployment, dann der Schritt in AWS und am Ende der erste eigene Server.',
+  'published', false, 6, 1, 7,
+  '2026-02-17T10:00:00Z'
 );
 
--- Post 3: Tailscale + Traefik (featured)
+-- Post 3: Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Tailscale VPN + Traefik: Sichere Homelab-Cloud Verbindung',
-  'tailscale-traefik-setup',
-  'Mit Tailscale VPN und Traefik Reverse Proxy verbinde ich meine Synology NAS sicher mit einem Hetzner Cloud Server - ohne Port Forwarding am Router.
+  'Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk',
+  'blackbox-kaputt-eigenes-netzwerk',
+  '### Am Limit des Provider-Routers
 
-## Die Architektur
+Ich hatte zu dem Zeitpunkt bereits meinen Hetzner-Server und eine frisch eingerichtete Synology NAS. Zwei Systeme, die miteinander kommunizieren sollten -- und ein Netzwerk, das ich dafür flexibel konfigurieren musste.
 
-Internet -> Cloudflare DNS -> Hetzner VPS (Public IP) -> Traefik -> Tailscale VPN -> Synology NAS (privat)
+Und da wurde es eng. Der Telekom-Router war ein geschlossenes System. Stark eingeschränkt konfigurierbar -- was natürlich Sinn ergibt, wenn man an die Millionen normaler Nutzer denkt, die das Gerät einfach einstecken und loslegen wollen. Aber sobald man mehr als Standard-Internetnutzung braucht, stößt man schnell an die Grenzen dessen, was ein Provider-Router hergibt.
 
-## Vorteile
+Ich wollte mein Netzwerk flexibler gestalten, eigene Regeln definieren, verstehen was passiert. Mit diesem Router war das nicht möglich.
 
-- Keine offenen Ports am Router
-- End-to-End Encryption via Tailscale
-- Automatische SSL-Zertifikate (Let''s Encrypt)
-- NAT Traversal - funktioniert auch hinter Firewall
+Also habe ich entschieden: Eigenes Netzwerk, eigene Regeln -- mit echter Enterprise-Technik.
 
-## Setup in 6 Schritten
+### UniFi: Mein Netzwerk, meine Regeln
 
-1. Tailscale auf Hetzner & Synology installieren
-2. Traefik Docker Container auf Hetzner
-3. Services auf NAS für Tailscale exposen
-4. Traefik Labels für Routing konfigurieren
-5. DNS A-Record auf Hetzner IP setzen
-6. Let''s Encrypt HTTPS aktivieren
+Die Entscheidung fiel auf Ubiquiti UniFi -- Cloud Gateway Fiber, Access Point, Modem. Enterprise-Hardware, die in professionellen Umgebungen eingesetzt wird.
 
-**Kosten**: ~4 EUR/Monat für unbegrenzte Services!',
-  'Kein Port Forwarding, keine öffentliche IP - trotzdem sicher auf alle Services zugreifen.',
-  'published', true, 15, 1, 4,
-  '2026-01-20T10:00:00Z'
-);
+Der Unterschied war sofort spürbar. Plötzlich konnte ich alles konfigurieren -- Firewall-Regeln, VLANs, Traffic-Management, den gesamten Netzwerkverkehr überwachen und steuern. Volle Kontrolle, volle Transparenz.
 
--- Post 4: n8n Self-Hosting
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'n8n Self-Hosting auf Hetzner: Workflow-Automation für unter 5 EUR/Monat',
-  'n8n-hetzner-selfhosting',
-  'n8n ist eine mächtige Open-Source Alternative zu Zapier. Self-Hosted auf Hetzner kostet es nur ~3,79 EUR/Monat statt 20 EUR+ bei Cloud-Anbietern.
+Das war gleichzeitig ein massives Lernfeld. Subnetting, Firewall-Rules, DNS, DHCP -- alles Themen, die man in der Theorie schnell versteht. Aber ein eigenes Netzwerk designen, in dem mehrere Geräte und Server sauber miteinander kommunizieren, ist eine andere Dimension.
 
-## Warum Self-Hosting?
+### Mehr als nur Storage
 
-- Unbegrenzte Workflows
-- Volle Datenkontrolle
-- Custom Nodes möglich
-- 10x günstiger als Cloud
+Die NAS habe ich aus mehreren Gründen angeschafft. Erstens: eine Homelab-Plattform, auf der ich Container und Docker vertiefen kann. Nicht in einer Sandbox, nicht in einem Lab, sondern auf eigener Hardware, die dauerhaft läuft.
 
-## Deployment-Stack
+Zweitens: eine eigene Cloud-Lösung. Mehr Kontrolle über meine eigenen Daten, Backups zentral verwalten, alle Geräte angebunden -- MacBooks, iPhones, iPads. Keine Abhängigkeit von externen Cloud-Diensten für persönliche Daten.
 
-- **Server**: Hetzner CAX11 (4GB RAM, 2 vCPU)
-- **OS**: Ubuntu 22.04
-- **Container**: Docker + Docker Compose
-- **Reverse Proxy**: Traefik für HTTPS
-- **Database**: PostgreSQL (optional, für Production)
+Und drittens: ein System, an dem ich lerne, wie man Infrastruktur betreibt. Updates einspielen, Volumes verwalten, Services konfigurieren, Berechtigungen setzen. Das sind keine spektakulären Themen, aber es sind die Dinge, die im täglichen Betrieb den Unterschied machen.
 
-## docker-compose.yml Setup
+### Wenn Bausteine zusammenspielen
 
-```yaml
-version: ''3.8''
-services:
-  n8n:
-    image: n8nio/n8n:latest
-    restart: always
-    environment:
-      - N8N_HOST=n8n.yourdomain.com
-      - WEBHOOK_URL=https://n8n.yourdomain.com/
-      - GENERIC_TIMEZONE=Europe/Berlin
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`n8n.yourdomain.com`)"
-      - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
-```
+Mit NAS, Hetzner-Server und UniFi-Netzwerk hatte ich jetzt mehrere Systeme, die laufen und überwacht werden wollen. Also habe ich angefangen, ein kleines Monitoring aufzubauen.
 
-Nach 10 Minuten Setup läuft n8n produktiv mit HTTPS!',
-  'Wie ich n8n auf einem Hetzner Cloud Server deployed habe - mit Docker, Traefik und automatischem SSL.',
-  'published', false, 10, 1, 5,
-  '2026-01-25T10:00:00Z'
-);
+Schritt für Schritt, nicht alles auf einmal. Prometheus als Datenlieferant, der Metriken von meinen Systemen sammelt. Grafana als Dashboard, das diese Metriken visualisiert. Und Dashy als zentraler Einstiegspunkt -- ein Link-Dashboard, über das ich alle Services erreiche: Grafana, Portainer, n8n, alles an einem Ort verlinkt.
 
--- Post 5: Dashy Dashboard
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'Dashy Homelab Dashboard: Alle Services auf einen Blick',
-  'dashy-homelab-dashboard',
-  'Dashy ist das perfekte Dashboard für dein Homelab. Selbst-gehostet, Open-Source, und unglaublich customizable.
+Und dann habe ich angefangen, damit zu spielen. Meine Philips Hue Lampen ins Dashy integriert, direkt steuerbar über das Dashboard. Nicht weil das produktionsrelevant ist, sondern weil es zeigt, was möglich ist, wenn man die einzelnen Bausteine versteht und kombiniert.
 
-## Features
+Das Zusammenspiel aus NAS, n8n-Workflows und Monitoring hat mir zum ersten Mal gezeigt, wie Infrastruktur als Ganzes funktioniert. Nicht einzelne Services in Isolation, sondern Systeme, die zusammenarbeiten.
 
-- Status-Checks für alle Services
-- Themes & Icon-Packs
-- Sections & Categories
-- Drag & Drop UI Editor
-- Auth & Multi-User Support
+### Automatisieren statt wiederholen
 
-## Docker Setup
+n8n hatte ich schon in Post 2 als Trigger für den eigenen Server erwähnt. Auf der NAS habe ich das Tool dann richtig eingesetzt. Automatisierte Workflows, die Systeme miteinander verbinden -- Benachrichtigungen, Datenabgleich, wiederkehrende Aufgaben.
 
-```bash
-docker run -d \
-  -p 4000:80 \
-  -v ./dashy-conf.yml:/app/user-data/conf.yml \
-  --name dashy \
-  --restart=always \
-  lissy93/dashy:latest
-```
+Das war ein weiterer Baustein im Verständnis: Infrastruktur betreiben heißt nicht nur, Services zum Laufen zu bringen. Es heißt auch, wiederkehrende Aufgaben zu automatisieren, damit man sich auf die wichtigen Dinge konzentrieren kann.
 
-## Meine Config-Struktur
+### Cloud nutzen, Homelab verantworten
 
-```yaml
-sections:
-  - name: "Homelab Services"
-    items:
-      - title: "Blog App"
-        url: "https://blog.example.com"
-        statusCheck: true
-      - title: "n8n Automation"
-        url: "https://n8n.example.com"
-        statusCheck: true
-```
+Im Rückblick war der Homelab-Aufbau die wichtigste Entscheidung dieser Phase. Nicht weil die Hardware so beeindruckend ist, sondern wegen der Denkweise, die sich dadurch verändert hat.
 
-**Deployment-Zeit**: Unter 5 Minuten für ein professionelles Dashboard!',
-  'Mit Dashy alle Self-Hosted Services übersichtlich organisieren - inklusive Status-Checks und modernem Design.',
+In der Cloud lernst du, Services zu nutzen. Im Homelab lernst du, Infrastruktur zu betreiben. Du bist für alles verantwortlich -- Netzwerk, Storage, Compute, Security, Monitoring. Keine Übung -- echter Betrieb.
+
+### Eigene Infrastruktur, echte Probleme
+
+Ein vollständiges Netzwerk mit Enterprise-Hardware. Eine NAS als zentrale Plattform. Ein externer Server. Monitoring, Automatisierung, ein Service-Dashboard. Und das Verständnis, dass eigene Infrastruktur mehr lehrt als jedes Tutorial -- weil die Probleme echt sind und die Lösungen funktionieren müssen.
+
+**Nächster Post:** Sichere Infrastruktur von Tag 1
+VPN, Reverse Proxy und Networking in der Praxis.',
+  'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk mit Enterprise-Hardware aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers ein vollständiges Homelab gewachsen ist.',
   'published', false, 6, 1, 3,
-  '2026-01-28T10:00:00Z'
+  '2026-02-19T10:00:00Z'
 );
 
--- Post 6: GitHub Foundations
+-- Post 4: Sichere Infrastruktur von Tag 1: VPN, Reverse Proxy und Netw...
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'GitHub Foundations Certification: Der komplette Study Guide',
-  'github-foundations-certification',
-  'Die GitHub Foundations Certification validiert dein Grundwissen über Git, GitHub, und Collaboration-Workflows.
+  'Sichere Infrastruktur von Tag 1: VPN, Reverse Proxy und Networking in der Praxis',
+  'sichere-infrastruktur-vpn-reverse-proxy',
+  '### Die zentrale Frage: Wie wird das produktionsreif?
 
-## Exam Details
+NAS läuft, Hetzner-Server läuft, erste Services sind deployed. Aber jetzt stellt sich die praktische Frage: Wie kommunizieren diese Systeme sicher miteinander? Wie komme ich von unterwegs auf meine Dienste? Und wie mache ich Services erreichbar, die erreichbar sein sollen -- ohne alles offen ins Internet zu stellen?
 
-- **Dauer**: 120 Minuten
-- **Fragen**: 75 (60 scored + 15 pretest)
-- **Format**: Multiple Choice
-- **Kosten**: Kostenlos für Studenten!
-- **Sprachen**: EN, PT, ES, KR, JP
+Das waren Fragen, die ich zu dem Zeitpunkt nicht theoretisch beantworten konnte. Ich musste es ausprobieren.
 
-## Hauptthemen
+### WireGuard: Theorie gut, Praxis fragil
 
-### 1. Git Basics
-- Repositories, Commits, Branches
-- Merge vs. Rebase
-- Git Workflow Best Practices
+Mein erster Gedanke war WireGuard -- ein modernes VPN-Protokoll, das in meiner Recherche immer wieder als schnelle und sichere Lösung aufkam. Die Idee: einen verschlüsselten Tunnel zwischen NAS und Server aufbauen, damit ich von überall sicher auf meine Dienste zugreifen kann.
 
-### 2. GitHub Collaboration
-- Pull Requests & Code Reviews
-- Issues & Project Boards
-- GitHub Actions Basics
+In der Praxis bin ich damit auf der Synology NAS nicht weit gekommen. WireGuard ist dort nicht nativ im VPN-Server-Paket enthalten. Was es gibt, sind Drittanbieter-Pakete und Docker-basierte Lösungen -- aber die sind fragil. DSM-Updates können das Kernel-Modul brechen, die Installation ist abhängig von der Hardware-Architektur, und insgesamt war das eine ziemlich frickelige Angelegenheit. Ich habe einige Zeit damit verbracht und keine stabile Lösung hinbekommen.
 
-### 3. GitHub Products
-- GitHub Free vs. Pro vs. Teams
-- GitHub Pages
-- GitHub Packages
+### Tailscale: Das richtige Tool für den Job
 
-### 4. Security & Administration
-- Branch Protection Rules
-- Dependabot
-- Code Scanning
+Bei der weiteren Recherche bin ich auf Tailscale gestoßen. Tailscale basiert auf WireGuard, nutzt also das gleiche Protokoll für die Verschlüsselung. Aber der entscheidende Unterschied: Tailscale ist nativ im Synology Paketzentrum verfügbar. Kein Drittanbieter-Paket, kein Docker-Workaround, keine Angst vor dem nächsten DSM-Update.
 
-## Study Resources
+Installation auf der NAS, auf dem Server, auf meinem MacBook -- und plötzlich waren alle Geräte im gleichen verschlüsselten Netzwerk. Ich konnte von unterwegs auf meine NAS zugreifen, ohne einen einzigen Port zu öffnen. Der Server und die NAS konnten sicher miteinander kommunizieren.
 
-1. **Official**: Microsoft Learn Path (kostenlos)
-2. **Practice**: GitHub Skills Labs
-3. **Community**: Study Guides auf GitHub
+Das war der Moment, wo ich verstanden habe: Manchmal ist die Lösung nicht, sich durch eine komplizierte Einrichtung zu kämpfen, sondern das richtige Tool für den Job zu finden. WireGuard ist ein großartiges Protokoll -- aber Tailscale hat es für mein Setup erst praktisch nutzbar gemacht.
 
-**Pro-Tipp**: Hands-on Erfahrung ist wichtiger als nur Theorie - erstelle eigene Repos und nutze alle Features!',
-  'Alles was du für die GitHub Foundations Zertifizierung wissen musst - kostenlos für Studenten!',
-  'published', false, 9, 1, 6,
-  '2026-02-01T10:00:00Z'
-);
+### Reverse Proxy: Von IP:Port zu Subdomains
 
--- Post 7: iTerm2 + Starship Terminal
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'iTerm2 + Starship: Das ultimative Terminal-Setup für Mac',
-  'iterm2-starship-setup',
-  'Ein gut konfiguriertes Terminal macht den Unterschied zwischen Frust und Flow. Hier ist mein Setup.
+Mit Tailscale war die interne Kommunikation gelöst. Aber manche Services auf dem Hetzner-Server sollten auch öffentlich erreichbar sein -- n8n, das agra-dashboard, später Grafana. Nicht über IP-Adresse und Portnummer, sondern über saubere Subdomains mit HTTPS.
 
-## Der Stack
+Das Thema Reverse Proxy war für mich Neuland. Mein erster Ansatz war Nginx Proxy Manager -- eine grafische Oberfläche, in der man Proxy-Hosts anlegt, SSL-Zertifikate verwaltet und Traffic weiterleitet. Das hat funktioniert und mir erstmal gezeigt, was ein Reverse Proxy überhaupt tut.
 
-- **iTerm2**: Terminal-Emulator mit Split Panes & Tabs
-- **Zsh**: Moderne Shell (macOS default)
-- **Oh-My-Zsh**: Plugin-Framework
-- **Starship**: Cross-Shell Prompt
-- **Nerd Fonts**: Icons & Glyphs
+Nach weiterer Recherche und einer Empfehlung bin ich dann auf Traefik gestoßen. Anderer Ansatz: statt grafischer Oberfläche wird alles über Labels in der Docker-Compose-Konfiguration gesteuert. Traefik erkennt Container automatisch und kümmert sich selbstständig um Let''s-Encrypt-Zertifikate.
 
-## Installation
-
-```bash
-# 1. iTerm2 installieren
-brew install --cask iterm2
-
-# 2. Oh-My-Zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# 3. Starship
-brew install starship
-echo ''eval "$(starship init zsh)"'' >> ~/.zshrc
-
-# 4. Nerd Font
-brew tap homebrew/cask-fonts
-brew install --cask font-fira-code-nerd-font
-```
-
-## Meine Plugins
-
-```bash
-plugins=(
-  git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  docker
-  kubectl
-)
-```
-
-## Starship Config
-
-```toml
-# ~/.config/starship.toml
-[character]
-success_symbol = "[->](bold green)"
-error_symbol = "[->](bold red)"
-
-[directory]
-truncation_length = 3
-truncate_to_repo = true
-```
-
-**Warum Starship statt Powerlevel10k?** Powerlevel10k ist on Life Support - Starship ist aktiv maintained und schneller!',
-  'Von langweiligem Terminal zu produktivem Workspace - mit iTerm2, Oh-My-Zsh, und Starship.',
-  'published', false, 7, 1, 5,
-  '2026-02-03T10:00:00Z'
-);
-
--- Post 8: Domain Setup
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'Domain Setup: Ionos vs. Infomaniak - Was ich gelernt habe',
-  'domain-setup-ionos-infomaniak',
-  'Für meine Self-Hosting Projekte nutze ich Domains von Ionos und Infomaniak. Hier ist mein Vergleich.
-
-## Ionos
-
-**Vorteile:**
-- Günstige .de Domains (~1 EUR erstes Jahr)
-- Deutsche Firma, deutscher Support
-- Einfaches Control Panel
-- Inkl. E-Mail Postfach
-
-**Nachteile:**
-- DNS Propagation manchmal langsam
-- Renewal-Preise höher
-- Upselling im Dashboard
-
-## Infomaniak
-
-**Vorteile:**
-- Schweizer Datenschutz
-- Ökostrom-powered
-- Sehr gute API
-- Transparente Preise
-- Gratis WHOIS Privacy
-
-**Nachteile:**
-- Etwas teurer als Ionos
-- Weniger bekannt in Deutschland
-
-## DNS Konfiguration
-
-Beide bieten Standard DNS Records:
-
-```
-A Record: Domain -> IP
-CNAME: Subdomain -> Domain
-MX: Mail Server
-TXT: Verification (SPF, DKIM)
-```
-
-### Typische Setup-Zeit
-- **Ionos**: DNS Änderungen ~1-2 Stunden
-- **Infomaniak**: DNS Änderungen ~30-60 Min
-
-## Meine Empfehlung
-
-**Ionos**: Für .de Domains, wenn Budget wichtig ist
-**Infomaniak**: Für internationale Domains, wenn Datenschutz Priorität hat
-
-Beide funktionieren einwandfrei mit Cloudflare als DNS-Provider!',
-  'Eigene Domains registrieren und konfigurieren - mit Ionos und Infomaniak im Vergleich.',
-  'published', false, 5, 1, 4,
-  '2026-02-05T10:00:00Z'
-);
-
--- Post 9: AWS SAA Lernplan
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'AWS Solutions Architect Associate: Mein Lernplan',
-  'aws-solutions-architect-learning-path',
-  'Nach dem Cloud Practitioner ist der AWS Solutions Architect Associate der nächste logische Schritt.
-
-## Unterschied zu Cloud Practitioner
-
-**Cloud Practitioner**: Was ist AWS?
-**Solutions Architect**: Wie designed man auf AWS?
-
-## Voraussetzungen
-
-- 1+ Jahre AWS Erfahrung (empfohlen)
-- Cloud Practitioner hilfreich, aber nicht Pflicht
-- Grundkenntnis in Networking
-
-## Exam Details
-
-- **Dauer**: 130 Minuten
-- **Fragen**: 65
-- **Passing Score**: 720/1000
-- **Kosten**: $150 USD
-
-## Mein 3-Monats-Plan
-
-### Monat 1: Fundamentals
-- **Woche 1-2**: VPC Deep Dive (Subnets, Route Tables, NAT, IGW)
-- **Woche 3**: EC2 Advanced (Instance Types, Pricing, Auto Scaling)
-- **Woche 4**: S3 & Storage Services
-
-### Monat 2: Advanced Services
-- **Woche 5**: Databases (RDS, DynamoDB, Aurora, ElastiCache)
-- **Woche 6**: Application Services (ELB, CloudFront, Route 53)
-- **Woche 7**: Security & Identity (IAM Advanced, KMS, Secrets Manager)
-- **Woche 8**: Monitoring (CloudWatch, CloudTrail, Config)
-
-### Monat 3: Practice & Review
-- **Woche 9-10**: Tutorials Dojo Practice Exams (6 Sets)
-- **Woche 11**: Weak Areas Review
-- **Woche 12**: Final Exam Simulation
-
-## Top Learning Resources
-
-1. **Adrian Cantrill**: Deep-dive Course (sehr technisch)
-2. **Stephane Maarek**: Udemy Course (gut strukturiert)
-3. **AWS Well-Architected Framework**: Pflichtlektüre!
-4. **AWS re:Invent Videos**: Für spezifische Services',
-  'Von Cloud Practitioner zu Solutions Architect - wie ich die SAA-C03 Prüfung vorbereite.',
-  'published', false, 10, 1, 6,
-  '2026-02-08T10:00:00Z'
-);
-
--- Post 10: Docker Compose Best Practices
-INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
-VALUES (
-  'Docker Compose Best Practices für Production',
-  'docker-compose-production-best-practices',
-  'Docker Compose ist perfekt für Development, aber Production braucht Extra-Konfiguration.
-
-## Development vs. Production
-
-### Development
 ```yaml
-version: ''3.8''
-services:
-  app:
-    build: .
-    volumes:
-      - .:/app  # Live-Reload
-    ports:
-      - "3000:3000"
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.n8n.rule=Host(`n8n.meinedomain.tech`)"
+  - "traefik.http.routers.n8n.tls.certresolver=le"
 ```
 
-### Production
-```yaml
-version: ''3.8''
-services:
-  app:
-    image: myapp:1.2.3  # Tagged image
-    restart: unless-stopped
-    env_file: .env.production
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-```
+Services über Subdomains erreichbar, mit gültigen Zertifikaten -- das Grundprinzip war verstanden.
 
-## Meine Best Practices
+### Networking durch Debugging gelernt
 
-### 1. Resource Limits
-```yaml
-deploy:
-  resources:
-    limits:
-      cpus: ''0.50''
-      memory: 512M
-    reservations:
-      memory: 256M
-```
+Das klingt im Rückblick alles strukturiert. War es nicht. Ich war ungeduldig, wollte Ergebnisse sehen, habe Sachen eingerichtet, die nicht beim ersten Mal funktioniert haben, und habe dabei mehr über Networking gelernt als ich erwartet hätte.
 
-### 2. Health Checks
-Verhindert Traffic zu unhealthy Containern.
+DNS-Einträge, SSL-Zertifikate, wie Subdomains funktionieren, was ein Reverse Proxy eigentlich tut -- das alles waren keine abstrakten Konzepte mehr, sondern Dinge, die ich anfassen und testen konnte.
 
-### 3. Restart Policies
-- **no**: Nie neu starten
-- **always**: Immer (auch nach System-Reboot)
-- **unless-stopped**: Ausser manuell gestoppt
-- **on-failure**: Nur bei Error
+Wenn ein Service nicht erreichbar war, musste ich debuggen: Liegt es am DNS? Am Zertifikat? Am Routing? An der Firewall? Dieses Troubleshooting hat mir mehr beigebracht als jede Networking-Theorie.
 
-### 4. Secrets Management
-```yaml
-secrets:
-  db_password:
-    file: ./secrets/db_password.txt
-services:
-  app:
-    secrets:
-      - db_password
-```
+### Die Architektur, die sich ergeben hat
 
-### 5. Networks
-Isoliere Services in eigene Networks.
+Durch das Ausprobieren hat sich Stück für Stück eine Architektur entwickelt:
 
-### 6. Logging
-```yaml
-logging:
-  driver: "json-file"
-  options:
-    max-size: "10m"
-    max-file: "3"
-```
+- **Tailscale** als VPN-Schicht für die interne Kommunikation zwischen allen Systemen. Kein offenes Exponieren, kein Port Forwarding nötig.
+- **Reverse Proxy** für Services, die öffentlich erreichbar sein sollen. Saubere Subdomains, automatische SSL-Zertifikate, kontrollierter Zugang.
+- **Klare Trennung**: Interner Traffic läuft über das VPN, externer Traffic über den Reverse Proxy.
 
-**Pro-Tipp**: Nutze `docker-compose.override.yml` für local Development Overrides!',
-  'Von Development zu Production - wie ich Docker Compose Setups production-ready mache.',
-  'published', false, 8, 1, 2,
-  '2026-02-10T10:00:00Z'
+Das war kein Masterplan, den ich am Anfang auf ein Whiteboard gezeichnet habe. Es war das Ergebnis von viel Ausprobieren, einigen Sackgassen und der Bereitschaft, Lösungen wieder zu verwerfen, wenn es eine bessere gibt.
+
+### Lernen durch Sackgassen
+
+Diese Phase hat mir gezeigt, dass Networking eines dieser Themen ist, die man nur durch praktisches Arbeiten wirklich versteht. Die Theorie gibt dir die Begriffe. Die Praxis gibt dir das Verständnis.
+
+WireGuard hat nicht funktioniert -- also Tailscale. Nginx war ein guter Start -- Traefik ein weiterer Schritt. Das ist kein Scheitern, das ist Lernen.
+
+**Nächster Post:** Sandbox kaputt, alles weg
+Wie ich Terraform lieben gelernt habe.',
+  'NAS und Hetzner-Server standen -- aber wie verbinde ich sie sicher miteinander? Erst WireGuard, dann Tailscale. Erst Nginx, dann Traefik. Viel ausprobiert, vieles verworfen, dabei mehr Networking gelernt als jedes Tutorial vermittelt.',
+  'published', false, 6, 1, 4,
+  '2026-02-21T10:00:00Z'
 );
 
--- Post 11: Linux Essentials
+-- Post 5: Sandbox kaputt, alles weg -- wie ich Terraform lieben gelern...
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Linux Essentials Certification: Was bringt es wirklich?',
-  'linux-essentials-certification-review',
-  'Die Linux Essentials Zertifizierung von LPI ist ein guter Einstieg in Linux - aber ist sie das Geld wert?
+  'Sandbox kaputt, alles weg -- wie ich Terraform lieben gelernt habe',
+  'sandbox-kaputt-terraform',
+  '### Ein Wochenende Arbeit, Montagmorgen weg
 
-## Was wird getestet?
+November 2025. Ich arbeite das gesamte Wochenende am EcoKart-Projekt -- einem Webshop, den ich in der Sandbox-Umgebung meiner Weiterbildung aufbaue. Lambda-Funktionen, DynamoDB, S3, CloudFront. Am Sonntagabend läuft die Architektur. Ich bin zufrieden.
 
-### 1. Linux Community & Open Source
-- FOSS Konzepte
-- Linux Distributions
-- Major Open Source Applications
+Montagmorgen öffne ich die AWS Console. Nichts. Keine Lambda-Funktionen, keine Tabellen, keine Buckets. Alles leer.
 
-### 2. Navigation im System
-- Command Line Basics
-- File System Hierarchy
-- Archive & Compression
+Ich habe erstmal recherchiert, was passiert sein könnte. Die Antwort kam schnell: Die Sandbox hatte ein Kostenlimit, und bei Überschreitung lief jede Nacht um 1 Uhr ein automatischer Workflow, der *alles* löscht. Ohne Warnung, ohne Rückfrage, ohne Chance auf Wiederherstellung.
 
-### 3. Power der Command Line
-- Text Processing
-- Shell Scripting Basics
-- Process Management
+Ein komplettes Wochenende Arbeit -- einfach weg.
 
-### 4. Security & Permissions
-- User & Group Management
-- File Permissions
-- Basic Security Concepts
+### Nicht Frust, sondern Frage
 
-## Meine Erfahrung
+Klar war der erste Moment frustrierend. Aber relativ schnell hat sich bei mir ein anderer Gedanke durchgesetzt: Wie stellen professionelle Teams eigentlich sicher, dass genau sowas nicht passiert? Wie baut man Infrastruktur so auf, dass man sie jederzeit reproduzieren kann -- egal was passiert?
 
-**Vorteile:**
-- Gute Foundation für weitere LPI Certs
-- Vendor-neutral (nicht nur Ubuntu/Red Hat)
-- Praxis-orientiert
+Das war der Mindshift. Nicht "das ist unfair", sondern: Wie geht es besser?
 
-**Nachteile:**
-- Relativ teuer (~120 EUR)
-- Weniger bekannt als Red Hat/CompTIA
-- Online-Proctoring manchmal problematisch
+Die Antwort war Infrastructure as Code. Und das Werkzeug dafür: Terraform.
 
-## Ist es das wert?
+### Terraform: Selbst beigebracht
 
-**Ja, wenn:**
-- Du kompletter Linux-Neuling bist
-- Du Richtung LPIC-1/LPIC-2 willst
-- Du strukturiertes Lernen bevorzugst
+Terraform stand zu dem Zeitpunkt noch gar nicht auf dem Lehrplan der Weiterbildung. Ich bin in diesen Fehler reingelaufen, ohne zu wissen, dass es längst Werkzeuge gibt, die genau dieses Problem lösen.
 
-**Nein, wenn:**
-- Du bereits täglich mit Linux arbeitest
-- Budget knapp ist (Free Resources wie Linux Journey nutzen)
-- Arbeitgeber Linux Certs nicht wertschätzt
+Terraform war das Tool, das in der Branche Standard ist -- und ich wollte genau das lernen, was auch in echten Projekten eingesetzt wird. Also habe ich angefangen, EcoKart komplett in Terraform nachzubauen. Jede Ressource, die vorher per Console geklickt war, wurde jetzt als Code definiert:
 
-## Alternative Learning Paths
+```hcl
+module "vpc"        { source = "./modules/vpc" }
+module "lambda"     { source = "./modules/lambda" }
+module "dynamodb"   { source = "./modules/dynamodb" }
+module "cloudfront" { source = "./modules/cloudfront" }
+```
 
-1. **Free**: Linux Journey, OverTheWire (Bandit)
-2. **Günstig**: Udemy Linux Kurse (~15 EUR)
-3. **Offiziell**: Red Hat Learning Subscription
+Der Unterschied war sofort spürbar. Wenn jetzt irgendwas gelöscht würde -- egal ob durch Cleanup-Workflow oder durch meinen eigenen Fehler -- ein `terraform apply` und alles steht wieder. Reproduzierbar, versioniert, nachvollziehbar.
 
-**Mein Tipp**: Lern Linux hands-on mit eigenem Server/NAS - praktische Erfahrung ist mehr wert als ein Zertifikat!',
-  'Meine Erfahrung mit der LPI Linux Essentials Zertifizierung - und ob sie sich lohnt.',
+Das Gefühl, die Kontrolle über die eigene Infrastruktur zu haben, hat alles verändert.
+
+### SCP-Limitierungen: Tod durch tausend Freischaltungen
+
+EcoKart wuchs, und damit kamen neue Probleme -- allerdings nicht technische, sondern organisatorische. Die Sandbox-Umgebung war durch Service Control Policies eingeschränkt. Bestimmte AWS-Services oder Features waren gesperrt.
+
+Am Anfang war das noch okay. Aber je weiter das Projekt kam, desto öfter bin ich gegen SCP-Wände gelaufen. ACM-Zertifikate? Gesperrt. Custom Domains? Gesperrt.
+
+Der Ablauf war immer gleich: Anfrage beim Dozenten, erklären warum ich den Service brauche, warten auf Freischaltung. Kaum war eine Limitierung aufgehoben, kam die nächste. Ich habe mehr Zeit damit verbracht, Freischaltungen zu organisieren, als tatsächlich am Projekt zu arbeiten.
+
+### Custom Domains: Der Auslöser
+
+Der konkrete Punkt, an dem ich die Entscheidung getroffen habe, war die Stripe-Anbindung. Ein Webshop braucht eine Zahlungsabwicklung, und Stripe war die logische Wahl. Das Problem: Stripe braucht stabile Webhook-URLs und Endpoints. Und in der Sandbox haben sich die bei jedem Redeploy geändert.
+
+Gleichzeitig wurde mir klar: Das betrifft nicht nur Stripe. Auch der Webshop selbst, der Adminbereich und die API -- alles lief über rotierende URLs, die sich bei jedem Deployment ändern. Mit Custom Domains würde das alles hinter stabilen, gleichbleibenden Adressen verschwinden. Kein Anpassen von Endpoints mehr, keine sichtbar wechselnden URLs.
+
+Dafür brauchte ich Custom Domains -- und die brauchten wieder eine SCP-Freischaltung.
+
+An dem Punkt war klar: Das macht keinen Sinn mehr. Ich brauche einen eigenen AWS Account.
+
+### Eigener Account, eigene Verantwortung
+
+Die Entscheidung war bewusst. Mir war klar, dass ich den gesamten Projektstand migrieren musste -- neue AWS Credentials, neue Endpoints, alles anpassen. Aber genau das war es mir wert.
+
+Eigener Account hieß: Keine SCP-Limitierungen mehr. Eigene Kostenverantwortung. Und vor allem: eigenverantwortlich lernen, ohne auf Freischaltungen warten zu müssen.
+
+Und weil EcoKart bereits komplett in Terraform definiert war, war die Migration machbar. Neuer Account, neue Credentials konfigurieren, `terraform apply` -- und die Infrastruktur stand. Nicht alles war eins zu eins übertragbar, es gab Anpassungen. Aber die Grundstruktur war da, und das war der Moment, wo sich die Investition in Terraform zum ersten Mal richtig ausgezahlt hat.
+
+### CI/CD: Alles automatisieren
+
+Der nächste logische Schritt: Ich wollte nicht jedes Mal lokal `terraform plan` und `terraform apply` ausführen. CI/CD-Pipelines standen erst später auf dem Lehrplan der Weiterbildung -- ich hatte aber vorher schon angefangen, mit eigenen Skripten zu arbeiten, um mir wiederholende Schritte zu automatisieren. Der Wunsch, das sauberer zu lösen, war da. Also habe ich mir GitHub Actions angeeignet und eine richtige CI/CD Pipeline aufgebaut.
+
+Push auf den Main Branch, Pipeline läuft, Infrastruktur wird deployed. Später habe ich Security Scanning in die Pipeline integriert -- automatische Checks bei jedem Push.
+
+```
+git push → GitHub Actions → terraform plan → terraform apply → live
+```
+
+Kein manuelles Deployment mehr. Kein "hab ich vergessen auszuführen". Alles automatisiert, alles nachvollziehbar.
+
+### Wo EcoKart heute steht
+
+15 Terraform-Module. 12 AWS-Services. 63 Integrationstests. OIDC-basierte Authentifizierung -- kein einziger langlebiger AWS-Key im Repository. Kosten: circa 10 USD im Monat.
+
+Ich kann die gesamte Infrastruktur in Minuten zerstören und in Minuten wieder aufbauen. Nicht theoretisch, sondern getestet.
+
+### Was Terraform verändert hat
+
+Der Sandbox-Wipe war kein Rückschlag. Er war der Moment, der mich von "Infrastruktur zusammenklicken" zu "Infrastruktur als Code definieren" gebracht hat. Und die SCP-Limitierungen haben mich gezwungen, Eigenverantwortung zu übernehmen -- für den Account, für die Kosten, für alles.
+
+Terraform ist für mich kein Nice-to-have. Es ist die Grundlage dafür, dass ich ruhig schlafen kann, weil ich weiß: Egal was passiert, ich kann alles reproduzieren.
+
+**Nächster Post:** EcoKart: Mein erster vollständiger Webshop auf AWS
+Architektur, Entscheidungen und was ich dabei über AWS gelernt habe.',
+  'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt vernichtet. Das war der Moment, in dem Reproduzierbarkeit für mich keine Option mehr war, sondern Pflicht -- und Terraform mein wichtigstes Werkzeug wurde.',
+  'published', false, 6, 1, 2,
+  '2026-02-24T10:00:00Z'
+);
+
+-- Post 6: EcoKart: Mein erster vollständiger Webshop auf AWS
+INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
+VALUES (
+  'EcoKart: Mein erster vollständiger Webshop auf AWS',
+  'ecokart-webshop-aws',
+  '### Von Kostenvergleich zu eigenem Shop
+
+Der Anstoß für EcoKart kam aus einer Gruppenarbeit in der Weiterbildung. Die Aufgabe war rudimentär: verschiedene Infrastruktur-Ansätze gegenüberstellen -- Serverless vs. EC2, managed vs. self-hosted -- und bewerten, welche Architektur für welche Anforderung sinnvoll ist. Welche Kosten entstehen, welche Vor- und Nachteile gibt es. Rein theoretisch, ohne Umsetzung.
+
+Aber die Recherche hat etwas ausgelöst. Ich habe mir die verschiedenen Architekturen angeschaut und gedacht: Wie lerne ich das wirklich, wenn ich es nie umsetze? Wie verstehe ich AWS-Services in der Praxis, wenn ich nur Tabellen mit Kostenvergleichen fülle?
+
+Also habe ich mir einen konkreten Use Case gesucht: einen vollständig serverlosen Webshop. Mit dem Ziel, die geringstmöglichen Kosten zu verursachen und trotzdem alles mitzubringen, was ein echter Shop braucht -- Produkte, Warenkorb, Zahlungsabwicklung, Benutzerverwaltung, Bestellbestätigung per Email. Von Anfang an als Showcase für spätere Bewerbungen gedacht. Nicht als Kursaufgabe, sondern als echtes Lernprojekt.
+
+### Die Architektur
+
+Serverless war gesetzt. Kein EC2, kein dauerhaft laufender Server. Stattdessen: AWS Lambda für die gesamte Backend-Logik, DynamoDB als Datenbank, API Gateway als Schnittstelle, Amplify für das Frontend. Dazu S3 und CloudFront für Produktbilder, Cognito für die Authentifizierung, Route53 für Custom Domains, ACM für SSL-Zertifikate, CloudWatch für Monitoring.
+
+12 AWS-Services insgesamt, verteilt auf 15 Terraform-Module. Die monatlichen Kosten: ungefähr 10 bis 15 Dollar. Das war einer der entscheidenden Punkte für Serverless -- man zahlt nur, was man tatsächlich nutzt. Kein Leerlauf, keine Grundgebühr für laufende Instanzen. Genau das, was ich in der Gruppenarbeit theoretisch verglichen hatte, konnte ich jetzt in der Praxis bestätigen.
+
+Die gesamte Infrastruktur ist in Terraform definiert. Jedes Modul hat seine eigene Verantwortung -- Cognito, DynamoDB, Lambda, Amplify, und so weiter. Ich kann den kompletten Shop in etwa 15 Minuten von Null aufbauen. Oder in Minuten zerstören und neu deployen. Das war nach der Sandbox-Erfahrung aus Post 5 keine Option mehr, sondern Voraussetzung.
+
+### OIDC: Keine Keys im Repository
+
+Eine Sache hat mich gestört: Jedes Mal, wenn ich eine Änderung am Frontend gepusht habe, musste ich den Build auf Amplify manuell auslösen. Das entsprach nicht meinen Erwartungen an Automatisierung -- aber ich war selbst noch im Prozess zu verstehen, wie das eigentlich richtig funktioniert. Ich wusste nicht sofort, woran es lag, und musste die Lösung erst finden.
+
+Recherche und ein Gespräch mit meinem Dozenten brachten mich auf OIDC -- OpenID Connect. Die Idee: GitHub Actions authentifiziert sich direkt bei AWS, ohne dass langlebige Access Keys irgendwo hinterlegt werden müssen. Stattdessen bekommt jeder Workflow-Run temporäre Credentials, die nach einer Stunde automatisch ablaufen.
+
+```yaml
+- name: Configure AWS Credentials (OIDC)
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+    aws-region: eu-central-1
+```
+
+Kein einziger AWS-Key im Repository. Maximale Sicherheit, vollständige Nachvollziehbarkeit über CloudTrail, und vor allem: Push auf den Branch, GitHub Actions übernimmt, Terraform deployed. Keine manuellen Schritte mehr.
+
+### Cognito: Authentifizierung, die sich gewehrt hat
+
+Für die Benutzerverwaltung habe ich mich für AWS Cognito entschieden. Die Idee war einfach: Benutzer registrieren sich, bestätigen ihre Email, bekommen ein JWT-Token, und damit authentifizieren sie sich bei der API. Am API Gateway wird das Token geprüft, bevor der Request überhaupt bei Lambda ankommt.
+
+Die Umsetzung war alles andere als einfach. Cognito hat viele Stellschrauben, und die Dokumentation ist -- sagen wir mal -- nicht immer intuitiv. Token-Handling, Refresh-Logik, Custom Attributes für Rollen, Email-Verifizierung mit sechsstelligen Codes. Jedes dieser Themen war eine eigene Baustelle.
+
+Dazu kam, dass Cognito anfangs durch die Service Control Policies der Sandbox-Umgebung blockiert war. Das war einer der vielen Gründe, warum ich irgendwann auf den eigenen AWS-Account umgestiegen bin.
+
+Am Ende funktioniert es: Registrierung, Login, rollenbasierter Zugriff, Admin-Dashboard. Aber es war die teuerste Lernkomponente des gesamten Projekts.
+
+### Stripe: Stabile Endpoints erzwingen
+
+Für die Zahlungsabwicklung habe ich Stripe integriert. Der Kunde wird zum Checkout weitergeleitet, gibt seine Kartendaten ein, und nach erfolgreicher Zahlung schickt Stripe einen Webhook an meine Lambda-Funktion. Die erstellt die Bestellung in DynamoDB.
+
+Klingt geradlinig, aber ein Problem hat mich länger beschäftigt: Nach jedem `terraform destroy` und neuem Deploy bekam die API einen neuen Endpoint. Und damit war die Webhook-URL bei Stripe jedes Mal kaputt. Ich musste sie manuell aktualisieren -- bei jedem einzelnen Deployment.
+
+Das war der Punkt, an dem Custom Domains zur Notwendigkeit wurden. Mit einer festen Domain hinter Route53 und ACM-Zertifikat blieb der Stripe-Endpoint stabil, egal wie oft ich die Infrastruktur neu aufbaute. Und nicht nur Stripe profitierte davon -- auch der Webshop selbst, das Admin-Dashboard und die API liefen ab da unter festen, gleichbleibenden URLs. Kein Anpassen mehr, keine rotierenden Adressen.
+
+### Email-Odyssee: Neujahr bei Resend
+
+Ein Webshop ohne Bestellbestätigung per Email ist kein richtiger Webshop. Also wollte ich das einbauen. AWS SES war der naheliegende Weg -- ein Email-Service direkt von AWS.
+
+Im Sandbox-Modus funktionierte SES auch: Man verbindet eine eigene Email-Adresse, und an die kann man senden. Für mich als Tester reichte das. Aber der Shop sollte sich anfühlen wie ein echtes Produkt -- und das heißt, dass auch andere Nutzer nach einer Bestellung eine Bestätigung bekommen. Dafür braucht man SES im Production-Modus.
+
+Antrag gestellt. Abgelehnt. Security Reasons.
+
+Okay, dann halt ein externer Anbieter. SendGrid Account erstellt. Ebenfalls abgelehnt.
+
+Zwei Ablehnungen hintereinander, und ich konnte das Problem erst nicht greifen. Irgendwann habe ich verstanden, woran es liegt: Sowohl AWS als auch SendGrid sind bei ganz neuen Accounts extrem vorsichtig. Kein Versand-Verlauf, kein Vertrauen. Das ist eine Spam-Schutzmaßnahme, die erst mal jeden trifft, der frisch anfängt.
+
+Die Lösung kam am 1. Januar 2026. Neujahrsmorgen, und ich sitze an der Email-Integration. Ich hatte von Resend gehört -- ein neuerer Email-Service, der sich explizit an Entwickler richtet. Account erstellt, Domain verifiziert, API-Key generiert, Code angepasst. 90 Minuten später verschickte EcoKart die erste Bestellbestätigung.
+
+Was mich beeindruckt hat: Resend hat sofort funktioniert. Keine Wartezeit, kein Freischaltungsprozess, keine Ablehnung. Einfach loslegen. Im Free Tier gibt es 3.000 Emails im Monat -- für ein Portfolio-Projekt mehr als genug.
+
+Die Lektion: Nicht ewig kämpfen, sondern Alternativen evaluieren. Die Migration hat 90 Minuten gedauert. Das Warten auf die SES-Freischaltung hätte ewig dauern können.
+
+### Testing: Nicht nur ob es läuft, sondern ob es sicher läuft
+
+Ein Webshop, der Zahlungen verarbeitet und Benutzerdaten verwaltet, muss getestet sein. 63 Tests mit Jest, aufgeteilt in Unit- und Integrationstests.
+
+Was mir beim Testen am meisten gebracht hat, war das Denken in Fehlerfällen. Nicht nur "funktioniert der Warenkorb", sondern: Was passiert, wenn ein Nutzer versucht, die Bestellung eines anderen Nutzers abzurufen? Die Antwort muss ein 403 sein, kein 404 -- weil der Nutzer wissen soll, dass die Ressource existiert, er aber keinen Zugriff hat. Solche Unterscheidungen lernt man erst, wenn man sie tatsächlich testet.
+
+Die Integrationstests laufen über LocalStack -- eine lokale Emulation von AWS-Services. Damit kann ich den kompletten Flow testen: Produkt in den Warenkorb, Bestellung auslösen, prüfen ob der Lagerbestand korrekt reduziert wurde, über alle vier DynamoDB-Tabellen hinweg. Kein Mocking, sondern echte Datenbankoperationen.
+
+In der CI/CD Pipeline laufen die Tests automatisch bei jedem Push. Kein Deployment ohne grüne Tests.
+
+### Was ein eigenes Projekt wirklich lehrt
+
+EcoKart hat mir mehr über AWS beigebracht als jeder Kurs es könnte. Nicht weil der Kurs schlecht wäre -- sondern weil ein eigenes Projekt Probleme erzeugt, die in keinem Tutorial stehen.
+
+Kein Tutorial erklärt, was passiert, wenn AWS deinen SES-Antrag ablehnt. Kein Kurs bereitet dich darauf vor, dass Cognito Custom Attributes anders funktionieren als erwartet. Keine Übungsaufgabe zwingt dich, am Neujahrstag deinen Email-Provider zu wechseln, weil du das Projekt fertig haben willst.
+
+Die Herausforderungen aus Post 5 -- der Sandbox-Wipe, die SCP-Limitierungen, der eigene AWS Account -- das alles war der Rahmen. EcoKart war der Inhalt. Das Projekt, an dem sich jede Entscheidung konkret anfühlen musste, weil am Ende etwas Funktionierendes stehen sollte.
+
+12 AWS-Services. 15 Terraform-Module. Ein Shop, der Bestellungen annimmt, Zahlungen verarbeitet, Bestätigung verschickt und sich in 15 Minuten komplett reproduzieren lässt. Das ist kein Kursprojekt mehr. Das ist Praxiserfahrung.
+
+**Nächster Post:** Das große Bild
+Wie aus einzelnen Projekten eine Multi-Cloud-Architektur mit über 50 Services wurde.',
+  'Ein Kurs-Rechercheprojekt über Infrastruktur-Kosten brachte mich auf die Idee, einen echten Webshop auf AWS zu bauen. 12 Services, 15 Terraform-Module, Stripe-Zahlungen, Cognito-Authentifizierung -- und eine Email-Provider-Odyssee, die mich am Neujahrstag bei Resend landen ließ.',
+  'published', true, 7, 1, 1,
+  '2026-02-26T10:00:00Z'
+);
+
+-- Post 7: Das große Bild: Wie aus einzelnen Projekten eine Multi-Cloud...
+INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
+VALUES (
+  'Das große Bild: Wie aus einzelnen Projekten eine Multi-Cloud-Architektur mit über 50 Services wurde',
+  'multi-cloud-50-services',
+  '### Vor einem Jahr existierte nichts davon
+
+Wenn ich heute auf mein Homelab schaue, sehe ich etwas, das vor einem Jahr nicht existiert hat: drei Standorte, über 50 containerisierte Services, ein zentrales Monitoring, automatisierte Daten-Pipelines und ein Dashboard, von dem aus ich alles erreiche.
+
+Das war nie so geplant. Es ist organisch gewachsen -- Stück für Stück, Service für Service, Problem für Problem. Jedes Mal, wenn ich etwas Neues lernen wollte, habe ich es in die bestehende Infrastruktur integriert. Und irgendwann war es keine Spielerei mehr, sondern eine echte Plattform.
+
+### Drei Standorte, eine Verbindung
+
+Die Infrastruktur verteilt sich auf drei Standorte:
+
+**Die NAS zuhause** -- eine Synology DS925+ mit 32 GB RAM. Sie ist das Herzstück: zentrales Storage, Monitoring-Hub, eigenes GitLab, Wazuh SIEM als Security-Zentrale. Alles, was Daten langfristig speichern oder zentral auswerten muss, läuft hier.
+
+**Ein Cloud-Server in Deutschland** -- klein, ressourcenschonend, ARM-basiert. Hier laufen Web-Anwendungen wie n8n für Automatisierung und Traefik als Reverse Proxy mit TLS-Terminierung. Services, die von außen erreichbar sein müssen, aber wenig Rechenleistung brauchen.
+
+**Ein zweiter Cloud-Server** -- deutlich leistungsstärker, mit 16 vCPUs und 32 GB RAM. Hier laufen datenintensive Workloads: automatisierte Pipelines, die Daten verarbeiten, verifizieren und zwischen Standorten synchronisieren. Dazu Shell-Skripte und Cronjobs in regelmäßigen Intervallen.
+
+Verbunden ist alles über Tailscale. Kein Port Forwarding, keine öffentlich exponierten Services. Jeder Server, jedes Gerät -- auch meine beiden MacBooks -- hängt im selben verschlüsselten Mesh-Netzwerk. Wenn ich von unterwegs auf Grafana oder Portainer zugreifen will, geht das über die Tailscale-IP. Ohne VPN-Client starten, ohne Tunnel aufbauen. Es funktioniert einfach.
+
+### Logik hinter der Verteilung
+
+Die Entscheidung, welcher Service wo läuft, folgt einer einfachen Logik:
+
+**Rechenintensiv und datengetrieben** kommt auf den leistungsstarken Server. Dort gibt es genug CPU und schnelle NVMe-SSDs für I/O-intensive Workloads. Automatisierte Pipelines verarbeiten Daten, verifizieren die Integrität und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
+
+**Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht nicht viel Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
+
+**Alles Zentrale** bleibt auf der NAS. Prometheus sammelt Metriken von allen Standorten. Grafana visualisiert sie. Wazuh aggregiert Security-Events. GitLab hostet meine privaten Repositories. Die NAS ist die einzige Komponente, die nicht in der Cloud läuft -- und das ist bewusst so. Hier liegen die Daten, hier laufen die Auswertungen, hier ist die Kontrolle.
+
+### Automatisierung: Wo die echte Arbeit steckt
+
+Was mich am meisten überrascht hat: Die eigentliche Arbeit steckt nicht im Aufsetzen der Services, sondern in der Automatisierung drumherum.
+
+Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von minütlicher Datenverarbeitung bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
+
+Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn weniger als 20 GB frei sind. Kein `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
+
+Shell-Skripte und Cron klingen nicht glamourös. Aber diese Skripte laufen seit Wochen zuverlässig -- und genau daran habe ich Fehlerbehandlung, Robustheit und die Realität von Automatisierung wirklich verstanden.
+
+### Monitoring: Von Anfang an mitgedacht
+
+Monitoring war kein Nachgedanke -- es ist mit der Infrastruktur mitgewachsen. Von Prometheus und Grafana auf dem ersten Server bis hin zu einem mehrstufigen System mit Uptime Kuma für Verfügbarkeit und Wazuh als SIEM für Security-Events. Jede Erweiterung hatte einen konkreten Auslöser, und jede hat sich bewährt.
+
+Wie das im Detail aussieht, welche Entscheidungen dahinter stecken und warum sich der frühe Start konkret ausgezahlt hat -- das ist eine eigene Geschichte.
+
+### Dashy: Ein Dashboard für alles
+
+Mein Einstiegspunkt in die gesamte Infrastruktur ist Dashy -- ein Self-Hosted Dashboard, das auf der NAS läuft. Darüber erreiche ich alles: Grafana-Dashboards, Portainer für Container-Management, Uptime Kuma, Wazuh, die Synology-Oberfläche, GitLab, meine Webseiten. Sogar die Philips Hue Lampen lassen sich darüber schalten.
+
+Kein Wechseln zwischen Bookmarks, kein Merken von Ports und IPs. Ein Dashboard, alle Services, alle Standorte.
+
+### GitLab: Private Repos, selbst gehostet
+
+Neben GitHub für öffentliche Projekte betreibe ich ein eigenes GitLab auf der NAS. Dort liegen alle privaten Repositories -- Infrastruktur-Dokumentation, Konfigurationen, Skripte. Alles, was nicht öffentlich sein soll, aber trotzdem versioniert und nachvollziehbar sein muss.
+
+GitLab läuft als Container auf der NAS und ist nur über Tailscale erreichbar. Kein öffentlicher Zugriff, keine Cloud-Abhängigkeit. Meine Daten, mein Server, meine Kontrolle.
+
+### Organisch, aber bewusst
+
+Nichts davon war geplant. Es gab keinen Architektur-Entwurf, kein Zieldiagramm. Ich wollte lernen, habe Services aufgesetzt, bin auf Probleme gestoßen, habe sie gelöst -- und plötzlich war da eine verteilte Infrastruktur mit über 50 Services.
+
+Aber "organisch gewachsen" heißt nicht "unkontrolliert". Jeder Service hat seinen Platz, jede Entscheidung hat einen Grund. Monitoring läuft zentral, Security ist mehrstufig, Backups sind automatisiert, und jede Konfiguration ist in Git versioniert.
+
+Angefangen mit Docker Compose, Shell-Skripten und Cronjobs -- und mit jedem neuen Service, jedem gelösten Problem ist die Infrastruktur und mein Verständnis mitgewachsen. Man wächst an seinen Aufgaben, und dieses Homelab war der beste Beweis dafür.
+
+**Nächster Post:** Monitoring und Security
+Warum ich früh angefangen habe und es sich ausgezahlt hat.',
+  'NAS zuhause, zwei Cloud-Server an verschiedenen Standorten, verbunden über Tailscale. Über 50 containerisierte Services, verteilt nach Aufgabe und Ressourcenbedarf. Docker Compose, Shell-Skripte, Monitoring-Stack. Organisch gewachsen aus dem Wunsch, Dinge wirklich zu verstehen.',
+  'published', false, 7, 1, 3,
+  '2026-02-28T10:00:00Z'
+);
+
+-- Post 8: Monitoring und Security: Warum ich früh angefangen habe und ...
+INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
+VALUES (
+  'Monitoring und Security: Warum ich früh angefangen habe und es sich ausgezahlt hat',
+  'monitoring-und-security',
+  '### Prometheus/Grafana: Die ersten Metriken
+
+Auf meinem ersten kleinen Hetzner-Server habe ich Prometheus und Grafana aufgesetzt. Basis-Metriken: CPU, RAM, Festplatte. Dazu einen Link ins Dashy-Dashboard, damit ich das Grafana-Panel schnell erreiche. Mehr nicht.
+
+Das war kein durchdachter Monitoring-Plan. Es war Neugier: Ich wollte sehen, was auf dem Server passiert. Aber rückblickend war genau diese Neugier der Anfang von allem, was danach kam -- weil sie eine Grundlage geschaffen hat, auf der ich immer weiter aufbauen konnte.
+
+### Zentralisieren und erweitern
+
+Mit dem zweiten Server und einer wachsenden Zahl von Services wurde klar: Basis-Metriken auf einem einzelnen Server reichen nicht mehr. Die NAS hatte zwar über DSM eigene Grundwerte, aber ich wollte alles an einem Ort sehen -- und vor allem: Alerting einrichten, damit ich nicht ständig manuell nachschauen muss.
+
+Also habe ich Prometheus auf die NAS verlegt und als zentrale Sammelstelle eingerichtet. Node Exporter auf jedem Server für Systemmetriken, cAdvisor für Container-Metriken, Custom Exporter für service-spezifische Daten. Alles über Tailscale, alles verschlüsselt. 16 Targets, die alle 15 Sekunden gescraped werden.
+
+Grafana hat drei Dashboards bekommen: eins pro Server mit den Details, ein Multi-Server-Overview für den schnellen Blick auf alles. CPU, RAM, Disk, I/O, Netzwerk -- auf einen Blick, für alle Standorte. Und Alerts über Telegram: CPU über 90%, RAM über 90%, Disk über 80%, Service down.
+
+Gleichzeitig kamen Uptime Kuma und Portainer dazu. Uptime Kuma überwacht 12 Services im 60-Sekunden-Takt -- per HTTP-Check, TCP-Check oder Ping. Die Perspektive, die Prometheus nicht abdeckt: Ist der Service aus Nutzersicht erreichbar? Auch hier gehen Alerts direkt auf Telegram.
+
+### Bestätigung durch Ernstfall
+
+Dass sich dieses Setup bewährt, habe ich relativ früh erfahren. Einmal nachts, unterwegs, mit einem Laptop, der nicht auf mein gewohntes Setup abgestimmt war -- weil ich alles ursprünglich über mein anderes MacBook konfiguriert hatte. Die Telegram-Benachrichtigungen haben mich sofort erreicht, und ich konnte das Problem remote eingrenzen und entschärfen.
+
+Das war kein Worst-Case-Szenario. Es war der Moment, der bestätigt hat: Monitoring und Alerting funktionieren genau so, wie sie sollen -- auch wenn die Umstände nicht ideal sind.
+
+Was danach folgte, war keine Panikreaktion, sondern eine bewusste Weiterentwicklung. Der betroffene Server wurde komplett neu aufgesetzt, und dabei habe ich das Security-Setup deutlich verschärft:
+
+- Docker-Daemon auf `127.0.0.1` gebunden, damit Container nicht versehentlich auf öffentlichen IPs lauschen
+- UFW-Firewall aktiv, nur die Ports offen die offen sein müssen
+- fail2ban für SSH-Schutz, automatischer Ban nach drei Fehlversuchen
+- Alle internen Services ausschließlich über Tailscale erreichbar
+
+Dazu kam die proaktive Seite: Watchtower aktualisiert alle Docker-Container automatisch zu festen Zeiten. Auf den Servern selbst laufen Unattended-Upgrades für Kernel- und Security-Patches, inklusive automatischer Reboots. Jeden Tag kommt eine Telegram-Benachrichtigung, dass die Updates sauber durchgelaufen sind. Kein manuelles Patchen, kein Vergessen -- alles automatisiert.
+
+Jedes dieser Themen war eine Gelegenheit, die Infrastruktur besser zu machen. Und genau so sehe ich das: Security ist kein Zustand, den man einmal herstellt. Es ist ein Prozess, der sich mit jeder Erfahrung weiterentwickelt.
+
+### Wazuh: Die Security-Lücke geschlossen
+
+Prometheus und Uptime Kuma überwachen Performance und Verfügbarkeit. Aber Security-Events -- wer greift auf was zu, welche Container starten mit welchen Rechten, ob jemand versucht sich per SSH einzuloggen -- das decken sie nicht ab.
+
+Ich bin immer auf der Suche nach Möglichkeiten, das Setup zu verbessern. Durch Recherche, Austausch mit Gleichgesinnten und die Frage "was fehlt noch" bin ich auf Wazuh gestoßen -- ein Open-Source SIEM, das genau diese Lücke schließt.
+
+Also habe ich Wazuh auf der NAS aufgesetzt -- Manager, Indexer und Dashboard. Auf beiden Cloud-Servern laufen Agents, die Events an den Manager melden. Docker-Listener überwachen Container-Aktivitäten in Echtzeit: `docker exec`-Befehle, Container mit Host-Netzwerk, Zugriffe auf den Docker-Socket, privilegierte Container.
+
+Die Events werden nach Severity klassifiziert. Alles ab Level 10 -- also potenziell sicherheitsrelevant -- geht direkt als Alert auf Telegram. Darunter wird geloggt, aber nicht alarmiert. Das verhindert Alert-Fatigue: Ich werde nur gestört, wenn es wirklich relevant ist.
+
+### Alle Wege führen zu Telegram
+
+Was sich über die Zeit entwickelt hat, ist ein dreistufiges Alerting-System. Drei verschiedene Tools, die drei verschiedene Aspekte überwachen -- und alle auf dem gleichen Kanal landen:
+
+**Grafana** für Performance: CPU, RAM, Disk, Netzwerk. Die Metriken, die zeigen, ob die Infrastruktur unter Last steht oder ob etwas aus dem Ruder läuft.
+
+**Uptime Kuma** für Verfügbarkeit: Service antwortet nicht mehr, Latenz zu hoch, Zertifikat läuft ab. Die Nutzerperspektive.
+
+**Wazuh** für Security: Fehlgeschlagene SSH-Logins, verdächtige Container-Aktivitäten, Dateiänderungen in kritischen Verzeichnissen. Die Sicherheitsebene.
+
+Alle drei landen auf Telegram. Egal ob ich zuhause am Schreibtisch sitze oder unterwegs bin -- ich sehe sofort, was passiert und kann einschätzen, ob ich reagieren muss.
+
+### Stück für Stück, nicht alles auf einmal
+
+Ich will das nicht so darstellen, als hätte ich von Anfang an gewusst, dass ich ein dreistufiges Monitoring brauche. Es war ein Prozess:
+
+Erst Prometheus und Grafana, weil ich sehen wollte, was auf meinem Server passiert. Dann Uptime Kuma, weil Metriken allein nicht zeigen, ob ein Service antwortet. Dann die Bestätigung, dass das Alerting funktioniert -- und die Erkenntnis, dass Performance-Monitoring allein nicht reicht. Und dann Wazuh, weil Security eine eigene Überwachungsebene braucht.
+
+Jede Erweiterung hatte einen konkreten Auslöser. Und genau das macht den Unterschied: Dieses Setup ist nicht aus einem Tutorial entstanden, sondern aus echten Anforderungen, die sich im Betrieb ergeben haben.
+
+### Früh anfangen zahlt sich aus
+
+Monitoring ist nicht optional. Es ist die Grundlage dafür, dass man versteht, was in der eigenen Infrastruktur passiert -- und dass man rechtzeitig reagieren kann, wenn etwas nicht stimmt.
+
+Und: Früh anfangen zahlt sich aus. Nicht weil man von Tag 1 alles richtig macht, sondern weil man eine Grundlage hat, auf der man aufbauen kann. Mein erstes Grafana-Dashboard hatte drei Panels. Heute überwache ich damit drei Standorte. Der Unterschied ist nicht das Tool -- der Unterschied ist die Erfahrung, die dazwischen liegt.
+
+**Nächster Post:** Crypto-Miner auf meinem Server
+Wie ich den Angriff erkannt und gestoppt habe.',
+  'Prometheus und Grafana liefen schon auf meinem ersten Server. Was als einfaches Ressourcen-Monitoring begann, ist Stück für Stück zu einem mehrstufigen System gewachsen -- Uptime Kuma für Verfügbarkeit, Wazuh als SIEM für Security-Events, Telegram als zentraler Alarmkanal. Jede Erweiterung hatte einen konkreten Grund.',
+  'published', false, 6, 1, 4,
+  '2026-03-03T10:00:00Z'
+);
+
+-- Post 9: Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt ...
+INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
+VALUES (
+  'Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt und gestoppt habe',
+  'crypto-miner-angriff-erkannt',
+  '### NAS auf Maximum, Telegram vibriert
+
+Ich sitze am Schreibtisch, die NAS steht eine Armlänge entfernt. Normalerweise ist sie kaum hörbar. Dann, von einer Sekunde auf die nächste, dreht sie komplett auf. Lüfter auf Maximum, ein Geräusch das ich so noch nie gehört habe. Mein erster Gedanke: Da stimmt etwas nicht.
+
+Gleichzeitig vibriert mein Handy. Telegram. Grafana-Alert: CPU-Auslastung über 200 Prozent. Mehrere Werte im kritischen Bereich.
+
+### Ruhe bewahren, systematisch vorgehen
+
+Kein Panik-Modus. Ich öffne das Grafana-Dashboard und sehe sofort: Die CPU-Last ist nicht graduell gestiegen, sondern schlagartig explodiert. Das ist kein normaler Workload. Das ist entweder ein defekter Container oder etwas, das dort nicht hingehört.
+
+Also systematisch vorgehen: Welche Container laufen, welche Prozesse verursachen die Last, was hat sich in den letzten Stunden verändert? Der Scan zeigt schnell ein eindeutiges Bild. Ein Container, den ich etwa zwei bis drei Stunden vorher reaktiviert hatte, verursacht die gesamte Last.
+
+Es war ein alter Blog-Container -- ein frühes Projekt aus den ersten Monaten meiner Weiterbildung, das ich nach längerer Pause wieder hochgefahren hatte, um an alte Inhalte zu kommen. In der Zwischenzeit hatte jemand eine offene Datenbankverbindung in diesem Container als Einstiegspunkt genutzt und einen Crypto-Miner gestartet. Die NAS rechnete mit voller Leistung für jemand anderen.
+
+Container isoliert, gestoppt, entfernt. Unter drei Minuten von der ersten Meldung bis zur Entschärfung.
+
+### Die Schwachstelle: Altlast aus der Lernphase
+
+Die retrospektive Analyse hat gezeigt: Der Container stammte aus einer Phase, in der ich gerade erst angefangen hatte, mit Datenbanken zu arbeiten. Damals war in der MongoDB-Konfiguration ein Workaround für ein lokales Connection-Problem gesetzt worden -- eine Einstellung, die in der Entwicklungsumgebung funktioniert hat, aber nie für den Dauerbetrieb gedacht war.
+
+Der Container war Monate lang deaktiviert, das Projekt eingefroren, andere Prioritäten hatten übernommen. Als ich ihn Monate später reaktivierte, war die alte Datenbank-Konfiguration noch aktiv -- und innerhalb weniger Stunden hatte jemand sie gefunden.
+
+Das Internet wird systematisch nach offenen Datenbanken gescannt. Wer eine ungesicherte Verbindung exponiert, wird gefunden. Nicht in Wochen, nicht in Tagen -- in Stunden.
+
+### Bereinigung und Härtung
+
+Nach der unmittelbaren Entschärfung habe ich das Ganze gründlich aufgearbeitet:
+
+- Datenbank komplett abgesichert, Zugriff auf localhost beschränkt
+- Sämtliche Credentials rotiert -- nicht nur die betroffenen, sondern alle
+- Den alten Container und seine Konfiguration komplett entfernt
+- Alle laufenden Container auf ähnliche Altlasten geprüft
+
+Am Ende stand die Gewissheit: Keine weiteren offenen Flanken, keine Spuren des Miners außerhalb des isolierten Containers. Der Angriff war auf diesen einen Container begrenzt, und genau da lag er auch keine drei Minuten später bereits tot.
+
+### Warum Monitoring den Unterschied macht
+
+Das ist der eigentliche Punkt dieses Posts. Nicht der Angriff selbst -- sondern was davor schon stand.
+
+Ich war zuhause und habe die NAS gehört. Aber was, wenn ich nicht zuhause gewesen wäre? Was, wenn das nachts passiert wäre, oder unterwegs?
+
+Genau dafür steht das Monitoring. Der Grafana-Alert wäre trotzdem gekommen. Auf Telegram, auf mein Handy, egal wo ich bin. Ich hätte den CPU-Spike gesehen, hätte mich remote über Tailscale verbinden können und hätte den Container auch von unterwegs stoppen können. Die Reaktionszeit wäre vielleicht nicht drei Minuten gewesen, aber es wären Minuten geblieben -- nicht Stunden oder Tage.
+
+Ohne Alerting hätte der Miner möglicherweise so lange laufen können, bis die Hardware Schaden nimmt. Bei über 200 Prozent CPU-Auslastung und der Hitzeentwicklung, die ich in den Metriken gesehen habe, bin ich nicht sicher, wie lange die NAS das mitgemacht hätte.
+
+Das Monitoring stand. Der Alert kam innerhalb von Sekunden. Und weil ich wusste, wo ich nachschauen muss -- Grafana für die Übersicht, Container-Metriken für die Eingrenzung -- war der Verursacher in Minuten identifiziert. Das ist der Return on Investment für jeden Service, den ich in den Monaten davor aufgesetzt habe.
+
+### Lektionen für die Zukunft
+
+**Alte Konfigurationen leben weiter.** Ein Container, der Monate lang deaktiviert war, trägt seine Konfiguration mit. Wer einen alten Service reaktiviert, muss ihn vorher prüfen -- nicht nur ob er läuft, sondern ob er sicher ist. Das ist seitdem Standard bei mir.
+
+**Das Netz vergisst nicht und schläft nicht.** Offene Datenbanken, exponierte Ports, ungesicherte Services -- es wird aktiv und automatisiert danach gescannt. Wenige Stunden reichen.
+
+**Ohne Monitoring bleibt ein Angriff unsichtbar.** Es ist die Grundlage dafür, dass man ihn in Minuten erkennt statt in Tagen. Und es funktioniert unabhängig davon, ob man gerade am Schreibtisch sitzt oder nicht.
+
+**Strukturiertes Vorgehen zahlt sich aus.** Erkennen, eingrenzen, isolieren, bereinigen, aufarbeiten. Kein hektisches Abschalten, kein Neuinstallieren ohne Plan. Das funktioniert in der Praxis genau so wie in der Theorie -- wenn man vorher die Grundlagen gelegt hat.
+
+Rückblickend bin ich froh, dass es passiert ist. Nicht weil ein Angriff auf die eigene Infrastruktur erstrebenswert wäre -- sondern weil es die Bestätigung war, dass das Monitoring funktioniert, die Reaktion sitzt und der eingeschlagene Weg der richtige ist.
+
+Das ist keine Theorie mehr. Das ist Praxis.
+
+**Nächster Post:** AWS Solutions Architect
+Warum ich die Prüfung mit Praxis statt nur Theorie vorbereitet habe.',
+  'Die NAS neben mir wird plötzlich ohrenbetäubend laut, Telegram meldet CPU-Auslastung über 200 Prozent. In unter drei Minuten war der Verursacher identifiziert und isoliert. Wie mein Monitoring-Stack einen echten Angriff erkannt hat -- und was schnelle Reaktion wirklich bedeutet.',
+  'published', false, 6, 1, 4,
+  '2026-03-05T10:00:00Z'
+);
+
+-- Post 10: AWS Solutions Architect: Warum ich die Prüfung mit Praxis st...
+INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
+VALUES (
+  'AWS Solutions Architect: Warum ich die Prüfung mit Praxis statt nur Theorie vorbereitet habe',
+  'aws-solutions-architect-praxis',
+  '### Solutions, nicht Services
+
+Die Prüfung heißt Solutions Architect. Nicht Services Architect, nicht Infrastructure Architect. Solutions.
+
+Als ich angefangen habe, mich mit den Prüfungsinhalten auseinanderzusetzen, habe ich etwas wiedererkannt: Anforderungen aufnehmen, Rahmenbedingungen verstehen, verschiedene Wege abwägen und die passende Lösung finden. In fast zwanzig Jahren Berufserfahrung war genau das mein Alltag -- egal ob es um Produkte, Kunden oder Prozesse ging. Die Herausforderung war immer die gleiche: Es gibt einen Rahmen, manchmal vorgegeben, manchmal offen, und innerhalb dieses Rahmens muss eine Lösung her, die funktioniert.
+
+Die Domäne ist eine andere. Aber die Denkweise war nicht neu. Und genau das hat mir in der Vorbereitung geholfen.
+
+### Verstehen, nicht nur bestehen
+
+Ich habe mir bewusst die Zeit genommen, die es braucht. Nicht um eine Prüfung zu bestehen, sondern um die Themen wirklich zu durchdringen. Weil mir klar war: Vieles von dem, was die Prüfung abfragt, kann ich nicht einfach im eigenen Account nachbauen. Multi-Account-Strategien für Konzerne, Migrationen von Hunderten Servern, Hybrid-Architekturen mit Direct Connect in Enterprise-Dimensionen -- das sind Szenarien, die man als Einzelperson nur in der Theorie durchdringen kann.
+
+Also habe ich genau das gemacht: Recherchiert, Dokumentation und Whitepapers gelesen, Szenarien durchgespielt. Wann immer möglich, Labs integriert und Konzepte praktisch nachvollzogen. Nicht alles lässt sich hands-on abbilden -- aber der Anspruch war, auch die rein theoretischen Themen so zu verstehen, dass ich sie erklären und einordnen kann.
+
+Parallel dazu lief die Praxis im eigenen AWS-Account weiter. VPC-Networking, IAM-Policies, S3-Konfigurationen, CloudFront -- alles Themen, die in der Prüfung drankommen und die ich gleichzeitig in EcoKart live im Einsatz hatte. Diese Kombination aus theoretischer Breite und praktischer Tiefe war der Kern meiner Vorbereitung.
+
+### Eigene Lernmaterialien
+
+Was sich früh als wertvoll herausgestellt hat: Nicht nur konsumieren, sondern selbst aufbereiten. Interaktive Flashcards, Quizzes, Service-Vergleichskarten -- alles in eigenen Worten formuliert. Wenn ich ein Konzept erklären kann, habe ich es verstanden. Wenn nicht, muss ich nochmal ran.
+
+Dazu Hunderte Practice-Fragen mit eigenen Erklärungen versehen. Nicht als Wiederholung, sondern als Verständnisprüfung. Warum ist diese Antwort richtig? Warum sind die anderen falsch? Was ist das zugrundeliegende Prinzip?
+
+Über die Zeit hat sich dabei ein Gespür entwickelt: AWS-Prüfungsfragen beschreiben komplexe Szenarien mit spezifischen Anforderungen -- Verfügbarkeit, Kosten, Compliance, Performance. Die Herausforderung liegt darin, aus dem Zusammenspiel dieser Anforderungen die architektonisch sinnvollste Lösung abzuleiten. Das ist keine Frage einzelner Services, sondern eine Frage der richtigen Kombination. An dieser Fähigkeit bin ich mit jeder Frage gewachsen.
+
+### Alle Szenarien, alle Plattformen
+
+Practice Tests waren das härteste und ehrlichste Feedback. Mein Anspruch war klar: Über mehrere Plattformen hinweg alle verfügbaren Fragen sehen und so viele Szenarien wie möglich durcharbeiten. Nicht um eine Quote zu erreichen, sondern um sicherzustellen, dass ich die Themen wirklich verstehe -- auch die, die sich nur theoretisch erarbeiten lassen.
+
+Jede Plattform formuliert anders, setzt andere Schwerpunkte, beleuchtet andere Aspekte. Genau das wollte ich: Kein plattformspezifisches Wissen, sondern ein Verständnis, das unabhängig von der Fragestellung trägt.
+
+Die Fehleranalyse war dabei oft wertvoller als die richtige Antwort. Jede falsche Antwort analysiert: Welches Konzept fehlt? Wiederholfehler oder neues Thema? Am Ende wollte ich mit dem sicheren Gefühl in die Prüfung gehen, dass ich die Breite der Themen durchdrungen habe -- nicht nur die, die ich praktisch kenne.
+
+### Enterprise: Über das Homelab hinaus
+
+Enterprise-Szenarien waren die größte Herausforderung. Hunderte VMs migrieren, Multi-Account-Strategien, Hybrid-Architekturen in einer Größenordnung, die mein Homelab nie abbilden kann. Das sind Themen, für die es keine Hands-on-Alternative gibt, wenn man keinen Enterprise-Kontext hat.
+
+Genau diese Themen haben mich am meisten weitergebracht. Sie haben mich gezwungen, tiefer in die Dokumentation einzusteigen, Architektur-Entscheidungen auf einem anderen Level zu durchdenken und mich mit Szenarien auseinanderzusetzen, die über alles hinausgehen, was ich bisher gebaut habe. Die Vorbereitung hat damit nicht nur bestehendes Wissen bestätigt, sondern meinen Blickwinkel erweitert -- auf Dimensionen, die erst mit dem Enterprise-Kontext sichtbar werden.
+
+Die Prüfung liefert die Breite. Meine Projekte liefern die Tiefe. Beides zusammen ergibt ein Bild, das keines von beiden allein erzeugen könnte.
+
+### Englisch: Feinste Nuancen
+
+Die Prüfung ist auf Englisch. Die Sprache selbst war nicht das Thema -- sondern die Präzision in der Formulierung. AWS-Prüfungsfragen sind so konstruiert, dass der Unterschied zwischen zwei Antwortoptionen in einem einzigen Wort liegen kann.
+
+Um das greifbar zu machen: "Should" vs. "must", "minimize" vs. "eliminate", "cost-effective" vs. "cheapest" -- das klingt auf den ersten Blick trivial, aber hinter diesen Nuancen stecken grundlegend unterschiedliche Architektur-Entscheidungen. Wer "cost-effective" mit "cheapest" gleichsetzt, wählt die falsche Lösung. Wer "minimize" als "eliminate" liest, überdimensioniert die Architektur. In der Praxis werden die Szenarien deutlich komplexer -- aber das Prinzip bleibt: Jedes Wort zählt, und die richtige Interpretation entscheidet über die richtige Architektur. Diese Feinheiten sicher zu erkennen, war eine eigene Herausforderung, an der ich gewachsen bin.
+
+### Mehr als ein Zertifikat
+
+Die AWS Solutions Architect Prüfung war kein Sammelpunkt im Lebenslauf. Sie war der Anspruch, Architektur-Entscheidungen auf einem Niveau zu treffen, das über meine eigenen Projekte hinausgeht.
+
+Was ich aus der Vorbereitung mitnehme, geht über das Zertifikat hinaus. Ich habe gelernt, mich eigenständig in Themen einzuarbeiten, die weit über meinen praktischen Erfahrungshorizont liegen -- und dabei ein Verständnis zu entwickeln, das nicht an einzelne Tools oder Services gebunden ist, sondern an die Fähigkeit, Probleme systematisch zu analysieren und die passende Architektur abzuleiten.
+
+Die Zertifizierung ergänzt meine Projekte. Sie zeigt, dass das Wissen auch in der Breite da ist -- nicht nur dort, wo ich selbst gebaut habe.
+
+### Bestanden: Februar 2026
+
+Das eigentliche Learning war der Weg. Die Hunderten Fragen, die Fehleranalysen, die Kombination aus Theorie und Praxis, die ehrliche Auseinandersetzung mit den eigenen Grenzen -- und die Erfahrung, dass man an genau diesen Grenzen am meisten wächst.
+
+Die Prüfung war ein Meilenstein. Die Denkweise war schon da. Jetzt habe ich die Werkzeuge, um sie in einer neuen Domäne umzusetzen.
+
+**Nächster Post:** Diesen Blog auf AWS EKS deployen
+Mein Abschlussprojekt.',
+  'AWS Solutions Architect -- die Prüfung, die nicht fragt was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
   'published', false, 6, 1, 6,
-  '2026-02-13T10:00:00Z'
+  '2026-03-08T10:00:00Z'
 );
 
--- Post 12: Traefik vs Nginx
+-- Post 11: Diesen Blog auf AWS EKS deployen: Mein Abschlussprojekt
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Traefik vs. Nginx: Welcher Reverse Proxy für Homelab?',
-  'traefik-vs-nginx-comparison',
-  'Beide sind exzellent - aber sie haben unterschiedliche Stärken.
+  'Diesen Blog auf AWS EKS deployen: Mein Abschlussprojekt',
+  'blog-aws-eks-abschlussprojekt',
+  '### Ein Blog mit Zukunft
 
-## Nginx Reverse Proxy
+Am Ende der Weiterbildung steht ein Abschlussprojekt: eine produktionsreife, cloud-native Anwendung auf AWS. Vier Wochen Zeit, klare technische Anforderungen -- EKS, Terraform, CI/CD, Datenbank, Authentifizierung, ML-Service. Die Projektidee war freigestellt, solange die Rahmenbedingungen erfüllt sind.
 
-**Vorteile:**
-- Battle-tested, extrem stabil
-- Sehr performant (C-basiert)
-- Riesige Community
-- Viele Tutorials & Beispiele
+Meine Entscheidung: diesen Tech-Blog. Nicht weil ein Blog die technisch anspruchsvollste Anwendung ist, sondern weil ich etwas bauen wollte, das über das Abschlussprojekt hinaus einen Zweck hat. Ein Showcase, den ich in Bewerbungen verlinken kann. Der den Fortschritt zeigt, den ich in den letzten Monaten gemacht habe. Und gleichzeitig alle technischen Anforderungen der Aufgabe abdeckt.
 
-**Nachteile:**
-- Config-Files manuell schreiben
-- SSL-Renewals manuell (oder certbot)
-- Jede Änderung = nginx reload
+### Warum EKS
 
-### Typische Nginx Config
-```nginx
-server {
-    listen 80;
-    server_name blog.example.com;
+Es gab zwei Optionen: EKS oder Serverless mit Lambda. Für einen Blog wäre Serverless die kosteneffizientere Wahl gewesen. EKS ist überdimensioniert für diese Anwendung -- und genau das war der Punkt.
 
-    location / {
-        proxy_pass http://192.168.1.10:3000;
-        proxy_set_header Host $host;
-    }
-}
-```
+Kubernetes ist in der Praxis Standard für komplexe Webanwendungen. Unternehmen betreiben ihre Plattformen auf EKS, und wer dort arbeiten will, muss verstehen, wie Deployments, Services, Ingress und Pod-Scheduling zusammenspielen. Nicht in der Theorie, sondern hands-on: Manifeste schreiben, Probleme debuggen, Konfigurationen iterieren.
 
-## Traefik
+Die Serverless-Architektur kannte ich bereits aus EcoKart. EKS war die Gelegenheit, die andere Seite kennenzulernen -- und bewusst die Variante zu wählen, die näher an Enterprise-Setups liegt.
 
-**Vorteile:**
-- Auto-Discovery (Docker Labels)
-- Automatisches SSL (Let''s Encrypt)
-- Schönes Dashboard
-- Kein Config-Reload nötig
+### 9 Terraform-Module
 
-**Nachteile:**
-- Steile Lernkurve am Anfang
-- Komplexere Debugging
-- Etwas mehr Resource-Hungry
+Die Infrastruktur besteht aus neun Terraform-Modulen:
 
-### Typische Traefik Config
-```yaml
-# docker-compose.yml
-services:
-  app:
-    image: myapp
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`blog.example.com`)"
-      - "traefik.http.routers.app.tls.certresolver=letsencrypt"
-```
+**Netzwerk und Security:** Eigene VPC mit Public und Private Subnets über zwei Availability Zones. Security Groups nach dem Prinzip der minimalen Rechte -- der ALB akzeptiert Traffic aus dem Internet, die EKS-Nodes nur vom ALB, die Datenbank nur von den Nodes. Kein direkter öffentlicher Zugriff auf irgendetwas außer dem Load Balancer.
 
-## Meine Empfehlung
+**EKS-Cluster:** Managed Control Plane mit einer Node Group auf Spot Instances. Zwei Nodes im Betrieb, skalierbar zwischen eins und drei. Spot Instances sparen gegenüber On-Demand erheblich -- für ein Portfolio-Projekt ein akzeptabler Trade-off, weil kurzzeitige Unterbrechungen verschmerzbar sind.
 
-**Nginx wenn:**
-- Du statische Configs bevorzugst
-- Performance kritisch ist
-- Du nginx bereits kennst
+**Datenbank:** RDS PostgreSQL in Private Subnets, verschlüsselt, automatische Backups, nicht aus dem Internet erreichbar. Für die Entwicklung pausierbar, um Kosten zu sparen.
 
-**Traefik wenn:**
-- Du viele Docker-Services hast
-- Auto-SSL wichtig ist
-- Services häufig wechseln
+**Frontend und Backend:** Das Frontend ist eine statische Anwendung auf Nginx, das Backend eine Express-API mit TypeScript. Beide laufen als Container in EKS, jeweils mit zwei Replicas, Health Probes und Resource Limits. Pod Anti-Affinity sorgt dafür, dass Replicas auf verschiedene Nodes verteilt werden.
 
-**Mein Setup**: Traefik für Homelab (wegen Auto-SSL), nginx für statische Sites.',
-  'Der grosse Vergleich: Traefik oder Nginx als Reverse Proxy für Self-Hosting Projekte.',
-  'published', false, 7, 1, 2,
-  '2026-02-15T10:00:00Z'
+**CDN und DNS:** CloudFront vor S3 für Blog-Assets, mit Origin Access Control -- kein öffentlicher S3-Zugriff. ACM-Zertifikat für HTTPS, Route 53 für DNS.
+
+**Authentifizierung:** Cognito User Pool mit OAuth 2.0 für den Admin-Bereich. Optionale MFA, rollenbasierte Zugriffskontrolle.
+
+**ML-Integration:** AWS Comprehend für automatische Sentiment-Analyse von Kommentaren -- die ML-Anforderung des Projekts, direkt in den Backend-Flow integriert.
+
+### OIDC statt AWS-Keys
+
+Die Projektvorgaben sahen AWS Access Keys als GitHub Secrets vor. Ich habe mich bewusst für OIDC-Federation entschieden -- den gleichen Ansatz wie bei EcoKart, aber diesmal von Anfang an eingeplant.
+
+Das Prinzip: GitHub Actions fordert bei jedem Pipeline-Lauf ein kurzlebiges Token an. AWS validiert dieses Token gegen den registrierten OIDC-Provider und stellt temporäre Credentials aus, die nach einer Stunde automatisch ablaufen. Kein Schlüsselpaar, das rotiert werden muss. Kein Risiko, dass langlebige Credentials kompromittiert werden.
+
+Das Ergebnis: Statt vier statischer Secrets braucht das gesamte Projekt nur zwei -- die OIDC-Rolle und das Datenbank-Passwort. Alles andere wird dynamisch aus dem Terraform State gelesen.
+
+### Sechs Pipelines, ein Workflow
+
+Die CI/CD-Architektur besteht aus sechs GitHub Actions Workflows:
+
+Die **Deploy-Pipeline** durchläuft drei Stufen: Tests, Build, Deployment. Erst wenn alle 31 Tests bestehen, werden die Docker Images gebaut und in ECR gepusht. Erst wenn der Build erfolgreich ist, werden die Kubernetes-Manifeste angewendet. Die Pipeline wartet auf den Rollout und schlägt fehl, wenn Pods nicht starten -- kein stilles Ignorieren von Fehlern.
+
+Die **Terraform-Pipeline** steuert die Infrastruktur: Validierung, Security Scans, Plan, Apply oder Destroy. Alles parameterisiert nach Waves und mit Concurrency-Kontrolle, damit nicht zwei Läufe gleichzeitig den State verändern.
+
+Dazu eine **Security-Pipeline** mit drei parallelen Scans: Secrets-Erkennung, Terraform-Security-Checks und Policy-Validierung. Findings blockieren den Merge -- kein Durchwinken von bekannten Problemen.
+
+### Wave-Strategie: Kosten kontrollieren
+
+EKS kostet. Die Control Plane allein liegt bei rund 73 Dollar im Monat, dazu kommen Nodes, NAT Gateway und Datenbank. Für ein Portfolio-Projekt, das nicht dauerhaft laufen muss, ist das kein tragbares Modell.
+
+Also habe ich die Infrastruktur in Waves aufgeteilt:
+
+**Wave 1** enthält alles, was quasi nichts kostet: VPC, Security Groups, ECR, S3, Cognito, OIDC. Bleibt dauerhaft stehen.
+
+**Wave 2** fügt die Datenbank hinzu. Rund 13 Dollar im Monat, pausierbar wenn nicht gebraucht.
+
+**Wave 3** ist der Full Stack: EKS, CloudFront, NAT Gateway. Das läuft nur wenn ich aktiv entwickle oder den Blog zeigen will. Hochfahren, showcasen, runterfahren.
+
+Der Kern der Strategie: Alles ist vollständig reproduzierbar. Infrastruktur zerstören und in Minuten wieder aufbauen -- weil jede Konfiguration in Terraform liegt und die Deploy-Pipeline alle Werte dynamisch aus dem State liest. Kein manuelles Nachpflegen von Endpoints oder IDs nach einem Rebuild.
+
+### EKS + K3s: Zwei Welten
+
+EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen zum Einsatz kommt.
+
+Für den dauerhaften Betrieb des Blogs gehe ich parallel einen anderen Weg: K3s auf eigener Infrastruktur. Leichtgewichtig, kosteneffizient, mit eigenen Herausforderungen -- kein managed Service, der einem Cluster-Management und Networking abnimmt.
+
+Zwei Ansätze, zwei Perspektiven. EKS zeigt, dass ich die AWS-Seite von Kubernetes verstehe. K3s zeigt, dass ich auch ohne Managed Services arbeiten kann. Und die bewusste Entscheidung zwischen beiden zeigt, dass ich einschätzen kann, wann welcher Ansatz sinnvoll ist.
+
+### Reproduzierbar, nicht einmalig
+
+Was mir an diesem Projekt am wichtigsten ist: Es ist kein einmaliger Aufbau. Alles -- vom Netzwerk bis zum letzten Pod -- liegt in Code. Terraform für die Infrastruktur, Kubernetes-Manifeste für die Anwendung, GitHub Actions für den Workflow.
+
+Wenn morgen jemand sagt "zeig mir, wie du das aufgebaut hast", kann ich die gesamte Infrastruktur in Minuten hochfahren, den Blog deployen und live zeigen. Und danach wieder zerstören, ohne dass etwas verloren geht. Das ist kein theoretisches Versprechen -- das ist der Workflow, den ich im Alltag nutze.
+
+Neun Terraform-Module, zehn Kubernetes-Manifeste, sechs Pipelines, 31 Tests. Alles versioniert, alles reproduzierbar, alles transparent im öffentlichen Repository.
+
+### Alles zusammen
+
+Dieses Projekt bringt alles zusammen, was in den letzten Monaten entstanden ist. Terraform von EcoKart, Container-Erfahrung aus dem Homelab, CI/CD mit OIDC, Security-First-Denken aus dem Monitoring-Aufbau. Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir erarbeitet habe.
+
+Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb nochmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
+  'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',
+  'published', true, 7, 1, 2,
+  '2026-03-12T10:00:00Z'
 );
 
--- ----- POST-TAG LINKS -----
--- Connect each post to its tags using the IDs from above
-
--- Post 1 (Synology): synology, nas, docker, homelab, devops
+-- Post-Tag links
 INSERT INTO post_tags (post_id, tag_id) VALUES
-  (1, 1), (1, 2), (1, 3), (1, 4), (1, 5);
+  (1, 1),
+  (1, 2),
+  (1, 3),
+  (1, 4),
+  (2, 5),
+  (2, 6),
+  (2, 7),
+  (2, 4),
+  (2, 8),
+  (3, 9),
+  (3, 10),
+  (3, 11),
+  (3, 12),
+  (3, 13),
+  (4, 14),
+  (4, 15),
+  (4, 16),
+  (4, 12),
+  (4, 17),
+  (5, 18),
+  (5, 5),
+  (5, 3),
+  (5, 19),
+  (5, 20),
+  (6, 5),
+  (6, 21),
+  (6, 18),
+  (6, 22),
+  (6, 23),
+  (7, 8),
+  (7, 9),
+  (7, 24),
+  (7, 13),
+  (7, 25),
+  (7, 26),
+  (8, 13),
+  (8, 27),
+  (8, 28),
+  (8, 29),
+  (8, 30),
+  (9, 27),
+  (9, 8),
+  (9, 13),
+  (9, 10),
+  (10, 5),
+  (10, 6),
+  (10, 2),
+  (10, 4),
+  (11, 31),
+  (11, 32),
+  (11, 18),
+  (11, 19),
+  (11, 3);
 
--- Post 2 (AWS CCP): aws, certification, cloud, learning
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (2, 6), (2, 7), (2, 8), (2, 9);
-
--- Post 3 (Tailscale): tailscale, traefik, vpn, networking, homelab
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (3, 10), (3, 11), (3, 12), (3, 13), (3, 4);
-
--- Post 4 (n8n): n8n, automation, hetzner, self-hosting, docker
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (4, 14), (4, 15), (4, 16), (4, 17), (4, 3);
-
--- Post 5 (Dashy): dashboard, homelab, docker, monitoring
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (5, 19), (5, 4), (5, 3), (5, 18);
-
--- Post 6 (GitHub Foundations): github, certification, git, learning, devops
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (6, 20), (6, 7), (6, 21), (6, 9), (6, 5);
-
--- Post 7 (iTerm2): terminal, productivity
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (7, 22), (7, 23);
-
--- Post 8 (Domains): dns, networking
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (8, 24), (8, 13);
-
--- Post 9 (AWS SAA): aws, certification, cloud, learning
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (9, 6), (9, 7), (9, 8), (9, 9);
-
--- Post 10 (Docker Compose): docker, devops, production, best-practices
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (10, 3), (10, 5), (10, 28), (10, 27);
-
--- Post 11 (Linux Essentials): linux, certification, learning
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (11, 26), (11, 7), (11, 9);
-
--- Post 12 (Traefik vs Nginx): traefik, nginx, homelab, docker
-INSERT INTO post_tags (post_id, tag_id) VALUES
-  (12, 11), (12, 25), (12, 4), (12, 3);
-
--- Done!
 COMMIT;

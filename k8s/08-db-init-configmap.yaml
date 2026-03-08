@@ -195,7 +195,7 @@ data:
     Grundlagen, Zertifizierungen und die Erkenntnis, dass echtes Lernen erst beginnt, wenn man selbst baut.',
       'Fast 20 Jahre Vertriebserfahrung, verschiedene Branchen, ein Kern: in Lösungen denken. Dann die Entscheidung, die technische Seite nicht nur zu verstehen, sondern selbst zu bauen. Zwölf Monate später: vier Zertifizierungen, ein produktives Homelab mit über 50 Services, ein Webshop auf AWS -- und dieser Blog als Beweis dafür, dass Erfahrung und Neuanfang sich nicht ausschließen, sondern verstärken.',
       'published', true, 5, 1, 7,
-      '2026-01-15T10:00:00Z'
+      '2026-02-14T10:00:00Z'
     );
 
     -- Post 2: Der Moment, an dem Theorie zu Praxis wird
@@ -253,7 +253,7 @@ data:
     Vom Provider-Router zum eigenen Netzwerk.',
       'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde. Das Ergebnis: zunächst ein lokales Deployment, dann der Schritt in AWS und am Ende der erste eigene Server.',
       'published', false, 6, 1, 7,
-      '2026-01-20T10:00:00Z'
+      '2026-02-17T10:00:00Z'
     );
 
     -- Post 3: Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk
@@ -317,7 +317,7 @@ data:
     VPN, Reverse Proxy und Networking in der Praxis.',
       'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk mit Enterprise-Hardware aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers ein vollständiges Homelab gewachsen ist.',
       'published', false, 6, 1, 3,
-      '2026-01-25T10:00:00Z'
+      '2026-02-19T10:00:00Z'
     );
 
     -- Post 4: Sichere Infrastruktur von Tag 1: VPN, Reverse Proxy und Netw...
@@ -390,7 +390,7 @@ data:
     Wie ich Terraform lieben gelernt habe.',
       'NAS und Hetzner-Server standen -- aber wie verbinde ich sie sicher miteinander? Erst WireGuard, dann Tailscale. Erst Nginx, dann Traefik. Viel ausprobiert, vieles verworfen, dabei mehr Networking gelernt als jedes Tutorial vermittelt.',
       'published', false, 6, 1, 4,
-      '2026-01-30T10:00:00Z'
+      '2026-02-21T10:00:00Z'
     );
 
     -- Post 5: Sandbox kaputt, alles weg -- wie ich Terraform lieben gelern...
@@ -487,7 +487,7 @@ data:
     Architektur, Entscheidungen und was ich dabei über AWS gelernt habe.',
       'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt vernichtet. Das war der Moment, in dem Reproduzierbarkeit für mich keine Option mehr war, sondern Pflicht -- und Terraform mein wichtigstes Werkzeug wurde.',
       'published', false, 6, 1, 2,
-      '2026-02-03T10:00:00Z'
+      '2026-02-24T10:00:00Z'
     );
 
     -- Post 6: EcoKart: Mein erster vollständiger Webshop auf AWS
@@ -587,7 +587,7 @@ data:
     Wie aus einzelnen Projekten eine Multi-Cloud-Architektur mit über 50 Services wurde.',
       'Ein Kurs-Rechercheprojekt über Infrastruktur-Kosten brachte mich auf die Idee, einen echten Webshop auf AWS zu bauen. 12 Services, 15 Terraform-Module, Stripe-Zahlungen, Cognito-Authentifizierung -- und eine Email-Provider-Odyssee, die mich am Neujahrstag bei Resend landen ließ.',
       'published', true, 7, 1, 1,
-      '2026-02-07T10:00:00Z'
+      '2026-02-26T10:00:00Z'
     );
 
     -- Post 7: Das große Bild: Wie aus einzelnen Projekten eine Multi-Cloud...
@@ -663,7 +663,7 @@ data:
     Warum ich früh angefangen habe und es sich ausgezahlt hat.',
       'NAS zuhause, zwei Cloud-Server an verschiedenen Standorten, verbunden über Tailscale. Über 50 containerisierte Services, verteilt nach Aufgabe und Ressourcenbedarf. Docker Compose, Shell-Skripte, Monitoring-Stack. Organisch gewachsen aus dem Wunsch, Dinge wirklich zu verstehen.',
       'published', false, 7, 1, 3,
-      '2026-02-12T10:00:00Z'
+      '2026-02-28T10:00:00Z'
     );
 
     -- Post 8: Monitoring und Security: Warum ich früh angefangen habe und ...
@@ -744,7 +744,7 @@ data:
     Wie ich den Angriff erkannt und gestoppt habe.',
       'Prometheus und Grafana liefen schon auf meinem ersten Server. Was als einfaches Ressourcen-Monitoring begann, ist Stück für Stück zu einem mehrstufigen System gewachsen -- Uptime Kuma für Verfügbarkeit, Wazuh als SIEM für Security-Events, Telegram als zentraler Alarmkanal. Jede Erweiterung hatte einen konkreten Grund.',
       'published', false, 6, 1, 4,
-      '2026-02-17T10:00:00Z'
+      '2026-03-03T10:00:00Z'
     );
 
     -- Post 9: Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt ...
@@ -817,7 +817,7 @@ data:
     Warum ich die Prüfung mit Praxis statt nur Theorie vorbereitet habe.',
       'Die NAS neben mir wird plötzlich ohrenbetäubend laut, Telegram meldet CPU-Auslastung über 200 Prozent. In unter drei Minuten war der Verursacher identifiziert und isoliert. Wie mein Monitoring-Stack einen echten Angriff erkannt hat -- und was schnelle Reaktion wirklich bedeutet.',
       'published', false, 6, 1, 4,
-      '2026-02-22T10:00:00Z'
+      '2026-03-05T10:00:00Z'
     );
 
     -- Post 10: AWS Solutions Architect: Warum ich die Prüfung mit Praxis st...
@@ -889,7 +889,7 @@ data:
     Mein Abschlussprojekt.',
       'AWS Solutions Architect -- die Prüfung, die nicht fragt was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
       'published', false, 6, 1, 6,
-      '2026-02-27T10:00:00Z'
+      '2026-03-08T10:00:00Z'
     );
 
     -- Post 11: Diesen Blog auf AWS EKS deployen: Mein Abschlussprojekt
@@ -984,7 +984,7 @@ data:
     Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb nochmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
       'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',
       'published', true, 7, 1, 2,
-      '2026-03-04T10:00:00Z'
+      '2026-03-12T10:00:00Z'
     );
 
     -- Post-Tag links
