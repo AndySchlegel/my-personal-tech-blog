@@ -6,7 +6,7 @@
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
 **Current Phase:** Frontend overhaul complete, infra torn down, ready for next deploy cycle
-**Last Updated:** 2026-03-08 (Session 19)
+**Last Updated:** 2026-03-08 (Session 20)
 
 ---
 
@@ -122,6 +122,10 @@
 - [x] Dual ACM certs (us-east-1 for CloudFront, eu-central-1 for ALB, PR #31)
 - [x] Full destroy+rebuild+deploy cycle verified (Session 15)
 - [x] ConfigMap dates synced with seed.sql (11 posts, Feb 14 - Mar 12)
+- [x] Cognito callback URL fix (PR #39/#40)
+- [x] Admin auth verified on EKS (Cognito Hosted UI login/logout working)
+- [x] Full destroy + deploy lifecycle verified and reproducible
+- [x] Teardown verified clean (~13 min, no orphaned ALBs/ENIs/VPCs)
 
 ## Phase 6: Blog Content + Seed Script (Done)
 
@@ -174,21 +178,17 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **Merge PR #37** -- frontend overhaul (develop -> main)
-2. **Provision infrastructure** -- infra-provision.yml (Wave 1+2+3)
-3. **Deploy app via deploy.yml** -- build images, push ECR, kubectl apply
-4. **DB init job** -- one-time manual kubectl to seed 11 posts into RDS
-5. **Post 12 via admin dashboard** -- proof-of-concept live editing
-6. **About page photo decision** -- same vs different vs remove from About hero
-7. **CV download button** -- simplified version without job-specific header
-8. **S3 image uploads** -- frontend/backend feature (requires Wave 1 S3)
-9. **ML Integration (Comprehend)** -- auto-tags + sentiment (requires EKS + IRSA)
-10. **Screenshots + Architecture diagram** -- for README and presentation
+1. **Post 12 via admin dashboard** -- live proof-of-concept editing on EKS
+2. **Comprehend integration** -- auto-tags (detectKeyPhrases) + comment sentiment (detectSentiment), requires IRSA
+3. **S3 image uploads** -- pre-signed URL upload from admin dashboard (requires Wave 1 S3)
+4. **About page photo decision** -- same vs different vs remove from About hero
+5. **CV download button** -- simplified version without job-specific header
+6. **Screenshots + Architecture diagram** -- for README and presentation
 
 Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
 other infra values dynamically from Terraform remote state.
 
-**Current infra state:** All destroyed, only OIDC resources remain in Terraform state.
+**Current infra state:** All infra destroyed (Session 20), only OIDC remains. Full provision->deploy->destroy cycle verified clean.
 
 ---
 
