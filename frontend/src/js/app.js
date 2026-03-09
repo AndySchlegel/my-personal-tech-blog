@@ -638,6 +638,29 @@
     });
   }
 
+  // --- Save current post list context for prev/next navigation ---
+  // When a user clicks a post card, we save the currently visible
+  // posts (filtered + sorted) so the post page can show matching
+  // prev/next links. This respects category filter, search, and
+  // sort order -- the navigation always matches what the user saw.
+  function setupPostNavContext() {
+    document.addEventListener("click", function (e) {
+      var card = e.target.closest(".post-card");
+      if (!card) return;
+
+      // Get the currently rendered posts in their displayed order
+      var currentPosts = isDemo ? filterDemoPosts() : allPosts;
+      var sorted = sortPosts(currentPosts);
+
+      // Save slug + title for each post (minimal data for navigation)
+      var navList = sorted.map(function (p) {
+        return { slug: p.slug, title: p.title };
+      });
+
+      sessionStorage.setItem("postNavContext", JSON.stringify(navList));
+    });
+  }
+
   // --- Restore scroll position if coming back from a post ---
   function restoreScrollPosition() {
     var saved = sessionStorage.getItem("scrollPos");
@@ -656,6 +679,7 @@
     setupSearch();
     setupSortToggle();
     setupScrollMemory();
+    setupPostNavContext();
     restoreScrollPosition();
   });
 })();

@@ -106,105 +106,96 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <!-- Back link (uses browser history if available, fallback to blog) -->
-        <a
-          href="./blog.html"
-          onclick="
-            if (history.length > 1) {
-              history.back();
-              return false;
-            }
-          "
-          class="inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors mb-8 group"
-        >
-          <i
-            class="ti ti-arrow-left text-base group-hover:-translate-x-1 transition-transform"
-          ></i>
-          Back to all articles
-        </a>
 
-        <!-- Loading state -->
-        <div id="post-loading" class="py-12">
+      <!-- Section 1: Back link + Post header (default body bg) -->
+      <div class="py-8 sm:py-12 pb-6">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+          <!-- Back link (always goes to blog page) -->
+          <a
+            href="./blog.html"
+            class="inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors mb-8 group"
+          >
+            <i
+              class="ti ti-arrow-left text-base group-hover:-translate-x-1 transition-transform"
+            ></i>
+            Back to all articles
+          </a>
+
+          <!-- Loading state -->
+          <div id="post-loading" class="py-12">
+            <div
+              class="skeleton h-6 w-24 bg-slate-200 dark:bg-slate-700 rounded-full mb-4"
+            ></div>
+            <div
+              class="skeleton h-10 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-3"
+            ></div>
+            <div
+              class="skeleton h-4 w-1/2 bg-slate-200 dark:bg-slate-700 rounded mb-8"
+            ></div>
+            <div
+              class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
+            ></div>
+            <div
+              class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
+            ></div>
+            <div
+              class="skeleton h-4 w-2/3 bg-slate-200 dark:bg-slate-700 rounded mb-6"
+            ></div>
+            <div
+              class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
+            ></div>
+            <div
+              class="skeleton h-4 w-5/6 bg-slate-200 dark:bg-slate-700 rounded"
+            ></div>
+          </div>
+
+          <!-- Post header (hidden until loaded) -->
+          <div id="post-header" class="hidden">
+            <!-- Category badge -->
+            <span
+              id="post-category"
+              class="inline-block px-3 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-semibold uppercase tracking-wide mb-4"
+            ></span>
+
+            <!-- Title -->
+            <h1
+              id="post-title"
+              class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight"
+            ></h1>
+
+            <!-- Meta: date, reading time, views -->
+            <div
+              id="post-meta"
+              class="flex flex-wrap gap-4 text-sm text-slate-400 dark:text-slate-500"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Post content (alternating lighter bg) -->
+      <div id="post-content-section" class="bg-white dark:bg-slate-900 hidden">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <article id="post-article">
+            <!-- Rendered Markdown content -->
+            <div id="post-content" class="prose"></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Section 3: Tags + Navigation (default body bg) -->
+      <div id="post-footer-section" class="hidden">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <!-- Tags -->
+          <div id="post-tags" class="flex flex-wrap gap-2 mb-8"></div>
+
+          <!-- Prev/Next post navigation (populated by post.js) -->
           <div
-            class="skeleton h-6 w-24 bg-slate-200 dark:bg-slate-700 rounded-full mb-4"
-          ></div>
-          <div
-            class="skeleton h-10 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-3"
-          ></div>
-          <div
-            class="skeleton h-4 w-1/2 bg-slate-200 dark:bg-slate-700 rounded mb-8"
-          ></div>
-          <div
-            class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
-          ></div>
-          <div
-            class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
-          ></div>
-          <div
-            class="skeleton h-4 w-2/3 bg-slate-200 dark:bg-slate-700 rounded mb-6"
-          ></div>
-          <div
-            class="skeleton h-4 w-full bg-slate-200 dark:bg-slate-700 rounded mb-2"
-          ></div>
-          <div
-            class="skeleton h-4 w-5/6 bg-slate-200 dark:bg-slate-700 rounded"
+            id="post-navigation"
+            class="hidden pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4"
           ></div>
         </div>
-
-        <!-- Article (hidden until loaded) -->
-        <article id="post-article" class="hidden">
-          <!-- Category badge -->
-          <span
-            id="post-category"
-            class="inline-block px-3 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-semibold uppercase tracking-wide mb-4"
-          ></span>
-
-          <!-- Title -->
-          <h1
-            id="post-title"
-            class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight"
-          ></h1>
-
-          <!-- Meta: date, reading time, views -->
-          <div
-            id="post-meta"
-            class="flex flex-wrap gap-4 text-sm text-slate-400 dark:text-slate-500 mb-8"
-          ></div>
-
-          <!-- Rendered Markdown content -->
-          <div id="post-content" class="prose"></div>
-
-          <!-- Tags -->
-          <div
-            class="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800"
-          >
-            <div id="post-tags" class="flex flex-wrap gap-2"></div>
-          </div>
-
-          <!-- Author -->
-          <div
-            class="mt-8 p-6 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50"
-          >
-            <div class="flex items-center gap-4">
-              <div
-                class="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center"
-              >
-                <i class="ti ti-user text-white text-xl"></i>
-              </div>
-              <div>
-                <p class="font-semibold text-slate-900 dark:text-white">
-                  Andy Schlegel
-                </p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">
-                  Cloud Engineer in training. Writing about AWS, DevOps, and
-                  Homelab adventures.
-                </p>
-              </div>
-            </div>
-          </div>
-        </article>
       </div>
+
     </main>
 
     <!-- ==================== FOOTER ==================== -->

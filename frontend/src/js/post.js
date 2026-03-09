@@ -155,11 +155,150 @@
       contentEl.innerHTML = marked.parse(post.content);
     }
 
-    // Show the article, hide loading
+    // Show all sections, hide loading skeleton
     var loading = document.getElementById("post-loading");
-    var article = document.getElementById("post-article");
+    var header = document.getElementById("post-header");
+    var contentSection = document.getElementById("post-content-section");
+    var footerSection = document.getElementById("post-footer-section");
     if (loading) loading.classList.add("hidden");
-    if (article) article.classList.remove("hidden");
+    if (header) header.classList.remove("hidden");
+    if (contentSection) contentSection.classList.remove("hidden");
+    if (footerSection) footerSection.classList.remove("hidden");
+
+    // Build prev/next navigation
+    loadPostNavigation(post.slug);
+  }
+
+  // --- Load prev/next post navigation ---
+  // Reads the post list context saved by app.js (respects filter,
+  // search, sort order). Falls back to full API list if no context
+  // exists (e.g. direct link to a post).
+  function loadPostNavigation(currentSlug) {
+    // Try to read saved context from blog page
+    var saved = sessionStorage.getItem("postNavContext");
+    if (saved) {
+      try {
+        var navList = JSON.parse(saved);
+        buildNavFromList(navList, currentSlug);
+        return;
+      } catch (e) {
+        // Invalid JSON, fall through to API fallback
+      }
+    }
+
+    // Fallback: fetch full post list from API (chronological)
+    fetch(API_BASE + "/posts")
+      .then(function (response) {
+        if (!response.ok) throw new Error("Failed");
+        return response.json();
+      })
+      .then(function (posts) {
+        var navList = posts.map(function (p) {
+          return { slug: p.slug, title: p.title };
+        });
+        buildNavFromList(navList, currentSlug);
+      })
+      .catch(function () {
+        // No navigation available, skip silently
+      });
+  }
+
+  // --- Find prev/next in list and render navigation ---
+  function buildNavFromList(navList, currentSlug) {
+    var currentIndex = -1;
+    for (var i = 0; i < navList.length; i++) {
+      if (navList[i].slug === currentSlug) {
+        currentIndex = i;
+        break;
+      }
+    }
+    if (currentIndex === -1) return;
+
+    var prevPost = currentIndex > 0 ? navList[currentIndex - 1] : null;
+    var nextPost =
+      currentIndex < navList.length - 1 ? navList[currentIndex + 1] : null;
+
+    // Nothing to show if this is the only post
+    if (!prevPost && !nextPost) return;
+
+    renderPostNavigation(prevPost, nextPost);
+  }
+
+  // --- Render prev/next navigation into the DOM ---
+  function renderPostNavigation(prevPost, nextPost) {
+    var navEl = document.getElementById("post-navigation");
+    if (!navEl) return;
+
+    // Clear existing content
+    while (navEl.firstChild) navEl.removeChild(navEl.firstChild);
+
+    // Previous post - left side
+    if (prevPost) {
+      navEl.appendChild(buildNavLink(prevPost, "prev"));
+    } else {
+      navEl.appendChild(document.createElement("div"));
+    }
+
+    // Next post - right side
+    if (nextPost) {
+      navEl.appendChild(buildNavLink(nextPost, "next"));
+    } else {
+      navEl.appendChild(document.createElement("div"));
+    }
+
+    navEl.classList.remove("hidden");
+  }
+
+  // --- Build a single nav link element ---
+  function buildNavLink(post, direction) {
+    var isPrev = direction === "prev";
+
+    // Clicking prev/next should keep the navigation context alive,
+    // so the user can continue browsing through the filtered list
+    var link = document.createElement("a");
+    link.href = "./post.html?slug=" + encodeURIComponent(post.slug);
+    link.className =
+      "group flex flex-col p-5 rounded-xl border border-slate-200 " +
+      "dark:border-slate-700/50 bg-white dark:bg-slate-800/50 " +
+      "hover:border-sky-500/50 dark:hover:border-sky-500/50 transition-all" +
+      (isPrev ? "" : " text-right");
+
+    // Label row with arrow icon
+    var label = document.createElement("span");
+    label.className =
+      "flex items-center gap-1.5 text-xs font-medium " +
+      "text-slate-400 dark:text-slate-500 mb-2" +
+      (isPrev ? "" : " justify-end");
+
+    var arrow = document.createElement("i");
+    arrow.className =
+      "ti ti-arrow-" + (isPrev ? "left" : "right") + " text-sm " +
+      "group-hover:" + (isPrev ? "-translate-x-1" : "translate-x-1") +
+      " transition-transform";
+
+    var labelText = document.createTextNode(
+      isPrev ? "Previous article" : "Next article"
+    );
+
+    if (isPrev) {
+      label.appendChild(arrow);
+      label.appendChild(labelText);
+    } else {
+      label.appendChild(labelText);
+      label.appendChild(arrow);
+    }
+
+    // Post title
+    var title = document.createElement("span");
+    title.className =
+      "text-sm font-semibold text-slate-900 dark:text-white " +
+      "group-hover:text-sky-500 dark:group-hover:text-sky-400 " +
+      "transition-colors line-clamp-2";
+    title.textContent = post.title;
+
+    link.appendChild(label);
+    link.appendChild(title);
+    return link;
   }
 
   // --- Show an error message ---
