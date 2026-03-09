@@ -71,40 +71,49 @@ VALUES (
   'erfahrung-trifft-neuanfang',
   '### Stabilität durch Veränderung
 
-In verschiedenen Branchen, über verschiedene Stationen hinweg, war eines immer gleich: Im Zentrum stand der Kunde. Erst im direkten Endkundengeschäft, später zunehmend im B2B-Umfeld. Bedürfnisse verstehen, Rahmenbedingungen kennen -- Vorgaben, Budgets, Einschränkungen -- und innerhalb dieses Rahmens alltagstaugliche Lösungen entwickeln. Das hat mich fast zwei Jahrzehnte lang geprägt und angetrieben.
+In verschiedenen Branchen, über verschiedene Stationen hinweg, war eines immer gleich: Im Zentrum stand der Kunde. Erst im direkten Endkundengeschäft, später zunehmend im B2B-Umfeld. Bedürfnisse verstehen, Rahmenbedingungen kennen -- Vorgaben, Budgets, Einschränkungen -- und innerhalb dieses Rahmens alltagstaugliche Lösungen entwickeln. Das hat mich fast zwei Jahrzehnte geprägt und angetrieben.
 
-In den letzten Jahren kam ein zusätzlicher Fokus dazu. Die Themen wurden technischer. Gemeinsam mit Kunden, Teams aus Business Development, IT und Projektverantwortlichen haben wir Schnittstellenanbindungen konzipiert, Prozesse zwischen Dienstleister und Kunde effizienter gestaltet, Anforderungen und technische Möglichkeiten zusammengeführt.
+In den letzten Jahren wurden die Themen zunehmend technischer. Gemeinsam mit Kunden, Teams aus Business Development, IT und Projektverantwortlichen haben wir Schnittstellenanbindungen konzipiert, Prozesse zwischen Dienstleister und Kunde effizienter gestaltet und Anforderungen mit technischen Möglichkeiten zusammengeführt.
 
-Da fielen Begriffe wie API und Systemintegration -- und was auf der technischen Seite aus unseren Anforderungen entstand, hat mich zunehmend fasziniert.
+Da fielen Begriffe wie API und Systemintegration -- und was auf der technischen Seite aus unseren Anforderungen entstand, hat mich immer stärker fasziniert.
 
-Die Neugier war geweckt!
+Die Neugier war geweckt.
+
+---
 
 ### Ein Impuls, der geblieben ist
 
-Dann begann eine Phase der Veränderung. Ich habe mir eine Auszeit genommen, einen Schritt zurückgetreten -- und mir Fragen gestellt, die im Alltag keinen Platz gehabt hatten. Will ich weiter ausschließlich im Vertrieb bleiben? Oder steckt in der Faszination für Technik mehr als nur Interesse -- nämlich ein echter nächster Schritt?
+Dann begann eine Phase der Veränderung. Ich habe mir bewusst eine Auszeit genommen, einen Schritt zurückgetreten -- und mir Fragen gestellt, die im Alltag selten Platz haben. Will ich weiter ausschließlich im Vertrieb bleiben? Oder steckt in der Faszination für Technik mehr als nur Interesse -- nämlich ein echter nächster Schritt?
 
 Je ehrlicher ich hingeschaut habe, desto klarer wurde das Bild. Die technische Affinität war schon immer da. Die Gespräche mit IT-Abteilungen hatten Türen geöffnet. Und die Erkenntnis, dass meine bisherigen Fähigkeiten -- Anforderungen verstehen, in Lösungen denken, Perspektiven verbinden -- auch in der Tech-Welt gefragt sind, gab den Ausschlag.
 
-Cloud und DevOps, weil es genau an dieser Schnittstelle liegt: Dort, wo Systeme nicht nur gedacht, sondern gebaut und betrieben werden. Und ergebnisoffen -- ob der Weg beispielsweise als Cloud Engineer in eine technische Rolle führt, als Solutions Architect beide Welten verbindet oder Richtung Technical Consulting geht. Kein festgelegtes Ziel, sondern ein Fundament, das verschiedene Richtungen ermöglicht.
+Cloud und DevOps, weil es genau an dieser Schnittstelle liegt: dort, wo Systeme nicht nur geplant, sondern gebaut und betrieben werden. Kein festgelegtes Ziel, sondern ein Fundament, das verschiedene Richtungen ermöglicht -- ob Cloud Engineering, Solutions Architecture oder Technical Consulting.
+
+---
 
 ### Vom weißen Blatt zur laufenden Infrastruktur
 
-Zwölf Monate voller Cloud- und DevOps-Praxis, in Vollzeit und ohne technische Vorerfahrung.
+Zwölf Monate voller Cloud- und DevOps-Praxis -- in Vollzeit und ohne technische Vorerfahrung.
 
-Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services auf drei Standorten, das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für Serverless-Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf eigener Infrastruktur mit K3s.
+Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services, verteilt über vier Umgebungen -- NAS, Hetzner, lokale Infrastruktur und AWS -- das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für serverlose Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf eigener Infrastruktur mit K3s.
 
 Jedes dieser Projekte hat seine eigene Geschichte. Dieser Blog erzählt sie.
 
+---
+
 ### Kein Abschluss, ein Zwischenschritt
 
-Direkt danach begann die IHK-Qualifikation zum Berufsspezialisten für Systemintegration und Vernetzung -- die gezielte Vertiefung, um das Gelernte auf ein formales Fundament mit Gewicht in der Branche zu stellen. Jeder Schritt baut auf dem vorherigen auf, und dieser Weg ist noch lange nicht zu Ende.
+Direkt danach begann die IHK-Qualifikation zum Berufsspezialisten für Systemintegration und Vernetzung -- die gezielte Vertiefung, um das Gelernte auf ein formales Fundament mit Gewicht in der Branche zu stellen.
+
+Zertifikate und Projekte sind das Fundament. Entscheidend ist die Fähigkeit, Systeme zu verstehen, sie reproduzierbar aufzubauen und zuverlässig zu betreiben.
+
+Genau darum geht es in diesem Blog.
+
+---
 
 ### Ein Beitrag pro Etappe
 
-Entscheidungen und deren Begründungen. Lösungswege, die auf Anhieb funktioniert haben -- und andere, die mehrere Iterationen gebraucht haben. Von der ersten Kommandozeile bis zur Cloud-Native Anwendung auf Kubernetes.
-
-**Nächster Post:** Der Moment, an dem Theorie zu Praxis wird
-Grundlagen, Zertifizierungen und die Erkenntnis, dass echtes Lernen erst beginnt, wenn man selbst baut.',
+Entscheidungen und deren Begründungen. Lösungswege, die auf Anhieb funktioniert haben -- und andere, die mehrere Iterationen gebraucht haben. Von der ersten Kommandozeile bis zur Cloud-Native Anwendung auf Kubernetes.',
   'Fast 20 Jahre Vertriebserfahrung, verschiedene Branchen, ein Kern: in Lösungen denken. Dann die Entscheidung, die technische Seite nicht nur zu verstehen, sondern selbst zu bauen. Zwölf Monate später: vier Zertifizierungen, ein produktives Homelab mit über 50 Services, ein Webshop auf AWS -- und dieser Blog als Beweis dafür, dass Erfahrung und Neuanfang sich nicht ausschließen, sondern verstärken.',
   'published', true, 5, 1, 7,
   '2026-02-14T10:00:00Z'
@@ -119,50 +128,55 @@ VALUES (
 
 März 2025. Erster Tag der Weiterbildung. Die Entscheidung war gefallen -- es konnte losgehen.
 
-Linux-Befehle, Networking-Basics, Cloud-Konzepte. Die Struktur war klar -- und das tat gut. Jeden Tag neue Themen, schnelles Tempo, viel Input.
+Linux-Befehle, Networking-Basics, Cloud-Konzepte. Die Struktur war klar und das Tempo hoch. Jeden Tag neue Themen, neue Tools, neue Begriffe.
 
-Ich habe in den ersten Wochen viel mit Tutorials und Labs gearbeitet -- verschiedene Anbieter, verschiedene Plattformen. Das hat funktioniert, um die Grundlagen zu verstehen. `ls`, `cd`, `chmod`, erste AWS-Services, was ist eine VPC, was macht ein Load Balancer.
+Ich habe in den ersten Wochen viel mit Tutorials und Labs gearbeitet -- verschiedene Anbieter, verschiedene Plattformen. Das hat funktioniert, um die Grundlagen zu verstehen: `ls`, `cd`, `chmod`, erste AWS-Services, was eine VPC ist oder was ein Load Balancer eigentlich macht.
 
-Aber irgendwann merkt man: Tutorials zeigen dir die perfekte Welt. Schritt für Schritt, alles funktioniert, kein Fehler. Das echte Lernen beginnt erst da, wo man auf Probleme stößt, die nicht im Tutorial stehen.
+Aber irgendwann merkt man: Tutorials zeigen dir die perfekte Welt. Schritt für Schritt, alles funktioniert, kein Fehler. Das echte Lernen beginnt erst da, wo Dinge schiefgehen und Probleme auftauchen, die nicht im Tutorial stehen.
+
+---
 
 ### Lernen, um weiterzukommen
 
-Juni 2025: AWS Cloud Practitioner bestanden. Das war der erste richtige Meilenstein. IAM, VPC, S3, EC2 -- nicht nur als Konzepte, sondern verstanden, was die Services tun und wie sie zusammenspielen.
+Juni 2025: AWS Cloud Practitioner bestanden. Das war der erste echte Meilenstein. IAM, VPC, S3, EC2 -- nicht nur als Begriffe, sondern als Services, deren Zusammenspiel langsam greifbar wurde.
 
 Juli 2025: Linux Essentials bestanden. Kommandozeile, Dateisystem, Paketmanagement, grundlegende Administration. Die Sicherheit, sich auf einem Linux-System bewegen zu können, ohne bei jedem Befehl nachschlagen zu müssen.
 
-Beide Zertifizierungen waren eine Mischung aus Kursarbeit und Selbststudium. Der Kurs hat die Grundlage gelegt, die Tiefe kam durch eigenes Vertiefen und Ausprobieren.
+Beide Zertifizierungen waren eine Mischung aus Kursarbeit und Selbststudium. Der Kurs hat die Grundlage gelegt -- die Tiefe kam erst durch eigenes Ausprobieren.
 
-Zertifizierungen zeigen Wissen -- aber Erfahrung beginnt erst, wenn man etwas Eigenes aufbaut.
+Zertifizierungen zeigen Wissen. Erfahrung beginnt erst, wenn man etwas Eigenes baut.
+
+---
 
 ### Von Wissen zu Können
 
 Ausgangspunkt war ein Dashboard-Mockup, das nach konkreten Stakeholder-Anforderungen umgesetzt wurde -- ein kompaktes Übungsprojekt vom Entwurf bis zur Präsentation.
 
-Ich habe das Projekt weitergeführt. Das Dashboard lokal zum Laufen zu bringen war das eine -- aber ich wollte wissen, wie ich es in die Cloud bringe.
+Ich habe das Projekt weitergeführt. Das Dashboard lokal zum Laufen zu bringen war das eine -- aber ich wollte wissen, wie ich es in die Cloud bekomme.
 
 Also habe ich es auf AWS mit ECS deployed: ein Dockerfile gebaut, das Image nach ECR gepusht, den ECS-Task konfiguriert und den Service gestartet. Mein erster echter Kontakt mit Containern und Cloud-Deployments -- kein Lab-Szenario, sondern mein eigenes Projekt.
 
-Es hat funktioniert. Und genau da hat sich etwas verändert. Ab dem Punkt habe ich angefangen, bewusst nach Möglichkeiten zu suchen, Theorie in Praxis umzusetzen. Erst über Labs und Übungsumgebungen, dann zunehmend über eigene Projekte und eigene Infrastruktur.
+Es hat funktioniert. Und genau in diesem Moment hat sich etwas verändert. Ab diesem Punkt habe ich bewusst nach Möglichkeiten gesucht, Theorie in eigene Infrastruktur zu überführen.
+
+---
 
 ### Der erste eigene Stack
 
 Das Dashboard lief auf ECS -- aber in der Sandbox-Umgebung der Weiterbildung. Abhängig von Kostenlimits, nicht dauerhaft verfügbar. Ich wollte das anders.
 
-Der Gedanke war: Ich möchte das agra-dashboard und ein Service-Dashboard dauerhaft laufen haben, auf eigener Infrastruktur, unter meiner Kontrolle. Gleichzeitig hatte ich n8n entdeckt -- ein Workflow-Automatisierungstool, das ich im Self-Hosting-Modus kostenlos nutzen konnte.
+Also habe ich für kleines Geld einen Hetzner-Cloud-Server aufgesetzt. Ubuntu installiert, Docker eingerichtet, Services mit Docker Compose betrieben, eine Domain registriert und DNS konfiguriert.
 
-Also habe ich für kleines Geld einen Hetzner Cloud Server aufgesetzt. Ubuntu drauf, Docker installiert, Services per Docker Compose konfiguriert, eine Domain gekauft und DNS eingerichtet.
+Das war ein völlig anderes Lernen als das ECS-Deployment. Auf einem eigenen Server bist du für alles verantwortlich: Betriebssystem, Updates, Firewall, Netzwerk, Backups. Wenn etwas nicht läuft, gibt es keinen Managed Service, der das Problem für dich löst.
 
-Das war ein komplett anderes Lernen als das ECS-Deployment. Auf AWS klickt man Services zusammen oder definiert sie in Konfigurationen. Auf einem eigenen Server bist du für alles verantwortlich: Betriebssystem, Updates, Firewall, Netzwerk, Backups. Wenn etwas nicht läuft, fängt dich kein Managed Service auf.
+---
 
 ### Weniger Theorie, mehr eigenes Setup
 
-Zwei Zertifizierungen. Ein Projekt, das sowohl auf AWS als auch auf eigenem Server lief. Erste Erfahrung mit Containern, Deployments, Domains und eigenverantworteter Infrastruktur. Und die Erkenntnis, die mich ab da begleitet hat: Lernen funktioniert für mich am besten, wenn ich etwas Echtes baue und betreibe.
+Zwei Zertifizierungen. Ein Projekt, das sowohl auf AWS als auch auf eigener Infrastruktur lief. Erste Erfahrungen mit Containern, Deployments, Domains und selbst betriebener Infrastruktur.
 
-Die nächsten Monate sollten davon noch deutlich mehr bringen.
+Und die Erkenntnis: Lernen funktioniert für mich am besten, wenn ich etwas Echtes baue und betreibe.
 
-**Nächster Post:** Blackbox kaputt
-Vom Provider-Router zum eigenen Netzwerk.',
+Der nächste Schritt kam fast zwangsläufig.',
   'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde. Das Ergebnis: zunächst ein lokales Deployment, dann der Schritt in AWS und am Ende der erste eigene Server.',
   'published', false, 6, 1, 7,
   '2026-02-17T10:00:00Z'
@@ -175,58 +189,64 @@ VALUES (
   'blackbox-kaputt-eigenes-netzwerk',
   '### Am Limit des Provider-Routers
 
-Ich hatte zu dem Zeitpunkt bereits meinen Hetzner-Server und eine frisch eingerichtete Synology NAS. Zwei Systeme, die miteinander kommunizieren sollten -- und ein Netzwerk, das ich dafür flexibel konfigurieren musste.
+Zu diesem Zeitpunkt liefen bereits zwei zentrale Bausteine meiner Infrastruktur: ein Cloud-Server bei Hetzner und eine frisch eingerichtete Synology NAS. Zwei Systeme, die miteinander kommunizieren sollten -- und ein Heimnetzwerk, das dafür plötzlich deutlich flexibler sein musste.
 
-Und da wurde es eng. Der Telekom-Router war ein geschlossenes System. Stark eingeschränkt konfigurierbar -- was natürlich Sinn ergibt, wenn man an die Millionen normaler Nutzer denkt, die das Gerät einfach einstecken und loslegen wollen. Aber sobald man mehr als Standard-Internetnutzung braucht, stößt man schnell an die Grenzen dessen, was ein Provider-Router hergibt.
+Der Telekom-Router war dafür allerdings kaum geeignet. Ein geschlossenes System mit stark eingeschränkten Konfigurationsmöglichkeiten. Für normale Internetnutzung vollkommen ausreichend -- aber sobald mehrere Systeme miteinander sprechen sollen, stößt man schnell an Grenzen.
 
-Ich wollte mein Netzwerk flexibler gestalten, eigene Regeln definieren, verstehen was passiert. Mit diesem Router war das nicht möglich.
+Genau dieser Moment wurde zum Wendepunkt. Statt mich weiter innerhalb dieser Limits zu bewegen, fiel die Entscheidung: Wenn ich Infrastruktur verstehen will, dann auch das Netzwerk dahinter.
 
-Also habe ich entschieden: Eigenes Netzwerk, eigene Regeln -- mit echter Enterprise-Technik.
+---
 
 ### UniFi: Mein Netzwerk, meine Regeln
 
-Die Entscheidung fiel auf Ubiquiti UniFi -- Cloud Gateway Fiber, Access Point, Modem. Enterprise-Hardware, die in professionellen Umgebungen eingesetzt wird.
+Die Wahl fiel auf Ubiquiti UniFi -- Cloud Gateway Fiber, Access Point, Modem. Enterprise-Hardware, die in professionellen Umgebungen eingesetzt wird.
 
-Der Unterschied war sofort spürbar. Plötzlich konnte ich alles konfigurieren -- Firewall-Regeln, VLANs, Traffic-Management, den gesamten Netzwerkverkehr überwachen und steuern. Volle Kontrolle, volle Transparenz.
+Der Unterschied war sofort spürbar. Plötzlich ließ sich das Netzwerk wirklich gestalten: Firewall-Regeln definieren, VLANs strukturieren, Traffic analysieren und nachvollziehen, wie Geräte miteinander kommunizieren.
 
-Das war gleichzeitig ein massives Lernfeld. Subnetting, Firewall-Rules, DNS, DHCP -- alles Themen, die man in der Theorie schnell versteht. Aber ein eigenes Netzwerk designen, in dem mehrere Geräte und Server sauber miteinander kommunizieren, ist eine andere Dimension.
+Damit begann ein völlig neues Lernfeld. Subnetting, DNS, DHCP, Firewall-Regeln -- alles Themen, die auf dem Papier relativ schnell verstanden sind. Ein eigenes Netzwerk zu entwerfen, in dem mehrere Systeme stabil miteinander arbeiten, ist jedoch eine ganz andere Erfahrung.
+
+Viele Dinge funktionieren erst nach mehreren Iterationen. Regeln greifen nicht wie erwartet, Services finden sich nicht im Netzwerk, Ports sind falsch gesetzt. Genau diese Momente sind es aber, in denen Infrastruktur wirklich verständlich wird.
+
+---
 
 ### Mehr als nur Storage
 
-Die NAS habe ich aus mehreren Gründen angeschafft. Erstens: eine Homelab-Plattform, auf der ich Container und Docker vertiefen kann. Nicht in einer Sandbox, nicht in einem Lab, sondern auf eigener Hardware, die dauerhaft läuft.
+Die NAS war von Anfang an als Infrastruktur-Plattform gedacht -- ein System, auf dem ich Container und Docker vertiefen kann, nicht nur Storage.
 
-Zweitens: eine eigene Cloud-Lösung. Mehr Kontrolle über meine eigenen Daten, Backups zentral verwalten, alle Geräte angebunden -- MacBooks, iPhones, iPads. Keine Abhängigkeit von externen Cloud-Diensten für persönliche Daten.
+Container liefen dort dauerhaft, Backups wurden organisiert, Services zusammengeführt. Gleichzeitig wurde die NAS zum Ort, an dem ich ausprobieren konnte, wie sich Infrastruktur betreiben lässt: Updates, Monitoring, Netzwerkregeln, Zugriffskontrollen.
 
-Und drittens: ein System, an dem ich lerne, wie man Infrastruktur betreibt. Updates einspielen, Volumes verwalten, Services konfigurieren, Berechtigungen setzen. Das sind keine spektakulären Themen, aber es sind die Dinge, die im täglichen Betrieb den Unterschied machen.
+Mit NAS, Cloud-Server und dem neuen Netzwerk entstand nach und nach eine Umgebung, die deutlich mehr war als nur ein einzelner Server.
+
+---
 
 ### Wenn Bausteine zusammenspielen
 
-Mit NAS, Hetzner-Server und UniFi-Netzwerk hatte ich jetzt mehrere Systeme, die laufen und überwacht werden wollen. Also habe ich angefangen, ein kleines Monitoring aufzubauen.
+Je mehr Systeme dazu kamen, desto wichtiger wurde Übersicht.
 
-Schritt für Schritt, nicht alles auf einmal. Prometheus als Datenlieferant, der Metriken von meinen Systemen sammelt. Grafana als Dashboard, das diese Metriken visualisiert. Und Dashy als zentraler Einstiegspunkt -- ein Link-Dashboard, über das ich alle Services erreiche: Grafana, Portainer, n8n, alles an einem Ort verlinkt.
+Prometheus begann Metriken zu sammeln, Grafana visualisierte die Systeme, Dashy wurde zur zentralen Startseite für die Infrastruktur. Zum ersten Mal entstand ein Gefühl dafür, wie mehrere Services zusammen ein funktionierendes Gesamtsystem bilden.
 
-Und dann habe ich angefangen, damit zu spielen. Meine Philips Hue Lampen ins Dashy integriert, direkt steuerbar über das Dashboard. Nicht weil das produktionsrelevant ist, sondern weil es zeigt, was möglich ist, wenn man die einzelnen Bausteine versteht und kombiniert.
+Was zunächst als kleines Setup begann, entwickelte sich langsam zu einer Infrastruktur, die beobachtet, gepflegt und automatisiert werden musste.
 
-Das Zusammenspiel aus NAS, n8n-Workflows und Monitoring hat mir zum ersten Mal gezeigt, wie Infrastruktur als Ganzes funktioniert. Nicht einzelne Services in Isolation, sondern Systeme, die zusammenarbeiten.
+---
 
 ### Automatisieren statt wiederholen
 
-n8n hatte ich schon in Post 2 als Trigger für den eigenen Server erwähnt. Auf der NAS habe ich das Tool dann richtig eingesetzt. Automatisierte Workflows, die Systeme miteinander verbinden -- Benachrichtigungen, Datenabgleich, wiederkehrende Aufgaben.
+Mit wachsender Infrastruktur tauchten schnell Aufgaben auf, die sich ständig wiederholten. Statusmeldungen, kleine Datenbewegungen zwischen Systemen, Benachrichtigungen.
 
-Das war ein weiterer Baustein im Verständnis: Infrastruktur betreiben heißt nicht nur, Services zum Laufen zu bringen. Es heißt auch, wiederkehrende Aufgaben zu automatisieren, damit man sich auf die wichtigen Dinge konzentrieren kann.
+Hier kam n8n ins Spiel. Workflows auf der NAS verbanden Dienste miteinander, automatisierten Abläufe und nahmen viele kleine manuelle Schritte ab.
+
+Ein weiterer Baustein in einer Umgebung, die immer stärker zusammenwuchs.
+
+---
 
 ### Cloud nutzen, Homelab verantworten
 
-Im Rückblick war der Homelab-Aufbau die wichtigste Entscheidung dieser Phase. Nicht weil die Hardware so beeindruckend ist, sondern wegen der Denkweise, die sich dadurch verändert hat.
+Rückblickend war der Aufbau des Homelabs einer der wichtigsten Schritte dieser Phase.
 
-In der Cloud lernst du, Services zu nutzen. Im Homelab lernst du, Infrastruktur zu betreiben. Du bist für alles verantwortlich -- Netzwerk, Storage, Compute, Security, Monitoring. Keine Übung -- echter Betrieb.
+In der Cloud lernt man, Services zu nutzen.  
+Im Homelab lernt man, Infrastruktur zu betreiben.
 
-### Eigene Infrastruktur, echte Probleme
-
-Ein vollständiges Netzwerk mit Enterprise-Hardware. Eine NAS als zentrale Plattform. Ein externer Server. Monitoring, Automatisierung, ein Service-Dashboard. Und das Verständnis, dass eigene Infrastruktur mehr lehrt als jedes Tutorial -- weil die Probleme echt sind und die Lösungen funktionieren müssen.
-
-**Nächster Post:** Sichere Infrastruktur von Tag 1
-VPN, Reverse Proxy und Networking in der Praxis.',
+Genau diese Kombination hat den weiteren Weg geprägt.',
   'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk mit Enterprise-Hardware aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers ein vollständiges Homelab gewachsen ist.',
   'published', false, 6, 1, 3,
   '2026-02-19T10:00:00Z'
@@ -241,7 +261,9 @@ VALUES (
 
 NAS läuft, Hetzner-Server läuft, erste Services sind deployed. Aber jetzt stellt sich die praktische Frage: Wie kommunizieren diese Systeme sicher miteinander? Wie komme ich von unterwegs auf meine Dienste? Und wie mache ich Services erreichbar, die erreichbar sein sollen -- ohne alles offen ins Internet zu stellen?
 
-Das waren Fragen, die ich zu dem Zeitpunkt nicht theoretisch beantworten konnte. Ich musste es ausprobieren.
+Das waren Fragen, die ich zu dem Zeitpunkt nicht theoretisch beantworten konnte. Ich musste es praktisch ausprobieren.
+
+---
 
 ### WireGuard: Theorie gut, Praxis fragil
 
@@ -249,21 +271,25 @@ Mein erster Gedanke war WireGuard -- ein modernes VPN-Protokoll, das in meiner R
 
 In der Praxis bin ich damit auf der Synology NAS nicht weit gekommen. WireGuard ist dort nicht nativ im VPN-Server-Paket enthalten. Was es gibt, sind Drittanbieter-Pakete und Docker-basierte Lösungen -- aber die sind fragil. DSM-Updates können das Kernel-Modul brechen, die Installation ist abhängig von der Hardware-Architektur, und insgesamt war das eine ziemlich frickelige Angelegenheit. Ich habe einige Zeit damit verbracht und keine stabile Lösung hinbekommen.
 
+---
+
 ### Tailscale: Das richtige Tool für den Job
 
-Bei der weiteren Recherche bin ich auf Tailscale gestoßen. Tailscale basiert auf WireGuard, nutzt also das gleiche Protokoll für die Verschlüsselung. Aber der entscheidende Unterschied: Tailscale ist nativ im Synology Paketzentrum verfügbar. Kein Drittanbieter-Paket, kein Docker-Workaround, keine Angst vor dem nächsten DSM-Update.
+Bei der weiteren Recherche bin ich auf Tailscale gestoßen. Tailscale basiert auf WireGuard und nutzt das gleiche Protokoll für die Verschlüsselung. Der entscheidende Unterschied: Tailscale ist nativ im Synology-Paketzentrum verfügbar. Kein Drittanbieter-Paket, kein Docker-Workaround, keine Angst vor dem nächsten DSM-Update.
 
 Installation auf der NAS, auf dem Server, auf meinem MacBook -- und plötzlich waren alle Geräte im gleichen verschlüsselten Netzwerk. Ich konnte von unterwegs auf meine NAS zugreifen, ohne einen einzigen Port zu öffnen. Der Server und die NAS konnten sicher miteinander kommunizieren.
 
-Das war der Moment, wo ich verstanden habe: Manchmal ist die Lösung nicht, sich durch eine komplizierte Einrichtung zu kämpfen, sondern das richtige Tool für den Job zu finden. WireGuard ist ein großartiges Protokoll -- aber Tailscale hat es für mein Setup erst praktisch nutzbar gemacht.
+Das war der Moment, in dem ich verstanden habe: Manchmal ist die Lösung nicht, sich durch eine komplizierte Einrichtung zu kämpfen, sondern das richtige Tool für den Job zu finden. WireGuard ist ein großartiges Protokoll -- aber Tailscale hat es für mein Setup erst praktisch nutzbar gemacht.
+
+---
 
 ### Reverse Proxy: Von IP:Port zu Subdomains
 
 Mit Tailscale war die interne Kommunikation gelöst. Aber manche Services auf dem Hetzner-Server sollten auch öffentlich erreichbar sein -- n8n, das agra-dashboard, später Grafana. Nicht über IP-Adresse und Portnummer, sondern über saubere Subdomains mit HTTPS.
 
-Das Thema Reverse Proxy war für mich Neuland. Mein erster Ansatz war Nginx Proxy Manager -- eine grafische Oberfläche, in der man Proxy-Hosts anlegt, SSL-Zertifikate verwaltet und Traffic weiterleitet. Das hat funktioniert und mir erstmal gezeigt, was ein Reverse Proxy überhaupt tut.
+Reverse Proxies waren für mich zu diesem Zeitpunkt komplettes Neuland. Mein erster Ansatz war Nginx Proxy Manager -- eine grafische Oberfläche, in der man Proxy-Hosts anlegt, SSL-Zertifikate verwaltet und Traffic weiterleitet. Das hat funktioniert und mir erstmal gezeigt, was ein Reverse Proxy überhaupt tut.
 
-Nach weiterer Recherche und einer Empfehlung bin ich dann auf Traefik gestoßen. Anderer Ansatz: statt grafischer Oberfläche wird alles über Labels in der Docker-Compose-Konfiguration gesteuert. Traefik erkennt Container automatisch und kümmert sich selbstständig um Let''s-Encrypt-Zertifikate.
+Nach weiterer Recherche und einer Empfehlung bin ich dann auf Traefik gestoßen. Ein anderer Ansatz: Statt grafischer Oberfläche wird alles über Labels in der Docker-Compose-Konfiguration gesteuert. Traefik erkennt Container automatisch und kümmert sich selbstständig um Let''s-Encrypt-Zertifikate.
 
 ```yaml
 labels:
@@ -274,32 +300,38 @@ labels:
 
 Services über Subdomains erreichbar, mit gültigen Zertifikaten -- das Grundprinzip war verstanden.
 
-### Networking durch Debugging gelernt
+---
 
-Das klingt im Rückblick alles strukturiert. War es nicht. Ich war ungeduldig, wollte Ergebnisse sehen, habe Sachen eingerichtet, die nicht beim ersten Mal funktioniert haben, und habe dabei mehr über Networking gelernt als ich erwartet hätte.
+### Networking lernt man durch Debugging
+
+Das klingt im Rückblick alles strukturiert. War es nicht. Ich war ungeduldig, wollte Ergebnisse sehen, habe Dinge eingerichtet, die nicht beim ersten Mal funktioniert haben -- und habe dabei mehr über Networking gelernt, als ich erwartet hätte.
 
 DNS-Einträge, SSL-Zertifikate, wie Subdomains funktionieren, was ein Reverse Proxy eigentlich tut -- das alles waren keine abstrakten Konzepte mehr, sondern Dinge, die ich anfassen und testen konnte.
 
 Wenn ein Service nicht erreichbar war, musste ich debuggen: Liegt es am DNS? Am Zertifikat? Am Routing? An der Firewall? Dieses Troubleshooting hat mir mehr beigebracht als jede Networking-Theorie.
 
+---
+
 ### Die Architektur, die sich ergeben hat
 
 Durch das Ausprobieren hat sich Stück für Stück eine Architektur entwickelt:
 
-- **Tailscale** als VPN-Schicht für die interne Kommunikation zwischen allen Systemen. Kein offenes Exponieren, kein Port Forwarding nötig.
-- **Reverse Proxy** für Services, die öffentlich erreichbar sein sollen. Saubere Subdomains, automatische SSL-Zertifikate, kontrollierter Zugang.
-- **Klare Trennung**: Interner Traffic läuft über das VPN, externer Traffic über den Reverse Proxy.
+- **Tailscale** als VPN-Schicht für die interne Kommunikation zwischen allen Systemen
+- **Reverse Proxy** für Services, die öffentlich erreichbar sein sollen
+- **Klare Trennung**: Interner Traffic läuft über das VPN, externer Traffic über den Reverse Proxy
 
 Das war kein Masterplan, den ich am Anfang auf ein Whiteboard gezeichnet habe. Es war das Ergebnis von viel Ausprobieren, einigen Sackgassen und der Bereitschaft, Lösungen wieder zu verwerfen, wenn es eine bessere gibt.
+
+---
 
 ### Lernen durch Sackgassen
 
 Diese Phase hat mir gezeigt, dass Networking eines dieser Themen ist, die man nur durch praktisches Arbeiten wirklich versteht. Die Theorie gibt dir die Begriffe. Die Praxis gibt dir das Verständnis.
 
-WireGuard hat nicht funktioniert -- also Tailscale. Nginx war ein guter Start -- Traefik ein weiterer Schritt. Das ist kein Scheitern, das ist Lernen.
+WireGuard hat nicht funktioniert -- also Tailscale.  
+Nginx war ein guter Start -- Traefik ein weiterer Schritt.
 
-**Nächster Post:** Sandbox kaputt, alles weg
-Wie ich Terraform lieben gelernt habe.',
+Das ist kein Scheitern. Das ist Lernen.',
   'NAS und Hetzner-Server standen -- aber wie verbinde ich sie sicher miteinander? Erst WireGuard, dann Tailscale. Erst Nginx, dann Traefik. Viel ausprobiert, vieles verworfen, dabei mehr Networking gelernt als jedes Tutorial vermittelt.',
   'published', false, 6, 1, 4,
   '2026-02-21T10:00:00Z'
@@ -310,93 +342,142 @@ INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time
 VALUES (
   'Sandbox kaputt, alles weg -- wie ich Terraform lieben gelernt habe',
   'sandbox-kaputt-terraform',
-  '### Ein Wochenende Arbeit, Montagmorgen weg
+  '### Wenn plötzlich alles weg ist
 
-November 2025. Ich arbeite das gesamte Wochenende am EcoKart-Projekt -- einem Webshop, den ich in der Sandbox-Umgebung meiner Weiterbildung aufbaue. Lambda-Funktionen, DynamoDB, S3, CloudFront. Am Sonntagabend läuft die Architektur. Ich bin zufrieden.
+Das Wochenende war produktiv gewesen. Lambda-Funktionen, DynamoDB, S3, CloudFront -- die Architektur stand. Am Sonntagabend lief alles so, wie ich es mir vorgestellt hatte.
 
-Montagmorgen öffne ich die AWS Console. Nichts. Keine Lambda-Funktionen, keine Tabellen, keine Buckets. Alles leer.
+Montagmorgen war davon nichts mehr übrig.
 
-Ich habe erstmal recherchiert, was passiert sein könnte. Die Antwort kam schnell: Die Sandbox hatte ein Kostenlimit, und bei Überschreitung lief jede Nacht um 1 Uhr ein automatischer Workflow, der *alles* löscht. Ohne Warnung, ohne Rückfrage, ohne Chance auf Wiederherstellung.
+Die Sandbox-Umgebung der Weiterbildung hatte über Nacht einen automatischen Cleanup durchgeführt. Kostenlimit überschritten, Umgebung zurückgesetzt -- alles gelöscht.
 
-Ein komplettes Wochenende Arbeit -- einfach weg.
+Der erste Moment war Frust. Ein ganzes Wochenende Arbeit verschwunden.
 
-### Nicht Frust, sondern Frage
+Der zweite Gedanke war wichtiger: Wenn Infrastruktur einfach verschwinden kann, darf ihr Zustand nicht nur in einer laufenden Umgebung existieren.
 
-Klar war der erste Moment frustrierend. Aber relativ schnell hat sich bei mir ein anderer Gedanke durchgesetzt: Wie stellen professionelle Teams eigentlich sicher, dass genau sowas nicht passiert? Wie baut man Infrastruktur so auf, dass man sie jederzeit reproduzieren kann -- egal was passiert?
+---
 
-Das war der Mindshift. Nicht "das ist unfair", sondern: Wie geht es besser?
+### Der Mindshift
 
-Die Antwort war Infrastructure as Code. Und das Werkzeug dafür: Terraform.
+Bis zu diesem Punkt hatte ich Infrastruktur eher schrittweise aufgebaut. Services konfigurieren, Ressourcen anlegen, Dinge ausprobieren, erweitern.
 
-### Terraform: Selbst beigebracht
+Das funktioniert -- solange nichts kaputtgeht.
 
-Terraform stand zu dem Zeitpunkt noch gar nicht auf dem Lehrplan der Weiterbildung. Ich bin in diesen Fehler reingelaufen, ohne zu wissen, dass es längst Werkzeuge gibt, die genau dieses Problem lösen.
+Sobald jedoch eine komplette Umgebung verschwindet, zeigt sich ein anderes Problem: Wissen steckt plötzlich nur noch im Kopf oder in einzelnen Konfigurationsschritten.
 
-Terraform war das Tool, das in der Branche Standard ist -- und ich wollte genau das lernen, was auch in echten Projekten eingesetzt wird. Also habe ich angefangen, EcoKart komplett in Terraform nachzubauen. Jede Ressource, die vorher per Console geklickt war, wurde jetzt als Code definiert:
+Die eigentliche Frage wurde deshalb schnell klar:
 
-```hcl
-module "vpc"        { source = "./modules/vpc" }
-module "lambda"     { source = "./modules/lambda" }
-module "dynamodb"   { source = "./modules/dynamodb" }
-module "cloudfront" { source = "./modules/cloudfront" }
-```
+Wie baue ich Infrastruktur so, dass sie jederzeit wiederhergestellt werden kann?
 
-Der Unterschied war sofort spürbar. Wenn jetzt irgendwas gelöscht würde -- egal ob durch Cleanup-Workflow oder durch meinen eigenen Fehler -- ein `terraform apply` und alles steht wieder. Reproduzierbar, versioniert, nachvollziehbar.
+---
 
-Das Gefühl, die Kontrolle über die eigene Infrastruktur zu haben, hat alles verändert.
+### Terraform früher als geplant
+
+Terraform stand zu diesem Zeitpunkt erst später auf dem Lehrplan der Weiterbildung. Der Sandbox-Wipe war für mich der Auslöser, mich schon vorher damit zu beschäftigen.
+
+Ich begann, die EcoKart-Infrastruktur Schritt für Schritt in Terraform nachzubauen. Erst einzelne Ressourcen, dann komplette Services. Dinge, die vorher manuell entstanden waren, wanderten nach und nach in Code.
+
+Das erste Mal `terraform apply` auf eine größere Konfiguration auszuführen und zu sehen, wie komplette Infrastruktur automatisch entsteht, war ein echter Aha-Moment.
+
+Plötzlich ging es nicht mehr darum, eine Umgebung einmal aufzubauen -- sondern sie jederzeit reproduzieren zu können.
+
+---
 
 ### SCP-Limitierungen: Tod durch tausend Freischaltungen
 
-EcoKart wuchs, und damit kamen neue Probleme -- allerdings nicht technische, sondern organisatorische. Die Sandbox-Umgebung war durch Service Control Policies eingeschränkt. Bestimmte AWS-Services oder Features waren gesperrt.
+EcoKart wuchs -- und damit kamen neue Probleme. Allerdings nicht technische, sondern organisatorische.
 
-Am Anfang war das noch okay. Aber je weiter das Projekt kam, desto öfter bin ich gegen SCP-Wände gelaufen. ACM-Zertifikate? Gesperrt. Custom Domains? Gesperrt.
+Die Sandbox-Umgebung war durch Service Control Policies eingeschränkt. Bestimmte AWS-Services oder Features waren schlicht gesperrt.
 
-Der Ablauf war immer gleich: Anfrage beim Dozenten, erklären warum ich den Service brauche, warten auf Freischaltung. Kaum war eine Limitierung aufgehoben, kam die nächste. Ich habe mehr Zeit damit verbracht, Freischaltungen zu organisieren, als tatsächlich am Projekt zu arbeiten.
+Am Anfang war das noch okay. Aber je weiter das Projekt kam, desto öfter bin ich gegen diese SCP-Wände gelaufen.
+
+ACM-Zertifikate? Gesperrt.  
+Custom Domains? Gesperrt.
+
+Der Ablauf war immer derselbe: Anfrage beim Dozenten, erklären warum ich den Service brauche, warten auf Freischaltung. Kaum war eine Limitierung aufgehoben, kam die nächste.
+
+Irgendwann hatte ich das Gefühl, mehr Zeit damit zu verbringen, Freischaltungen zu organisieren als tatsächlich am Projekt zu arbeiten.
+
+---
 
 ### Custom Domains: Der Auslöser
 
-Der konkrete Punkt, an dem ich die Entscheidung getroffen habe, war die Stripe-Anbindung. Ein Webshop braucht eine Zahlungsabwicklung, und Stripe war die logische Wahl. Das Problem: Stripe braucht stabile Webhook-URLs und Endpoints. Und in der Sandbox haben sich die bei jedem Redeploy geändert.
+Der konkrete Punkt, an dem ich die Entscheidung getroffen habe, war die Stripe-Anbindung.
 
-Gleichzeitig wurde mir klar: Das betrifft nicht nur Stripe. Auch der Webshop selbst, der Adminbereich und die API -- alles lief über rotierende URLs, die sich bei jedem Deployment ändern. Mit Custom Domains würde das alles hinter stabilen, gleichbleibenden Adressen verschwinden. Kein Anpassen von Endpoints mehr, keine sichtbar wechselnden URLs.
+Ein Webshop braucht eine Zahlungsabwicklung, und Stripe war die logische Wahl. Das Problem: Stripe benötigt stabile Webhook-URLs und Endpoints. In der Sandbox haben sich diese bei jedem Redeploy verändert.
 
-Dafür brauchte ich Custom Domains -- und die brauchten wieder eine SCP-Freischaltung.
+Gleichzeitig wurde mir klar: Das betrifft nicht nur Stripe.
 
-An dem Punkt war klar: Das macht keinen Sinn mehr. Ich brauche einen eigenen AWS Account.
+Auch der Webshop selbst, der Adminbereich und die API liefen über rotierende URLs, die sich bei jedem Deployment änderten. Mit Custom Domains würde das alles hinter stabilen, gleichbleibenden Adressen verschwinden.
+
+Keine angepassten Endpoints mehr. Keine wechselnden URLs.
+
+Dafür brauchte ich Custom Domains -- und die wiederum brauchten eine SCP-Freischaltung.
+
+An diesem Punkt war klar: Das ergibt keinen Sinn mehr. Ich brauche einen eigenen AWS-Account.
+
+---
 
 ### Eigener Account, eigene Verantwortung
 
-Die Entscheidung war bewusst. Mir war klar, dass ich den gesamten Projektstand migrieren musste -- neue AWS Credentials, neue Endpoints, alles anpassen. Aber genau das war es mir wert.
+Die Entscheidung war bewusst.
 
-Eigener Account hieß: Keine SCP-Limitierungen mehr. Eigene Kostenverantwortung. Und vor allem: eigenverantwortlich lernen, ohne auf Freischaltungen warten zu müssen.
+Mir war klar, dass ich den gesamten Projektstand migrieren musste -- neue AWS Credentials, neue Endpoints, Anpassungen an mehreren Stellen.
 
-Und weil EcoKart bereits komplett in Terraform definiert war, war die Migration machbar. Neuer Account, neue Credentials konfigurieren, `terraform apply` -- und die Infrastruktur stand. Nicht alles war eins zu eins übertragbar, es gab Anpassungen. Aber die Grundstruktur war da, und das war der Moment, wo sich die Investition in Terraform zum ersten Mal richtig ausgezahlt hat.
+Aber genau das war es mir wert.
+
+Ein eigener Account bedeutete: keine SCP-Limitierungen mehr, eigene Kostenverantwortung und vor allem die Möglichkeit, ohne Freischaltungen weiterzulernen.
+
+Und weil EcoKart inzwischen vollständig in Terraform definiert war, war die Migration machbar.
+
+Neuer Account, neue Credentials konfigurieren, `terraform apply` -- und die Infrastruktur stand.
+
+Nicht alles war eins zu eins übertragbar. Es gab Anpassungen. Aber die Grundstruktur war da -- und das war der Moment, in dem sich die Investition in Terraform zum ersten Mal wirklich ausgezahlt hat.
+
+---
 
 ### CI/CD: Alles automatisieren
 
-Der nächste logische Schritt: Ich wollte nicht jedes Mal lokal `terraform plan` und `terraform apply` ausführen. CI/CD-Pipelines standen erst später auf dem Lehrplan der Weiterbildung -- ich hatte aber vorher schon angefangen, mit eigenen Skripten zu arbeiten, um mir wiederholende Schritte zu automatisieren. Der Wunsch, das sauberer zu lösen, war da. Also habe ich mir GitHub Actions angeeignet und eine richtige CI/CD Pipeline aufgebaut.
+Der nächste logische Schritt war Automatisierung.
 
-Push auf den Main Branch, Pipeline läuft, Infrastruktur wird deployed. Später habe ich Security Scanning in die Pipeline integriert -- automatische Checks bei jedem Push.
+Ich wollte nicht jedes Mal lokal `terraform plan` und `terraform apply` ausführen.
+
+CI/CD-Pipelines standen erst später auf dem Lehrplan der Weiterbildung. Ich hatte jedoch schon vorher begonnen, mir mit kleinen Skripten wiederkehrende Schritte zu automatisieren. Der Wunsch, das sauberer zu lösen, war also längst da.
+
+Also habe ich mich in GitHub Actions eingearbeitet und eine richtige CI/CD-Pipeline aufgebaut.
+
+Push auf den Main Branch, Pipeline läuft, Infrastruktur wird deployed. Später kamen noch Security-Checks hinzu, die bei jedem Push automatisch ausgeführt werden.
 
 ```
-git push → GitHub Actions → terraform plan → terraform apply → live
+git push
+↓
+GitHub Actions
+↓
+terraform plan
+↓
+terraform apply
+↓
+live
 ```
 
-Kein manuelles Deployment mehr. Kein "hab ich vergessen auszuführen". Alles automatisiert, alles nachvollziehbar.
+Kein manuelles Deployment mehr. Kein „hab ich vergessen auszuführen“. Alles automatisiert, alles nachvollziehbar.
 
-### Wo EcoKart heute steht
+---
 
-15 Terraform-Module. 12 AWS-Services. 63 Integrationstests. OIDC-basierte Authentifizierung -- kein einziger langlebiger AWS-Key im Repository. Kosten: circa 10 USD im Monat.
+### Reproduzierbar statt einmalig
 
-Ich kann die gesamte Infrastruktur in Minuten zerstören und in Minuten wieder aufbauen. Nicht theoretisch, sondern getestet.
+Mit der Zeit wuchs das Projekt weiter.
 
-### Was Terraform verändert hat
+15 Terraform-Module.  
+12 AWS-Services.  
+63 Integrationstests.
 
-Der Sandbox-Wipe war kein Rückschlag. Er war der Moment, der mich von "Infrastruktur zusammenklicken" zu "Infrastruktur als Code definieren" gebracht hat. Und die SCP-Limitierungen haben mich gezwungen, Eigenverantwortung zu übernehmen -- für den Account, für die Kosten, für alles.
+Die komplette Infrastruktur ließ sich jederzeit neu aufbauen -- und kostete im Dauerbetrieb ungefähr 10 USD pro Monat.
 
-Terraform ist für mich kein Nice-to-have. Es ist die Grundlage dafür, dass ich ruhig schlafen kann, weil ich weiß: Egal was passiert, ich kann alles reproduzieren.
+Rückblickend war der Sandbox-Wipe einer der wichtigsten Momente dieser Phase.
 
-**Nächster Post:** EcoKart: Mein erster vollständiger Webshop auf AWS
-Architektur, Entscheidungen und was ich dabei über AWS gelernt habe.',
+Er hat mich gezwungen, Infrastruktur nicht mehr als einmaliges Setup zu sehen, sondern als System, das vollständig beschrieben und jederzeit reproduziert werden kann.
+
+Terraform wurde dadurch zu einem zentralen Werkzeug in meinem Setup.',
   'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt vernichtet. Das war der Moment, in dem Reproduzierbarkeit für mich keine Option mehr war, sondern Pflicht -- und Terraform mein wichtigstes Werkzeug wurde.',
   'published', false, 6, 1, 2,
   '2026-02-24T10:00:00Z'
@@ -415,17 +496,21 @@ Aber die Recherche hat etwas ausgelöst. Ich habe mir die verschiedenen Architek
 
 Also habe ich mir einen konkreten Use Case gesucht: einen vollständig serverlosen Webshop. Mit dem Ziel, die geringstmöglichen Kosten zu verursachen und trotzdem alles mitzubringen, was ein echter Shop braucht -- Produkte, Warenkorb, Zahlungsabwicklung, Benutzerverwaltung, Bestellbestätigung per Email. Von Anfang an als Showcase für spätere Bewerbungen gedacht. Nicht als Kursaufgabe, sondern als echtes Lernprojekt.
 
+---
+
 ### Die Architektur
 
 Serverless war gesetzt. Kein EC2, kein dauerhaft laufender Server. Stattdessen: AWS Lambda für die gesamte Backend-Logik, DynamoDB als Datenbank, API Gateway als Schnittstelle, Amplify für das Frontend. Dazu S3 und CloudFront für Produktbilder, Cognito für die Authentifizierung, Route53 für Custom Domains, ACM für SSL-Zertifikate, CloudWatch für Monitoring.
 
 12 AWS-Services insgesamt, verteilt auf 15 Terraform-Module. Die monatlichen Kosten: ungefähr 10 bis 15 Dollar. Das war einer der entscheidenden Punkte für Serverless -- man zahlt nur, was man tatsächlich nutzt. Kein Leerlauf, keine Grundgebühr für laufende Instanzen. Genau das, was ich in der Gruppenarbeit theoretisch verglichen hatte, konnte ich jetzt in der Praxis bestätigen.
 
-Die gesamte Infrastruktur ist in Terraform definiert. Jedes Modul hat seine eigene Verantwortung -- Cognito, DynamoDB, Lambda, Amplify, und so weiter. Ich kann den kompletten Shop in etwa 15 Minuten von Null aufbauen. Oder in Minuten zerstören und neu deployen. Das war nach der Sandbox-Erfahrung aus Post 5 keine Option mehr, sondern Voraussetzung.
+Die gesamte Infrastruktur ist in Terraform definiert. Jedes Modul hat seine eigene Verantwortung -- Cognito, DynamoDB, Lambda, Amplify, und so weiter. Ich kann den kompletten Shop in etwa 15 Minuten von Null aufbauen. Oder in Minuten zerstören und neu deployen.
+
+---
 
 ### OIDC: Keine Keys im Repository
 
-Eine Sache hat mich gestört: Jedes Mal, wenn ich eine Änderung am Frontend gepusht habe, musste ich den Build auf Amplify manuell auslösen. Das entsprach nicht meinen Erwartungen an Automatisierung -- aber ich war selbst noch im Prozess zu verstehen, wie das eigentlich richtig funktioniert. Ich wusste nicht sofort, woran es lag, und musste die Lösung erst finden.
+Eine Sache hat mich gestört: Jedes Mal, wenn ich eine Änderung am Frontend gepusht habe, musste ich den Build auf Amplify manuell auslösen. Das entsprach nicht meinen Erwartungen an Automatisierung -- aber ich war selbst noch im Prozess zu verstehen, wie das eigentlich richtig funktioniert.
 
 Recherche und ein Gespräch mit meinem Dozenten brachten mich auf OIDC -- OpenID Connect. Die Idee: GitHub Actions authentifiziert sich direkt bei AWS, ohne dass langlebige Access Keys irgendwo hinterlegt werden müssen. Stattdessen bekommt jeder Workflow-Run temporäre Credentials, die nach einer Stunde automatisch ablaufen.
 
@@ -437,66 +522,63 @@ Recherche und ein Gespräch mit meinem Dozenten brachten mich auf OIDC -- OpenID
     aws-region: eu-central-1
 ```
 
-Kein einziger AWS-Key im Repository. Maximale Sicherheit, vollständige Nachvollziehbarkeit über CloudTrail, und vor allem: Push auf den Branch, GitHub Actions übernimmt, Terraform deployed. Keine manuellen Schritte mehr.
+Kein einziger AWS-Key im Repository. Push auf den Branch, GitHub Actions übernimmt, Terraform deployed. Keine manuellen Schritte mehr.
+
+---
 
 ### Cognito: Authentifizierung, die sich gewehrt hat
 
-Für die Benutzerverwaltung habe ich mich für AWS Cognito entschieden. Die Idee war einfach: Benutzer registrieren sich, bestätigen ihre Email, bekommen ein JWT-Token, und damit authentifizieren sie sich bei der API. Am API Gateway wird das Token geprüft, bevor der Request überhaupt bei Lambda ankommt.
+Für die Benutzerverwaltung habe ich mich für AWS Cognito entschieden. Die Idee war einfach: Benutzer registrieren sich, bestätigen ihre Email, bekommen ein JWT-Token und authentifizieren sich damit bei der API.
 
-Die Umsetzung war alles andere als einfach. Cognito hat viele Stellschrauben, und die Dokumentation ist -- sagen wir mal -- nicht immer intuitiv. Token-Handling, Refresh-Logik, Custom Attributes für Rollen, Email-Verifizierung mit sechsstelligen Codes. Jedes dieser Themen war eine eigene Baustelle.
+Die Umsetzung war alles andere als einfach. Cognito hat viele Stellschrauben, und die Dokumentation ist nicht immer intuitiv. Token-Handling, Refresh-Logik, Custom Attributes für Rollen, Email-Verifizierung mit sechsstelligen Codes -- jedes dieser Themen war eine eigene Baustelle.
 
-Dazu kam, dass Cognito anfangs durch die Service Control Policies der Sandbox-Umgebung blockiert war. Das war einer der vielen Gründe, warum ich irgendwann auf den eigenen AWS-Account umgestiegen bin.
+Am Ende funktioniert es: Registrierung, Login, rollenbasierter Zugriff und ein Admin-Dashboard. Aber es war die aufwendigste Lernkomponente des gesamten Projekts.
 
-Am Ende funktioniert es: Registrierung, Login, rollenbasierter Zugriff, Admin-Dashboard. Aber es war die teuerste Lernkomponente des gesamten Projekts.
+---
 
 ### Stripe: Stabile Endpoints erzwingen
 
-Für die Zahlungsabwicklung habe ich Stripe integriert. Der Kunde wird zum Checkout weitergeleitet, gibt seine Kartendaten ein, und nach erfolgreicher Zahlung schickt Stripe einen Webhook an meine Lambda-Funktion. Die erstellt die Bestellung in DynamoDB.
+Für die Zahlungsabwicklung habe ich Stripe integriert. Der Kunde wird zum Checkout weitergeleitet, gibt seine Kartendaten ein und nach erfolgreicher Zahlung schickt Stripe einen Webhook an meine Lambda-Funktion. Die erstellt die Bestellung in DynamoDB.
 
-Klingt geradlinig, aber ein Problem hat mich länger beschäftigt: Nach jedem `terraform destroy` und neuem Deploy bekam die API einen neuen Endpoint. Und damit war die Webhook-URL bei Stripe jedes Mal kaputt. Ich musste sie manuell aktualisieren -- bei jedem einzelnen Deployment.
+Ein Problem blieb lange bestehen: Nach jedem `terraform destroy` und neuem Deploy bekam die API einen neuen Endpoint. Damit war die Webhook-URL bei Stripe jedes Mal kaputt.
 
-Das war der Punkt, an dem Custom Domains zur Notwendigkeit wurden. Mit einer festen Domain hinter Route53 und ACM-Zertifikat blieb der Stripe-Endpoint stabil, egal wie oft ich die Infrastruktur neu aufbaute. Und nicht nur Stripe profitierte davon -- auch der Webshop selbst, das Admin-Dashboard und die API liefen ab da unter festen, gleichbleibenden URLs. Kein Anpassen mehr, keine rotierenden Adressen.
+Die Lösung waren Custom Domains über Route53 und ein ACM-Zertifikat. Damit blieb der Stripe-Endpoint stabil, egal wie oft ich die Infrastruktur neu aufgebaut habe. Gleichzeitig liefen auch Webshop, Adminbereich und API unter festen URLs.
+
+---
 
 ### Email-Odyssee: Neujahr bei Resend
 
-Ein Webshop ohne Bestellbestätigung per Email ist kein richtiger Webshop. Also wollte ich das einbauen. AWS SES war der naheliegende Weg -- ein Email-Service direkt von AWS.
+Ein Webshop ohne Bestellbestätigung per Email ist kein richtiger Webshop. AWS SES war der naheliegende Weg.
 
-Im Sandbox-Modus funktionierte SES auch: Man verbindet eine eigene Email-Adresse, und an die kann man senden. Für mich als Tester reichte das. Aber der Shop sollte sich anfühlen wie ein echtes Produkt -- und das heißt, dass auch andere Nutzer nach einer Bestellung eine Bestätigung bekommen. Dafür braucht man SES im Production-Modus.
-
-Antrag gestellt. Abgelehnt. Security Reasons.
-
-Okay, dann halt ein externer Anbieter. SendGrid Account erstellt. Ebenfalls abgelehnt.
+Im Sandbox-Modus funktionierte SES auch, aber für echte Nutzer braucht man den Production-Modus. Antrag gestellt. Abgelehnt. Also ein externer Anbieter: SendGrid. Ebenfalls abgelehnt.
 
 Zwei Ablehnungen hintereinander, und ich konnte das Problem erst nicht greifen. Irgendwann habe ich verstanden, woran es liegt: Sowohl AWS als auch SendGrid sind bei ganz neuen Accounts extrem vorsichtig. Kein Versand-Verlauf, kein Vertrauen. Das ist eine Spam-Schutzmaßnahme, die erst mal jeden trifft, der frisch anfängt.
 
 Die Lösung kam am 1. Januar 2026. Neujahrsmorgen, und ich sitze an der Email-Integration. Ich hatte von Resend gehört -- ein neuerer Email-Service, der sich explizit an Entwickler richtet. Account erstellt, Domain verifiziert, API-Key generiert, Code angepasst. 90 Minuten später verschickte EcoKart die erste Bestellbestätigung.
 
-Was mich beeindruckt hat: Resend hat sofort funktioniert. Keine Wartezeit, kein Freischaltungsprozess, keine Ablehnung. Einfach loslegen. Im Free Tier gibt es 3.000 Emails im Monat -- für ein Portfolio-Projekt mehr als genug.
-
 Die Lektion: Nicht ewig kämpfen, sondern Alternativen evaluieren. Die Migration hat 90 Minuten gedauert. Das Warten auf die SES-Freischaltung hätte ewig dauern können.
 
-### Testing: Nicht nur ob es läuft, sondern ob es sicher läuft
+---
 
-Ein Webshop, der Zahlungen verarbeitet und Benutzerdaten verwaltet, muss getestet sein. 63 Tests mit Jest, aufgeteilt in Unit- und Integrationstests.
+### Testing
 
-Was mir beim Testen am meisten gebracht hat, war das Denken in Fehlerfällen. Nicht nur "funktioniert der Warenkorb", sondern: Was passiert, wenn ein Nutzer versucht, die Bestellung eines anderen Nutzers abzurufen? Die Antwort muss ein 403 sein, kein 404 -- weil der Nutzer wissen soll, dass die Ressource existiert, er aber keinen Zugriff hat. Solche Unterscheidungen lernt man erst, wenn man sie tatsächlich testet.
+Ein Webshop, der Zahlungen verarbeitet und Benutzerdaten verwaltet, muss getestet sein.
+
+63 Tests mit Jest, aufgeteilt in Unit- und Integrationstests. Was mir beim Testen am meisten gebracht hat, war das Denken in Fehlerfällen. Nicht nur "funktioniert der Warenkorb", sondern: Was passiert, wenn ein Nutzer versucht, die Bestellung eines anderen Nutzers abzurufen? Die Antwort muss ein 403 sein, kein 404 -- weil der Nutzer wissen soll, dass die Ressource existiert, er aber keinen Zugriff hat. Solche Unterscheidungen lernt man erst, wenn man sie tatsächlich testet.
 
 Die Integrationstests laufen über LocalStack -- eine lokale Emulation von AWS-Services. Damit kann ich den kompletten Flow testen: Produkt in den Warenkorb, Bestellung auslösen, prüfen ob der Lagerbestand korrekt reduziert wurde, über alle vier DynamoDB-Tabellen hinweg. Kein Mocking, sondern echte Datenbankoperationen.
 
 In der CI/CD Pipeline laufen die Tests automatisch bei jedem Push. Kein Deployment ohne grüne Tests.
 
+---
+
 ### Was ein eigenes Projekt wirklich lehrt
 
-EcoKart hat mir mehr über AWS beigebracht als jeder Kurs es könnte. Nicht weil der Kurs schlecht wäre -- sondern weil ein eigenes Projekt Probleme erzeugt, die in keinem Tutorial stehen.
+EcoKart hat mir mehr über AWS beigebracht als jeder Kurs. Nicht weil der Kurs schlecht wäre -- sondern weil ein eigenes Projekt Probleme erzeugt, die in keinem Tutorial stehen.
 
-Kein Tutorial erklärt, was passiert, wenn AWS deinen SES-Antrag ablehnt. Kein Kurs bereitet dich darauf vor, dass Cognito Custom Attributes anders funktionieren als erwartet. Keine Übungsaufgabe zwingt dich, am Neujahrstag deinen Email-Provider zu wechseln, weil du das Projekt fertig haben willst.
+12 AWS-Services. 15 Terraform-Module. Ein Shop, der Bestellungen annimmt, Zahlungen verarbeitet, Bestätigungen verschickt und sich in etwa 15 Minuten vollständig reproduzieren lässt.
 
-Die Herausforderungen aus Post 5 -- der Sandbox-Wipe, die SCP-Limitierungen, der eigene AWS Account -- das alles war der Rahmen. EcoKart war der Inhalt. Das Projekt, an dem sich jede Entscheidung konkret anfühlen musste, weil am Ende etwas Funktionierendes stehen sollte.
-
-12 AWS-Services. 15 Terraform-Module. Ein Shop, der Bestellungen annimmt, Zahlungen verarbeitet, Bestätigung verschickt und sich in 15 Minuten komplett reproduzieren lässt. Das ist kein Kursprojekt mehr. Das ist Praxiserfahrung.
-
-**Nächster Post:** Das große Bild
-Wie aus einzelnen Projekten eine Multi-Cloud-Architektur mit über 50 Services wurde.',
+Das ist kein Kursprojekt mehr. Das ist Praxiserfahrung.',
   'Ein Kurs-Rechercheprojekt über Infrastruktur-Kosten brachte mich auf die Idee, einen echten Webshop auf AWS zu bauen. 12 Services, 15 Terraform-Module, Stripe-Zahlungen, Cognito-Authentifizierung -- und eine Email-Provider-Odyssee, die mich am Neujahrstag bei Resend landen ließ.',
   'published', true, 7, 1, 1,
   '2026-02-26T10:00:00Z'
@@ -511,7 +593,9 @@ VALUES (
 
 Wenn ich heute auf mein Homelab schaue, sehe ich etwas, das vor einem Jahr nicht existiert hat: drei Standorte, über 50 containerisierte Services, ein zentrales Monitoring, automatisierte Daten-Pipelines und ein Dashboard, von dem aus ich alles erreiche.
 
-Das war nie so geplant. Es ist organisch gewachsen -- Stück für Stück, Service für Service, Problem für Problem. Jedes Mal, wenn ich etwas Neues lernen wollte, habe ich es in die bestehende Infrastruktur integriert. Und irgendwann war es keine Spielerei mehr, sondern eine echte Plattform.
+Das war nie so geplant. Es ist organisch gewachsen -- Stück für Stück, Service für Service, Problem für Problem. Jedes Mal, wenn ich etwas Neues lernen wollte, habe ich es in die bestehende Infrastruktur integriert. Irgendwann war es keine Spielerei mehr, sondern eine echte Plattform.
+
+---
 
 ### Drei Standorte, eine Verbindung
 
@@ -519,21 +603,25 @@ Die Infrastruktur verteilt sich auf drei Standorte:
 
 **Die NAS zuhause** -- eine Synology DS925+ mit 32 GB RAM. Sie ist das Herzstück: zentrales Storage, Monitoring-Hub, eigenes GitLab, Wazuh SIEM als Security-Zentrale. Alles, was Daten langfristig speichern oder zentral auswerten muss, läuft hier.
 
-**Ein Cloud-Server in Deutschland** -- klein, ressourcenschonend, ARM-basiert. Hier laufen Web-Anwendungen wie n8n für Automatisierung und Traefik als Reverse Proxy mit TLS-Terminierung. Services, die von außen erreichbar sein müssen, aber wenig Rechenleistung brauchen.
+**Ein Cloud-Server in Deutschland** -- klein, ressourcenschonend, ARM-basiert. Hier laufen Web-Anwendungen wie n8n für Automatisierung sowie Traefik als Reverse Proxy mit TLS-Terminierung. Services, die von außen erreichbar sein müssen, aber wenig Rechenleistung brauchen.
 
 **Ein zweiter Cloud-Server** -- deutlich leistungsstärker, mit 16 vCPUs und 32 GB RAM. Hier laufen datenintensive Workloads: automatisierte Pipelines, die Daten verarbeiten, verifizieren und zwischen Standorten synchronisieren. Dazu Shell-Skripte und Cronjobs in regelmäßigen Intervallen.
 
-Verbunden ist alles über Tailscale. Kein Port Forwarding, keine öffentlich exponierten Services. Jeder Server, jedes Gerät -- auch meine beiden MacBooks -- hängt im selben verschlüsselten Mesh-Netzwerk. Wenn ich von unterwegs auf Grafana oder Portainer zugreifen will, geht das über die Tailscale-IP. Ohne VPN-Client starten, ohne Tunnel aufbauen. Es funktioniert einfach.
+Verbunden ist alles über Tailscale. Kein Port Forwarding, keine öffentlich exponierten Services. Jeder Server, jedes Gerät -- auch meine beiden MacBooks -- hängt im selben verschlüsselten Mesh-Netzwerk. Wenn ich von unterwegs auf Grafana oder Portainer zugreifen will, geht das über die Tailscale-IP. Ohne VPN-Client starten zu müssen, ohne Tunnel manuell aufzubauen. Es funktioniert einfach.
+
+---
 
 ### Logik hinter der Verteilung
 
 Die Entscheidung, welcher Service wo läuft, folgt einer einfachen Logik:
 
-**Rechenintensiv und datengetrieben** kommt auf den leistungsstarken Server. Dort gibt es genug CPU und schnelle NVMe-SSDs für I/O-intensive Workloads. Automatisierte Pipelines verarbeiten Daten, verifizieren die Integrität und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
+**Rechenintensiv und datengetrieben** kommt auf den leistungsstarken Server. Dort stehen genug CPU-Ressourcen und schnelle NVMe-SSDs für I/O-intensive Workloads zur Verfügung. Automatisierte Pipelines verarbeiten Daten, verifizieren die Integrität und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
 
-**Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht nicht viel Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
+**Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht wenig Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
 
 **Alles Zentrale** bleibt auf der NAS. Prometheus sammelt Metriken von allen Standorten. Grafana visualisiert sie. Wazuh aggregiert Security-Events. GitLab hostet meine privaten Repositories. Die NAS ist die einzige Komponente, die nicht in der Cloud läuft -- und das ist bewusst so. Hier liegen die Daten, hier laufen die Auswertungen, hier ist die Kontrolle.
+
+---
 
 ### Automatisierung: Wo die echte Arbeit steckt
 
@@ -541,15 +629,19 @@ Was mich am meisten überrascht hat: Die eigentliche Arbeit steckt nicht im Aufs
 
 Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von minütlicher Datenverarbeitung bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
 
-Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn weniger als 20 GB frei sind. Kein `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
+Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn weniger als 20 GB frei sind. Kein einfaches `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
 
 Shell-Skripte und Cron klingen nicht glamourös. Aber diese Skripte laufen seit Wochen zuverlässig -- und genau daran habe ich Fehlerbehandlung, Robustheit und die Realität von Automatisierung wirklich verstanden.
 
+---
+
 ### Monitoring: Von Anfang an mitgedacht
 
-Monitoring war kein Nachgedanke -- es ist mit der Infrastruktur mitgewachsen. Von Prometheus und Grafana auf dem ersten Server bis hin zu einem mehrstufigen System mit Uptime Kuma für Verfügbarkeit und Wazuh als SIEM für Security-Events. Jede Erweiterung hatte einen konkreten Auslöser, und jede hat sich bewährt.
+Monitoring war kein Nachgedanke -- es ist gemeinsam mit der Infrastruktur gewachsen. Von Prometheus und Grafana auf dem ersten Server bis hin zu einem mehrstufigen System mit Uptime Kuma für Verfügbarkeit und Wazuh als SIEM für Security-Events. Jede Erweiterung hatte einen konkreten Auslöser, und jede hat sich bewährt.
 
 Wie das im Detail aussieht, welche Entscheidungen dahinter stecken und warum sich der frühe Start konkret ausgezahlt hat -- das ist eine eigene Geschichte.
+
+---
 
 ### Dashy: Ein Dashboard für alles
 
@@ -557,11 +649,15 @@ Mein Einstiegspunkt in die gesamte Infrastruktur ist Dashy -- ein Self-Hosted Da
 
 Kein Wechseln zwischen Bookmarks, kein Merken von Ports und IPs. Ein Dashboard, alle Services, alle Standorte.
 
+---
+
 ### GitLab: Private Repos, selbst gehostet
 
 Neben GitHub für öffentliche Projekte betreibe ich ein eigenes GitLab auf der NAS. Dort liegen alle privaten Repositories -- Infrastruktur-Dokumentation, Konfigurationen, Skripte. Alles, was nicht öffentlich sein soll, aber trotzdem versioniert und nachvollziehbar sein muss.
 
 GitLab läuft als Container auf der NAS und ist nur über Tailscale erreichbar. Kein öffentlicher Zugriff, keine Cloud-Abhängigkeit. Meine Daten, mein Server, meine Kontrolle.
+
+---
 
 ### Organisch, aber bewusst
 
@@ -569,10 +665,7 @@ Nichts davon war geplant. Es gab keinen Architektur-Entwurf, kein Zieldiagramm. 
 
 Aber "organisch gewachsen" heißt nicht "unkontrolliert". Jeder Service hat seinen Platz, jede Entscheidung hat einen Grund. Monitoring läuft zentral, Security ist mehrstufig, Backups sind automatisiert, und jede Konfiguration ist in Git versioniert.
 
-Angefangen mit Docker Compose, Shell-Skripten und Cronjobs -- und mit jedem neuen Service, jedem gelösten Problem ist die Infrastruktur und mein Verständnis mitgewachsen. Man wächst an seinen Aufgaben, und dieses Homelab war der beste Beweis dafür.
-
-**Nächster Post:** Monitoring und Security
-Warum ich früh angefangen habe und es sich ausgezahlt hat.',
+Angefangen mit Docker Compose, Shell-Skripten und Cronjobs -- und mit jedem neuen Service, jedem gelösten Problem ist die Infrastruktur und mein Verständnis mitgewachsen. Man wächst an seinen Aufgaben, und dieses Homelab war der beste Beweis dafür.',
   'NAS zuhause, zwei Cloud-Server an verschiedenen Standorten, verbunden über Tailscale. Über 50 containerisierte Services, verteilt nach Aufgabe und Ressourcenbedarf. Docker Compose, Shell-Skripte, Monitoring-Stack. Organisch gewachsen aus dem Wunsch, Dinge wirklich zu verstehen.',
   'published', false, 7, 1, 3,
   '2026-02-28T10:00:00Z'
@@ -585,75 +678,90 @@ VALUES (
   'monitoring-und-security',
   '### Prometheus/Grafana: Die ersten Metriken
 
-Auf meinem ersten kleinen Hetzner-Server habe ich Prometheus und Grafana aufgesetzt. Basis-Metriken: CPU, RAM, Festplatte. Dazu einen Link ins Dashy-Dashboard, damit ich das Grafana-Panel schnell erreiche. Mehr nicht.
+Auf meinem ersten kleinen Hetzner-Server habe ich Prometheus und Grafana aufgesetzt. Basis-Metriken: CPU, RAM, Festplatte. Dazu ein Link ins Dashy-Dashboard, damit ich das Grafana-Panel schnell erreiche. Mehr nicht.
 
-Das war kein durchdachter Monitoring-Plan. Es war Neugier: Ich wollte sehen, was auf dem Server passiert. Aber rückblickend war genau diese Neugier der Anfang von allem, was danach kam -- weil sie eine Grundlage geschaffen hat, auf der ich immer weiter aufbauen konnte.
+Das war kein durchdachter Monitoring-Plan. Es war Neugier: Ich wollte sehen, was auf dem Server passiert. Rückblickend war genau diese Neugier der Anfang von allem, was danach kam -- weil sie eine Grundlage geschaffen hat, auf der ich immer weiter aufbauen konnte.
+
+---
 
 ### Zentralisieren und erweitern
 
-Mit dem zweiten Server und einer wachsenden Zahl von Services wurde klar: Basis-Metriken auf einem einzelnen Server reichen nicht mehr. Die NAS hatte zwar über DSM eigene Grundwerte, aber ich wollte alles an einem Ort sehen -- und vor allem: Alerting einrichten, damit ich nicht ständig manuell nachschauen muss.
+Mit dem zweiten Server und einer wachsenden Zahl von Services wurde klar: Basis-Metriken auf einem einzelnen Server reichen nicht mehr. Die NAS hatte zwar über DSM eigene Grundwerte, aber ich wollte alles an einem Ort sehen -- und vor allem Alerting einrichten, damit ich nicht ständig manuell nachschauen muss.
 
 Also habe ich Prometheus auf die NAS verlegt und als zentrale Sammelstelle eingerichtet. Node Exporter auf jedem Server für Systemmetriken, cAdvisor für Container-Metriken, Custom Exporter für service-spezifische Daten. Alles über Tailscale, alles verschlüsselt. 16 Targets, die alle 15 Sekunden gescraped werden.
 
-Grafana hat drei Dashboards bekommen: eins pro Server mit den Details, ein Multi-Server-Overview für den schnellen Blick auf alles. CPU, RAM, Disk, I/O, Netzwerk -- auf einen Blick, für alle Standorte. Und Alerts über Telegram: CPU über 90%, RAM über 90%, Disk über 80%, Service down.
+Grafana hat drei Dashboards bekommen: eins pro Server mit Detailmetriken und ein Multi-Server-Overview für den schnellen Blick auf alles. CPU, RAM, Disk, I/O und Netzwerk -- auf einen Blick, für alle Standorte. Alerts gehen direkt über Telegram: CPU über 90 %, RAM über 90 %, Disk über 80 % oder wenn ein Service nicht mehr erreichbar ist.
 
-Gleichzeitig kamen Uptime Kuma und Portainer dazu. Uptime Kuma überwacht 12 Services im 60-Sekunden-Takt -- per HTTP-Check, TCP-Check oder Ping. Die Perspektive, die Prometheus nicht abdeckt: Ist der Service aus Nutzersicht erreichbar? Auch hier gehen Alerts direkt auf Telegram.
+Gleichzeitig kamen Uptime Kuma und Portainer dazu. Uptime Kuma überwacht 12 Services im 60-Sekunden-Takt -- per HTTP-Check, TCP-Check oder Ping. Das ergänzt genau die Perspektive, die Prometheus nicht abdeckt: Ist der Service aus Nutzersicht erreichbar? Auch hier gehen Alerts direkt auf Telegram.
 
-### Bestätigung durch Ernstfall
+---
 
-Dass sich dieses Setup bewährt, habe ich relativ früh erfahren. Einmal nachts, unterwegs, mit einem Laptop, der nicht auf mein gewohntes Setup abgestimmt war -- weil ich alles ursprünglich über mein anderes MacBook konfiguriert hatte. Die Telegram-Benachrichtigungen haben mich sofort erreicht, und ich konnte das Problem remote eingrenzen und entschärfen.
+### Bestätigung durch den Ernstfall
+
+Dass sich dieses Setup bewährt, habe ich relativ früh erfahren. Einmal nachts unterwegs, mit einem Laptop, der nicht auf mein gewohntes Setup abgestimmt war -- weil ich alles ursprünglich über mein anderes MacBook konfiguriert hatte.
+
+Die Telegram-Benachrichtigungen haben mich sofort erreicht, und ich konnte das Problem remote eingrenzen und entschärfen.
 
 Das war kein Worst-Case-Szenario. Es war der Moment, der bestätigt hat: Monitoring und Alerting funktionieren genau so, wie sie sollen -- auch wenn die Umstände nicht ideal sind.
 
 Was danach folgte, war keine Panikreaktion, sondern eine bewusste Weiterentwicklung. Der betroffene Server wurde komplett neu aufgesetzt, und dabei habe ich das Security-Setup deutlich verschärft:
 
-- Docker-Daemon auf `127.0.0.1` gebunden, damit Container nicht versehentlich auf öffentlichen IPs lauschen
-- UFW-Firewall aktiv, nur die Ports offen die offen sein müssen
-- fail2ban für SSH-Schutz, automatischer Ban nach drei Fehlversuchen
+- Docker-Daemon auf `127.0.0.1` gebunden, damit Container nicht versehentlich auf öffentlichen IPs lauschen  
+- UFW-Firewall aktiviert, nur die Ports offen, die wirklich benötigt werden  
+- fail2ban für SSH-Schutz mit automatischem Ban nach drei Fehlversuchen  
 - Alle internen Services ausschließlich über Tailscale erreichbar
 
-Dazu kam die proaktive Seite: Watchtower aktualisiert alle Docker-Container automatisch zu festen Zeiten. Auf den Servern selbst laufen Unattended-Upgrades für Kernel- und Security-Patches, inklusive automatischer Reboots. Jeden Tag kommt eine Telegram-Benachrichtigung, dass die Updates sauber durchgelaufen sind. Kein manuelles Patchen, kein Vergessen -- alles automatisiert.
+Dazu kam die proaktive Seite: Watchtower aktualisiert Docker-Container automatisch zu festen Zeiten. Auf den Servern laufen Unattended-Upgrades für Kernel- und Security-Patches, inklusive automatischer Reboots. Jeden Tag kommt eine Telegram-Benachrichtigung, dass die Updates sauber durchgelaufen sind.
 
-Jedes dieser Themen war eine Gelegenheit, die Infrastruktur besser zu machen. Und genau so sehe ich das: Security ist kein Zustand, den man einmal herstellt. Es ist ein Prozess, der sich mit jeder Erfahrung weiterentwickelt.
+Kein manuelles Patchen, kein Vergessen -- alles automatisiert.
 
-### Wazuh: Die Security-Lücke geschlossen
+Security ist kein Zustand, den man einmal herstellt. Es ist ein Prozess, der sich mit jeder Erfahrung weiterentwickelt.
 
-Prometheus und Uptime Kuma überwachen Performance und Verfügbarkeit. Aber Security-Events -- wer greift auf was zu, welche Container starten mit welchen Rechten, ob jemand versucht sich per SSH einzuloggen -- das decken sie nicht ab.
+---
 
-Ich bin immer auf der Suche nach Möglichkeiten, das Setup zu verbessern. Durch Recherche, Austausch mit Gleichgesinnten und die Frage "was fehlt noch" bin ich auf Wazuh gestoßen -- ein Open-Source SIEM, das genau diese Lücke schließt.
+### Wazuh: Die Security-Lücke schließen
 
-Also habe ich Wazuh auf der NAS aufgesetzt -- Manager, Indexer und Dashboard. Auf beiden Cloud-Servern laufen Agents, die Events an den Manager melden. Docker-Listener überwachen Container-Aktivitäten in Echtzeit: `docker exec`-Befehle, Container mit Host-Netzwerk, Zugriffe auf den Docker-Socket, privilegierte Container.
+Prometheus und Uptime Kuma überwachen Performance und Verfügbarkeit. Aber Security-Events -- wer greift auf was zu, welche Container starten mit welchen Rechten oder ob jemand versucht, sich per SSH einzuloggen -- decken sie nicht ab.
 
-Die Events werden nach Severity klassifiziert. Alles ab Level 10 -- also potenziell sicherheitsrelevant -- geht direkt als Alert auf Telegram. Darunter wird geloggt, aber nicht alarmiert. Das verhindert Alert-Fatigue: Ich werde nur gestört, wenn es wirklich relevant ist.
+Durch Recherche und Austausch mit anderen Engineers bin ich auf Wazuh gestoßen -- ein Open-Source-SIEM, das genau diese Lücke schließt.
+
+Also habe ich Wazuh auf der NAS aufgesetzt: Manager, Indexer und Dashboard. Auf beiden Cloud-Servern laufen Agents, die Events an den Manager melden. Docker-Listener überwachen Container-Aktivitäten in Echtzeit: `docker exec`-Befehle, Container mit Host-Netzwerk, Zugriffe auf den Docker-Socket oder privilegierte Container.
+
+Die Events werden nach Severity klassifiziert. Alles ab Level 10 -- also potenziell sicherheitsrelevant -- wird direkt als Alert auf Telegram geschickt. Darunter wird lediglich geloggt. Das verhindert Alert-Fatigue: Ich werde nur gestört, wenn es wirklich relevant ist.
+
+---
 
 ### Alle Wege führen zu Telegram
 
-Was sich über die Zeit entwickelt hat, ist ein dreistufiges Alerting-System. Drei verschiedene Tools, die drei verschiedene Aspekte überwachen -- und alle auf dem gleichen Kanal landen:
+Über die Zeit hat sich ein dreistufiges Alerting-System entwickelt. Drei verschiedene Tools überwachen unterschiedliche Aspekte der Infrastruktur -- und alle Alerts landen im gleichen Kanal:
 
-**Grafana** für Performance: CPU, RAM, Disk, Netzwerk. Die Metriken, die zeigen, ob die Infrastruktur unter Last steht oder ob etwas aus dem Ruder läuft.
+**Grafana** für Performance: CPU, RAM, Disk, Netzwerk. Die Metriken, die zeigen, ob die Infrastruktur unter Last steht.
 
-**Uptime Kuma** für Verfügbarkeit: Service antwortet nicht mehr, Latenz zu hoch, Zertifikat läuft ab. Die Nutzerperspektive.
+**Uptime Kuma** für Verfügbarkeit: Services antworten nicht mehr, Latenzen steigen oder Zertifikate laufen ab. Die Nutzerperspektive.
 
-**Wazuh** für Security: Fehlgeschlagene SSH-Logins, verdächtige Container-Aktivitäten, Dateiänderungen in kritischen Verzeichnissen. Die Sicherheitsebene.
+**Wazuh** für Security: Fehlgeschlagene SSH-Logins, verdächtige Container-Aktivitäten oder Dateiänderungen in kritischen Verzeichnissen.
 
-Alle drei landen auf Telegram. Egal ob ich zuhause am Schreibtisch sitze oder unterwegs bin -- ich sehe sofort, was passiert und kann einschätzen, ob ich reagieren muss.
+Alle drei melden an Telegram. Egal ob ich zuhause am Schreibtisch sitze oder unterwegs bin -- ich sehe sofort, was passiert und kann einschätzen, ob ich reagieren muss.
+
+---
 
 ### Stück für Stück, nicht alles auf einmal
 
-Ich will das nicht so darstellen, als hätte ich von Anfang an gewusst, dass ich ein dreistufiges Monitoring brauche. Es war ein Prozess:
+Ich möchte nicht den Eindruck erwecken, dass dieses Setup von Anfang an geplant war. Es war ein Prozess.
 
-Erst Prometheus und Grafana, weil ich sehen wollte, was auf meinem Server passiert. Dann Uptime Kuma, weil Metriken allein nicht zeigen, ob ein Service antwortet. Dann die Bestätigung, dass das Alerting funktioniert -- und die Erkenntnis, dass Performance-Monitoring allein nicht reicht. Und dann Wazuh, weil Security eine eigene Überwachungsebene braucht.
+Erst Prometheus und Grafana, weil ich sehen wollte, was auf meinem Server passiert. Dann Uptime Kuma, weil Metriken allein nicht zeigen, ob ein Service wirklich erreichbar ist. Dann die Bestätigung, dass Alerting funktioniert -- und die Erkenntnis, dass Performance-Monitoring allein nicht reicht. Und schließlich Wazuh, weil Security eine eigene Überwachungsebene braucht.
 
-Jede Erweiterung hatte einen konkreten Auslöser. Und genau das macht den Unterschied: Dieses Setup ist nicht aus einem Tutorial entstanden, sondern aus echten Anforderungen, die sich im Betrieb ergeben haben.
+Jede Erweiterung hatte einen konkreten Auslöser. Dieses Setup ist nicht aus einem Tutorial entstanden, sondern aus echten Anforderungen im Betrieb.
+
+---
 
 ### Früh anfangen zahlt sich aus
 
-Monitoring ist nicht optional. Es ist die Grundlage dafür, dass man versteht, was in der eigenen Infrastruktur passiert -- und dass man rechtzeitig reagieren kann, wenn etwas nicht stimmt.
+Monitoring ist nicht optional. Es ist die Grundlage dafür, zu verstehen, was in der eigenen Infrastruktur passiert -- und rechtzeitig reagieren zu können, wenn etwas nicht stimmt.
 
-Und: Früh anfangen zahlt sich aus. Nicht weil man von Tag 1 alles richtig macht, sondern weil man eine Grundlage hat, auf der man aufbauen kann. Mein erstes Grafana-Dashboard hatte drei Panels. Heute überwache ich damit drei Standorte. Der Unterschied ist nicht das Tool -- der Unterschied ist die Erfahrung, die dazwischen liegt.
+Früh anfangen zahlt sich aus. Nicht weil man von Anfang an alles perfekt macht, sondern weil man eine Grundlage schafft, auf der man weiter aufbauen kann.
 
-**Nächster Post:** Crypto-Miner auf meinem Server
-Wie ich den Angriff erkannt und gestoppt habe.',
+Mein erstes Grafana-Dashboard hatte drei Panels. Heute überwache ich damit drei Standorte. Der Unterschied ist nicht das Tool -- der Unterschied ist die Erfahrung, die dazwischen liegt.',
   'Prometheus und Grafana liefen schon auf meinem ersten Server. Was als einfaches Ressourcen-Monitoring begann, ist Stück für Stück zu einem mehrstufigen System gewachsen -- Uptime Kuma für Verfügbarkeit, Wazuh als SIEM für Security-Events, Telegram als zentraler Alarmkanal. Jede Erweiterung hatte einen konkreten Grund.',
   'published', false, 6, 1, 4,
   '2026-03-03T10:00:00Z'
@@ -666,9 +774,11 @@ VALUES (
   'crypto-miner-angriff-erkannt',
   '### NAS auf Maximum, Telegram vibriert
 
-Ich sitze am Schreibtisch, die NAS steht eine Armlänge entfernt. Normalerweise ist sie kaum hörbar. Dann, von einer Sekunde auf die nächste, dreht sie komplett auf. Lüfter auf Maximum, ein Geräusch das ich so noch nie gehört habe. Mein erster Gedanke: Da stimmt etwas nicht.
+Ich sitze am Schreibtisch, die NAS steht eine Armlänge entfernt. Normalerweise ist sie kaum hörbar. Dann, von einer Sekunde auf die nächste, dreht sie komplett auf. Lüfter auf Maximum, ein Geräusch, das ich so noch nie gehört habe. Mein erster Gedanke: Da stimmt etwas nicht.
 
 Gleichzeitig vibriert mein Handy. Telegram. Grafana-Alert: CPU-Auslastung über 200 Prozent. Mehrere Werte im kritischen Bereich.
+
+---
 
 ### Ruhe bewahren, systematisch vorgehen
 
@@ -680,13 +790,17 @@ Es war ein alter Blog-Container -- ein frühes Projekt aus den ersten Monaten me
 
 Container isoliert, gestoppt, entfernt. Unter drei Minuten von der ersten Meldung bis zur Entschärfung.
 
+---
+
 ### Die Schwachstelle: Altlast aus der Lernphase
 
 Die retrospektive Analyse hat gezeigt: Der Container stammte aus einer Phase, in der ich gerade erst angefangen hatte, mit Datenbanken zu arbeiten. Damals war in der MongoDB-Konfiguration ein Workaround für ein lokales Connection-Problem gesetzt worden -- eine Einstellung, die in der Entwicklungsumgebung funktioniert hat, aber nie für den Dauerbetrieb gedacht war.
 
-Der Container war Monate lang deaktiviert, das Projekt eingefroren, andere Prioritäten hatten übernommen. Als ich ihn Monate später reaktivierte, war die alte Datenbank-Konfiguration noch aktiv -- und innerhalb weniger Stunden hatte jemand sie gefunden.
+Der Container war monatelang deaktiviert, das Projekt eingefroren, andere Prioritäten hatten übernommen. Als ich ihn Monate später reaktivierte, war die alte Datenbank-Konfiguration noch aktiv -- und innerhalb weniger Stunden hatte jemand sie gefunden.
 
 Das Internet wird systematisch nach offenen Datenbanken gescannt. Wer eine ungesicherte Verbindung exponiert, wird gefunden. Nicht in Wochen, nicht in Tagen -- in Stunden.
+
+---
 
 ### Bereinigung und Härtung
 
@@ -694,16 +808,18 @@ Nach der unmittelbaren Entschärfung habe ich das Ganze gründlich aufgearbeitet
 
 - Datenbank komplett abgesichert, Zugriff auf localhost beschränkt
 - Sämtliche Credentials rotiert -- nicht nur die betroffenen, sondern alle
-- Den alten Container und seine Konfiguration komplett entfernt
+- Den alten Container und seine Konfiguration vollständig entfernt
 - Alle laufenden Container auf ähnliche Altlasten geprüft
 
-Am Ende stand die Gewissheit: Keine weiteren offenen Flanken, keine Spuren des Miners außerhalb des isolierten Containers. Der Angriff war auf diesen einen Container begrenzt, und genau da lag er auch keine drei Minuten später bereits tot.
+Am Ende stand die Gewissheit: Keine weiteren offenen Flanken, keine Spuren des Miners außerhalb des isolierten Containers. Der Angriff war auf diesen einen Container begrenzt -- und genau dort lag er auch keine drei Minuten später bereits still.
+
+---
 
 ### Warum Monitoring den Unterschied macht
 
-Das ist der eigentliche Punkt dieses Posts. Nicht der Angriff selbst -- sondern was davor schon stand.
+Das ist der eigentliche Punkt dieses Posts. Nicht der Angriff selbst -- sondern was davor bereits existierte.
 
-Ich war zuhause und habe die NAS gehört. Aber was, wenn ich nicht zuhause gewesen wäre? Was, wenn das nachts passiert wäre, oder unterwegs?
+Ich war zuhause und habe die NAS gehört. Aber was, wenn ich nicht zuhause gewesen wäre? Was, wenn das nachts passiert wäre oder unterwegs?
 
 Genau dafür steht das Monitoring. Der Grafana-Alert wäre trotzdem gekommen. Auf Telegram, auf mein Handy, egal wo ich bin. Ich hätte den CPU-Spike gesehen, hätte mich remote über Tailscale verbinden können und hätte den Container auch von unterwegs stoppen können. Die Reaktionszeit wäre vielleicht nicht drei Minuten gewesen, aber es wären Minuten geblieben -- nicht Stunden oder Tage.
 
@@ -711,22 +827,21 @@ Ohne Alerting hätte der Miner möglicherweise so lange laufen können, bis die 
 
 Das Monitoring stand. Der Alert kam innerhalb von Sekunden. Und weil ich wusste, wo ich nachschauen muss -- Grafana für die Übersicht, Container-Metriken für die Eingrenzung -- war der Verursacher in Minuten identifiziert. Das ist der Return on Investment für jeden Service, den ich in den Monaten davor aufgesetzt habe.
 
+---
+
 ### Lektionen für die Zukunft
 
-**Alte Konfigurationen leben weiter.** Ein Container, der Monate lang deaktiviert war, trägt seine Konfiguration mit. Wer einen alten Service reaktiviert, muss ihn vorher prüfen -- nicht nur ob er läuft, sondern ob er sicher ist. Das ist seitdem Standard bei mir.
+**Alte Konfigurationen leben weiter.** Ein Container, der monatelang deaktiviert war, trägt seine Konfiguration mit. Wer einen alten Service reaktiviert, muss ihn vorher prüfen -- nicht nur ob er läuft, sondern ob er sicher ist. Das ist seitdem Standard bei mir.
 
-**Das Netz vergisst nicht und schläft nicht.** Offene Datenbanken, exponierte Ports, ungesicherte Services -- es wird aktiv und automatisiert danach gescannt. Wenige Stunden reichen.
+**Das Netz vergisst nicht und schläft nicht.** Offene Datenbanken, exponierte Ports, ungesicherte Services -- sie werden aktiv und automatisiert gescannt. Wenige Stunden reichen.
 
-**Ohne Monitoring bleibt ein Angriff unsichtbar.** Es ist die Grundlage dafür, dass man ihn in Minuten erkennt statt in Tagen. Und es funktioniert unabhängig davon, ob man gerade am Schreibtisch sitzt oder nicht.
+**Ohne Monitoring bleibt ein Angriff unsichtbar.** Es ist die Grundlage dafür, dass man ihn in Minuten erkennt statt in Tagen.
 
-**Strukturiertes Vorgehen zahlt sich aus.** Erkennen, eingrenzen, isolieren, bereinigen, aufarbeiten. Kein hektisches Abschalten, kein Neuinstallieren ohne Plan. Das funktioniert in der Praxis genau so wie in der Theorie -- wenn man vorher die Grundlagen gelegt hat.
+**Strukturiertes Vorgehen zahlt sich aus.** Erkennen, eingrenzen, isolieren, bereinigen, aufarbeiten. Kein hektisches Abschalten, kein Neuinstallieren ohne Plan.
 
 Rückblickend bin ich froh, dass es passiert ist. Nicht weil ein Angriff auf die eigene Infrastruktur erstrebenswert wäre -- sondern weil es die Bestätigung war, dass das Monitoring funktioniert, die Reaktion sitzt und der eingeschlagene Weg der richtige ist.
 
-Das ist keine Theorie mehr. Das ist Praxis.
-
-**Nächster Post:** AWS Solutions Architect
-Warum ich die Prüfung mit Praxis statt nur Theorie vorbereitet habe.',
+Das ist keine Theorie mehr. Das ist Praxis.',
   'Die NAS neben mir wird plötzlich ohrenbetäubend laut, Telegram meldet CPU-Auslastung über 200 Prozent. In unter drei Minuten war der Verursacher identifiziert und isoliert. Wie mein Monitoring-Stack einen echten Angriff erkannt hat -- und was schnelle Reaktion wirklich bedeutet.',
   'published', false, 6, 1, 4,
   '2026-03-05T10:00:00Z'
@@ -741,64 +856,77 @@ VALUES (
 
 Die Prüfung heißt Solutions Architect. Nicht Services Architect, nicht Infrastructure Architect. Solutions.
 
-Als ich angefangen habe, mich mit den Prüfungsinhalten auseinanderzusetzen, habe ich etwas wiedererkannt: Anforderungen aufnehmen, Rahmenbedingungen verstehen, verschiedene Wege abwägen und die passende Lösung finden. In fast zwanzig Jahren Berufserfahrung war genau das mein Alltag -- egal ob es um Produkte, Kunden oder Prozesse ging. Die Herausforderung war immer die gleiche: Es gibt einen Rahmen, manchmal vorgegeben, manchmal offen, und innerhalb dieses Rahmens muss eine Lösung her, die funktioniert.
+Als ich angefangen habe, mich mit den Prüfungsinhalten auseinanderzusetzen, habe ich etwas wiedererkannt: Anforderungen aufnehmen, Rahmenbedingungen verstehen, verschiedene Wege abwägen und die passende Lösung finden. In fast zwanzig Jahren Berufserfahrung war genau das mein Alltag -- egal ob es um Produkte, Kunden oder Prozesse ging. Die Herausforderung war immer die gleiche: Es gibt einen Rahmen, manchmal vorgegeben, manchmal offen, und innerhalb dieses Rahmens muss eine Lösung entstehen, die funktioniert.
 
 Die Domäne ist eine andere. Aber die Denkweise war nicht neu. Und genau das hat mir in der Vorbereitung geholfen.
 
+---
+
 ### Verstehen, nicht nur bestehen
 
-Ich habe mir bewusst die Zeit genommen, die es braucht. Nicht um eine Prüfung zu bestehen, sondern um die Themen wirklich zu durchdringen. Weil mir klar war: Vieles von dem, was die Prüfung abfragt, kann ich nicht einfach im eigenen Account nachbauen. Multi-Account-Strategien für Konzerne, Migrationen von Hunderten Servern, Hybrid-Architekturen mit Direct Connect in Enterprise-Dimensionen -- das sind Szenarien, die man als Einzelperson nur in der Theorie durchdringen kann.
+Ich habe mir bewusst die Zeit genommen, die es braucht. Nicht um eine Prüfung zu bestehen, sondern um die Themen wirklich zu durchdringen. Vieles von dem, was die Prüfung abfragt, lässt sich nicht einfach im eigenen Account nachbauen: Multi-Account-Strategien für große Organisationen, Migrationen von Hunderten Servern oder Hybrid-Architekturen mit Direct Connect in Enterprise-Dimensionen.
 
-Also habe ich genau das gemacht: Recherchiert, Dokumentation und Whitepapers gelesen, Szenarien durchgespielt. Wann immer möglich, Labs integriert und Konzepte praktisch nachvollzogen. Nicht alles lässt sich hands-on abbilden -- aber der Anspruch war, auch die rein theoretischen Themen so zu verstehen, dass ich sie erklären und einordnen kann.
+Also habe ich genau das gemacht: recherchiert, Dokumentation und Whitepapers gelesen, Szenarien durchgespielt. Wann immer möglich, Labs integriert und Konzepte praktisch nachvollzogen. Nicht alles lässt sich hands-on abbilden -- aber der Anspruch war, auch rein theoretische Themen so zu verstehen, dass ich sie erklären und einordnen kann.
 
-Parallel dazu lief die Praxis im eigenen AWS-Account weiter. VPC-Networking, IAM-Policies, S3-Konfigurationen, CloudFront -- alles Themen, die in der Prüfung drankommen und die ich gleichzeitig in EcoKart live im Einsatz hatte. Diese Kombination aus theoretischer Breite und praktischer Tiefe war der Kern meiner Vorbereitung.
+Parallel dazu lief die Praxis im eigenen AWS-Account weiter. VPC-Networking, IAM-Policies, S3-Konfigurationen, CloudFront -- alles Themen, die in der Prüfung vorkommen und die ich gleichzeitig in EcoKart live im Einsatz hatte. Diese Kombination aus theoretischer Breite und praktischer Tiefe war der Kern meiner Vorbereitung.
+
+---
 
 ### Eigene Lernmaterialien
 
-Was sich früh als wertvoll herausgestellt hat: Nicht nur konsumieren, sondern selbst aufbereiten. Interaktive Flashcards, Quizzes, Service-Vergleichskarten -- alles in eigenen Worten formuliert. Wenn ich ein Konzept erklären kann, habe ich es verstanden. Wenn nicht, muss ich nochmal ran.
+Was sich früh als wertvoll herausgestellt hat: Nicht nur konsumieren, sondern selbst aufbereiten. Interaktive Flashcards, Quizzes, Service-Vergleichskarten -- alles in eigenen Worten formuliert. Wenn ich ein Konzept erklären kann, habe ich es verstanden. Wenn nicht, muss ich nochmal tiefer einsteigen.
 
 Dazu Hunderte Practice-Fragen mit eigenen Erklärungen versehen. Nicht als Wiederholung, sondern als Verständnisprüfung. Warum ist diese Antwort richtig? Warum sind die anderen falsch? Was ist das zugrundeliegende Prinzip?
 
-Über die Zeit hat sich dabei ein Gespür entwickelt: AWS-Prüfungsfragen beschreiben komplexe Szenarien mit spezifischen Anforderungen -- Verfügbarkeit, Kosten, Compliance, Performance. Die Herausforderung liegt darin, aus dem Zusammenspiel dieser Anforderungen die architektonisch sinnvollste Lösung abzuleiten. Das ist keine Frage einzelner Services, sondern eine Frage der richtigen Kombination. An dieser Fähigkeit bin ich mit jeder Frage gewachsen.
+Über die Zeit hat sich dabei ein Gespür entwickelt: AWS-Prüfungsfragen beschreiben komplexe Szenarien mit spezifischen Anforderungen -- Verfügbarkeit, Kosten, Compliance, Performance. Die Herausforderung liegt darin, aus dem Zusammenspiel dieser Anforderungen die architektonisch sinnvollste Lösung abzuleiten. Das ist keine Frage einzelner Services, sondern eine Frage der richtigen Kombination.
+
+---
 
 ### Alle Szenarien, alle Plattformen
 
-Practice Tests waren das härteste und ehrlichste Feedback. Mein Anspruch war klar: Über mehrere Plattformen hinweg alle verfügbaren Fragen sehen und so viele Szenarien wie möglich durcharbeiten. Nicht um eine Quote zu erreichen, sondern um sicherzustellen, dass ich die Themen wirklich verstehe -- auch die, die sich nur theoretisch erarbeiten lassen.
+Practice Tests waren das härteste und ehrlichste Feedback. Mein Anspruch war klar: über mehrere Plattformen hinweg möglichst viele Fragen sehen und so viele Szenarien wie möglich durcharbeiten. Nicht um eine Quote zu erreichen, sondern um sicherzustellen, dass ich die Themen wirklich verstehe -- auch die, die sich nur theoretisch erarbeiten lassen.
 
-Jede Plattform formuliert anders, setzt andere Schwerpunkte, beleuchtet andere Aspekte. Genau das wollte ich: Kein plattformspezifisches Wissen, sondern ein Verständnis, das unabhängig von der Fragestellung trägt.
+Jede Plattform formuliert anders, setzt andere Schwerpunkte und beleuchtet andere Aspekte. Genau das wollte ich: kein plattformspezifisches Wissen, sondern ein Verständnis, das unabhängig von der Fragestellung trägt.
 
-Die Fehleranalyse war dabei oft wertvoller als die richtige Antwort. Jede falsche Antwort analysiert: Welches Konzept fehlt? Wiederholfehler oder neues Thema? Am Ende wollte ich mit dem sicheren Gefühl in die Prüfung gehen, dass ich die Breite der Themen durchdrungen habe -- nicht nur die, die ich praktisch kenne.
+Die Fehleranalyse war dabei oft wertvoller als die richtige Antwort. Jede falsche Antwort wurde analysiert: Welches Konzept fehlt? Wiederholfehler oder neues Thema? Am Ende wollte ich mit dem sicheren Gefühl in die Prüfung gehen, dass ich die Breite der Themen durchdrungen habe -- nicht nur die, die ich praktisch kenne.
+
+---
 
 ### Enterprise: Über das Homelab hinaus
 
-Enterprise-Szenarien waren die größte Herausforderung. Hunderte VMs migrieren, Multi-Account-Strategien, Hybrid-Architekturen in einer Größenordnung, die mein Homelab nie abbilden kann. Das sind Themen, für die es keine Hands-on-Alternative gibt, wenn man keinen Enterprise-Kontext hat.
+Enterprise-Szenarien waren die größte Herausforderung. Hunderte VMs migrieren, Multi-Account-Strategien, Hybrid-Architekturen in einer Größenordnung, die mein Homelab nie abbilden kann. Das sind Themen, für die es keine echte Hands-on-Alternative gibt, wenn man keinen Enterprise-Kontext hat.
 
-Genau diese Themen haben mich am meisten weitergebracht. Sie haben mich gezwungen, tiefer in die Dokumentation einzusteigen, Architektur-Entscheidungen auf einem anderen Level zu durchdenken und mich mit Szenarien auseinanderzusetzen, die über alles hinausgehen, was ich bisher gebaut habe. Die Vorbereitung hat damit nicht nur bestehendes Wissen bestätigt, sondern meinen Blickwinkel erweitert -- auf Dimensionen, die erst mit dem Enterprise-Kontext sichtbar werden.
+Gerade diese Themen haben mich am meisten weitergebracht. Sie haben mich gezwungen, tiefer in die Dokumentation einzusteigen, Architekturentscheidungen auf einem anderen Level zu durchdenken und mich mit Szenarien auseinanderzusetzen, die über alles hinausgehen, was ich bisher gebaut habe.
 
 Die Prüfung liefert die Breite. Meine Projekte liefern die Tiefe. Beides zusammen ergibt ein Bild, das keines von beiden allein erzeugen könnte.
 
+---
+
 ### Englisch: Feinste Nuancen
 
-Die Prüfung ist auf Englisch. Die Sprache selbst war nicht das Thema -- sondern die Präzision in der Formulierung. AWS-Prüfungsfragen sind so konstruiert, dass der Unterschied zwischen zwei Antwortoptionen in einem einzigen Wort liegen kann.
+Die Prüfung ist auf Englisch. Die Sprache selbst war nicht das Thema -- sondern die Präzision der Formulierungen. AWS-Prüfungsfragen sind so konstruiert, dass der Unterschied zwischen zwei Antwortoptionen manchmal in einem einzigen Wort liegt.
 
-Um das greifbar zu machen: "Should" vs. "must", "minimize" vs. "eliminate", "cost-effective" vs. "cheapest" -- das klingt auf den ersten Blick trivial, aber hinter diesen Nuancen stecken grundlegend unterschiedliche Architektur-Entscheidungen. Wer "cost-effective" mit "cheapest" gleichsetzt, wählt die falsche Lösung. Wer "minimize" als "eliminate" liest, überdimensioniert die Architektur. In der Praxis werden die Szenarien deutlich komplexer -- aber das Prinzip bleibt: Jedes Wort zählt, und die richtige Interpretation entscheidet über die richtige Architektur. Diese Feinheiten sicher zu erkennen, war eine eigene Herausforderung, an der ich gewachsen bin.
+Um das greifbar zu machen: "should" vs. "must", "minimize" vs. "eliminate", "cost-effective" vs. "cheapest". Das klingt zunächst trivial, aber hinter diesen Nuancen stecken unterschiedliche Architekturentscheidungen.
+
+Wer "cost-effective" mit "cheapest" gleichsetzt, wählt die falsche Lösung. Wer "minimize" als "eliminate" liest, überdimensioniert die Architektur. In der Praxis sind die Szenarien deutlich komplexer -- aber das Prinzip bleibt: Jedes Wort zählt.
+
+---
 
 ### Mehr als ein Zertifikat
 
 Die AWS Solutions Architect Prüfung war kein Sammelpunkt im Lebenslauf. Sie war der Anspruch, Architektur-Entscheidungen auf einem Niveau zu treffen, das über meine eigenen Projekte hinausgeht.
 
-Was ich aus der Vorbereitung mitnehme, geht über das Zertifikat hinaus. Ich habe gelernt, mich eigenständig in Themen einzuarbeiten, die weit über meinen praktischen Erfahrungshorizont liegen -- und dabei ein Verständnis zu entwickeln, das nicht an einzelne Tools oder Services gebunden ist, sondern an die Fähigkeit, Probleme systematisch zu analysieren und die passende Architektur abzuleiten.
+Was ich aus der Vorbereitung mitnehme, geht über das Zertifikat hinaus. Ich habe gelernt, mich eigenständig in Themen einzuarbeiten, die weit über meinen praktischen Erfahrungshorizont hinausgehen -- und dabei ein Verständnis zu entwickeln, das nicht an einzelne Tools oder Services gebunden ist, sondern an die Fähigkeit, Probleme systematisch zu analysieren und die passende Architektur abzuleiten.
 
-Die Zertifizierung ergänzt meine Projekte. Sie zeigt, dass das Wissen auch in der Breite da ist -- nicht nur dort, wo ich selbst gebaut habe.
+Die Zertifizierung ergänzt meine Projekte. Sie zeigt, dass das Wissen auch in der Breite vorhanden ist -- nicht nur dort, wo ich selbst gebaut habe.
+
+---
 
 ### Bestanden: Februar 2026
 
-Das eigentliche Learning war der Weg. Die Hunderten Fragen, die Fehleranalysen, die Kombination aus Theorie und Praxis, die ehrliche Auseinandersetzung mit den eigenen Grenzen -- und die Erfahrung, dass man an genau diesen Grenzen am meisten wächst.
+Das eigentliche Learning war der Weg. Die Hunderten Fragen, die Fehleranalysen, die Kombination aus Theorie und Praxis und die ehrliche Auseinandersetzung mit den eigenen Grenzen.
 
-Die Prüfung war ein Meilenstein. Die Denkweise war schon da. Jetzt habe ich die Werkzeuge, um sie in einer neuen Domäne umzusetzen.
-
-**Nächster Post:** Diesen Blog auf AWS EKS deployen
-Mein Abschlussprojekt.',
+Die Prüfung war ein Meilenstein. Die Denkweise war schon da. Jetzt habe ich die Werkzeuge, um sie in einer neuen Domäne umzusetzen.',
   'AWS Solutions Architect -- die Prüfung, die nicht fragt was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
   'published', false, 6, 1, 6,
   '2026-03-08T10:00:00Z'
@@ -813,15 +941,19 @@ VALUES (
 
 Am Ende der Weiterbildung steht ein Abschlussprojekt: eine produktionsreife, cloud-native Anwendung auf AWS. Vier Wochen Zeit, klare technische Anforderungen -- EKS, Terraform, CI/CD, Datenbank, Authentifizierung, ML-Service. Die Projektidee war freigestellt, solange die Rahmenbedingungen erfüllt sind.
 
-Meine Entscheidung: diesen Tech-Blog. Nicht weil ein Blog die technisch anspruchsvollste Anwendung ist, sondern weil ich etwas bauen wollte, das über das Abschlussprojekt hinaus einen Zweck hat. Ein Showcase, den ich in Bewerbungen verlinken kann. Der den Fortschritt zeigt, den ich in den letzten Monaten gemacht habe. Und gleichzeitig alle technischen Anforderungen der Aufgabe abdeckt.
+Meine Entscheidung: diesen Tech-Blog. Nicht weil ein Blog die technisch anspruchsvollste Anwendung ist, sondern weil ich etwas bauen wollte, das über das Abschlussprojekt hinaus einen Zweck hat. Ein Showcase, den ich in Bewerbungen verlinken kann. Der den Fortschritt zeigt, den ich in den letzten Monaten gemacht habe -- und gleichzeitig alle technischen Anforderungen der Aufgabe abdeckt.
+
+---
 
 ### Warum EKS
 
-Es gab zwei Optionen: EKS oder Serverless mit Lambda. Für einen Blog wäre Serverless die kosteneffizientere Wahl gewesen. EKS ist überdimensioniert für diese Anwendung -- und genau das war der Punkt.
+Es gab zwei Optionen: EKS oder Serverless mit Lambda. Für einen Blog wäre Serverless die kosteneffizientere Wahl gewesen. EKS ist für diese Anwendung überdimensioniert -- und genau das war der Punkt.
 
-Kubernetes ist in der Praxis Standard für komplexe Webanwendungen. Unternehmen betreiben ihre Plattformen auf EKS, und wer dort arbeiten will, muss verstehen, wie Deployments, Services, Ingress und Pod-Scheduling zusammenspielen. Nicht in der Theorie, sondern hands-on: Manifeste schreiben, Probleme debuggen, Konfigurationen iterieren.
+Kubernetes ist in der Praxis Standard für komplexe Webanwendungen. Unternehmen betreiben ihre Plattformen auf EKS, und wer dort arbeiten will, muss verstehen, wie Deployments, Services, Ingress und Pod-Scheduling zusammenspielen. Nicht nur theoretisch, sondern hands-on: Manifeste schreiben, Probleme debuggen und Konfigurationen iterieren.
 
 Die Serverless-Architektur kannte ich bereits aus EcoKart. EKS war die Gelegenheit, die andere Seite kennenzulernen -- und bewusst die Variante zu wählen, die näher an Enterprise-Setups liegt.
+
+---
 
 ### 9 Terraform-Module
 
@@ -841,6 +973,8 @@ Die Infrastruktur besteht aus neun Terraform-Modulen:
 
 **ML-Integration:** AWS Comprehend für automatische Sentiment-Analyse von Kommentaren -- die ML-Anforderung des Projekts, direkt in den Backend-Flow integriert.
 
+---
+
 ### OIDC statt AWS-Keys
 
 Die Projektvorgaben sahen AWS Access Keys als GitHub Secrets vor. Ich habe mich bewusst für OIDC-Federation entschieden -- den gleichen Ansatz wie bei EcoKart, aber diesmal von Anfang an eingeplant.
@@ -849,9 +983,11 @@ Das Prinzip: GitHub Actions fordert bei jedem Pipeline-Lauf ein kurzlebiges Toke
 
 Das Ergebnis: Statt vier statischer Secrets braucht das gesamte Projekt nur zwei -- die OIDC-Rolle und das Datenbank-Passwort. Alles andere wird dynamisch aus dem Terraform State gelesen.
 
+---
+
 ### Sechs Pipelines, ein Workflow
 
-Die CI/CD-Architektur besteht aus sechs GitHub Actions Workflows:
+Die CI/CD-Architektur besteht aus sechs GitHub Actions Workflows.
 
 Die **Deploy-Pipeline** durchläuft drei Stufen: Tests, Build, Deployment. Erst wenn alle 31 Tests bestehen, werden die Docker Images gebaut und in ECR gepusht. Erst wenn der Build erfolgreich ist, werden die Kubernetes-Manifeste angewendet. Die Pipeline wartet auf den Rollout und schlägt fehl, wenn Pods nicht starten -- kein stilles Ignorieren von Fehlern.
 
@@ -859,41 +995,51 @@ Die **Terraform-Pipeline** steuert die Infrastruktur: Validierung, Security Scan
 
 Dazu eine **Security-Pipeline** mit drei parallelen Scans: Secrets-Erkennung, Terraform-Security-Checks und Policy-Validierung. Findings blockieren den Merge -- kein Durchwinken von bekannten Problemen.
 
+---
+
 ### Wave-Strategie: Kosten kontrollieren
 
 EKS kostet. Die Control Plane allein liegt bei rund 73 Dollar im Monat, dazu kommen Nodes, NAT Gateway und Datenbank. Für ein Portfolio-Projekt, das nicht dauerhaft laufen muss, ist das kein tragbares Modell.
 
 Also habe ich die Infrastruktur in Waves aufgeteilt:
 
-**Wave 1** enthält alles, was quasi nichts kostet: VPC, Security Groups, ECR, S3, Cognito, OIDC. Bleibt dauerhaft stehen.
+**Wave 1** enthält alles, was quasi nichts kostet: VPC, Security Groups, ECR, S3, Cognito, OIDC. Bleibt dauerhaft bestehen.
 
 **Wave 2** fügt die Datenbank hinzu. Rund 13 Dollar im Monat, pausierbar wenn nicht gebraucht.
 
-**Wave 3** ist der Full Stack: EKS, CloudFront, NAT Gateway. Das läuft nur wenn ich aktiv entwickle oder den Blog zeigen will. Hochfahren, showcasen, runterfahren.
+**Wave 3** ist der Full Stack: EKS, CloudFront, NAT Gateway. Das läuft nur, wenn ich aktiv entwickle oder den Blog demonstrieren möchte. Hochfahren, zeigen, herunterfahren.
 
 Der Kern der Strategie: Alles ist vollständig reproduzierbar. Infrastruktur zerstören und in Minuten wieder aufbauen -- weil jede Konfiguration in Terraform liegt und die Deploy-Pipeline alle Werte dynamisch aus dem State liest. Kein manuelles Nachpflegen von Endpoints oder IDs nach einem Rebuild.
 
+---
+
 ### EKS + K3s: Zwei Welten
 
-EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen zum Einsatz kommt.
+EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen eingesetzt wird.
 
-Für den dauerhaften Betrieb des Blogs gehe ich parallel einen anderen Weg: K3s auf eigener Infrastruktur. Leichtgewichtig, kosteneffizient, mit eigenen Herausforderungen -- kein managed Service, der einem Cluster-Management und Networking abnimmt.
+Für den dauerhaften Betrieb des Blogs gehe ich parallel einen anderen Weg: K3s auf eigener Infrastruktur. Leichtgewichtig, kosteneffizient, mit eigenen Herausforderungen -- kein Managed Service, der Cluster-Management und Networking übernimmt.
 
 Zwei Ansätze, zwei Perspektiven. EKS zeigt, dass ich die AWS-Seite von Kubernetes verstehe. K3s zeigt, dass ich auch ohne Managed Services arbeiten kann. Und die bewusste Entscheidung zwischen beiden zeigt, dass ich einschätzen kann, wann welcher Ansatz sinnvoll ist.
+
+---
 
 ### Reproduzierbar, nicht einmalig
 
 Was mir an diesem Projekt am wichtigsten ist: Es ist kein einmaliger Aufbau. Alles -- vom Netzwerk bis zum letzten Pod -- liegt in Code. Terraform für die Infrastruktur, Kubernetes-Manifeste für die Anwendung, GitHub Actions für den Workflow.
 
-Wenn morgen jemand sagt "zeig mir, wie du das aufgebaut hast", kann ich die gesamte Infrastruktur in Minuten hochfahren, den Blog deployen und live zeigen. Und danach wieder zerstören, ohne dass etwas verloren geht. Das ist kein theoretisches Versprechen -- das ist der Workflow, den ich im Alltag nutze.
+Wenn morgen jemand sagt: „Zeig mir, wie du das aufgebaut hast“, kann ich die gesamte Infrastruktur in Minuten hochfahren, den Blog deployen und live demonstrieren. Und danach wieder zerstören, ohne dass etwas verloren geht. Das ist kein theoretisches Versprechen -- das ist der Workflow, den ich im Alltag nutze.
 
 Neun Terraform-Module, zehn Kubernetes-Manifeste, sechs Pipelines, 31 Tests. Alles versioniert, alles reproduzierbar, alles transparent im öffentlichen Repository.
 
+---
+
 ### Alles zusammen
 
-Dieses Projekt bringt alles zusammen, was in den letzten Monaten entstanden ist. Terraform von EcoKart, Container-Erfahrung aus dem Homelab, CI/CD mit OIDC, Security-First-Denken aus dem Monitoring-Aufbau. Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir erarbeitet habe.
+Dieses Projekt bringt alles zusammen, was in den letzten Monaten entstanden ist. Terraform von EcoKart, Container-Erfahrung aus dem Homelab, CI/CD mit OIDC, Security-First-Denken aus dem Monitoring-Aufbau.
 
-Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb nochmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
+Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir erarbeitet habe.
+
+Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb noch einmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
   'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',
   'published', true, 7, 1, 2,
   '2026-03-12T10:00:00Z'
