@@ -101,8 +101,12 @@
         >
           <i class="ti ti-shield-lock text-xl text-sky-500"></i>
         </span>
-        Datenschutzerklärung
+        Datenschutzerkl&auml;rung
       </h1>
+
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+        Stand: M&auml;rz 2026
+      </p>
 
       <!-- 1. Verantwortlicher -->
       <section class="mb-8">
@@ -112,148 +116,498 @@
         <div class="text-slate-600 dark:text-slate-400 space-y-1">
           <p>Andy Schlegel</p>
           <p>Zimmerstr. 2, 04109 Leipzig</p>
-          <p>E-Mail: contact@his4irness23.de</p>
+          <p>E-Mail: andy.schlegel23@googlemail.com</p>
         </div>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) und
+          sonstiger datenschutzrechtlicher Bestimmungen ist die oben genannte
+          Person.
+        </p>
       </section>
 
-      <!-- 2. Hosting -->
+      <!-- 2. Allgemeines zur Datenverarbeitung -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          2. Hosting
+          2. Allgemeines zur Datenverarbeitung
         </h2>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Diese Website wird bei Amazon Web Services (AWS) gehostet. Anbieter
-          ist die Amazon Web Services EMEA SARL, 38 Avenue John F. Kennedy,
-          L-1855 Luxemburg. Bei Aufruf dieser Website werden automatisch
-          Informationen in sogenannten Server-Log-Dateien gespeichert, die der
-          Browser automatisch übermittelt. Dies sind: Browsertyp und -version,
-          verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden
-          Rechners, Uhrzeit der Serveranfrage und IP-Adresse.
+          Personenbezogene Daten werden nur erhoben, soweit dies zur
+          Bereitstellung einer funktionsf&auml;higen Website sowie zur
+          Erbringung der hier beschriebenen Dienste erforderlich ist. Die
+          Verarbeitung personenbezogener Daten erfolgt regelm&auml;&szlig;ig nur
+          nach Einwilligung des Nutzers oder wenn eine gesetzliche Grundlage die
+          Verarbeitung gestattet.
+        </p>
+      </section>
+
+      <!-- 3. Hosting und Infrastruktur -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          3. Hosting und Infrastruktur
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website wird bei
+          <strong>Amazon Web Services (AWS)</strong> gehostet. Anbieter ist die
+          Amazon Web Services EMEA SARL, 38 Avenue John F. Kennedy, L-1855
+          Luxemburg. Die prim&auml;re Datenverarbeitung erfolgt in der Region
+          <strong>eu-central-1 (Frankfurt)</strong>.
         </p>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
-          Die Nutzung von AWS erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f
-          DSGVO. Wir haben ein berechtigtes Interesse an einer zuverlässigen
-          Darstellung unserer Website.
+          Folgende AWS-Dienste werden f&uuml;r den Betrieb eingesetzt:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 mt-2"
+        >
+          <li>
+            <strong>Amazon EKS</strong> (Elastic Kubernetes Service) &ndash;
+            Container-Orchestrierung der Anwendung
+          </li>
+          <li>
+            <strong>Amazon RDS</strong> (PostgreSQL) &ndash;
+            Datenbankspeicherung
+          </li>
+          <li>
+            <strong>Amazon S3</strong> &ndash; Speicherung von Bildern und
+            statischen Dateien
+          </li>
+          <li>
+            <strong>Amazon CloudFront</strong> &ndash; Content Delivery Network
+            (CDN)
+          </li>
+          <li>
+            <strong>Amazon Cognito</strong> &ndash; Authentifizierung des
+            Admin-Bereichs
+          </li>
+          <li>
+            <strong>Amazon Comprehend</strong> &ndash; Automatisierte
+            Textanalyse (siehe Abschnitt 8)
+          </li>
+          <li>
+            <strong>Application Load Balancer</strong> &ndash; Lastverteilung
+            und SSL-Terminierung
+          </li>
+          <li><strong>Amazon Route 53</strong> &ndash; DNS-Verwaltung</li>
+          <li>
+            <strong>nginx</strong> &ndash; Reverse Proxy und statische
+            Auslieferung
+          </li>
+        </ul>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          Bei jedem Aufruf dieser Website werden automatisch Informationen in
+          Server-Log-Dateien gespeichert, die der Browser &uuml;bermittelt:
+          Browsertyp und -version, Betriebssystem, Referrer URL, IP-Adresse des
+          zugreifenden Rechners und Uhrzeit der Serveranfrage. Diese Daten
+          werden ausschlie&szlig;lich zur Sicherstellung eines
+          st&ouml;rungsfreien Betriebs und zur Verbesserung des Angebots
+          ausgewertet und nicht mit anderen Datenquellen zusammengef&uuml;hrt.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der sicheren und zuverl&auml;ssigen
+          Bereitstellung der Website).
         </p>
       </section>
 
-      <!-- 3. CDN -->
+      <!-- 4. Content Delivery Network -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          3. Content Delivery Network (CloudFront)
+          4. Content Delivery Network (CloudFront)
         </h2>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Zur Auslieferung statischer Inhalte nutzen wir Amazon CloudFront, ein
-          Content Delivery Network (CDN) von AWS. Hierdurch kann die
-          Ladegeschwindigkeit der Website optimiert werden. CloudFront speichert
-          Inhalte in Rechenzentren weltweit, um Anfragen geographisch näher am
-          Nutzer zu bedienen.
+          Zur Beschleunigung der Auslieferung nutzen wir
+          <strong>Amazon CloudFront</strong>, ein CDN von AWS. CloudFront
+          speichert Inhalte in Rechenzentren weltweit, um Anfragen geographisch
+          n&auml;her am Nutzer zu bedienen. Dabei k&ouml;nnen IP-Adressen an
+          CloudFront-Server au&szlig;erhalb der EU &uuml;bermittelt werden. AWS
+          ist unter dem EU-US Data Privacy Framework zertifiziert.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an schneller Inhaltsauslieferung).
         </p>
       </section>
 
-      <!-- 4. Externe Ressourcen -->
+      <!-- 5. SSL/TLS-Verschlüsselung -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          4. Externe Ressourcen
+          5. SSL/TLS-Verschl&uuml;sselung
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website nutzt HTTPS (SSL/TLS-Verschl&uuml;sselung) f&uuml;r alle
+          Verbindungen. Dadurch werden s&auml;mtliche zwischen Ihrem Browser und
+          unserem Server &uuml;bertragenen Daten verschl&uuml;sselt und
+          k&ouml;nnen nicht von Dritten mitgelesen werden. Die SSL-Zertifikate
+          werden &uuml;ber AWS Certificate Manager bereitgestellt.
+        </p>
+      </section>
+
+      <!-- 6. Externe Ressourcen -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          6. Externe Ressourcen
         </h2>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
-          Diese Website lädt folgende externe Ressourcen:
+          Diese Website l&auml;dt folgende Ressourcen von externen Servern. Beim
+          Laden wird die IP-Adresse des Nutzers an den jeweiligen Anbieter
+          &uuml;bermittelt:
         </p>
         <ul
           class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2"
         >
           <li>
-            <strong>Google Fonts (Inter)</strong> - Schriftart, bereitgestellt
-            von Google Ireland Limited. Beim Laden wird die IP-Adresse des
-            Nutzers an Google übertragen.
+            <strong>Google Fonts (Inter)</strong> &ndash; Schriftart,
+            bereitgestellt von Google Ireland Limited.
             <a
               href="https://policies.google.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
               class="text-sky-500 hover:text-sky-400"
-              >Datenschutzerklärung von Google</a
+              >Datenschutzerkl&auml;rung von Google</a
             >
           </li>
           <li>
-            <strong>Tabler Icons (jsDelivr CDN)</strong> - Icon-Bibliothek,
-            bereitgestellt über das jsDelivr CDN.
+            <strong>Tabler Icons</strong> &ndash; Icon-Bibliothek,
+            bereitgestellt &uuml;ber jsDelivr CDN.
             <a
               href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net"
               target="_blank"
               rel="noopener noreferrer"
               class="text-sky-500 hover:text-sky-400"
-              >Datenschutzerklärung von jsDelivr</a
+              >Datenschutzerkl&auml;rung von jsDelivr</a
             >
           </li>
+          <li>
+            <strong>Devicon</strong> &ndash; Technologie-Icons, bereitgestellt
+            &uuml;ber jsDelivr CDN (siehe oben).
+          </li>
+          <li>
+            <strong>highlight.js</strong> &ndash; Syntax-Highlighting f&uuml;r
+            Code-Bl&ouml;cke, bereitgestellt &uuml;ber jsDelivr CDN (siehe
+            oben).
+          </li>
+          <li>
+            <strong>marked.js</strong> &ndash; Markdown-Rendering,
+            bereitgestellt &uuml;ber jsDelivr CDN (siehe oben).
+          </li>
+          <li>
+            <strong>Tailwind CSS</strong> &ndash; CSS-Framework, bereitgestellt
+            &uuml;ber Tailwind CDN.
+          </li>
         </ul>
-      </section>
-
-      <!-- 5. Cookies -->
-      <section class="mb-8">
-        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          5. Cookies und Local Storage
-        </h2>
-        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Diese Website verwendet keine Tracking-Cookies. Es wird lediglich
-          localStorage genutzt, um die Einstellung des Dark/Light-Modus zu
-          speichern. Diese Daten verbleiben ausschließlich im Browser des
-          Nutzers und werden nicht an Server übertragen.
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an einer optisch ansprechenden und
+          funktionalen Darstellung der Website).
         </p>
       </section>
 
-      <!-- 6. Kommentare -->
+      <!-- 7. Cookies und Local Storage -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          6. Kommentarfunktion
+          7. Cookies und Local Storage
         </h2>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Bei der Nutzung der Kommentarfunktion werden der eingegebene Name und
-          der Kommentartext gespeichert. Optional eingegebene E-Mail-Adressen
-          werden ebenfalls gespeichert, jedoch nicht öffentlich angezeigt. Die
-          Kommentare werden mittels Amazon Comprehend (AWS) auf Sentiment
-          analysiert. Hierbei wird nur der Kommentartext verarbeitet, keine
-          personenbezogenen Daten.
+          Diese Website verwendet <strong>keine Tracking-Cookies</strong> und
+          keine Analyse-Tools (kein Google Analytics, kein Matomo o.&auml;.).
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          Es wird ausschlie&szlig;lich der <strong>localStorage</strong> des
+          Browsers genutzt, um folgende technisch notwendige Einstellungen zu
+          speichern:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 mt-2"
+        >
+          <li>
+            <strong>Theme-Einstellung</strong> &ndash; Dark/Light-Modus
+            Pr&auml;ferenz
+          </li>
+          <li>
+            <strong>Like-Status</strong> &ndash; IDs bereits gelikter
+            Beitr&auml;ge, um Mehrfach-Likes zu verhindern
+          </li>
+          <li>
+            <strong>Scroll-Position</strong> &ndash; letzte Leseposition auf der
+            Blog-Seite (sessionStorage, wird bei Schlie&szlig;en des Tabs
+            gel&ouml;scht)
+          </li>
+        </ul>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          Diese Daten verbleiben ausschlie&szlig;lich im Browser des Nutzers und
+          werden <strong>nicht an Server &uuml;bertragen</strong>.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der technischen Funktionalit&auml;t der
+          Website). Eine Einwilligung ist nicht erforderlich, da es sich um
+          technisch notwendige Speicherung handelt (&sect; 25 Abs. 2 TDDDG).
         </p>
       </section>
 
-      <!-- 7. Admin-Authentifizierung -->
+      <!-- 8. Kommentarfunktion und automatisierte Textanalyse -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          7. Admin-Authentifizierung (AWS Cognito)
+          8. Kommentarfunktion und automatisierte Textanalyse
         </h2>
+
+        <h3
+          class="text-lg font-medium text-slate-800 dark:text-slate-200 mt-4 mb-2"
+        >
+          8.1 Datenerhebung bei Kommentaren
+        </h3>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Der Admin-Bereich dieser Website nutzt AWS Cognito zur
-          Authentifizierung. Bei der Anmeldung werden E-Mail-Adresse und
-          Passwort an den Cognito-Service von AWS übermittelt. Die Verarbeitung
-          erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
-          Interesse an der Absicherung des Admin-Bereichs). Reguläre Besucher
-          der Website sind von dieser Verarbeitung nicht betroffen.
+          Bei der Nutzung der Kommentarfunktion werden folgende Daten erhoben
+          und gespeichert:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 mt-2"
+        >
+          <li>
+            <strong>Name</strong> (Pflichtfeld) &ndash; wird &ouml;ffentlich
+            angezeigt
+          </li>
+          <li>
+            <strong>Kommentartext</strong> (Pflichtfeld) &ndash; wird nach
+            Freigabe &ouml;ffentlich angezeigt
+          </li>
+          <li><strong>Zeitpunkt</strong> der Absendung</li>
+        </ul>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          Kommentare werden nicht sofort ver&ouml;ffentlicht, sondern
+          durchlaufen eine <strong>Moderationspr&uuml;fung</strong> (manuell und
+          automatisiert) bevor sie sichtbar werden. Es werden keine IP-Adressen
+          der Kommentierenden gespeichert.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an einer moderierten, sachlichen
+          Kommentarkultur und Schutz vor Spam und rechtsverletzenden Inhalten).
+        </p>
+
+        <h3
+          class="text-lg font-medium text-slate-800 dark:text-slate-200 mt-6 mb-2"
+        >
+          8.2 Automatisierte Textanalyse (Amazon Comprehend)
+        </h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Zur Unterst&uuml;tzung der Kommentarmoderation wird
+          <strong>Amazon Comprehend</strong> eingesetzt, ein
+          Machine-Learning-Dienst von AWS. Dabei werden folgende Analysen
+          durchgef&uuml;hrt:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 mt-2"
+        >
+          <li>
+            <strong>Sentiment-Analyse</strong> &ndash; Erkennung der Stimmung
+            eines Kommentars (positiv, negativ, neutral, gemischt). Kommentare
+            mit stark negativem Sentiment werden zur manuellen Pr&uuml;fung
+            vorgemerkt.
+          </li>
+          <li>
+            <strong>Tag-Generierung</strong> &ndash; Erkennung von
+            Schl&uuml;sselbegriffen in Blog-Beitr&auml;gen zur automatischen
+            Verschlagwortung. Hierbei werden ausschlie&szlig;lich die vom
+            Betreiber verfassten Blog-Inhalte verarbeitet, keine nutzerbezogenen
+            Daten.
+          </li>
+        </ul>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
+          <strong>Verarbeitete Daten:</strong> An Amazon Comprehend wird
+          ausschlie&szlig;lich der
+          <strong>Kommentartext</strong> &uuml;bermittelt. Der eingegebene Name
+          wird <strong>nicht</strong> an Comprehend gesendet. Es findet keine
+          Profilbildung, kein Scoring nat&uuml;rlicher Personen und keine
+          automatisierte Entscheidung im Sinne von Art. 22 DSGVO statt &ndash;
+          die endg&uuml;ltige Freigabe oder L&ouml;schung erfolgt stets durch
+          den Betreiber.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Verarbeitungsort:</strong> Die Analyse erfolgt in der
+          AWS-Region <strong>eu-central-1 (Frankfurt)</strong>. Amazon
+          Comprehend speichert die &uuml;bermittelten Texte nicht dauerhaft und
+          nutzt sie nicht zum Training eigener Modelle.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Speicherung des Ergebnisses:</strong> Das Sentiment-Ergebnis
+          (z.B. &bdquo;POSITIVE&ldquo;, Konfidenzwert) wird zusammen mit dem
+          Kommentar in der Datenbank gespeichert und dient ausschlie&szlig;lich
+          der Moderationsunterst&uuml;tzung.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse am Schutz der Plattform und Nutzer vor
+          beleidigenden, rechtswidrigen oder missbr&auml;uchlichen Inhalten).
         </p>
       </section>
 
-      <!-- 8. Rechte -->
+      <!-- 9. Like-Funktion -->
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-          8. Ihre Rechte
+          9. Like-Funktion
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Beim Liken eines Beitrags wird serverseitig lediglich der
+          <strong>Z&auml;hlerstand</strong> des jeweiligen Beitrags um 1
+          erh&ouml;ht. Es werden dabei keine personenbezogenen Daten (keine
+          IP-Adresse, keine Nutzer-ID) serverseitig gespeichert. Der Like-Status
+          wird ausschlie&szlig;lich im localStorage des Browsers gespeichert, um
+          Mehrfach-Likes zu verhindern (siehe Abschnitt 7).
+        </p>
+      </section>
+
+      <!-- 10. Datenbankspeicherung -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          10. Datenbankspeicherung
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          S&auml;mtliche Daten (Blog-Beitr&auml;ge, Kommentare, Kategorien)
+          werden in einer <strong>PostgreSQL-Datenbank</strong> auf Amazon RDS
+          in der Region eu-central-1 (Frankfurt) gespeichert. Die Verbindung
+          zwischen Anwendung und Datenbank ist
+          <strong>SSL-verschl&uuml;sselt</strong>. Die Datenbank befindet sich
+          in einem privaten Subnetz und ist nicht direkt aus dem Internet
+          erreichbar.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Speicherdauer von Kommentaren:</strong> Kommentare werden
+          gespeichert, solange der zugeh&ouml;rige Beitrag existiert oder bis
+          eine L&ouml;schung durch den Betreiber oder auf Anfrage des
+          Kommentierenden erfolgt.
+        </p>
+      </section>
+
+      <!-- 11. Admin-Authentifizierung -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          11. Admin-Authentifizierung (AWS Cognito)
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Der Admin-Bereich dieser Website nutzt <strong>AWS Cognito</strong>
+          zur Authentifizierung. Bei der Anmeldung werden E-Mail-Adresse und
+          Passwort an den Cognito-Service &uuml;bermittelt. Cognito speichert
+          diese Daten in der Region eu-central-1 (Frankfurt).
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong
+            >Regul&auml;re Besucher der Website sind von dieser Verarbeitung
+            nicht betroffen.</strong
+          >
+          Die Verarbeitung erfolgt ausschlie&szlig;lich f&uuml;r den Zugang zum
+          Verwaltungsbereich.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Absicherung des Admin-Bereichs).
+        </p>
+      </section>
+
+      <!-- 12. Auftragsverarbeitung -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          12. Auftragsverarbeitung (AWS)
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          F&uuml;r die Nutzung der AWS-Dienste gilt das
+          <strong>AWS Data Processing Addendum (DPA)</strong>, das den
+          Anforderungen der DSGVO an die Auftragsverarbeitung gem. Art. 28 DSGVO
+          entspricht. AWS ist unter dem
+          <strong>EU-US Data Privacy Framework</strong> zertifiziert, was eine
+          angemessene Grundlage f&uuml;r Daten&uuml;bermittlungen in die USA
+          darstellt (Angemessenheitsbeschluss der EU-Kommission vom 10. Juli
+          2023).
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          Die prim&auml;re Datenverarbeitung (Datenbank, Anwendung, Comprehend)
+          findet in der <strong>EU (Frankfurt, eu-central-1)</strong> statt.
+          Lediglich CloudFront kann Inhalte &uuml;ber Edge-Standorte weltweit
+          ausliefern (siehe Abschnitt 4).
+        </p>
+      </section>
+
+      <!-- 13. Rechte der Betroffenen -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          13. Ihre Rechte
         </h2>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
-          Sie haben gegenüber dem Verantwortlichen folgende Rechte hinsichtlich
-          der Sie betreffenden personenbezogenen Daten:
+          Sie haben gegen&uuml;ber dem Verantwortlichen folgende Rechte
+          hinsichtlich der Sie betreffenden personenbezogenen Daten:
         </p>
         <ul
           class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1"
         >
-          <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
-          <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
-          <li>Recht auf Löschung (Art. 17 DSGVO)</li>
-          <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-          <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
-          <li>Recht auf Widerspruch (Art. 21 DSGVO)</li>
+          <li><strong>Recht auf Auskunft</strong> (Art. 15 DSGVO)</li>
+          <li><strong>Recht auf Berichtigung</strong> (Art. 16 DSGVO)</li>
+          <li>
+            <strong>Recht auf L&ouml;schung</strong> (Art. 17 DSGVO) &ndash;
+            insbesondere k&ouml;nnen Sie jederzeit die L&ouml;schung Ihrer
+            Kommentare verlangen
+          </li>
+          <li>
+            <strong>Recht auf Einschr&auml;nkung der Verarbeitung</strong> (Art.
+            18 DSGVO)
+          </li>
+          <li>
+            <strong>Recht auf Daten&uuml;bertragbarkeit</strong> (Art. 20 DSGVO)
+          </li>
+          <li>
+            <strong>Widerspruchsrecht</strong> (Art. 21 DSGVO) &ndash; Sie
+            k&ouml;nnen jederzeit gegen die Verarbeitung Ihrer Daten auf
+            Grundlage von Art. 6 Abs. 1 lit. f DSGVO Widerspruch einlegen
+          </li>
         </ul>
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-3">
-          Ferner haben Sie das Recht, sich bei einer
-          Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer
-          personenbezogenen Daten zu beschweren.
+          Zur Aus&uuml;bung Ihrer Rechte wenden Sie sich bitte per E-Mail an:
+          <a
+            href="mailto:andy.schlegel23@googlemail.com"
+            class="text-sky-500 hover:text-sky-400"
+            >andy.schlegel23@googlemail.com</a
+          >
+        </p>
+      </section>
+
+      <!-- 14. Beschwerderecht -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          14. Beschwerderecht bei einer Aufsichtsbeh&ouml;rde
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Unbeschadet eines anderweitigen verwaltungsrechtlichen oder
+          gerichtlichen Rechtsbehelfs haben Sie das Recht auf Beschwerde bei
+          einer Datenschutz-Aufsichtsbeh&ouml;rde, wenn Sie der Ansicht sind,
+          dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO
+          verst&ouml;&szlig;t.
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
+          Die f&uuml;r den Betreiber zust&auml;ndige Aufsichtsbeh&ouml;rde ist:
+        </p>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1 mt-2">
+          <p><strong>S&auml;chsischer Datenschutzbeauftragter</strong></p>
+          <p>Devrientstr. 5, 01067 Dresden</p>
+          <p>
+            <a
+              href="https://www.saechsdsb.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sky-500 hover:text-sky-400"
+              >www.saechsdsb.de</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <!-- 15. Änderungen -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          15. &Auml;nderungen dieser Datenschutzerkl&auml;rung
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Datenschutzerkl&auml;rung wird bei Bedarf aktualisiert, um
+          &Auml;nderungen an der Website oder ge&auml;nderten rechtlichen
+          Anforderungen Rechnung zu tragen. Die jeweils aktuelle Version ist
+          stets auf dieser Seite abrufbar. Es gilt das oben angegebene Datum.
         </p>
       </section>
     </main>
@@ -280,6 +634,11 @@
             >
             <a href="./datenschutz.html" class="text-sky-600 dark:text-sky-400"
               >Datenschutz</a
+            >
+            <a
+              href="./haftungsausschluss.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Haftungsausschluss</a
             >
           </div>
           <div class="flex items-center gap-4">
