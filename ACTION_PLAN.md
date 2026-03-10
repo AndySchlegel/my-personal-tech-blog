@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Frontend overhaul complete, infra torn down, ready for next deploy cycle
-**Last Updated:** 2026-03-08 (Session 20)
+**Current Phase:** Session 21 complete (engagement, legal, Telegram, content sync). Lightsail dual-track planned.
+**Last Updated:** 2026-03-10 (Session 21)
 
 ---
 
@@ -15,13 +15,14 @@
 | Phase | Status | Target |
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
-| 2. Backend API | ~95% Done (S3 upload open) | Week 1-2 |
-| 3. Frontend | ~98% Done (photo decision + CV download open) | Week 1-2 |
+| 2. Backend API | ~95% Done (S3 upload + Comprehend open) | Week 1-2 |
+| 3. Frontend | ~99% Done (engagement, legal pages done) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
 | 7. ML Integration (Comprehend) | Not Started | Week 3-4 |
-| 8. Polish + Presentation | In Progress (frontend overhaul done) | Week 4 |
+| 8. Polish + Presentation | In Progress (engagement + legal + content sync done) | Week 4 |
+| 9. Lightsail Permanent Hosting | Planned | Post-course |
 
 ---
 
@@ -47,6 +48,7 @@
 - [x] Search + filter query params (?search, ?category, ?tag with dynamic SQL WHERE)
 - [x] Auth middleware (Cognito JWT validation + dev bypass)
 - [ ] S3 image upload service (pre-signed URLs)
+- [x] Telegram bot notification service (native fetch, non-blocking, @my_tech_blog_bot)
 - [x] Unit tests (31 tests: health, posts, comments, categories, auth)
 - [x] Seed data (11 articles, 7 categories, 32 tags -- real content from blog project)
 - [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
@@ -75,6 +77,13 @@
 - [x] External admin config for Cognito values (EKS-ready, config.js + ConfigMap)
 - [x] German locale: date format, search placeholder, section headers
 - [x] Nav consistency across all 7 HTML pages
+- [x] Like button with CSS heart animation
+- [x] Comment section on blog posts
+- [x] Haftungsausschluss standalone page (8 sections, DSGVO-compliant)
+- [x] Datenschutz 15-section DSGVO rewrite
+- [x] Footer links updated across all pages (Haftungsausschluss separated from Impressum)
+- [x] Scroll-reveal animations on all sections below the fold
+- [x] Blog content sync (K3s -> Lightsail dual-track across all posts)
 - [ ] About page photo decision (same vs different vs remove)
 - [ ] CV download button (simplified version)
 - [ ] Admin S3 image uploads (needs EKS deployment)
@@ -155,10 +164,24 @@
 - [x] Frontend overhaul: LP, About, Skills, Blog pages (consistency, German locale, real data)
 - [x] Credly certification badge images
 - [x] External admin config (Cognito values via ConfigMap, EKS-ready)
+- [x] Engagement features: like button, comment section, blog card animations
+- [x] Legal pages: Impressum lean, Datenschutz DSGVO rewrite, Haftungsausschluss standalone
+- [x] Telegram bot for comment notifications (PR #42)
+- [x] Blog content sync: 7 posts refined, K3s -> Lightsail across all posts
 - [ ] Final README with screenshots
 - [ ] Architecture diagram
 - [ ] Presentation slides (20-30 min)
 - [ ] Cost documentation
+
+## Phase 9: Lightsail Permanent Hosting (Planned)
+
+- [ ] Terraform config for Lightsail instance ($5/month, 1GB RAM, 1 vCPU)
+- [ ] PostgreSQL on-instance (no RDS needed)
+- [ ] nginx + Node.js setup (same app, no containers needed)
+- [ ] Let's Encrypt SSL (certbot)
+- [ ] GitHub Actions deploy workflow (deploy-lightsail.yml)
+- [ ] Cognito + Comprehend stay as managed AWS services
+- [ ] DNS cutover from EKS ALB to Lightsail instance
 
 ---
 
@@ -178,17 +201,18 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **Post 12 via admin dashboard** -- live proof-of-concept editing on EKS
-2. **Comprehend integration** -- auto-tags (detectKeyPhrases) + comment sentiment (detectSentiment), requires IRSA
-3. **S3 image uploads** -- pre-signed URL upload from admin dashboard (requires Wave 1 S3)
-4. **About page photo decision** -- same vs different vs remove from About hero
-5. **CV download button** -- simplified version without job-specific header
-6. **Screenshots + Architecture diagram** -- for README and presentation
+1. **Post 12 via admin dashboard** -- live proof-of-concept editing on EKS (locally tested, ready for EKS)
+2. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
+3. **Comprehend integration** -- auto-tags (detectKeyPhrases) + comment sentiment (detectSentiment), requires IRSA
+4. **S3 image uploads** -- pre-signed URL upload from admin dashboard (requires Wave 1 S3)
+5. **About page photo decision** -- same vs different vs remove from About hero
+6. **CV download button** -- simplified version without job-specific header
+7. **Screenshots + Architecture diagram** -- for README and presentation
 
-Only 2 GitHub Secrets needed (AWS_ROLE_ARN + DB_PASSWORD) -- pipeline reads all
-other infra values dynamically from Terraform remote state.
+4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** All infra destroyed (Session 20), only OIDC remains. Full provision->deploy->destroy cycle verified clean.
+**Current infra state:** All infra destroyed (Session 21), only OIDC remains. Full provision->deploy->destroy cycle verified clean.
+**Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
 
 ---
 
@@ -265,3 +289,9 @@ other infra values dynamically from Terraform remote state.
 | 2026-03-08 | German locale for public pages | Date format de-DE, German section headers, search placeholder -- blog is a German portfolio |
 | 2026-03-08 | Credly badge images for certs | Original Credly badge PNGs in frontend/src/img/certs/ -- visual proof of certifications |
 | 2026-03-08 | Badge label system on skill cards | Small pills (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE) for quick scanning by recruiters |
+| 2026-03-10 | Telegram over SES for notifications | SES sandbox issues from previous project (EcoKart), Telegram is instant + free + no AWS dependency |
+| 2026-03-10 | Dual-track hosting (EKS + Lightsail) | EKS ($143/month) for Kubernetes showcase, Lightsail ($5.50/month) for permanent blog -- same repo, separate configs |
+| 2026-03-10 | Haftungsausschluss as standalone page | Separated from Impressum (was 8 subsections embedded), now its own page with dedicated footer link |
+| 2026-03-10 | CSS-only heart icon for like button | Tabler ti-heart-filled not rendering in CDN version, pure CSS heart shape works everywhere |
+| 2026-03-10 | Non-blocking Telegram notifications | Fire-and-forget pattern (.catch(() => {})), notification failures never block comment creation |
+| 2026-03-10 | 4 GitHub Secrets (was 2) | Added TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID to blog-secrets K8s Secret via deploy.yml |

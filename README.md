@@ -39,7 +39,7 @@ This blog tells a real story: starting with a Synology NAS and a basic router, b
 3. **On-prem to cloud migration** - Demonstrates enterprise-relevant skills
 4. **EKS complements serverless** - Together with a previous serverless project, covers both cloud paradigms
 5. **Natural ML integration** - Comprehend for auto-tags and comment sentiment analysis
-6. **Built to last** - Migration to self-hosted infrastructure planned after course
+6. **Dual-track hosting** - EKS for showcase demos, Lightsail ($5.50/month) for permanent hosting
 
 ---
 
@@ -88,6 +88,7 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
 | IaC | Terraform (9 modules, from scratch, 25+ across all projects) |
 | CI/CD | GitHub Actions with OIDC |
+| Notifications | Telegram Bot API (native fetch, non-blocking) |
 | Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
 
@@ -99,20 +100,24 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 - Blog posts with Markdown rendering and syntax highlighting
 - Search and category filtering (debounced, server-side SQL filtering)
 - Auto-generated tags via Amazon Comprehend
-- Comment system with sentiment analysis
+- Comment system with sentiment analysis and Telegram notifications
+- Like button with animated heart icon
 - About page ("Sales DNA meets Cloud Architecture") with titled story sections, Roadmap timeline, animated counters, and quote block
 - Skills page with 8 skill cards, badge labels (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE), Credly cert images, project highlights, and animated progress stats
+- Impressum, Datenschutz, and Haftungsausschluss (German legal pages)
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
+- Scroll-reveal animations and hover effects on all interactive elements
 
 ### Admin Dashboard (Cognito-protected)
 - Login via Cognito Hosted UI (OAuth 2.0 code flow) with dev mode bypass
 - Dashboard overview with stat cards (posts, published, pending comments, views)
 - Recent posts and comments activity feed
 - Post management: create, edit, delete with side-by-side Markdown editor + live preview
-- Comment moderation: approve, flag, delete with status filtering
+- Comment moderation: approve, flag, delete with status filtering (scroll position preserved)
+- Telegram bot notifications for new comments (@my_tech_blog_bot)
 - Sidebar navigation with responsive mobile layout
-- *Coming later:* S3 image uploads (needs EKS deployment)
+- *Coming later:* S3 image uploads, Comprehend auto-tags
 
 ---
 
@@ -361,7 +366,16 @@ Push to main/develop or PR
 | **Full deployment** | **~$143** | **All services running** |
 | **After sprint** | **~$0.65** | **Only Route 53 + S3** |
 
-**Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after.
+**EKS Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after.
+
+### Dual-Track Hosting Plan
+
+| Track | Purpose | Monthly Cost | Infrastructure |
+|-------|---------|-------------|----------------|
+| **EKS** | Showcase for job applications | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, CloudFront) |
+| **Lightsail** | Permanent hosting | ~$5.50 | Single instance, PostgreSQL on-instance, Let's Encrypt |
+
+Same repo, separate Terraform configs and deploy workflows. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. Cognito and Comprehend stay as managed AWS services on both tracks.
 
 ---
 
@@ -398,7 +412,7 @@ Key highlights:
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 27 documented |
+| Lessons Learned | 34 documented |
 | Commits | 80+ |
 
 *Updated as the project progresses.*
@@ -414,6 +428,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** Frontend overhaul complete (PR #37), Cognito callback URL fix (PR #39/#40). Full EKS deploy + teardown lifecycle verified (Session 20), admin Cognito login working, 100% reproducible with 2 GitHub Secrets
-**Last Updated:** 2026-03-08
+**Project Status:** Session 21 complete -- engagement features (likes, comments, scroll-reveal), Telegram notifications, Haftungsausschluss page, blog content sync (K3s -> Lightsail dual-track). Full EKS lifecycle verified, 100% reproducible with 4 GitHub Secrets. Lightsail permanent hosting planned.
+**Last Updated:** 2026-03-10
 **AWS Region:** eu-central-1 (Frankfurt)
