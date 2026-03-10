@@ -224,6 +224,22 @@
     tag: "text-slate-500/70",
   };
 
+  // --- Category RGB values for card blob visuals ---
+  var CATEGORY_RGB = {
+    "DevOps & CI/CD": "14, 165, 233",
+    Certifications: "245, 158, 11",
+    "Homelab & Self-Hosting": "34, 197, 94",
+    "Networking & Security": "239, 68, 68",
+    "Tools & Productivity": "168, 85, 247",
+    "AWS & Cloud": "249, 115, 22",
+    "Career & Learning": "20, 184, 166",
+    Career: "20, 184, 166",
+    Security: "239, 68, 68",
+    Homelab: "34, 197, 94",
+    DevOps: "14, 165, 233",
+    AWS: "249, 115, 22",
+  };
+
   function getCategoryStyle(category) {
     return CATEGORY_STYLES[category] || DEFAULT_STYLE;
   }
@@ -249,6 +265,9 @@
         '<i class="ti ti-star-filled text-sm"></i></span>'
       : "";
 
+    // Category RGB for the card blob visual
+    var rgb = CATEGORY_RGB[post.category_name] || "148, 163, 184";
+
     // Build the card HTML with colored top border + glow class for gradient title
     return (
       '<article class="post-card fade-in ' +
@@ -259,14 +278,20 @@
       style.border +
       " " +
       "hover:border-slate-300 dark:hover:border-slate-600 " +
-      'cursor-pointer group" style="animation-delay: ' +
+      'cursor-pointer group relative overflow-hidden" style="animation-delay: ' +
       index * 0.1 +
       's" ' +
       "onclick=\"window.location.href='./post.html?slug=" +
       post.slug +
       "'\">" +
-      // Card body
-      '<div class="p-6">' +
+      // Category blob (subtle floating color accent)
+      '<div class="card-blob" style="background:rgba(' +
+      rgb +
+      ",0.2);animation-delay:" +
+      index * 0.3 +
+      's;"></div>' +
+      // Card body (above blob)
+      '<div class="p-6 relative" style="z-index:1;">' +
       // Category + featured star + reading time
       '<div class="flex items-center justify-between mb-3">' +
       '<div class="flex items-center gap-2">' +
@@ -290,7 +315,7 @@
       "</span>" +
       "</h2>" +
       // Excerpt
-      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">' +
+      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2 card-excerpt">' +
       post.excerpt +
       "</p>" +
       // Footer: date + tags
@@ -335,10 +360,9 @@
     if (count) {
       var isFiltered = activeCategory || searchQuery;
       if (isFiltered && totalPostCount > 0) {
-        count.textContent =
-          posts.length + " of " + totalPostCount + " articles";
+        count.textContent = posts.length + " of " + totalPostCount + " posts";
       } else {
-        count.textContent = posts.length + " articles";
+        count.textContent = posts.length + " posts";
       }
     }
 
@@ -347,7 +371,7 @@
       grid.innerHTML =
         '<div class="no-results col-span-2 text-center py-12">' +
         '<i class="ti ti-search-off text-4xl text-slate-400 dark:text-slate-600 mb-3 block"></i>' +
-        '<p class="text-slate-500 dark:text-slate-400 text-sm">No articles found.</p>' +
+        '<p class="text-slate-500 dark:text-slate-400 text-sm">No posts found.</p>' +
         '<p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Try a different search term or category.</p>' +
         "</div>";
       return;
@@ -621,7 +645,7 @@
   }
 
   // --- Save scroll position before leaving the page ---
-  // So when the user clicks "Back to all articles", we can
+  // So when the user clicks "Back to Blog Posts", we can
   // scroll them back to where they were in the post list.
   function setupScrollMemory() {
     // Save scroll position whenever user is about to leave
