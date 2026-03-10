@@ -179,7 +179,7 @@ data:
 
     Zwölf Monate voller Cloud- und DevOps-Praxis, in Vollzeit und ohne technische Vorerfahrung.
 
-    Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services auf drei Standorten, das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für Serverless-Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf eigener Infrastruktur mit K3s.
+    Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services auf drei Standorten, das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für Serverless-Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf einer kosteneffizienten Lightsail Instance.
 
     Jedes dieser Projekte hat seine eigene Geschichte. Dieser Blog erzählt sie.
 
@@ -251,7 +251,7 @@ data:
 
     **Nächster Post:** Blackbox kaputt
     Vom Provider-Router zum eigenen Netzwerk.',
-      'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde. Das Ergebnis: zunächst ein lokales Deployment, dann der Schritt in AWS und am Ende der erste eigene Server.',
+      'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde.',
       'published', false, 6, 1, 7,
       '2026-02-17T10:00:00Z'
     );
@@ -315,7 +315,7 @@ data:
 
     **Nächster Post:** Sichere Infrastruktur von Tag 1
     VPN, Reverse Proxy und Networking in der Praxis.',
-      'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk mit Enterprise-Hardware aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers ein vollständiges Homelab gewachsen ist.',
+      'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers Schritt für Schritt ein vollwertiges Homelab entstanden ist.',
       'published', false, 6, 1, 3,
       '2026-02-19T10:00:00Z'
     );
@@ -485,7 +485,7 @@ data:
 
     **Nächster Post:** EcoKart: Mein erster vollständiger Webshop auf AWS
     Architektur, Entscheidungen und was ich dabei über AWS gelernt habe.',
-      'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt vernichtet. Das war der Moment, in dem Reproduzierbarkeit für mich keine Option mehr war, sondern Pflicht -- und Terraform mein wichtigstes Werkzeug wurde.',
+      'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt entfernt. Der Moment war frustrierend -- aber wichtiger war die Frage danach: Wie baut man Infrastruktur so, dass sie jederzeit reproduzierbar ist?',
       'published', false, 6, 1, 2,
       '2026-02-24T10:00:00Z'
     );
@@ -687,7 +687,7 @@ data:
 
     Gleichzeitig kamen Uptime Kuma und Portainer dazu. Uptime Kuma überwacht 12 Services im 60-Sekunden-Takt -- per HTTP-Check, TCP-Check oder Ping. Die Perspektive, die Prometheus nicht abdeckt: Ist der Service aus Nutzersicht erreichbar? Auch hier gehen Alerts direkt auf Telegram.
 
-    ### Bestätigung durch Ernstfall
+    ### Bestätigung durch den Ernstfall
 
     Dass sich dieses Setup bewährt, habe ich relativ früh erfahren. Einmal nachts, unterwegs, mit einem Laptop, der nicht auf mein gewohntes Setup abgestimmt war -- weil ich alles ursprünglich über mein anderes MacBook konfiguriert hatte. Die Telegram-Benachrichtigungen haben mich sofort erreicht, und ich konnte das Problem remote eingrenzen und entschärfen.
 
@@ -887,7 +887,7 @@ data:
 
     **Nächster Post:** Diesen Blog auf AWS EKS deployen
     Mein Abschlussprojekt.',
-      'AWS Solutions Architect -- die Prüfung, die nicht fragt was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
+      'AWS Solutions Architect -- die Prüfung, die nicht fragt, was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
       'published', false, 6, 1, 6,
       '2026-03-08T10:00:00Z'
     );
@@ -961,13 +961,13 @@ data:
 
     Der Kern der Strategie: Alles ist vollständig reproduzierbar. Infrastruktur zerstören und in Minuten wieder aufbauen -- weil jede Konfiguration in Terraform liegt und die Deploy-Pipeline alle Werte dynamisch aus dem State liest. Kein manuelles Nachpflegen von Endpoints oder IDs nach einem Rebuild.
 
-    ### EKS + K3s: Zwei Welten
+    ### Zwei Gleise: EKS für Showcase, Lightsail für Dauerbetrieb
 
-    EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen zum Einsatz kommt.
+    EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen zum Einsatz kommt. Und genau deshalb bleibt EKS als Showcase-Infrastruktur im Repo: hochfahren, demonstrieren, herunterfahren.
 
-    Für den dauerhaften Betrieb des Blogs gehe ich parallel einen anderen Weg: K3s auf eigener Infrastruktur. Leichtgewichtig, kosteneffizient, mit eigenen Herausforderungen -- kein managed Service, der einem Cluster-Management und Networking abnimmt.
+    Für den dauerhaften Betrieb des Blogs nutze ich eine Lightsail Instance. Gleicher Code, gleiche Container, aber auf einer einzelnen $5-Maschine statt einem Kubernetes-Cluster. Cognito und Comprehend laufen weiterhin als Managed Services -- die bleiben im AWS-Ökosystem. Nur die Hosting-Schicht wird bewusst vereinfacht.
 
-    Zwei Ansätze, zwei Perspektiven. EKS zeigt, dass ich die AWS-Seite von Kubernetes verstehe. K3s zeigt, dass ich auch ohne Managed Services arbeiten kann. Und die bewusste Entscheidung zwischen beiden zeigt, dass ich einschätzen kann, wann welcher Ansatz sinnvoll ist.
+    Beide Varianten laufen aus dem gleichen Repository. Separate Terraform-Konfigurationen, separate Deploy-Workflows -- per Knopfdruck wählbar. EKS zeigt, dass ich Enterprise-Kubernetes verstehe. Lightsail zeigt, dass ich die richtige Lösung für den jeweiligen Anwendungsfall wählen kann. Und genau diese Abwägung -- nicht immer das Größte, sondern das Passende -- ist eine der wichtigsten Entscheidungen in der Cloud-Architektur.
 
     ### Reproduzierbar, nicht einmalig
 
@@ -983,7 +983,7 @@ data:
 
     Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb nochmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
       'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',
-      'published', true, 7, 1, 2,
+      'published', true, 7, 1, 1,
       '2026-03-12T10:00:00Z'
     );
 

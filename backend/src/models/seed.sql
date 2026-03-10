@@ -95,7 +95,7 @@ Cloud und DevOps, weil es genau an dieser Schnittstelle liegt: dort, wo Systeme 
 
 Zwölf Monate voller Cloud- und DevOps-Praxis -- in Vollzeit und ohne technische Vorerfahrung.
 
-Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services, verteilt über vier Umgebungen -- NAS, Hetzner, lokale Infrastruktur und AWS -- das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für serverlose Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf eigener Infrastruktur mit K3s.
+Was daraus entstanden ist, hat mich selbst überrascht. Ein Homelab mit über 50 Services, verteilt über vier Umgebungen -- NAS, Hetzner, lokale Infrastruktur und AWS -- das täglich stabil läuft. Ein vollständiger Webshop auf AWS als Showcase für serverlose Architektur. Zertifizierungen, die das Wissen untermauern. Und dieser Blog -- auf AWS EKS gebaut, um Kubernetes in der Praxis zu zeigen, dauerhaft gehostet auf einer kosteneffizienten Lightsail Instance.
 
 Jedes dieser Projekte hat seine eigene Geschichte. Dieser Blog erzählt sie.
 
@@ -177,7 +177,7 @@ Zwei Zertifizierungen. Ein Projekt, das sowohl auf AWS als auch auf eigener Infr
 Und die Erkenntnis: Lernen funktioniert für mich am besten, wenn ich etwas Echtes baue und betreibe.
 
 Der nächste Schritt kam fast zwangsläufig.',
-  'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde. Das Ergebnis: zunächst ein lokales Deployment, dann der Schritt in AWS und am Ende der erste eigene Server.',
+  'Die ersten Monate drehten sich um Grundlagen: Was eigentlich hinter dieser vielzitierten Cloud steckt. Darauf folgten zwei Zertifizierungen, eine als Kursaufgabe entstandene Mockup-Idee, erste Versuche mit Containern -- und schließlich der Punkt, an dem aus Theorie eigene Infrastruktur wurde.',
   'published', false, 6, 1, 7,
   '2026-02-17T10:00:00Z'
 );
@@ -186,7 +186,7 @@ Der nächste Schritt kam fast zwangsläufig.',
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
   'Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk',
-  'blackbox-kaputt-eigenes-netzwerk',
+  'provider-router-umstieg-unifi',
   '### Am Limit des Provider-Routers
 
 Zu diesem Zeitpunkt liefen bereits zwei zentrale Bausteine meiner Infrastruktur: ein Cloud-Server bei Hetzner und eine frisch eingerichtete Synology NAS. Zwei Systeme, die miteinander kommunizieren sollten -- und ein Heimnetzwerk, das dafür plötzlich deutlich flexibler sein musste.
@@ -247,7 +247,7 @@ In der Cloud lernt man, Services zu nutzen.
 Im Homelab lernt man, Infrastruktur zu betreiben.
 
 Genau diese Kombination hat den weiteren Weg geprägt.',
-  'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk mit Enterprise-Hardware aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers ein vollständiges Homelab gewachsen ist.',
+  'NAS bestellt, Hetzner-Server lief schon -- aber der Telekom-Router ließ sich kaum konfigurieren. Das war der Punkt, an dem ich mein eigenes Netzwerk aufgebaut habe. Wie aus den Limitierungen eines Consumer-Routers Schritt für Schritt ein vollwertiges Homelab entstanden ist.',
   'published', false, 6, 1, 3,
   '2026-02-19T10:00:00Z'
 );
@@ -341,7 +341,7 @@ Das ist kein Scheitern. Das ist Lernen.',
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
   'Sandbox kaputt, alles weg -- wie ich Terraform lieben gelernt habe',
-  'sandbox-kaputt-terraform',
+  'sandbox-reset-terraform',
   '### Wenn plötzlich alles weg ist
 
 Das Wochenende war produktiv gewesen. Lambda-Funktionen, DynamoDB, S3, CloudFront -- die Architektur stand. Am Sonntagabend lief alles so, wie ich es mir vorgestellt hatte.
@@ -478,7 +478,7 @@ Rückblickend war der Sandbox-Wipe einer der wichtigsten Momente dieser Phase.
 Er hat mich gezwungen, Infrastruktur nicht mehr als einmaliges Setup zu sehen, sondern als System, das vollständig beschrieben und jederzeit reproduziert werden kann.
 
 Terraform wurde dadurch zu einem zentralen Werkzeug in meinem Setup.',
-  'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt vernichtet. Das war der Moment, in dem Reproduzierbarkeit für mich keine Option mehr war, sondern Pflicht -- und Terraform mein wichtigstes Werkzeug wurde.',
+  'Ein Wochenende Arbeit am EcoKart-Webshop, Montagmorgen alles gelöscht. Ein automatischer Cleanup-Workflow in der Sandbox-Umgebung hat jeden Fortschritt entfernt. Der Moment war frustrierend -- aber wichtiger war die Frage danach: Wie baut man Infrastruktur so, dass sie jederzeit reproduzierbar ist?',
   'published', false, 6, 1, 2,
   '2026-02-24T10:00:00Z'
 );
@@ -584,11 +584,11 @@ Das ist kein Kursprojekt mehr. Das ist Praxiserfahrung.',
   '2026-02-26T10:00:00Z'
 );
 
--- Post 7: Das große Bild: Wie aus einzelnen Projekten eine Multi-Cloud...
+-- Post 7: Das große Bild: Wie aus einzelnen Projekten eine Hybrid-Infr...
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Das große Bild: Wie aus einzelnen Projekten eine Multi-Cloud-Architektur mit über 50 Services wurde',
-  'multi-cloud-50-services',
+  'Das große Bild: Wie aus einzelnen Projekten eine Hybrid-Infrastruktur mit über 50 Services wurde',
+  'hybrid-infrastruktur-50-services',
   '### Vor einem Jahr existierte nichts davon
 
 Wenn ich heute auf mein Homelab schaue, sehe ich etwas, das vor einem Jahr nicht existiert hat: drei Standorte, über 50 containerisierte Services, ein zentrales Monitoring, automatisierte Daten-Pipelines und ein Dashboard, von dem aus ich alles erreiche.
@@ -771,7 +771,7 @@ Mein erstes Grafana-Dashboard hatte drei Panels. Heute überwache ich damit drei
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
   'Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt und gestoppt habe',
-  'crypto-miner-angriff-erkannt',
+  'crypto-miner-nas-angriff-erkannt',
   '### NAS auf Maximum, Telegram vibriert
 
 Ich sitze am Schreibtisch, die NAS steht eine Armlänge entfernt. Normalerweise ist sie kaum hörbar. Dann, von einer Sekunde auf die nächste, dreht sie komplett auf. Lüfter auf Maximum, ein Geräusch, das ich so noch nie gehört habe. Mein erster Gedanke: Da stimmt etwas nicht.
@@ -927,7 +927,7 @@ Die Zertifizierung ergänzt meine Projekte. Sie zeigt, dass das Wissen auch in d
 Das eigentliche Learning war der Weg. Die Hunderten Fragen, die Fehleranalysen, die Kombination aus Theorie und Praxis und die ehrliche Auseinandersetzung mit den eigenen Grenzen.
 
 Die Prüfung war ein Meilenstein. Die Denkweise war schon da. Jetzt habe ich die Werkzeuge, um sie in einer neuen Domäne umzusetzen.',
-  'AWS Solutions Architect -- die Prüfung, die nicht fragt was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
+  'AWS Solutions Architect -- die Prüfung, die nicht fragt, was ein Service macht, sondern welche Lösung zu welchem Problem passt. Vorbereitet mit eigenem AWS-Account, echten Projekten und dem Anspruch, jedes Thema wirklich zu durchdringen. Warum die Denkweise nicht neu war -- und was die Prüfung trotzdem zu einer echten Herausforderung gemacht hat.',
   'published', false, 6, 1, 6,
   '2026-03-08T10:00:00Z'
 );
@@ -1013,13 +1013,13 @@ Der Kern der Strategie: Alles ist vollständig reproduzierbar. Infrastruktur zer
 
 ---
 
-### EKS + K3s: Zwei Welten
+### Zwei Gleise: EKS für Showcase, Lightsail für Dauerbetrieb
 
-EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen eingesetzt wird.
+EKS auf AWS war die bewusste Entscheidung für die Enterprise-Perspektive. Managed Control Plane, ALB Controller, IRSA für Service Accounts -- das ist das Setup, das in Unternehmen mit komplexen Anwendungen eingesetzt wird. Und genau deshalb bleibt EKS als Showcase-Infrastruktur im Repo: hochfahren, demonstrieren, herunterfahren.
 
-Für den dauerhaften Betrieb des Blogs gehe ich parallel einen anderen Weg: K3s auf eigener Infrastruktur. Leichtgewichtig, kosteneffizient, mit eigenen Herausforderungen -- kein Managed Service, der Cluster-Management und Networking übernimmt.
+Für den dauerhaften Betrieb des Blogs nutze ich eine Lightsail Instance. Gleicher Code, gleiche Container, aber auf einer einzelnen $5-Maschine statt einem Kubernetes-Cluster. Cognito und Comprehend laufen weiterhin als Managed Services -- die bleiben im AWS-Ökosystem. Nur die Hosting-Schicht wird bewusst vereinfacht.
 
-Zwei Ansätze, zwei Perspektiven. EKS zeigt, dass ich die AWS-Seite von Kubernetes verstehe. K3s zeigt, dass ich auch ohne Managed Services arbeiten kann. Und die bewusste Entscheidung zwischen beiden zeigt, dass ich einschätzen kann, wann welcher Ansatz sinnvoll ist.
+Beide Varianten laufen aus dem gleichen Repository. Separate Terraform-Konfigurationen, separate Deploy-Workflows -- per Knopfdruck wählbar. EKS zeigt, dass ich Enterprise-Kubernetes verstehe. Lightsail zeigt, dass ich die richtige Lösung für den jeweiligen Anwendungsfall wählen kann. Und genau diese Abwägung -- nicht immer das Größte, sondern das Passende -- ist eine der wichtigsten Entscheidungen in der Cloud-Architektur.
 
 ---
 
@@ -1041,7 +1041,7 @@ Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir
 
 Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb noch einmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
   'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',
-  'published', true, 7, 1, 2,
+  'published', true, 7, 1, 1,
   '2026-03-12T10:00:00Z'
 );
 
