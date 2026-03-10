@@ -581,3 +581,75 @@ The full lifecycle was verified successfully. Only 2 GitHub Secrets are needed: 
 Reproducibility is not a feature you claim -- it's a property you prove by running the full cycle. Each iteration uncovered edge cases (IAM eventual consistency #22, ALB orphans #26, Cognito callback mismatch #28) that only surface during destroy + recreate. A pipeline that has survived a full lifecycle test is fundamentally more trustworthy than one that has only ever applied to existing infrastructure. The 2-secret design (OIDC role + database password) is the minimum viable secret surface -- everything else is derived from infrastructure state.
 
 ---
+
+## #31 - Telegram Bot: Native Fetch Over NPM Packages
+
+**Date:** 2026-03-10
+**Phase:** Backend
+
+**Context:**
+The blog needed notifications when new comments are posted for moderation. AWS SES was ruled out because of sandbox issues encountered in a previous project (EcoKart) -- getting production SES access required support tickets and domain verification that took days. Email notifications also feel heavy for a simple "new comment" alert.
+
+**Decision:**
+Implemented Telegram Bot notifications using Node 18+ native `fetch()` -- no npm packages needed. The service (`backend/src/services/telegram.ts`) uses a fire-and-forget pattern: `notifyNewComment(...).catch(() => {})`. If Telegram is down or env vars are missing, the comment creation still succeeds. The bot (@my_tech_blog_bot) sends HTML-formatted messages with post title, author name, and comment preview.
+
+Two env vars (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`) are injected via K8s Secrets in the deploy pipeline. Locally, the backend runs without them -- notifications are silently skipped.
+
+**Takeaway:**
+For simple webhook-style notifications, evaluate lightweight alternatives before reaching for managed services. Telegram Bot API is free, instant, requires no approval process, and works with a single HTTP POST. The key architectural decision is making notifications non-blocking: a `.catch(() => {})` wrapper ensures notification failures never affect the user-facing response. This pattern works for any "nice to have" side effect -- logging, analytics, alerts.
+
+---
+
+## #32 - Dual-Track Hosting: Showcase vs Permanent
+
+**Date:** 2026-03-10
+**Phase:** Architecture
+
+**Context:**
+EKS costs ~$143/month with all services running. This is justified for demonstrating Kubernetes skills in job interviews, but too expensive for keeping a personal blog online permanently. The original plan mentioned "K3s migration" but lacked specifics and would still require managing a Kubernetes cluster.
+
+**Decision:**
+Dual-track hosting from a single repository:
+- **EKS track** ($143/month, sprint-only): Full AWS stack with Kubernetes, ALB, RDS, CloudFront. Spun up for demos, destroyed after. Demonstrates enterprise-grade cloud skills.
+- **Lightsail track** ($5.50/month, permanent): Single instance with PostgreSQL on-instance, nginx + Node.js, Let's Encrypt SSL. Same application code, no containers needed.
+
+Both tracks share the same Git repo. Separate Terraform configs (`terraform/` for EKS, `terraform-lightsail/` for Lightsail) and separate deploy workflows. Cognito and Comprehend remain as managed AWS services on both tracks.
+
+**Takeaway:**
+Not every workload needs Kubernetes. The same application can run on a $5.50 Lightsail instance for daily use and on a $143 EKS cluster for demonstrations. The key insight: having both tracks in one repo proves that you understand when to use which tool. Kubernetes expertise is best demonstrated by knowing when NOT to use Kubernetes.
+
+---
+
+## #33 - CSS-Only Icon Workarounds for CDN Libraries
+
+**Date:** 2026-03-10
+**Phase:** Frontend
+
+**Context:**
+The like button needed a filled heart icon. Tabler Icons provides `ti-heart-filled`, but the CDN-served webfont version did not render this specific icon -- it showed an empty square. The icon exists in the Tabler SVG set but was missing from the webfont build included in the CDN package.
+
+**Decision:**
+Replaced the icon with a pure CSS heart shape using `::before` pseudo-element with `width`, `height`, `background`, `transform: rotate(-45deg)`, and two `border-radius` pseudo-circles. The CSS heart renders identically across all browsers without any external dependency.
+
+**Takeaway:**
+CDN-hosted icon libraries may not include every icon from the full set. Webfont builds lag behind SVG releases, and specific icons can be missing without any error message -- they simply render as invisible or empty boxes. For critical UI elements, have a CSS fallback ready. Simple shapes (hearts, arrows, checkmarks) are trivial to build in pure CSS and eliminate the external dependency entirely.
+
+---
+
+## #34 - Content Sync Discipline: Single Source of Truth
+
+**Date:** 2026-03-10
+**Phase:** Blog Content
+
+**Context:**
+Blog post content existed in three places: feedback Markdown files (`feedback/posts_improvements/`), the seed SQL script (`backend/src/models/seed.sql`), and the K8s ConfigMap (`k8s/08-db-init-configmap.yaml`). After multiple editing sessions, the three sources drifted apart -- titles, excerpts, and body sections no longer matched.
+
+A comprehensive comparison revealed 7 out of 11 posts had differences between feedback files and seed SQL: changed titles, rewritten excerpts, updated section headers, and entirely new paragraphs that existed in one source but not the other.
+
+**Decision:**
+Performed a full sync across all three sources. Established the rule: seed SQL is the single source of truth for what gets deployed. Feedback files are drafts and review notes -- useful during writing but not authoritative. The ConfigMap must always be an exact copy of seed SQL.
+
+**Takeaway:**
+When content exists in multiple files, designate one as the source of truth and sync FROM it, not TO it. Content drift is invisible until you do a systematic comparison. For database-seeded content, the seed script is the canonical source because it is what actually runs in production. Draft files should be treated as input to the seed script, not as parallel truth.
+
+---
