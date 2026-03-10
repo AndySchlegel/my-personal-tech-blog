@@ -293,6 +293,8 @@ jobs:
             --from-literal=DATABASE_URL="postgresql://bloguser:${{ secrets.DB_PASSWORD }}@${{ steps.tf.outputs.rds_endpoint }}/techblog" \
             --from-literal=COGNITO_USER_POOL_ID="${{ steps.tf.outputs.cognito_user_pool_id }}" \
             --from-literal=COGNITO_CLIENT_ID="${{ steps.tf.outputs.cognito_client_id }}" \
+            --from-literal=TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+            --from-literal=TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       # Step 3: Apply services (must exist before deployments reference them).
