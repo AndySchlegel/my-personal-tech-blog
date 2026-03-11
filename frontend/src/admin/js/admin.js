@@ -430,7 +430,10 @@
     var email = AdminAuth.getUserEmail();
     var welcomeMsg = document.getElementById("welcome-msg");
     if (welcomeMsg && email) {
-      welcomeMsg.textContent = "Welcome back, " + email.split("@")[0];
+      // Extract first name from email (capitalize first letter)
+      var username = email.split("@")[0].split(".")[0];
+      var firstName = username.charAt(0).toUpperCase() + username.slice(1);
+      welcomeMsg.textContent = "Welcome back " + firstName;
     }
 
     // Set up logout button
