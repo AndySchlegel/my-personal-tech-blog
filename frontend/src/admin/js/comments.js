@@ -321,9 +321,5 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     init();
-    // Auto-refresh comments every 15 seconds
-    setInterval(function () {
-      loadComments(currentFilter);
-    }, 15000);
   });
 })();
