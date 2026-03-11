@@ -142,6 +142,18 @@
         icon: "ti-eye",
         color: "purple",
       },
+      {
+        label: "Total Likes",
+        value: stats.likes ? stats.likes.total : 0,
+        icon: "ti-heart",
+        color: "rose",
+      },
+      {
+        label: "Flagged",
+        value: stats.comments.flagged,
+        icon: "ti-flag",
+        color: "red",
+      },
     ];
 
     var colorMap = {
@@ -164,6 +176,16 @@
         bg: "bg-purple-500/10",
         text: "text-purple-500",
         border: "border-t-purple-500",
+      },
+      rose: {
+        bg: "bg-rose-500/10",
+        text: "text-rose-500",
+        border: "border-t-rose-500",
+      },
+      red: {
+        bg: "bg-red-500/10",
+        text: "text-red-500",
+        border: "border-t-red-500",
       },
     };
 
@@ -205,6 +227,102 @@
       var target = parseInt(el.getAttribute("data-target"), 10);
       animateCounter(el, target);
     });
+  }
+
+  // --- Render sentiment overview (Comprehend analysis) ---
+  function renderSentimentOverview(sentiment) {
+    var container = document.getElementById("sentiment-overview");
+    if (!container || !sentiment) return;
+
+    var total =
+      (sentiment.positive || 0) +
+      (sentiment.negative || 0) +
+      (sentiment.neutral || 0) +
+      (sentiment.mixed || 0);
+
+    if (total === 0) {
+      container.innerHTML =
+        '<div class="text-center text-sm text-slate-400 dark:text-slate-500">' +
+        '<i class="ti ti-mood-empty text-3xl block mb-2"></i>' +
+        "No sentiment data yet. Comments will be analyzed by Comprehend automatically." +
+        "</div>";
+      return;
+    }
+
+    var items = [
+      {
+        label: "Positive",
+        count: sentiment.positive || 0,
+        icon: "ti-mood-happy",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500",
+      },
+      {
+        label: "Neutral",
+        count: sentiment.neutral || 0,
+        icon: "ti-mood-empty",
+        color: "text-slate-400",
+        bg: "bg-slate-400",
+      },
+      {
+        label: "Mixed",
+        count: sentiment.mixed || 0,
+        icon: "ti-mood-puzzled",
+        color: "text-amber-500",
+        bg: "bg-amber-500",
+      },
+      {
+        label: "Negative",
+        count: sentiment.negative || 0,
+        icon: "ti-mood-sad",
+        color: "text-rose-500",
+        bg: "bg-rose-500",
+      },
+    ];
+
+    // Sentiment bar (visual breakdown)
+    var barHtml =
+      '<div class="flex h-3 rounded-full overflow-hidden mb-4 bg-slate-100 dark:bg-slate-700">';
+    items.forEach(function (item) {
+      var pct = total > 0 ? (item.count / total) * 100 : 0;
+      if (pct > 0) {
+        barHtml +=
+          '<div class="' +
+          item.bg +
+          '" style="width:' +
+          pct +
+          '%" title="' +
+          item.label +
+          ": " +
+          item.count +
+          '"></div>';
+      }
+    });
+    barHtml += "</div>";
+
+    // Legend with counts
+    var legendHtml = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">';
+    items.forEach(function (item) {
+      legendHtml +=
+        '<div class="flex items-center gap-2">' +
+        '<i class="ti ' +
+        item.icon +
+        " " +
+        item.color +
+        ' text-lg"></i>' +
+        "<div>" +
+        '<span class="text-sm font-semibold text-slate-900 dark:text-white">' +
+        item.count +
+        "</span>" +
+        '<span class="text-xs text-slate-400 dark:text-slate-500 ml-1">' +
+        item.label +
+        "</span>" +
+        "</div>" +
+        "</div>";
+    });
+    legendHtml += "</div>";
+
+    container.innerHTML = barHtml + legendHtml;
   }
 
   // --- Render recent posts ---
@@ -353,6 +471,7 @@
 
     // Render everything
     renderStatCards(stats);
+    renderSentimentOverview(stats.sentiment);
     renderRecentPosts(stats.recentPosts);
     renderRecentComments(stats.recentComments);
   }

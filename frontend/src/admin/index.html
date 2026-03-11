@@ -161,7 +161,7 @@
         </div>
 
         <!-- Stat Cards -->
-        <div id="stat-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div id="stat-cards" class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <!-- Skeleton cards while loading -->
           <div class="admin-stat-card">
             <div
@@ -194,6 +194,24 @@
             <div
               class="skeleton h-8 w-12 bg-slate-200 dark:bg-slate-700 rounded"
             ></div>
+          </div>
+        </div>
+
+        <!-- Sentiment Overview (Comprehend) -->
+        <div class="mb-8 fade-in" style="animation-delay: 0.05s">
+          <h2
+            class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-4"
+          >
+            <i class="ti ti-brain text-sky-500"></i>
+            Comprehend Sentiment
+          </h2>
+          <div
+            id="sentiment-overview"
+            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-5"
+          >
+            <div class="text-center text-sm text-slate-400 dark:text-slate-500">
+              Loading...
+            </div>
           </div>
         </div>
 

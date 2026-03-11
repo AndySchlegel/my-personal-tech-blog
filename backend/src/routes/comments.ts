@@ -88,17 +88,27 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
 
     // Run Comprehend sentiment analysis in the background (non-blocking).
     // Updates the comment's sentiment columns after the response is sent.
+    // Auto-moderation: NEGATIVE comments with >= 70% confidence get auto-flagged.
     // If Comprehend is unavailable (local dev), analyzeSentiment returns null.
     analyzeSentiment(content)
-      .then((sentimentResult) => {
+      .then(async (sentimentResult) => {
         if (sentimentResult) {
-          query('UPDATE comments SET sentiment = $1, sentiment_score = $2 WHERE id = $3', [
-            sentimentResult.sentiment,
-            sentimentResult.confidence,
-            commentId,
-          ]).catch((err) => {
-            console.warn('Failed to save sentiment result:', (err as Error).message);
-          });
+          // Auto-flag strongly negative comments for manual review
+          const autoFlag =
+            sentimentResult.sentiment === 'NEGATIVE' && sentimentResult.confidence >= 0.7;
+
+          await query(
+            'UPDATE comments SET sentiment = $1, sentiment_score = $2' +
+              (autoFlag ? ", status = 'flagged'" : '') +
+              ' WHERE id = $3',
+            [sentimentResult.sentiment, sentimentResult.confidence, commentId]
+          );
+
+          if (autoFlag) {
+            console.log(
+              `Comment ${commentId} auto-flagged: ${sentimentResult.sentiment} (${sentimentResult.confidence})`
+            );
+          }
         }
       })
       .catch(() => {});

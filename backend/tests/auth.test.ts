@@ -68,7 +68,7 @@ describe('Auth middleware - Dev mode', () => {
   it('should allow GET /api/admin/stats without auth in dev mode', async () => {
     const { query } = require('../src/models/database');
 
-    // The admin stats endpoint runs 6 parallel queries
+    // The admin stats endpoint runs 7 parallel queries
     query.mockResolvedValueOnce({
       rows: [{ total: 12, published: 10, drafts: 2 }],
       command: 'SELECT',
@@ -107,6 +107,14 @@ describe('Auth middleware - Dev mode', () => {
     // Sentiment stats query (Comprehend analysis breakdown)
     query.mockResolvedValueOnce({
       rows: [{ positive: 2, negative: 0, neutral: 1, mixed: 0, unanalyzed: 2 }],
+      command: 'SELECT',
+      rowCount: 1,
+      oid: 0,
+      fields: [],
+    });
+    // Like stats query (total likes across all posts)
+    query.mockResolvedValueOnce({
+      rows: [{ total: 42 }],
       command: 'SELECT',
       rowCount: 1,
       oid: 0,
