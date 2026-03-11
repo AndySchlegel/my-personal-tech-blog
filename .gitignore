@@ -40,3 +40,6 @@ docker-compose.override.yml
 # AI / Claude Code (local only)
 CLAUDE.md
 .claude/
+
+# Feedback (local only, not for repo)
+Feedback/

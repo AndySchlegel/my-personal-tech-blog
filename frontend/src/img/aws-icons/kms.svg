@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Icon-Architecture/64/Arch_AWS-KMS_64</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g fill="#DD344C">
+            <rect x="0" y="0" width="80" height="80"/>
+        </g>
+        <!-- Key shape -->
+        <g transform="translate(12, 26)" fill="#FFFFFF">
+            <!-- Key head (circular part with hole) -->
+            <circle cx="16" cy="14" r="14" fill="#FFFFFF"/>
+            <circle cx="16" cy="14" r="6" fill="#DD344C"/>
+            <!-- Key shaft -->
+            <rect x="28" y="11" width="30" height="6" rx="1"/>
+            <!-- Key teeth -->
+            <rect x="48" y="17" width="4" height="8" rx="1"/>
+            <rect x="40" y="17" width="4" height="6" rx="1"/>
+            <rect x="54" y="17" width="4" height="10" rx="1"/>
+        </g>
+    </g>
+</svg>
