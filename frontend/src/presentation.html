@@ -506,6 +506,57 @@
         >
           Lessons
         </button>
+        <button
+          class="tab-btn"
+          data-tab="eks-vs-serverless"
+          style="
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+          "
+        >
+          EKS vs. Serverless
+        </button>
+        <button
+          class="tab-btn"
+          data-tab="live-demo"
+          style="
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+          "
+        >
+          Live-Demo
+        </button>
+        <button
+          class="tab-btn"
+          data-tab="ausblick"
+          style="
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+          "
+        >
+          Ausblick
+        </button>
       </div>
     </nav>
 
@@ -643,7 +694,7 @@
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center"
           >
             <div class="text-3xl font-extrabold text-purple-500 stat-value">
-              34
+              35
             </div>
             <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Lessons Learned
@@ -1898,8 +1949,8 @@
           Kubernetes auf EKS
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          10 Manifest-Dateien, nummeriert (00-09) fuer selbstdokumentierende
-          Apply-Reihenfolge
+          11 Manifest-Dateien, nummeriert (00-10) fuer selbstdokumentierende
+          Apply-Reihenfolge &mdash; IRSA + HPA + Metrics-Server
         </p>
 
         <!-- Manifest overview -->
@@ -1946,6 +1997,10 @@
               <div class="flex items-center gap-2">
                 <span class="text-sky-500">09</span> DB Init Job
                 (postgres:16-alpine)
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sky-500">10</span> HPA (Backend 1-4, Frontend
+                1-3)
               </div>
             </div>
           </div>
@@ -1999,6 +2054,21 @@
                 <span
                   ><strong class="text-slate-300">DB Init als Job</strong>
                   &mdash; idempotentes Schema + Seed gegen RDS</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  ><strong class="text-slate-300">IRSA</strong> &mdash;
+                  Pod-Level IAM fuer Comprehend (nicht Node-Level)</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  ><strong class="text-slate-300">HPA + Metrics-Server</strong>
+                  &mdash; CPU-basiertes Auto-Scaling (1-4 Backend, 1-3
+                  Frontend)</span
                 >
               </li>
             </ul>
@@ -2190,6 +2260,62 @@
           </div>
         </div>
 
+        <!-- Auto-Moderation + Sarcasm Limitation -->
+        <div class="grid sm:grid-cols-2 gap-6 mb-8">
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="ti ti-shield-check text-red-500"></i>
+              Auto-Moderation
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              Kommentare mit NEGATIVE Sentiment &ge; 70% Confidence werden
+              automatisch geflaggt. Admin sieht Sentiment-Badges im Dashboard.
+            </p>
+            <div
+              class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
+            >
+              <div class="text-red-500 mb-1">// Auto-Flag Regel</div>
+              <div>if (sentiment === "NEGATIVE"</div>
+              <div>&nbsp;&nbsp;&nbsp;&amp;&amp; confidence &ge; 0.70)</div>
+              <div class="text-red-400 mt-1">
+                &rarr; status = "flagged" (automatisch)
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="ti ti-alert-triangle text-amber-500"></i>
+              Limitation: Deutsche Ironie
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              Comprehend erkennt keine Ironie oder Sarkasmus im Deutschen.
+              Manuelle Moderation bleibt noetig.
+            </p>
+            <div
+              class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
+            >
+              <div class="text-amber-500 mb-1">// Sarkasmus-Beispiel</div>
+              <div>"Ganz schoen ueberzogen dargestellt!"</div>
+              <div class="text-emerald-400 mt-1">
+                &rarr; POSITIVE 100% <span class="text-red-400">(falsch!)</span>
+              </div>
+              <div class="text-slate-500 mt-2 text-[10px]">
+                "schoen" triggert den Positiv-Detektor, obwohl sarkastisch
+                gemeint
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Telegram notifications -->
         <div
           class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
@@ -2234,7 +2360,7 @@
           Lessons Learned
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          34 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
+          35 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
           Loesung
         </p>
 
@@ -2377,6 +2503,28 @@
               nutzt.
             </p>
           </div>
+          <div
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-2 border-amber-500/50 dark:border-amber-500/30 p-5"
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span
+                class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                >#35</span
+              >
+              <span
+                class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-500"
+                >WICHTIG</span
+              >
+              <span class="font-bold text-sm text-slate-900 dark:text-white"
+                >Comprehend: Deutsche Ironie</span
+              >
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              "Ganz schoen ueberzogen dargestellt!" &rarr; POSITIVE 100%.
+              Comprehend erkennt keinen deutschen Sarkasmus. Manuelle Moderation
+              bleibt Pflicht.
+            </p>
+          </div>
         </div>
 
         <!-- Stats summary -->
@@ -2400,7 +2548,7 @@
               </div>
             </div>
             <div>
-              <div class="text-2xl font-extrabold text-amber-500">11</div>
+              <div class="text-2xl font-extrabold text-amber-500">12</div>
               <div class="text-xs text-slate-500 dark:text-slate-400">
                 Blog-Artikel (DE)
               </div>
@@ -2411,6 +2559,649 @@
                 Reproduzierbar
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+      <!-- ==================== TAB 9: EKS vs. SERVERLESS ==================== -->
+      <section
+        class="tab-panel"
+        id="panel-eks-vs-serverless"
+        style="display: none"
+      >
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+          >
+            <i class="ti ti-arrows-exchange text-xl text-orange-500"></i>
+          </span>
+          Warum EKS statt Serverless?
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Architektur-Entscheidung: Container-Orchestrierung vs. Lambda + API
+          Gateway
+        </p>
+
+        <!-- Comparison Table -->
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8"
+        >
+          <div
+            class="grid grid-cols-3 text-xs font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-800"
+          >
+            <div class="p-4 text-slate-500">Kriterium</div>
+            <div class="p-4 text-sky-500">EKS / Kubernetes</div>
+            <div class="p-4 text-purple-500">Serverless / Lambda</div>
+          </div>
+          <div
+            class="grid grid-cols-3 text-sm border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="p-4 font-medium text-slate-700 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800"
+            >
+              Container-Wissen
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              <span class="text-emerald-500 font-bold">Hoch</span> &mdash;
+              Docker, K8s-Manifeste, Pod-Lifecycle
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">Niedrig</div>
+          </div>
+          <div
+            class="grid grid-cols-3 text-sm border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="p-4 font-medium text-slate-700 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800"
+            >
+              Kubernetes-Wissen
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              <span class="text-emerald-500 font-bold">Hoch</span> &mdash;
+              Deployments, Services, Ingress, HPA, IRSA
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">Keins</div>
+          </div>
+          <div
+            class="grid grid-cols-3 text-sm border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="p-4 font-medium text-slate-700 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800"
+            >
+              Kosten im Betrieb
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              ~$0.25/h wenn aktiv (~$143/Sprint)
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              Nahezu $0 (Free Tier)
+            </div>
+          </div>
+          <div
+            class="grid grid-cols-3 text-sm border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="p-4 font-medium text-slate-700 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800"
+            >
+              Typisch bei
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              Groessere Teams, komplexe Apps
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              Startups, event-driven Workloads
+            </div>
+          </div>
+          <div
+            class="grid grid-cols-3 text-sm border-t border-slate-200 dark:border-slate-700"
+          >
+            <div
+              class="p-4 font-medium text-slate-700 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800"
+            >
+              Praxisrelevanz
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              <span class="text-emerald-500 font-bold">Ja</span> &mdash; beide
+              Muster dominieren im Cloud-Bereich
+            </div>
+            <div class="p-4 text-slate-600 dark:text-slate-400">
+              <span class="text-emerald-500 font-bold">Ja</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decision rationale -->
+        <div class="grid sm:grid-cols-2 gap-6 mb-8">
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="devicon-kubernetes-plain colored text-lg"></i>
+              Warum EKS gewaehlt
+            </h3>
+            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span>Tiefes Verstaendnis fuer Container-Orchestrierung</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Enterprise-relevante Architektur (Deployments, Services,
+                  Ingress, HPA)</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >IRSA: Pod-Level IAM statt Node-Level &mdash; Security Best
+                  Practice</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >ALB Controller: K8s Ingress erzeugt echte AWS ALBs
+                  automatisch</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span>CKA-Vorbereitung als Lernziel</span>
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="ti ti-bolt text-amber-500"></i>
+              Kostenbewusstsein
+            </h3>
+            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
+                  >EKS nur fuer Showcase/Demos &mdash; gezielt hoch- und
+                  runterfahren</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Spot Instances (t3.medium + t3a.medium) &mdash; ~70%
+                  guenstiger</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span>Node Group auf 0 skalierbar wenn nicht aktiv</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Lightsail als Dauerbetrieb-Alternative (~$5.50/Monat)</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
+                  >terraform destroy runterfahren wenn nicht entwickelt
+                  wird</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom quote -->
+        <div
+          class="bg-gradient-to-r from-orange-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6 text-center"
+        >
+          <p
+            class="text-sm text-slate-600 dark:text-slate-400 italic max-w-2xl mx-auto"
+          >
+            "K8s und Lambda sind die zwei dominierenden Muster im Cloud-Bereich.
+            Wer beides kennt hat einen klaren Vorteil. Fuer das Abschlussprojekt
+            reicht eines &mdash; aber es lohnt sich, das andere danach selbst
+            auszuprobieren."
+          </p>
+          <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">
+            &mdash; Aufgabenstellung, Seite 2
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 10: LIVE-DEMO ==================== -->
+      <section class="tab-panel" id="panel-live-demo" style="display: none">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center"
+          >
+            <i class="ti ti-terminal-2 text-xl text-emerald-500"></i>
+          </span>
+          Live-Demo &mdash; Terminal-Befehle
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Leitfaden fuer die Live-Demonstration am Terminal
+        </p>
+
+        <!-- Step 1: Cluster Overview -->
+        <div class="space-y-6">
+          <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-sky-500 text-white text-xs font-bold flex items-center justify-center"
+                >1</span
+              >
+              Cluster-Ueberblick
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"
+                  ># Alle Ressourcen im blog Namespace</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get all -n blog
+              </div>
+              <div>
+                <span class="text-slate-500"
+                  ># Pods mit Status und Restarts</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get pods -n blog
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Zeigt: 2x Backend, 1-2x Frontend Pods, alle Running, 0 Restarts
+            </p>
+          </div>
+
+          <!-- Step 2: HPA -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-amber-500 text-white text-xs font-bold flex items-center justify-center"
+                >2</span
+              >
+              HPA &amp; Auto-Scaling
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"># HPA Status mit CPU-Werten</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get hpa -n blog
+              </div>
+              <div>
+                <span class="text-slate-500"># Live CPU/Memory pro Pod</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl top pods -n blog
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              HPA zeigt cpu: 1%/70% &mdash; bei Last skaliert Backend auf bis zu
+              4 Replicas
+            </p>
+          </div>
+
+          <!-- Step 3: IRSA -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-purple-500 text-white text-xs font-bold flex items-center justify-center"
+                >3</span
+              >
+              IRSA &mdash; Pod-Level IAM
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"
+                  ># ServiceAccount mit IRSA-Annotation</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get sa -n blog
+                blog-backend -o yaml
+              </div>
+              <div>
+                <span class="text-slate-500"
+                  ># Pod zeigt injected AWS credentials</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl describe pod -n blog
+                -l app=blog-backend | grep -A5 "Service Account"
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              IRSA injiziert AWS_ROLE_ARN + Token direkt in den Pod &mdash; nur
+              der Backend-Pod hat Comprehend-Zugriff, nicht die Nodes
+            </p>
+          </div>
+
+          <!-- Step 4: Comprehend Live -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-teal-500 text-white text-xs font-bold flex items-center justify-center"
+                >4</span
+              >
+              Comprehend Live testen
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"
+                  ># Backend-Logs (Comprehend-Output sichtbar)</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl logs -n blog -l
+                app=blog-backend --tail=20
+              </div>
+              <div>
+                <span class="text-slate-500"
+                  ># Dann im Browser: Kommentar posten</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Positiv: "Super Artikel, danke!"</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Negativ: "Das ist kompletter Muell!"</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Ironie: "Ganz schoen ueberzogen!"</span
+                >
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Negativ &ge; 70% wird automatisch geflaggt. Ironie wird falsch als
+              POSITIVE erkannt &mdash; zeigt Comprehend-Limitation
+            </p>
+          </div>
+
+          <!-- Step 5: Admin Dashboard -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-rose-500 text-white text-xs font-bold flex items-center justify-center"
+                >5</span
+              >
+              Admin-Dashboard zeigen
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"># Im Browser oeffnen:</span><br />
+                <span class="text-sky-400">https://</span
+                >blog.aws.his4irness23.de/admin/
+              </div>
+              <div>
+                <span class="text-slate-400"
+                  ># Cognito Login &rarr; Dashboard</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Zeigen: Stat Cards, Sentiment-Bar,</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Kommentare mit Badges, Auto-Refresh</span
+                >
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Dashboard refreshed automatisch alle 15 Sekunden &mdash; neue
+              Kommentare und Sentiment-Aenderungen sind sofort sichtbar
+            </p>
+          </div>
+
+          <!-- Step 6: Full Lifecycle -->
+          <div
+            class="bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-emerald-500 text-white text-xs font-bold flex items-center justify-center"
+                >6</span
+              >
+              Reproduzierbarkeit beweisen (optional)
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              GitHub Actions &rarr; "Destroy Infrastructure" &rarr; alles weg in
+              ~13 Min. Danach "Provision" + "Deploy" &rarr; Blog ist wieder
+              live. Kein einziges manuelles Secret-Update.
+            </p>
+            <div class="flex flex-wrap items-center gap-3 text-sm">
+              <div
+                class="px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-medium"
+              >
+                <i class="ti ti-arrow-down mr-1"></i>Destroy (~13 Min)
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
+              >
+                <i class="ti ti-arrow-up mr-1"></i>Provision
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
+              >
+                <i class="ti ti-rocket mr-1"></i>Deploy
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium"
+              >
+                <i class="ti ti-world mr-1"></i>Blog Live
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 11: AUSBLICK ==================== -->
+      <section class="tab-panel" id="panel-ausblick" style="display: none">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center"
+          >
+            <i class="ti ti-rocket text-xl text-indigo-500"></i>
+          </span>
+          Ausblick &mdash; Produktiv-Erweiterungen
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Sinnvolle Erweiterungen fuer eine echte Produktivumgebung &mdash;
+          bewusst nicht im Demo-Scope
+        </p>
+
+        <!-- Extensions Grid -->
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+          <!-- Redis -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="devicon-redis-plain colored text-xl"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                Redis / ElastiCache
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Haeufige DB-Abfragen cachen, Session-Management. Reduziert
+              RDS-Last und verbessert Antwortzeiten.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-emerald-500">cache.t3.micro ~$13/Monat</span>
+              <span class="text-slate-400">Produktiv sinnvoll</span>
+            </div>
+          </div>
+
+          <!-- Multi-AZ -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-database text-xl text-sky-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                Multi-AZ RDS
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Automatisches Failover bei AZ-Ausfall. Hochverfuegbarkeit fuer die
+              Datenbank ohne manuellen Eingriff.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-amber-500"
+                >Verdoppelt RDS-Kosten (~$15 extra)</span
+              >
+              <span class="text-slate-400">Produktiv Pflicht</span>
+            </div>
+          </div>
+
+          <!-- WAF -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-shield-lock text-xl text-purple-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                WAF (Web Application Firewall)
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Schutz vor SQL Injection, XSS, Bot-Traffic. Managed Rules von AWS
+              vor den ALB geschaltet.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-amber-500">~$6-10/Monat</span>
+              <span class="text-slate-400">Fuer Demo kein Mehrwert</span>
+            </div>
+          </div>
+
+          <!-- CloudWatch -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-chart-line text-xl text-amber-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                CloudWatch Logging
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Zentrales Log-Management aller Anwendungs-Logs. Fehlersuche ueber
+              alle Pods hinweg.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-amber-500">~$3-5/Monat</span>
+              <span class="text-slate-400">kubectl logs reicht fuer Demo</span>
+            </div>
+          </div>
+
+          <!-- SNS -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-emerald-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-bell text-xl text-emerald-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                SNS Notifications
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              E-Mail/SMS-Benachrichtigungen bei Events. Aktuell via Telegram
+              geloest (funktioniert, aber nicht AWS-nativ).
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-emerald-500">Kostenlos (Free Tier)</span>
+              <span class="text-slate-400">Telegram reicht</span>
+            </div>
+          </div>
+
+          <!-- Disaster Recovery -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-arrows-minimize text-xl text-slate-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                Disaster Recovery
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Dokumentierter Wiederherstellungsplan, Cross-Region Backups.
+              Zeitaufwand hoch, aber fuer Produktion essenziell.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-emerald-500">Kein Kostenaufwand</span>
+              <span class="text-slate-400">Zeitaufwand zu hoch fuer Demo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fazit -->
+        <div
+          class="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+        >
+          <h3 class="font-bold text-slate-900 dark:text-white mb-3">
+            <i class="ti ti-bulb text-amber-500 mr-1"></i>
+            Fazit: Scope-Bewusstsein
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Jede Erweiterung wurde bewusst evaluiert und mit konkreten Kosten
+            dokumentiert. Die Entscheidung, Features NICHT zu implementieren,
+            zeigt genauso viel Architektur-Verstaendnis wie die Implementierung
+            selbst.
+          </p>
+          <div class="flex flex-wrap gap-3 text-xs">
+            <span
+              class="px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+              >Lambda + SQS: kostenlos einbaubar</span
+            >
+            <span
+              class="px-2 py-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+              >Redis + Multi-AZ: Produktiv-Features</span
+            >
+            <span
+              class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500"
+              >WAF + DR: Enterprise-Scope</span
+            >
           </div>
         </div>
       </section>
