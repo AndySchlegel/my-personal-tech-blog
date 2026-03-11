@@ -653,3 +653,40 @@ Performed a full sync across all three sources. Established the rule: seed SQL i
 When content exists in multiple files, designate one as the source of truth and sync FROM it, not TO it. Content drift is invisible until you do a systematic comparison. For database-seeded content, the seed script is the canonical source because it is what actually runs in production. Draft files should be treated as input to the seed script, not as parallel truth.
 
 ---
+
+## #35 Amazon Comprehend: German Sarcasm and Irony Detection Limitation
+
+> **IMPORTANT for presentation:** This is a real-world limitation worth showcasing.
+> It demonstrates critical thinking about managed AI services -- knowing what they
+> can and cannot do is just as valuable as knowing how to integrate them.
+
+**Date:** 2026-03-11
+**Phase:** Comprehend Integration (EKS)
+
+**Context:**
+After deploying Comprehend sentiment analysis on EKS (via IRSA), we tested it with German comments. Obvious cases worked perfectly: clear insults were flagged as NEGATIVE with high confidence, and genuine praise was detected as POSITIVE. The auto-moderation rule (NEGATIVE >= 70% -> auto-flag) caught truly hostile comments immediately.
+
+However, the comment "Ganz schoen ueberzogen dargestellt!" was classified as **POSITIVE 100%** by Comprehend. This comment is actually critical/negative -- it means "Quite exaggerated!" or "Pretty overblown!". The word "schoen" (nice/pretty) triggered Comprehend's positive sentiment detector, even though it is used sarcastically here as an intensifier, not as a compliment.
+
+**Root Cause:**
+Amazon Comprehend uses statistical NLP models that analyze word-level signals. In German, sarcasm and irony often use positive-sounding words in a negative context. Comprehend does not understand this pragmatic layer of language -- it sees "schoen" and scores positively. This is a known limitation of bag-of-words and transformer-based sentiment models, especially for languages with rich sarcastic traditions like German.
+
+**What Comprehend handles well:**
+- Direct insults and profanity (NEGATIVE, high confidence)
+- Clear praise and gratitude (POSITIVE, high confidence)
+- Neutral factual statements (NEUTRAL)
+- Mixed reviews with both positive and negative elements (MIXED)
+
+**What Comprehend misses:**
+- Sarcasm ("Ganz schoen ueberzogen" -> falsely POSITIVE)
+- Irony ("Na toll, super gemacht" -> falsely POSITIVE)
+- Understatement ("Nicht gerade ueberzeugend" -> may miss negativity)
+- Cultural context and idiomatic expressions
+
+**Decision:**
+Kept Comprehend as a first-pass filter but made clear that manual moderation is still required. The auto-flag rule only catches obviously negative comments. Sarcastic or ironic comments slip through and need human review. This is documented as expected behavior, not a bug.
+
+**Takeaway:**
+Managed AI services like Comprehend are powerful for obvious cases but have blind spots with nuanced language. German sarcasm is a known weak point. Always combine automated analysis with human moderation. For a blog comment system, this is acceptable -- the admin dashboard shows sentiment badges so the moderator can quickly spot misclassifications. For safety-critical applications (hate speech detection, content policy enforcement), a single-service approach would not be sufficient.
+
+---
