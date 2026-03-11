@@ -11,6 +11,7 @@ import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
 import { CreateCommentRequest } from '../models/types';
 import { requireAuth } from '../middleware/auth';
+import { notifyNewComment } from '../services/telegram';
 
 export const commentsRouter = Router();
 
@@ -56,11 +57,15 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
     }
 
     // Check if the post exists
-    const postCheck = await query('SELECT id FROM posts WHERE id = $1', [postId]);
+    // Also fetch title for the Telegram notification
+    const postCheck = await query('SELECT id, title FROM posts WHERE id = $1', [postId]);
     if (postCheck.rows.length === 0) {
       res.status(404).json({ error: 'Post not found' });
       return;
     }
+
+    // Fetch post title for the notification message
+    const postTitle = postCheck.rows[0].title || 'Unknown post';
 
     const result = await query(
       `INSERT INTO comments (post_id, author_name, author_email, content)
@@ -68,6 +73,15 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
       RETURNING id, author_name, content, status, created_at`,
       [postId, author_name, author_email || null, content]
     );
+
+    // Send Telegram notification (non-blocking, never fails the request)
+    notifyNewComment({
+      authorName: author_name,
+      postTitle: postTitle,
+      content: content,
+      postId: Number(postId),
+      commentId: result.rows[0].id,
+    }).catch(() => {});
 
     res.status(201).json(result.rows[0]);
   } catch (err) {

@@ -104,6 +104,55 @@ module "cognito" {
   domain_name  = local.blog_domain # For callback URLs
 }
 
+# ALB ACM Certificate: SSL cert for the Application Load Balancer.
+# This is a SEPARATE cert from the CloudFront cert (which is in us-east-1).
+# ALBs can only use certificates from their own region (eu-central-1 here).
+# Both certs cover the same domain but serve different AWS services.
+# ACM certs are free -- no additional cost for having two.
+# The DNS validation CNAME is identical to the CloudFront cert's
+# (same domain = same validation record), so allow_overwrite = true.
+resource "aws_acm_certificate" "alb" {
+  domain_name       = local.blog_domain
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name = "${var.project_name}-alb-cert"
+  }
+}
+
+# DNS validation record for the ALB cert.
+# ACM uses the same CNAME for the same domain regardless of region,
+# so this record is identical to the CloudFront cert validation record.
+# allow_overwrite = true prevents conflicts.
+resource "aws_route53_record" "alb_cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.alb.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  ttl     = 60
+  records = [each.value.record]
+
+  allow_overwrite = true
+}
+
+# Wait for ACM to validate the ALB certificate.
+# Blocks until the DNS record is verified and the cert is issued.
+resource "aws_acm_certificate_validation" "alb" {
+  certificate_arn         = aws_acm_certificate.alb.arn
+  validation_record_fqdns = [for record in aws_route53_record.alb_cert_validation : record.fqdn]
+}
+
 # ==================== WAVE 2: Database (~$13/month) ====================
 
 # RDS: Managed PostgreSQL database.
@@ -140,6 +189,48 @@ module "eks" {
   node_desired           = var.eks_node_desired
   node_min               = var.eks_node_min
   node_max               = var.eks_node_max
+}
+
+# Cross-module SG rule: allow EKS pods to reach RDS on port 5432.
+# EKS creates its own "cluster security group" and attaches it to all nodes.
+# Our custom EKS node SG (from security-groups module) is passed to the
+# cluster config but NOT used by managed node groups. So the existing
+# RDS ingress rule (which references our custom SG) doesn't match.
+# This rule adds the EKS-managed cluster SG as a second allowed source.
+# Lives in root main.tf because it connects two modules (EKS + SG).
+resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
+  security_group_id            = module.security_groups.rds_sg_id
+  description                  = "PostgreSQL from EKS cluster SG (pods)"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 5432
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
+}
+
+# Cross-module SG rules: allow ALB to reach pods on port 80.
+# Same issue as the RDS rule above (Lesson #23): EKS managed node groups
+# use the auto-created cluster SG, not our custom eks_nodes SG.
+# The ALB egress rule in security-groups module references the custom SG,
+# so it doesn't match. These rules connect ALB SG to the actual cluster SG.
+# When security-groups annotation is set on the Ingress, the ALB Controller
+# does NOT auto-manage SG rules -- we must add them ourselves.
+resource "aws_vpc_security_group_egress_rule" "alb_to_eks_cluster_sg" {
+  security_group_id            = module.security_groups.alb_sg_id
+  description                  = "Forward traffic to EKS pods (cluster SG)"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks_cluster_sg_from_alb" {
+  #checkov:skip=CKV_AWS_260:Port 80 is SG-to-SG only (ALB->pods), not open to internet
+  security_group_id            = module.eks.cluster_security_group_id
+  description                  = "HTTP from ALB (target-type ip)"
+  referenced_security_group_id = module.security_groups.alb_sg_id
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
 }
 
 # CloudFront: CDN for serving blog assets (images) with HTTPS.

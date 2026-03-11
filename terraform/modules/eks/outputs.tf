@@ -40,6 +40,15 @@ output "node_role_arn" {
   # Useful for adding additional policies to nodes later.
 }
 
+output "cluster_security_group_id" {
+  description = "EKS-managed cluster security group ID"
+  value       = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+  # EKS creates this SG automatically and attaches it to all nodes.
+  # Our custom node SG (from security-groups module) is NOT used by nodes.
+  # Any SG rules that need to allow traffic FROM EKS pods must reference
+  # this SG, not our custom one.
+}
+
 output "alb_controller_role_arn" {
   description = "ARN of the ALB controller IRSA role"
   value       = aws_iam_role.alb_controller.arn

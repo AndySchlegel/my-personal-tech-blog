@@ -99,14 +99,14 @@ resource "aws_cognito_user_pool_client" "admin" {
   # The frontend catches the authorization code at /admin/callback
   # and exchanges it for JWT tokens.
   callback_urls = [
-    "https://${var.domain_name}/admin/callback", # Production
-    "http://localhost:8080/admin/callback"       # Local development
+    "https://${var.domain_name}/admin/callback.html", # Production
+    "http://localhost:8080/admin/callback.html"       # Local development
   ]
 
   # Where Cognito redirects after logout.
   logout_urls = [
-    "https://${var.domain_name}/admin",
-    "http://localhost:8080/admin"
+    "https://${var.domain_name}/admin/login.html",
+    "http://localhost:8080/admin/login.html"
   ]
 
   # OAuth 2.0 configuration:

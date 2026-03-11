@@ -1,0 +1,196 @@
+# Infrastructure Teardown Pipeline
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- destroys all infrastructure
+# except the OIDC provider in one pipeline run.
+#
+# Destruction order matters (reverse dependency chain):
+#   1. Wave 3 first (EKS + CloudFront -- depend on VPC, skipped if not deployed)
+#   2. Wave 2 second (RDS depends on VPC subnets + security groups)
+#   3. Wave 1 third (OIDC explicitly excluded to keep pipeline auth alive)
+#
+# After completion, only github_oidc resources should remain in state.
+# Use terraform.yml for individual wave operations.
+#
+# Authentication: OIDC federation (same IAM role as other workflows).
+#
+# Required GitHub Secrets:
+#   AWS_ROLE_ARN  - IAM role ARN from terraform output github_actions_role_arn
+#   DB_PASSWORD   - Database master password (needed even for destroy plans)
+
+name: Infrastructure Teardown
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type DESTROY to confirm teardown of all infrastructure'
+        required: true
+        type: string
+        default: ''
+
+# OIDC requires these permissions to request and present the JWT token.
+permissions:
+  id-token: write
+  contents: read
+
+# Same concurrency group as terraform.yml -- prevents state conflicts.
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-central-1
+  TF_WORKING_DIR: terraform
+
+jobs:
+  teardown:
+    name: Teardown All Waves
+    runs-on: ubuntu-latest
+    if: ${{ inputs.confirm_destroy == 'DESTROY' }}
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      # --- Pre-cleanup: delete ALB + target groups created by ALB Controller ---
+      # The ALB Controller (running inside EKS) creates ALBs from Ingress resources.
+      # These are NOT managed by Terraform. When EKS is destroyed, the controller
+      # is gone and can't clean up. Orphaned ALB ENIs block VPC deletion later.
+      # Fix: delete all ALBs tagged by the controller BEFORE destroying EKS.
+      # Safe to run when no ALBs exist (loop simply doesn't execute).
+      - name: Clean up ALB Controller resources
+        run: |
+          echo "Looking for ALBs created by ALB Controller..."
+          ALB_ARNS=$(aws elbv2 describe-load-balancers --region ${{ env.AWS_REGION }} \
+            --query 'LoadBalancers[?starts_with(LoadBalancerName, `k8s-`)].LoadBalancerArn' \
+            --output text)
+
+          if [ -z "$ALB_ARNS" ]; then
+            echo "No ALB Controller load balancers found -- skipping"
+          else
+            for ARN in $ALB_ARNS; do
+              echo "Deleting ALB: $ARN"
+              aws elbv2 delete-load-balancer --load-balancer-arn "$ARN" --region ${{ env.AWS_REGION }}
+            done
+
+            echo "Waiting 15s for ALB ENIs to detach..."
+            sleep 15
+
+            echo "Cleaning up target groups..."
+            TG_ARNS=$(aws elbv2 describe-target-groups --region ${{ env.AWS_REGION }} \
+              --query 'TargetGroups[?starts_with(TargetGroupName, `k8s-`)].TargetGroupArn' \
+              --output text)
+            for ARN in $TG_ARNS; do
+              echo "Deleting target group: $ARN"
+              aws elbv2 delete-target-group --target-group-arn "$ARN" --region ${{ env.AWS_REGION }} || true
+            done
+
+            echo "ALB Controller resources cleaned up"
+          fi
+
+      # --- Wave 3 destroy (EKS + CloudFront) ---
+      # Must be destroyed FIRST because EKS depends on VPC subnets.
+      # If Wave 3 was never deployed, the plan is empty and apply is a no-op.
+      # enable_nat_gateway=true so Terraform includes NAT GW in the plan.
+      - name: Plan destroy Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: "true"
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.eks \
+            -target=module.cloudfront \
+            -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
+            -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg \
+            -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb \
+            -out=tfplan-wave3
+
+      - name: Show plan Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave3
+
+      - name: Destroy Wave 3
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_enable_nat_gateway: "true"
+        run: terraform apply tfplan-wave3
+
+      # --- Wave 2 destroy (RDS) ---
+      # Must be destroyed BEFORE Wave 1 because RDS depends on VPC subnets
+      # and security groups.
+      - name: Plan destroy Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.rds \
+            -out=tfplan-wave2
+
+      - name: Show plan Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave2
+
+      - name: Destroy Wave 2
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-wave2
+
+      # --- Wave 1 destroy (without OIDC) ---
+      # Explicitly targets each module EXCEPT github_oidc.
+      # OIDC must survive to keep pipeline auth + other projects working.
+      # VPC destruction includes NAT GW if it was enabled.
+      - name: Plan destroy Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.vpc \
+            -target=module.security_groups \
+            -target=module.ecr \
+            -target=module.s3 \
+            -target=module.cognito \
+            -target=aws_acm_certificate.alb \
+            -out=tfplan-wave1
+
+      - name: Show plan Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-wave1
+
+      - name: Destroy Wave 1
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-wave1
+
+      # --- Verify: only OIDC resources should remain ---
+      - name: Verify remaining state
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "=== Remaining resources in state ==="
+          terraform state list
+          echo ""
+          echo "Only github_oidc resources should be listed above."

@@ -61,9 +61,11 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     const result = await query(
       `SELECT
         p.id, p.title, p.slug, p.excerpt, p.cover_image_url,
-        p.featured, p.reading_time_minutes, p.view_count, p.published_at,
+        p.featured, p.reading_time_minutes, p.view_count, p.like_count,
+        p.published_at,
         c.name AS category_name, c.slug AS category_slug,
         u.display_name AS author_name,
+        (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'approved')::int AS comment_count,
         COALESCE(
           json_agg(json_build_object('name', t.name, 'slug', t.slug))
           FILTER (WHERE t.id IS NOT NULL), '[]'
@@ -291,6 +293,31 @@ postsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   } catch (err) {
     console.error('Error updating post:', err);
     res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
+/**
+ * POST /posts/:id/like - Like a post
+ *
+ * Public endpoint. Increments like_count by 1.
+ * Client-side localStorage prevents duplicate likes per browser.
+ */
+postsRouter.post('/:id/like', async (req: Request, res: Response) => {
+  try {
+    const result = await query(
+      'UPDATE posts SET like_count = like_count + 1 WHERE id = $1 RETURNING like_count',
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: 'Post not found' });
+      return;
+    }
+
+    res.json({ like_count: result.rows[0].like_count });
+  } catch (err) {
+    console.error('Error liking post:', err);
+    res.status(500).json({ error: 'Failed to like post' });
   }
 });
 

@@ -34,6 +34,7 @@
     "networking-security": "red",
     "tools-productivity": "purple",
     "aws-cloud": "orange",
+    "career-learning": "teal",
   };
 
   // --- Demo posts shown when the API is not reachable ---
@@ -124,11 +125,14 @@
     { name: "Career", slug: "career", post_count: 1 },
   ];
 
-  // --- Format a date string into a readable format ---
-  // "2026-02-15T10:00:00Z" -> "Feb 15, 2026"
+  // --- Sort order state (chronological = oldest first, default) ---
+  var sortNewest = false;
+
+  // --- Format a date string into German readable format ---
+  // "2026-02-15T10:00:00Z" -> "15. Feb 2026"
   function formatDate(dateString) {
     var date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("de-DE", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -174,12 +178,18 @@
       glow: "glow-orange",
       tag: "text-orange-500/70",
     },
+    "Career & Learning": {
+      badge: "bg-teal-500/20 text-teal-400",
+      border: "border-t-teal-500",
+      glow: "glow-teal",
+      tag: "text-teal-500/70",
+    },
     // Fallback for demo posts and unknown categories
     Career: {
-      badge: "bg-purple-500/20 text-purple-400",
-      border: "border-t-purple-500",
-      glow: "glow-purple",
-      tag: "text-purple-500/70",
+      badge: "bg-teal-500/20 text-teal-400",
+      border: "border-t-teal-500",
+      glow: "glow-teal",
+      tag: "text-teal-500/70",
     },
     Security: {
       badge: "bg-red-500/20 text-red-400",
@@ -214,6 +224,22 @@
     tag: "text-slate-500/70",
   };
 
+  // --- Category RGB values for card blob visuals ---
+  var CATEGORY_RGB = {
+    "DevOps & CI/CD": "14, 165, 233",
+    Certifications: "245, 158, 11",
+    "Homelab & Self-Hosting": "34, 197, 94",
+    "Networking & Security": "239, 68, 68",
+    "Tools & Productivity": "168, 85, 247",
+    "AWS & Cloud": "249, 115, 22",
+    "Career & Learning": "20, 184, 166",
+    Career: "20, 184, 166",
+    Security: "239, 68, 68",
+    Homelab: "34, 197, 94",
+    DevOps: "14, 165, 233",
+    AWS: "249, 115, 22",
+  };
+
   function getCategoryStyle(category) {
     return CATEGORY_STYLES[category] || DEFAULT_STYLE;
   }
@@ -239,6 +265,9 @@
         '<i class="ti ti-star-filled text-sm"></i></span>'
       : "";
 
+    // Category RGB for the card blob visual
+    var rgb = CATEGORY_RGB[post.category_name] || "148, 163, 184";
+
     // Build the card HTML with colored top border + glow class for gradient title
     return (
       '<article class="post-card fade-in ' +
@@ -249,14 +278,20 @@
       style.border +
       " " +
       "hover:border-slate-300 dark:hover:border-slate-600 " +
-      'cursor-pointer group" style="animation-delay: ' +
+      'cursor-pointer group relative overflow-hidden" style="animation-delay: ' +
       index * 0.1 +
       's" ' +
       "onclick=\"window.location.href='./post.html?slug=" +
       post.slug +
       "'\">" +
-      // Card body
-      '<div class="p-6">' +
+      // Category blob (subtle floating color accent)
+      '<div class="card-blob" style="background:rgba(' +
+      rgb +
+      ",0.2);animation-delay:" +
+      index * 0.3 +
+      's;"></div>' +
+      // Card body (above blob)
+      '<div class="p-6 relative" style="z-index:1;">' +
       // Category + featured star + reading time
       '<div class="flex items-center justify-between mb-3">' +
       '<div class="flex items-center gap-2">' +
@@ -280,7 +315,7 @@
       "</span>" +
       "</h2>" +
       // Excerpt
-      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">' +
+      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2 card-excerpt">' +
       post.excerpt +
       "</p>" +
       // Footer: date + tags
@@ -298,11 +333,23 @@
     );
   }
 
+  // --- Sort posts by date ---
+  function sortPosts(posts) {
+    return posts.slice().sort(function (a, b) {
+      var da = new Date(a.published_at).getTime();
+      var db = new Date(b.published_at).getTime();
+      return sortNewest ? db - da : da - db;
+    });
+  }
+
   // --- Render all posts into the grid ---
   function renderPosts(posts) {
     var grid = document.getElementById("posts-grid");
     var loading = document.getElementById("posts-loading");
     var count = document.getElementById("post-count");
+
+    // Apply current sort order
+    posts = sortPosts(posts);
 
     if (!grid) return;
 
@@ -313,10 +360,9 @@
     if (count) {
       var isFiltered = activeCategory || searchQuery;
       if (isFiltered && totalPostCount > 0) {
-        count.textContent =
-          posts.length + " of " + totalPostCount + " articles";
+        count.textContent = posts.length + " of " + totalPostCount + " posts";
       } else {
-        count.textContent = posts.length + " articles";
+        count.textContent = posts.length + " posts";
       }
     }
 
@@ -325,7 +371,7 @@
       grid.innerHTML =
         '<div class="no-results col-span-2 text-center py-12">' +
         '<i class="ti ti-search-off text-4xl text-slate-400 dark:text-slate-600 mb-3 block"></i>' +
-        '<p class="text-slate-500 dark:text-slate-400 text-sm">No articles found.</p>' +
+        '<p class="text-slate-500 dark:text-slate-400 text-sm">No posts found.</p>' +
         '<p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Try a different search term or category.</p>' +
         "</div>";
       return;
@@ -457,6 +503,7 @@
       })
       .then(function (data) {
         var posts = data.posts || data;
+        allPosts = posts;
         renderPosts(posts);
       })
       .catch(function () {
@@ -570,8 +617,35 @@
     });
   }
 
+  // --- Set up sort toggle ---
+  function setupSortToggle() {
+    var btn = document.getElementById("sort-toggle");
+    var label = document.getElementById("sort-label");
+    if (!btn) return;
+
+    btn.addEventListener("click", function () {
+      sortNewest = !sortNewest;
+      // Update icon and label
+      var icon = btn.querySelector("i");
+      if (icon) {
+        icon.className = sortNewest
+          ? "ti ti-arrow-down text-sm"
+          : "ti ti-arrow-up text-sm";
+      }
+      if (label) {
+        label.textContent = sortNewest ? "Neueste zuerst" : "Chronologisch";
+      }
+      // Re-render with current data
+      if (isDemo) {
+        renderPosts(filterDemoPosts());
+      } else {
+        renderPosts(allPosts);
+      }
+    });
+  }
+
   // --- Save scroll position before leaving the page ---
-  // So when the user clicks "Back to all articles", we can
+  // So when the user clicks "Back to Blog Posts", we can
   // scroll them back to where they were in the post list.
   function setupScrollMemory() {
     // Save scroll position whenever user is about to leave
@@ -585,6 +659,29 @@
       if (card) {
         sessionStorage.setItem("scrollPos", window.scrollY.toString());
       }
+    });
+  }
+
+  // --- Save current post list context for prev/next navigation ---
+  // When a user clicks a post card, we save the currently visible
+  // posts (filtered + sorted) so the post page can show matching
+  // prev/next links. This respects category filter, search, and
+  // sort order -- the navigation always matches what the user saw.
+  function setupPostNavContext() {
+    document.addEventListener("click", function (e) {
+      var card = e.target.closest(".post-card");
+      if (!card) return;
+
+      // Get the currently rendered posts in their displayed order
+      var currentPosts = isDemo ? filterDemoPosts() : allPosts;
+      var sorted = sortPosts(currentPosts);
+
+      // Save slug + title for each post (minimal data for navigation)
+      var navList = sorted.map(function (p) {
+        return { slug: p.slug, title: p.title };
+      });
+
+      sessionStorage.setItem("postNavContext", JSON.stringify(navList));
     });
   }
 
@@ -604,7 +701,9 @@
   document.addEventListener("DOMContentLoaded", function () {
     loadPosts();
     setupSearch();
+    setupSortToggle();
     setupScrollMemory();
+    setupPostNavContext();
     restoreScrollPosition();
   });
 })();

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="de" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haftungsausschluss - Andy Schlegel Tech Blog</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Fonts + Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+    <!-- Devicon (colored tech/brand icons) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+  >
+    <!-- ==================== HEADER ==================== -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+      >
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
+          <div
+            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+          >
+            <i class="ti ti-cloud-code text-white text-lg"></i>
+          </div>
+        </a>
+        <nav class="hidden sm:flex items-center gap-6">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Home</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >About me</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
+          >
+        </nav>
+        <button
+          id="theme-toggle"
+          class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+          aria-label="Toggle dark mode"
+        >
+          <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+          <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENT ==================== -->
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <h1
+        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+      >
+        <span
+          class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+        >
+          <i class="ti ti-alert-triangle text-xl text-sky-500"></i>
+        </span>
+        Haftungsausschluss
+      </h1>
+
+      <!-- Portfolio-Haftungsausschluss -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Portfolio-Haftungsausschluss
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website dient als professionelles Portfolio, das meine
+          technischen F&auml;higkeiten, Projekte und Erfahrungen in den
+          Bereichen Cloud Engineering, DevOps und Infrastruktur zeigt. Alle
+          bereitgestellten Informationen dienen ausschlie&szlig;lich
+          informativen und dokumentarischen Zwecken.
+        </p>
+      </section>
+
+      <!-- Technische Inhaltsgenauigkeit -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Technische Inhaltsgenauigkeit
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Obwohl ich mich bem&uuml;he, die Richtigkeit und Vollst&auml;ndigkeit
+          aller technischen Informationen, Projektbeschreibungen und
+          Code-Beispiele auf dieser Website sicherzustellen, kann ich nicht
+          garantieren, dass alle Inhalte fehlerfrei oder aktuell sind.
+          Technologien entwickeln sich schnell, und Verfahren k&ouml;nnen sich
+          im Laufe der Zeit &auml;ndern.
+        </p>
+      </section>
+
+      <!-- Projektinformationen -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Projektinformationen
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-2">
+          Alle auf dieser Website dokumentierten Projekte stellen echte Arbeit
+          dar, die ich abgeschlossen habe. Jedoch:
+        </p>
+        <ul
+          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1"
+        >
+          <li>
+            Einige technische Details k&ouml;nnen zu Pr&auml;sentationszwecken
+            vereinfacht sein
+          </li>
+          <li>
+            Sensible Informationen wurden aus Sicherheitsgr&uuml;nden
+            anonymisiert oder entfernt
+          </li>
+          <li>
+            Code-Snippets werden als Beispiele bereitgestellt und m&uuml;ssen
+            ggf. f&uuml;r bestimmte Anwendungsf&auml;lle angepasst werden
+          </li>
+          <li>
+            Leistungskennzahlen basieren auf meinen spezifischen Testumgebungen
+          </li>
+        </ul>
+      </section>
+
+      <!-- Keine professionelle Beratung -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Keine professionelle Beratung
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Obwohl ich technisches Wissen und Erfahrungen teile, stellt diese
+          Website keine professionelle Beratung dar. F&uuml;r spezifische
+          technische Implementierungen oder Sicherheitsbewertungen beauftragen
+          Sie bitte geeignete professionelle Dienstleister oder kontaktieren Sie
+          mich direkt f&uuml;r eine Beratung.
+        </p>
+      </section>
+
+      <!-- Externe Links -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Externe Links
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website enth&auml;lt Links zu externen Websites, Repositories
+          und Ressourcen. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die
+          Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites.
+          Links werden nur als Referenz bereitgestellt. Eine permanente
+          inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete
+          Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+        </p>
+      </section>
+
+      <!-- Geistiges Eigentum -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Geistiges Eigentum
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Alle Originalinhalte, einschlie&szlig;lich Projektdokumentation,
+          Code-Beispiele und schriftliche Materialien, sind mein geistiges
+          Eigentum, sofern nicht anders angegeben. Materialien von
+          Drittanbietern werden mit entsprechender Namensnennung und unter
+          anwendbaren Lizenzen verwendet.
+        </p>
+      </section>
+
+      <!-- Keine Garantie -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Keine Garantie
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Diese Website und alle Inhalte werden &bdquo;wie besehen&ldquo; ohne
+          jegliche Garantie zur Verf&uuml;gung gestellt. Ich lehne alle
+          ausdr&uuml;cklichen oder stillschweigenden Garantien ab,
+          einschlie&szlig;lich, aber nicht beschr&auml;nkt auf Garantien der
+          Marktg&auml;ngigkeit, der Eignung f&uuml;r einen bestimmten Zweck und
+          der Nichtverletzung.
+        </p>
+      </section>
+
+      <!-- Offenlegung von Sicherheitslücken -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Offenlegung von Sicherheitsl&uuml;cken
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Wenn Sie Sicherheitsl&uuml;cken auf dieser Website entdecken, melden
+          Sie diese bitte verantwortungsbewusst per E-Mail an
+          <a
+            href="mailto:andy.schlegel23@googlemail.com"
+            class="text-sky-500 hover:text-sky-400"
+            >andy.schlegel23@googlemail.com</a
+          >.
+        </p>
+      </section>
+
+      <!-- Kontakt -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+          Kontakt
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          Bei Fragen zu diesem Haftungsausschluss oder zu Inhalten auf dieser
+          Website kontaktieren Sie mich bitte per E-Mail an
+          <a
+            href="mailto:andy.schlegel23@googlemail.com"
+            class="text-sky-500 hover:text-sky-400"
+            >andy.schlegel23@googlemail.com</a
+          >.
+        </p>
+      </section>
+
+      <!-- Stand -->
+      <section class="mb-8">
+        <p class="text-sm text-slate-400 dark:text-slate-500">
+          Stand: M&auml;rz 2026
+        </p>
+      </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+    >
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div
+            class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            <span>2026 Andy Schlegel</span>
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <a
+              href="./impressum.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Impressum</a
+            >
+            <a
+              href="./datenschutz.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >Datenschutz</a
+            >
+            <a
+              href="./haftungsausschluss.html"
+              class="text-sky-600 dark:text-sky-400"
+              >Haftungsausschluss</a
+            >
+          </div>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/his4irness"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-github text-xl"></i>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

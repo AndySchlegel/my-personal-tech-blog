@@ -20,7 +20,8 @@
 resource "aws_ecr_repository" "frontend" {
   #checkov:skip=CKV_AWS_136:KMS encryption costs ~$1/key/month, AES256 sufficient for dev
   #checkov:skip=CKV_AWS_51:Mutable tags needed for latest tag in CI/CD pipeline
-  name = "${var.project_name}-frontend"
+  name         = "${var.project_name}-frontend"
+  force_delete = true # Allow Terraform to delete repo even when it contains images
 
   # MUTABLE: allows overwriting the "latest" tag on every push.
   # In production, you might use IMMUTABLE to prevent tag overwrites,
@@ -44,6 +45,7 @@ resource "aws_ecr_repository" "backend" {
   #checkov:skip=CKV_AWS_136:KMS encryption costs ~$1/key/month, AES256 sufficient for dev
   #checkov:skip=CKV_AWS_51:Mutable tags needed for latest tag in CI/CD pipeline
   name                 = "${var.project_name}-backend"
+  force_delete         = true # Allow Terraform to delete repo even when it contains images
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS posts (
   featured              BOOLEAN DEFAULT FALSE,           -- Show on homepage highlight
   reading_time_minutes  INTEGER DEFAULT 0,               -- Estimated read time
   view_count            INTEGER DEFAULT 0,
+  like_count            INTEGER DEFAULT 0,               -- Likes from readers
   author_id             INTEGER REFERENCES users(id),
   category_id           INTEGER REFERENCES categories(id),
   published_at          TIMESTAMP,                       -- NULL until published

@@ -199,8 +199,11 @@
       );
 
       if (response.ok) {
-        // Reload current filter view
+        // Save scroll position before reloading list
+        var scrollY = window.scrollY;
         await loadComments(currentFilter);
+        // Restore scroll position so page doesn't jump to top
+        window.scrollTo(0, scrollY);
       } else {
         var err = await response.json();
         alert("Failed to update: " + (err.error || response.statusText));

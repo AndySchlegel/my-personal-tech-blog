@@ -3,7 +3,7 @@
 > **Cloud-native tech blog on AWS EKS, documenting my journey from zero to cloud engineer in one year.**
 
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
-[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20IaC-blue)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
@@ -39,7 +39,7 @@ This blog tells a real story: starting with a Synology NAS and a basic router, b
 3. **On-prem to cloud migration** - Demonstrates enterprise-relevant skills
 4. **EKS complements serverless** - Together with a previous serverless project, covers both cloud paradigms
 5. **Natural ML integration** - Comprehend for auto-tags and comment sentiment analysis
-6. **Built to last** - Migration to self-hosted infrastructure planned after course
+6. **Dual-track hosting** - EKS for showcase demos, Lightsail ($5.50/month) for permanent hosting
 
 ---
 
@@ -86,8 +86,9 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 | Auth | AWS Cognito (OAuth 2.0, SRP, optional TOTP MFA) |
 | ML | Amazon Comprehend (key phrases + sentiment) |
 | Images | S3 upload (pre-signed URLs) + CloudFront CDN (OAC) |
-| IaC | Terraform (9 modules, from scratch, 2,800+ lines) |
+| IaC | Terraform (9 modules, from scratch, 25+ across all projects) |
 | CI/CD | GitHub Actions with OIDC |
+| Notifications | Telegram Bot API (native fetch, non-blocking) |
 | Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
 
@@ -99,20 +100,24 @@ Amazon Comprehend (ML: auto-tags + sentiment)
 - Blog posts with Markdown rendering and syntax highlighting
 - Search and category filtering (debounced, server-side SQL filtering)
 - Auto-generated tags via Amazon Comprehend
-- Comment system with sentiment analysis
-- About page with personal journey timeline, animated counters, and quote block
-- Skills page with priority labels, proficiency-based skill rows, cert roadmap, and animated progress stats
+- Comment system with sentiment analysis and Telegram notifications
+- Like button with animated heart icon
+- About page ("Sales DNA meets Cloud Architecture") with titled story sections, Roadmap timeline, animated counters, and quote block
+- Skills page with 8 skill cards, badge labels (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE), Credly cert images, project highlights, and animated progress stats
+- Impressum, Datenschutz, and Haftungsausschluss (German legal pages)
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
+- Scroll-reveal animations and hover effects on all interactive elements
 
 ### Admin Dashboard (Cognito-protected)
 - Login via Cognito Hosted UI (OAuth 2.0 code flow) with dev mode bypass
 - Dashboard overview with stat cards (posts, published, pending comments, views)
 - Recent posts and comments activity feed
 - Post management: create, edit, delete with side-by-side Markdown editor + live preview
-- Comment moderation: approve, flag, delete with status filtering
+- Comment moderation: approve, flag, delete with status filtering (scroll position preserved)
+- Telegram bot notifications for new comments (@my_tech_blog_bot)
 - Sidebar navigation with responsive mobile layout
-- *Coming later:* S3 image uploads (needs EKS deployment)
+- *Coming later:* S3 image uploads, Comprehend auto-tags
 
 ---
 
@@ -190,7 +195,7 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 
 - **Node.js** 22.x
 - **Podman** (for containerized development)
-- **Terraform** 1.5+ (for infrastructure)
+- **Terraform** 1.9+ (for infrastructure)
 - **AWS CLI** v2 (configured with credentials)
 
 ### Local Development
@@ -246,7 +251,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Three workflows, all using OIDC federation (no long-lived AWS credentials):
+Five workflows, all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -262,10 +267,12 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- Push to ECR (tagged: sha-<hash> + latest)
     |
     Job 3: DEPLOY
-    +-- OIDC auth + kubectl config
-    +-- Apply K8s manifests (namespace, config, secrets, services, deployments)
-    +-- Update container images (rolling update)
-    +-- Apply ingress (sed replaces placeholders with real values)
+    +-- OIDC auth
+    +-- Read infra values from Terraform state (RDS, Cognito, ECR, subnets, ALB SG, ACM)
+    +-- kubectl config + apply K8s manifests
+    +-- Create secrets (DB_PASSWORD from GitHub Secret, rest from Terraform)
+    +-- Update container images (ECR URLs from Terraform)
+    +-- Apply ingress (placeholders replaced with Terraform values)
     +-- Wait for rollout + print status
 ```
 
@@ -297,6 +304,40 @@ Manual Trigger with inputs:
     +-- terraform apply tfplan (destroy plan)
 ```
 
+**Infrastructure Teardown** (`infra-destroy.yml` -- manual trigger):
+
+```
+Manual Trigger (type "DESTROY" to confirm)
+    |
+    Job 1: TEARDOWN (environment: production)
+    +-- OIDC auth
+    +-- Destroy Wave 3 first (EKS + CloudFront, no-op if not deployed)
+    +-- Destroy Wave 2 (RDS depends on VPC/SGs)
+    +-- Destroy Wave 1 (OIDC excluded -- keeps pipeline auth alive)
+    +-- Verify: terraform state list (only OIDC should remain)
+```
+
+**Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
+
+```
+Manual Trigger (optional: include Wave 3 checkbox)
+    |
+    Job 1: VALIDATE (no AWS creds needed)
+    +-- terraform fmt + init + validate
+    |
+    Job 2: SECURITY SCAN
+    +-- tfsec + Checkov (soft_fail=false, strict guardrail)
+    |
+    Job 3: PROVISION (environment: production)
+    +-- OIDC auth
+    +-- Wave 0: Apply IAM policies only (ensures permissions are current)
+    +-- 15s IAM propagation delay (eventual consistency)
+    +-- Wave 1: Apply VPC, SGs, ECR, S3, Cognito, OIDC
+    +-- Wave 2: Apply RDS
+    +-- Wave 3: Apply EKS + CloudFront + NAT GW (only when checkbox set)
+    +-- Show terraform output
+```
+
 **Security scanning** (`security-scan.yml` -- automatic on push/PR):
 
 ```
@@ -325,7 +366,16 @@ Push to main/develop or PR
 | **Full deployment** | **~$143** | **All services running** |
 | **After sprint** | **~$0.65** | **Only Route 53 + S3** |
 
-**Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after.
+**EKS Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after.
+
+### Dual-Track Hosting Plan
+
+| Track | Purpose | Monthly Cost | Infrastructure |
+|-------|---------|-------------|----------------|
+| **EKS** | Showcase for job applications | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, CloudFront) |
+| **Lightsail** | Permanent hosting | ~$5.50 | Single instance, PostgreSQL on-instance, Let's Encrypt |
+
+Same repo, separate Terraform configs and deploy workflows. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. Cognito and Comprehend stay as managed AWS services on both tracks.
 
 ---
 
@@ -342,6 +392,12 @@ Key highlights:
 - **#14** Tailwind CDN overrides custom CSS -- use utility classes directly on elements
 - **#15** Checkov triage: fix, suppress, or defer -- answer every finding explicitly
 - **#16** IAM permissions: add all read permissions at once to avoid iteration cycles
+- **#17** Deploy pipeline reads infra values from Terraform state -- no manual secret updates after destroy+apply
+- **#18** Pin stable Terraform versions in CI/CD -- 1.7.0 had state save bug on destroy, fixed by upgrading to 1.9.0
+- **#19** tfsec GitHub API rate limiting -- anonymous requests limited to 60/h, always pass `github_token` for 5,000/h
+- **#20** IAM permission pairs -- always add both Get+Set and Tag+Untag, provider updates call different APIs on create vs update
+- **#21** Circular dependency deadlock -- self-referential IAM module creates unresolvable dependency chain, fixed with `lifecycle { ignore_changes = all }` on OIDC provider + Wave 0 pre-step
+- **#22** IAM eventual consistency -- policy updates take seconds to propagate, add sleep between update and usage in automated pipelines
 
 ---
 
@@ -350,12 +406,14 @@ Key highlights:
 | Metric | Value |
 |--------|-------|
 | Development Duration | 4 weeks (Feb-Mar 2026) |
-| Terraform Modules | 9 (32 files, 2,800+ lines) |
+| Terraform Modules | 9 in this project (25+ across all projects) |
 | AWS Services | 10+ (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend) |
-| Blog Articles | 12 (migrated from previous project) |
+| Blog Articles | 11 (German, real content) + 1 reserved for live PoC |
+| Categories | 7 (each with unique color system) |
+| Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| Lessons Learned | 16 documented |
-| Commits | 10+ |
+| Lessons Learned | 34 documented |
+| Commits | 80+ |
 
 *Updated as the project progresses.*
 
@@ -370,6 +428,6 @@ Cloud Engineer | Full-Stack Developer | DevOps Enthusiast
 
 ---
 
-**Project Status:** In Development (Wave 1 tested + pipeline verified, next: full deployment sprint Wave 1-3)
-**Last Updated:** 2026-02-26
+**Project Status:** Session 21 complete -- engagement features (likes, comments, scroll-reveal), Telegram notifications, Haftungsausschluss page, blog content sync (K3s -> Lightsail dual-track). Full EKS lifecycle verified, 100% reproducible with 4 GitHub Secrets. Lightsail permanent hosting planned.
+**Last Updated:** 2026-03-10
 **AWS Region:** eu-central-1 (Frankfurt)

@@ -87,7 +87,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.0
+          terraform_version: 1.9.0
 
       # Check that all .tf files follow canonical formatting.
       # Fails if someone forgot to run 'terraform fmt' before committing.
@@ -115,6 +115,7 @@ jobs:
         with:
           working_directory: ${{ env.TF_WORKING_DIR }}
           soft_fail: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # Checkov: policy-as-code scanner for Terraform.
       # Checks against CIS benchmarks, AWS best practices, etc.
@@ -143,7 +144,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.0
+          terraform_version: 1.9.0
 
       # OIDC authentication: exchange GitHub JWT for temporary AWS credentials.
       - name: Configure AWS credentials (OIDC)
@@ -168,16 +169,20 @@ jobs:
               if [ "${{ inputs.action }}" = "destroy" ]; then
                 # Exclude github_oidc from destroy -- OIDC provider must survive
                 # to keep pipeline auth + other projects (ecokart) working.
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito" >> "$GITHUB_OUTPUT"
+                # Target aws_acm_certificate.alb (cascades to validation + DNS records).
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=aws_acm_certificate.alb" >> "$GITHUB_OUTPUT"
               else
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc" >> "$GITHUB_OUTPUT"
+                # Target aws_acm_certificate_validation.alb (pulls in cert + DNS as dependencies).
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc -target=aws_acm_certificate_validation.alb" >> "$GITHUB_OUTPUT"
               fi
               ;;
             wave-2)
               echo "flags=-target=module.rds" >> "$GITHUB_OUTPUT"
               ;;
             wave-3)
-              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront" >> "$GITHUB_OUTPUT"
+              # Root-level rds_from_eks_cluster_sg connects EKS cluster SG -> RDS.
+              # Must be explicitly targeted because it's not inside any module.
+              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb" >> "$GITHUB_OUTPUT"
               ;;
             all)
               echo "flags=" >> "$GITHUB_OUTPUT"
@@ -236,7 +241,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.0
+          terraform_version: 1.9.0
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -288,7 +293,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.0
+          terraform_version: 1.9.0
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -305,6 +310,40 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
+
+      # Clean up ALB Controller resources before destroying EKS (wave-3/all).
+      # The ALB is created by the controller inside EKS, not by Terraform.
+      # If EKS is destroyed first, orphaned ALB ENIs block VPC deletion.
+      - name: Clean up ALB Controller resources
+        if: ${{ inputs.wave == 'wave-3' || inputs.wave == 'all' }}
+        run: |
+          echo "Looking for ALBs created by ALB Controller..."
+          ALB_ARNS=$(aws elbv2 describe-load-balancers --region ${{ env.AWS_REGION }} \
+            --query 'LoadBalancers[?starts_with(LoadBalancerName, `k8s-`)].LoadBalancerArn' \
+            --output text)
+
+          if [ -z "$ALB_ARNS" ]; then
+            echo "No ALB Controller load balancers found -- skipping"
+          else
+            for ARN in $ALB_ARNS; do
+              echo "Deleting ALB: $ARN"
+              aws elbv2 delete-load-balancer --load-balancer-arn "$ARN" --region ${{ env.AWS_REGION }}
+            done
+
+            echo "Waiting 15s for ALB ENIs to detach..."
+            sleep 15
+
+            echo "Cleaning up target groups..."
+            TG_ARNS=$(aws elbv2 describe-target-groups --region ${{ env.AWS_REGION }} \
+              --query 'TargetGroups[?starts_with(TargetGroupName, `k8s-`)].TargetGroupArn' \
+              --output text)
+            for ARN in $TG_ARNS; do
+              echo "Deleting target group: $ARN"
+              aws elbv2 delete-target-group --target-group-arn "$ARN" --region ${{ env.AWS_REGION }} || true
+            done
+
+            echo "ALB Controller resources cleaned up"
+          fi
 
       # Apply the destroy plan. The plan already contains -destroy operations.
       - name: Terraform destroy

@@ -46,6 +46,21 @@ resource "aws_iam_openid_connect_provider" "github" {
   tags = {
     Name = "${var.project_name}-github-oidc"
   }
+
+  # Ignore ALL changes on the OIDC provider after creation.
+  # This resource is a singleton (one per AWS account) that persists across
+  # destroy cycles. ANY modification to it (tags, thumbprint, client_id_list)
+  # creates a circular dependency: the IAM policy granting modification
+  # permissions depends on the IAM role, which depends on this provider.
+  # Terraform resolves the full dependency chain before applying, so the
+  # provider modification runs before the policy update -- and fails.
+  # This is safe because:
+  #   - The provider is bootstrapped locally (correct config from creation)
+  #   - Config changes (URL, thumbprint, audience) are extremely rare
+  #   - If a change IS needed, apply locally (same as initial bootstrap)
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # --- IAM Role for GitHub Actions ---
@@ -232,7 +247,9 @@ resource "aws_iam_role_policy" "terraform" {
           "ec2:DescribeNatGateways",
           "ec2:AllocateAddress",
           "ec2:ReleaseAddress",
+          "ec2:DisassociateAddress",
           "ec2:DescribeAddresses",
+          "ec2:DescribeAddressesAttribute",
           "ec2:CreateRouteTable",
           "ec2:DeleteRouteTable",
           "ec2:DescribeRouteTables",
@@ -355,6 +372,7 @@ resource "aws_iam_role_policy" "terraform" {
           "cognito-idp:DeleteGroup",
           "cognito-idp:GetGroup",
           "cognito-idp:GetUserPoolMfaConfig",
+          "cognito-idp:SetUserPoolMfaConfig",
           "cognito-idp:ListTagsForResource",
           "cognito-idp:TagResource",
           "cognito-idp:UntagResource"
@@ -450,6 +468,7 @@ resource "aws_iam_role_policy" "terraform" {
           "iam:DeleteOpenIDConnectProvider",
           "iam:GetOpenIDConnectProvider",
           "iam:TagOpenIDConnectProvider",
+          "iam:UntagOpenIDConnectProvider",
           "iam:ListOpenIDConnectProviders",
           "iam:CreateServiceLinkedRole",
           "iam:GetPolicy",
@@ -469,6 +488,8 @@ resource "aws_iam_role_policy" "terraform" {
           "kms:DescribeKey",
           "kms:GetKeyPolicy",
           "kms:GetKeyRotationStatus",
+          "kms:EnableKeyRotation",
+          "kms:DisableKeyRotation",
           "kms:ListResourceTags",
           "kms:ScheduleKeyDeletion",
           "kms:TagResource",
@@ -523,6 +544,7 @@ resource "aws_iam_role_policy" "terraform" {
           "acm:ListCertificates",
           "acm:ListTagsForCertificate",
           "acm:AddTagsToCertificate",
+          "acm:RemoveTagsFromCertificate",
           "acm:GetCertificate"
         ]
         Resource = "*"
@@ -541,6 +563,22 @@ resource "aws_iam_role_policy" "terraform" {
           "route53:ListHostedZones",
           "route53:ListResourceRecordSets",
           "route53:ListTagsForResource"
+        ]
+        Resource = "*"
+      },
+
+      # --- ELB Cleanup ---
+      # The ALB Controller (running inside EKS) creates ALBs and target groups
+      # that are NOT managed by Terraform. Before destroying EKS, the pipeline
+      # deletes these resources to prevent orphaned ENIs blocking VPC deletion.
+      {
+        Sid    = "ELBCleanup"
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DeleteLoadBalancer",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DeleteTargetGroup"
         ]
         Resource = "*"
       },
