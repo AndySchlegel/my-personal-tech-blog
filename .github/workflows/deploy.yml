@@ -207,6 +207,7 @@ jobs:
           echo "route53_zone_id=$(terraform output -raw route53_zone_id)" >> "$GITHUB_OUTPUT"
           echo "blog_domain=$(terraform output -raw blog_domain)" >> "$GITHUB_OUTPUT"
           echo "cognito_domain=$(terraform output -raw cognito_domain)" >> "$GITHUB_OUTPUT"
+          echo "backend_role_arn=$(terraform output -raw backend_role_arn)" >> "$GITHUB_OUTPUT"
 
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
@@ -311,6 +312,22 @@ jobs:
             --from-literal=TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             --from-literal=TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
             --dry-run=client -o yaml | kubectl apply -f -
+
+      # Step 2b: Create backend ServiceAccount with IRSA annotation.
+      # This gives the backend pod AWS credentials for Comprehend API calls.
+      # IRSA (IAM Roles for Service Accounts) injects a projected token that
+      # the AWS SDK automatically uses -- no IMDS needed.
+      - name: Create backend ServiceAccount (IRSA)
+        run: |
+          cat <<YAML | kubectl apply -f -
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: blog-backend
+            namespace: ${{ env.K8S_NAMESPACE }}
+            annotations:
+              eks.amazonaws.com/role-arn: "${{ steps.tf.outputs.backend_role_arn }}"
+          YAML
 
       # Step 3: Apply services (must exist before deployments reference them).
       - name: Apply services

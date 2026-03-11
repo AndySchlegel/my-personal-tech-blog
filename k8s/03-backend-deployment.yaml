@@ -21,6 +21,10 @@ spec:
         app: blog-backend
         app.kubernetes.io/part-of: techblog
     spec:
+      # IRSA: use the blog-backend ServiceAccount for AWS credentials.
+      # The ServiceAccount is annotated with the backend IRSA role ARN
+      # (created by deploy.yml), which gives Comprehend permissions.
+      serviceAccountName: blog-backend
       # Security: run as non-root user (matches Dockerfile appuser UID 1001)
       securityContext:
         runAsNonRoot: true

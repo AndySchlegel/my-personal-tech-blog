@@ -114,13 +114,51 @@ resource "aws_iam_role_policy_attachment" "node_ecr" {
   role       = aws_iam_role.node.name
 }
 
-# 4. Amazon Comprehend: allows backend pods to call sentiment analysis
-#    and key phrase detection. Used for automatic comment analysis.
-#    Added to node role (Option B) for simplicity -- all pods on the node
-#    inherit these permissions. For production, consider IRSA instead.
-resource "aws_iam_role_policy" "node_comprehend" {
-  name = "${var.project_name}-node-comprehend-policy"
-  role = aws_iam_role.node.id
+# =============================================================================
+# 4. BACKEND IRSA ROLE (Comprehend permissions)
+# =============================================================================
+#
+# The blog-backend pod needs AWS Comprehend permissions for sentiment analysis.
+# We use IRSA (like the ALB controller) instead of the node role because
+# EKS blocks IMDS access from pods by default -- so node role permissions
+# are not available to pods. IRSA injects credentials directly into the pod
+# via a projected ServiceAccount token.
+
+resource "aws_iam_role" "backend" {
+  name = "${var.project_name}-backend-role"
+
+  # IRSA trust policy: only the "blog-backend" ServiceAccount in the
+  # "blog" namespace can assume this role.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Condition = {
+          StringEquals = {
+            "${replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:blog:blog-backend"
+            "${replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-backend-role"
+  }
+}
+
+# Comprehend permissions for the backend pod.
+# DetectSentiment: analyzes comment text for positive/negative/neutral/mixed
+# DetectKeyPhrases: extracts key topics from text (used for auto-tagging)
+resource "aws_iam_role_policy" "backend_comprehend" {
+  name = "${var.project_name}-backend-comprehend-policy"
+  role = aws_iam_role.backend.id
 
   policy = jsonencode({
     Version = "2012-10-17"

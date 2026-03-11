@@ -56,3 +56,10 @@ output "alb_controller_role_arn" {
   #   eks.amazonaws.com/role-arn: <this ARN>
   # This tells EKS to inject AWS credentials for this role into the pod.
 }
+
+output "backend_role_arn" {
+  description = "ARN of the backend IRSA role (Comprehend permissions)"
+  value       = aws_iam_role.backend.arn
+  # Used in the blog-backend ServiceAccount annotation.
+  # Gives the backend pod credentials for Comprehend API calls.
+}

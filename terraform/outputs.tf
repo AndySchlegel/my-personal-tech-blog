@@ -116,6 +116,14 @@ output "alb_controller_role_arn" {
   value       = module.eks.alb_controller_role_arn
 }
 
+# --- Backend IRSA Role ---
+# The IRSA role ARN for the blog-backend pod. Gives Comprehend permissions.
+# Used in the ServiceAccount annotation during deploy.
+output "backend_role_arn" {
+  description = "Backend IRSA role ARN (Comprehend permissions)"
+  value       = module.eks.backend_role_arn
+}
+
 # --- Route 53 ---
 # Zone ID needed by the deploy pipeline to update DNS (point to ALB).
 output "route53_zone_id" {
