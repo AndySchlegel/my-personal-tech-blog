@@ -24,6 +24,7 @@
   "author": "Andy Schlegel",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-comprehend": "^3.750.0",
     "aws-jwt-verify": "^5.1.1",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",

@@ -297,6 +297,21 @@ jobs:
             --from-literal=TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      # Install metrics-server (required for HPA to read CPU/memory metrics).
+      # Uses 'kubectl apply' which is idempotent -- safe to run on every deploy.
+      # The metrics-server collects resource usage from kubelets and exposes it
+      # via the Kubernetes Metrics API, which the HPA controller reads.
+      - name: Install metrics-server
+        run: |
+          if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+            echo "metrics-server already installed"
+          else
+            echo "Installing metrics-server..."
+            kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+            echo "Waiting for metrics-server to be ready..."
+            kubectl rollout status deployment/metrics-server -n kube-system --timeout=120s
+          fi
+
       # Step 3: Apply services (must exist before deployments reference them).
       - name: Apply services
         run: |
@@ -308,6 +323,11 @@ jobs:
         run: |
           kubectl apply -f k8s/03-backend-deployment.yaml
           kubectl apply -f k8s/05-frontend-deployment.yaml
+
+      # Step 4b: Apply HorizontalPodAutoscaler (auto-scaling based on CPU).
+      # Must come after deployments so the HPA can find its scale targets.
+      - name: Apply HPA
+        run: kubectl apply -f k8s/10-hpa.yaml
 
       # Step 5: Update container images to the newly built version.
       # ECR URLs come from Terraform outputs (e.g. 123456789.dkr.ecr.eu-central-1.amazonaws.com/blog-backend).

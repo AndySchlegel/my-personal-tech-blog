@@ -28,9 +28,10 @@ adminRouter.use(requireAuth);
 adminRouter.get('/stats', async (_req: Request, res: Response) => {
   try {
     // Run all stat queries in parallel
-    const [postStats, commentStats, viewStats, recentPosts, recentComments] = await Promise.all([
-      // Post counts by status
-      query(`
+    const [postStats, commentStats, viewStats, recentPosts, recentComments, sentimentStats] =
+      await Promise.all([
+        // Post counts by status
+        query(`
         SELECT
           COUNT(*)::int AS total,
           COUNT(*) FILTER (WHERE status = 'published')::int AS published,
@@ -38,8 +39,8 @@ adminRouter.get('/stats', async (_req: Request, res: Response) => {
         FROM posts
       `),
 
-      // Comment counts by status
-      query(`
+        // Comment counts by status
+        query(`
         SELECT
           COUNT(*)::int AS total,
           COUNT(*) FILTER (WHERE status = 'pending')::int AS pending,
@@ -48,31 +49,45 @@ adminRouter.get('/stats', async (_req: Request, res: Response) => {
         FROM comments
       `),
 
-      // Total views across all posts
-      query(`SELECT COALESCE(SUM(view_count), 0)::int AS total FROM posts`),
+        // Total views across all posts
+        query(`SELECT COALESCE(SUM(view_count), 0)::int AS total FROM posts`),
 
-      // Last 5 posts (any status)
-      query(`
+        // Last 5 posts (any status)
+        query(`
         SELECT title, status, published_at, created_at
         FROM posts
         ORDER BY created_at DESC
         LIMIT 5
       `),
 
-      // Last 5 comments (any status)
-      query(`
+        // Last 5 comments (any status)
+        query(`
         SELECT c.author_name, c.content, c.status, c.created_at, p.title AS post_title
         FROM comments c
         LEFT JOIN posts p ON c.post_id = p.id
         ORDER BY c.created_at DESC
         LIMIT 5
       `),
-    ]);
+
+        // Sentiment breakdown from Comprehend analysis
+        // Counts how many comments have each sentiment value.
+        // Comments without sentiment (null) are counted as 'unanalyzed'.
+        query(`
+        SELECT
+          COUNT(*) FILTER (WHERE sentiment = 'POSITIVE')::int AS positive,
+          COUNT(*) FILTER (WHERE sentiment = 'NEGATIVE')::int AS negative,
+          COUNT(*) FILTER (WHERE sentiment = 'NEUTRAL')::int AS neutral,
+          COUNT(*) FILTER (WHERE sentiment = 'MIXED')::int AS mixed,
+          COUNT(*) FILTER (WHERE sentiment IS NULL)::int AS unanalyzed
+        FROM comments
+      `),
+      ]);
 
     res.json({
       posts: postStats.rows[0],
       comments: commentStats.rows[0],
       views: viewStats.rows[0],
+      sentiment: sentimentStats.rows[0],
       recentPosts: recentPosts.rows,
       recentComments: recentComments.rows,
     });
@@ -181,8 +196,8 @@ adminRouter.get('/comments', async (req: Request, res: Response) => {
     const result = await query(
       `
       SELECT
-        c.id, c.author_name, c.content, c.status, c.created_at,
-        p.title AS post_title, p.id AS post_id
+        c.id, c.author_name, c.content, c.status, c.sentiment, c.sentiment_score,
+        c.created_at, p.title AS post_title, p.id AS post_id
       FROM comments c
       LEFT JOIN posts p ON c.post_id = p.id
       ${whereClause}

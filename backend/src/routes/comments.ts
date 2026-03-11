@@ -12,6 +12,7 @@ import { query } from '../models/database';
 import { CreateCommentRequest } from '../models/types';
 import { requireAuth } from '../middleware/auth';
 import { notifyNewComment } from '../services/telegram';
+import { analyzeSentiment } from '../services/comprehend';
 
 export const commentsRouter = Router();
 
@@ -43,7 +44,7 @@ commentsRouter.get('/posts/:postId/comments', async (req: Request, res: Response
  *
  * Anyone can comment (no login required).
  * New comments start with status "pending" until moderated.
- * Sentiment analysis by Comprehend happens later (Phase 6).
+ * After saving, runs Comprehend sentiment analysis in the background (non-blocking).
  */
 commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Response) => {
   try {
@@ -74,14 +75,33 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
       [postId, author_name, author_email || null, content]
     );
 
+    const commentId = result.rows[0].id;
+
     // Send Telegram notification (non-blocking, never fails the request)
     notifyNewComment({
       authorName: author_name,
       postTitle: postTitle,
       content: content,
       postId: Number(postId),
-      commentId: result.rows[0].id,
+      commentId: commentId,
     }).catch(() => {});
+
+    // Run Comprehend sentiment analysis in the background (non-blocking).
+    // Updates the comment's sentiment columns after the response is sent.
+    // If Comprehend is unavailable (local dev), analyzeSentiment returns null.
+    analyzeSentiment(content)
+      .then((sentimentResult) => {
+        if (sentimentResult) {
+          query('UPDATE comments SET sentiment = $1, sentiment_score = $2 WHERE id = $3', [
+            sentimentResult.sentiment,
+            sentimentResult.confidence,
+            commentId,
+          ]).catch((err) => {
+            console.warn('Failed to save sentiment result:', (err as Error).message);
+          });
+        }
+      })
+      .catch(() => {});
 
     res.status(201).json(result.rows[0]);
   } catch (err) {

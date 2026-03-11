@@ -45,6 +45,7 @@ data:
       featured              BOOLEAN DEFAULT FALSE,
       reading_time_minutes  INTEGER DEFAULT 0,
       view_count            INTEGER DEFAULT 0,
+      like_count            INTEGER DEFAULT 0,
       author_id             INTEGER REFERENCES users(id),
       category_id           INTEGER REFERENCES categories(id),
       published_at          TIMESTAMP,

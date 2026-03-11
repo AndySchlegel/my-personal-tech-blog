@@ -1,0 +1,69 @@
+# HorizontalPodAutoscaler (HPA) -- automatic scaling for backend and frontend
+#
+# Adjusts replica counts based on CPU utilization.
+# Requires metrics-server to be installed in the cluster.
+# Works together with the resource requests defined in the Deployment manifests
+# (03-backend-deployment.yaml and 05-frontend-deployment.yaml).
+
+---
+
+# Backend HPA -- scales the Express API between 1 and 4 replicas.
+# Target: 70% average CPU utilization across all backend pods.
+# When traffic increases, HPA spins up more API pods to handle the load.
+# When traffic drops, it scales back down to save resources.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: blog-backend-hpa
+  namespace: blog
+  labels:
+    app: blog-backend
+    app.kubernetes.io/part-of: techblog
+spec:
+  # Reference the backend Deployment by name
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: blog-backend
+  # Scaling boundaries
+  minReplicas: 1
+  maxReplicas: 4
+  # Scale up when average CPU usage exceeds 70% of the requested CPU (100m)
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+---
+
+# Frontend HPA -- scales the nginx frontend between 1 and 3 replicas.
+# Target: 70% average CPU utilization across all frontend pods.
+# Frontend is mostly static file serving, so it needs fewer max replicas than backend.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: blog-frontend-hpa
+  namespace: blog
+  labels:
+    app: blog-frontend
+    app.kubernetes.io/part-of: techblog
+spec:
+  # Reference the frontend Deployment by name
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: blog-frontend
+  # Scaling boundaries
+  minReplicas: 1
+  maxReplicas: 3
+  # Scale up when average CPU usage exceeds 70% of the requested CPU (50m)
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
