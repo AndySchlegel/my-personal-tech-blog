@@ -43,3 +43,6 @@ CLAUDE.md
 
 # Feedback / drafts (local only, never commit)
 feedback/
+
+# Raw photos (originals too large for git, only optimized versions committed)
+frontend/src/img/original-photo-*
