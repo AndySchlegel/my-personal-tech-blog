@@ -114,6 +114,29 @@ resource "aws_iam_role_policy_attachment" "node_ecr" {
   role       = aws_iam_role.node.name
 }
 
+# 4. Amazon Comprehend: allows backend pods to call sentiment analysis
+#    and key phrase detection. Used for automatic comment analysis.
+#    Added to node role (Option B) for simplicity -- all pods on the node
+#    inherit these permissions. For production, consider IRSA instead.
+resource "aws_iam_role_policy" "node_comprehend" {
+  name = "${var.project_name}-node-comprehend-policy"
+  role = aws_iam_role.node.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "comprehend:DetectSentiment",
+          "comprehend:DetectKeyPhrases"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # =============================================================================
 # 3. OIDC PROVIDER FOR IRSA (IAM Roles for Service Accounts)
 # =============================================================================
