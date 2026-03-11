@@ -476,6 +476,26 @@
     renderRecentComments(stats.recentComments);
   }
 
+  // --- Silent refresh (updates values without loading skeleton) ---
+  async function refreshDashboard() {
+    try {
+      var response = await AdminAuth.authFetch("/api/admin/stats");
+      if (response.ok) {
+        var stats = await response.json();
+        renderStatCards(stats);
+        renderSentimentOverview(stats.sentiment);
+        renderRecentPosts(stats.recentPosts);
+        renderRecentComments(stats.recentComments);
+      }
+    } catch (err) {
+      // Silent fail -- keep last known data
+    }
+  }
+
   // --- Initialize when DOM is ready ---
-  document.addEventListener("DOMContentLoaded", loadDashboard);
+  document.addEventListener("DOMContentLoaded", function () {
+    loadDashboard();
+    // Auto-refresh every 15 seconds
+    setInterval(refreshDashboard, 15000);
+  });
 })();
