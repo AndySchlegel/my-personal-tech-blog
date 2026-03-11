@@ -36,6 +36,45 @@
     );
   }
 
+  // --- Sentiment badge HTML (Comprehend analysis result) ---
+  function sentimentBadge(sentiment, score) {
+    if (!sentiment) return "";
+    var colors = {
+      POSITIVE:
+        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      NEGATIVE:
+        "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+      NEUTRAL:
+        "bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/20",
+      MIXED:
+        "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    };
+    var icons = {
+      POSITIVE: "ti-mood-happy",
+      NEGATIVE: "ti-mood-sad",
+      NEUTRAL: "ti-mood-empty",
+      MIXED: "ti-mood-puzzled",
+    };
+    var cls = colors[sentiment] || colors.NEUTRAL;
+    var icon = icons[sentiment] || "ti-mood-empty";
+    var pct = score ? Math.round(score * 100) + "%" : "";
+    return (
+      '<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider border rounded-full ' +
+      cls +
+      '" title="Comprehend: ' +
+      sentiment +
+      " " +
+      pct +
+      '">' +
+      '<i class="ti ' +
+      icon +
+      ' text-xs"></i>' +
+      sentiment +
+      (pct ? " " + pct : "") +
+      "</span>"
+    );
+  }
+
   // --- Format date ---
   function formatDate(dateString) {
     if (!dateString) return "--";
@@ -125,12 +164,13 @@
         '<div class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 admin-comment-card">' +
         '<div class="flex items-start justify-between gap-3">' +
         '<div class="min-w-0 flex-1">' +
-        // Author + status badge
-        '<div class="flex items-center gap-2 mb-2">' +
+        // Author + status badge + sentiment badge
+        '<div class="flex items-center gap-2 mb-2 flex-wrap">' +
         '<span class="text-sm font-semibold text-slate-900 dark:text-white">' +
         comment.author_name +
         "</span>" +
         statusBadge(comment.status) +
+        sentimentBadge(comment.sentiment, comment.sentiment_score) +
         "</div>" +
         // Content
         '<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">' +
