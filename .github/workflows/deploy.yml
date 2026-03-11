@@ -235,6 +235,21 @@ jobs:
             echo "Done -- andy-admin can now use kubectl locally"
           fi
 
+      # Install metrics-server BEFORE the ALB Controller.
+      # The ALB Controller installs a mutating webhook that validates all
+      # Service resources. If metrics-server is installed AFTER, the webhook
+      # rejects the metrics-server Service due to certificate timing issues.
+      - name: Install metrics-server
+        run: |
+          if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+            echo "metrics-server already installed"
+          else
+            echo "Installing metrics-server..."
+            kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+            echo "Waiting for metrics-server to be ready..."
+            kubectl rollout status deployment/metrics-server -n kube-system --timeout=120s
+          fi
+
       # --- AWS Load Balancer Controller (Helm) ---
       # This controller watches for Ingress resources and creates real AWS ALBs.
       # Without it, our Ingress YAML is accepted by Kubernetes but nothing happens.
@@ -296,21 +311,6 @@ jobs:
             --from-literal=TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             --from-literal=TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
             --dry-run=client -o yaml | kubectl apply -f -
-
-      # Install metrics-server (required for HPA to read CPU/memory metrics).
-      # Uses 'kubectl apply' which is idempotent -- safe to run on every deploy.
-      # The metrics-server collects resource usage from kubelets and exposes it
-      # via the Kubernetes Metrics API, which the HPA controller reads.
-      - name: Install metrics-server
-        run: |
-          if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
-            echo "metrics-server already installed"
-          else
-            echo "Installing metrics-server..."
-            kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-            echo "Waiting for metrics-server to be ready..."
-            kubectl rollout status deployment/metrics-server -n kube-system --timeout=120s
-          fi
 
       # Step 3: Apply services (must exist before deployments reference them).
       - name: Apply services
