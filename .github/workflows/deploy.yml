@@ -240,6 +240,8 @@ jobs:
       # The ALB Controller installs a mutating webhook that validates all
       # Service resources. If metrics-server is installed AFTER, the webhook
       # rejects the metrics-server Service due to certificate timing issues.
+      # --kubelet-insecure-tls is needed because EKS node kubelets use
+      # self-signed certificates that metrics-server cannot verify by default.
       - name: Install metrics-server
         run: |
           if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
@@ -247,6 +249,9 @@ jobs:
           else
             echo "Installing metrics-server..."
             kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+            echo "Adding --kubelet-insecure-tls flag for EKS compatibility..."
+            kubectl patch deployment metrics-server -n kube-system --type=json \
+              -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
             echo "Waiting for metrics-server to be ready..."
             kubectl rollout status deployment/metrics-server -n kube-system --timeout=120s
           fi

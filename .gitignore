@@ -41,5 +41,5 @@ docker-compose.override.yml
 CLAUDE.md
 .claude/
 
-# Feedback (local only, not for repo)
-Feedback/
+# Feedback / drafts (local only, never commit)
+feedback/
