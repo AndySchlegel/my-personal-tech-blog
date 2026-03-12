@@ -98,9 +98,11 @@ jobs:
   build:
     name: Build & Push
     runs-on: ubuntu-latest
-    # Always depends on test job. If tests were skipped, this still runs
-    # because skipped jobs count as "successful" in GitHub Actions.
+    # Depends on the test job, but must also run when tests were skipped.
+    # GitHub Actions treats skipped jobs as non-successful, so without
+    # the 'if' condition, skip_tests=true would block the entire pipeline.
     needs: test
+    if: ${{ !cancelled() && !failure() }}
     outputs:
       image_tag: ${{ steps.vars.outputs.image_tag }}
 
@@ -159,6 +161,7 @@ jobs:
     name: "Deploy to EKS${{ inputs.run_db_init && ' + DB Init' || '' }}"
     runs-on: ubuntu-latest
     needs: build
+    if: ${{ !cancelled() && !failure() }}
     environment: production
 
     steps:
