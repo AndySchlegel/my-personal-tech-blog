@@ -1,0 +1,27 @@
+# status-lightsail.yml - Automated health check for Lightsail deployment
+#
+# Pings the Lightsail blog URL every 5 minutes and reports status.
+# The workflow badge in README.md shows green (live) or red (offline).
+# Badge URL: https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-lightsail.yml/badge.svg
+
+name: Lightsail Status
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Lightsail blog availability
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://blog.his4irness23.de || echo "000")
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
+            echo "Lightsail blog is LIVE"
+          else
+            echo "Lightsail blog is OFFLINE (HTTP $HTTP_STATUS)"
+            exit 1
+          fi

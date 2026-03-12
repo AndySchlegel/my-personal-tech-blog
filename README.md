@@ -1,7 +1,9 @@
 # My Personal Tech Blog
 
-> **Cloud-native tech blog on AWS EKS -- built from scratch with Terraform, Kubernetes, and CI/CD. Final project for the CloudHelden cloud engineering course.**
+> **Cloud-native tech blog on AWS EKS -- built from scratch with Terraform, Kubernetes, and CI/CD. Final project for a cloud engineering course.**
 
+[![EKS Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-eks.yml/badge.svg)](https://blog.aws.his4irness23.de)
+[![Lightsail Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-lightsail.yml/badge.svg)](https://blog.his4irness23.de)
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
 [![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
@@ -30,7 +32,7 @@
 
 ## Overview
 
-This blog tells a real story: starting with a Synology NAS and a basic router, building up to a hybrid infrastructure across 4 environments (NAS, Hetzner VPS, local dev, AWS), earning 4 certifications, and deploying production workloads on AWS EKS.
+What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 3 AWS/Linux certifications, and a monitoring stack that proved itself in a real security incident.
 
 ### Why This Project?
 
@@ -48,11 +50,6 @@ This blog tells a real story: starting with a Synology NAS and a basic router, b
 ```
 Route 53 (DNS: blog.aws.his4irness23.de)
     |
-CloudFront (CDN + TLS via ACM, PriceClass_100)
-    |
-    +-- S3 Origin (static assets, OAC-signed requests)
-    +-- ALB Origin (dynamic content, added after EKS deploy)
-    |
 ALB (AWS Load Balancer Controller, managed via IRSA)
     |
 EKS Cluster (eu-central-1, 2 AZs)
@@ -66,13 +63,15 @@ EKS Cluster (eu-central-1, 2 AZs)
     +-- Public Subnets (10.0.1.0/24, 10.0.2.0/24)
             |--- ALB
             |--- NAT Gateway (conditional)
-    |
-Cognito (Admin JWT authentication, IRSA)
-    |
-Amazon Comprehend (ML: auto-tags + sentiment, IRSA)
-    |
-Telegram Bot API (comment notifications)
+
+Managed Services (outside VPC):
+    |--- Cognito (Admin JWT authentication, IRSA)
+    |--- Amazon Comprehend (ML: auto-tags + sentiment, IRSA)
+    |--- CloudFront + S3 (deployed, prepared for future CDN/image hosting)
+    |--- Telegram Bot API (comment notifications)
 ```
+
+> **Traffic flow:** Route 53 -> ALB -> EKS Pods. CloudFront and S3 are deployed as Terraform modules and prepared for future image hosting (OAC, encryption, CORS configured), but all current traffic is served directly through the ALB.
 
 ---
 
@@ -86,7 +85,7 @@ Telegram Bot API (comment notifications)
 | Content | Markdown (stored in DB, rendered in frontend) |
 | Auth | AWS Cognito (OAuth 2.0 code flow, Hosted UI) |
 | ML | Amazon Comprehend (key phrase extraction + sentiment analysis) |
-| CDN | CloudFront + S3 (OAC, static assets) |
+| CDN/Storage | CloudFront + S3 (deployed, prepared for image hosting) |
 | IaC | Terraform (9 modules, all from scratch) |
 | CI/CD | GitHub Actions with OIDC (no long-lived AWS credentials) |
 | Notifications | Telegram Bot API (native fetch, non-blocking) |
@@ -134,12 +133,12 @@ Telegram Bot API (comment notifications)
 | **VPC** | Network foundation | VPC, 2 public + 2 private subnets, IGW, conditional NAT GW |
 | **Security Groups** | Layered firewall | ALB SG, EKS Node SG, RDS SG (defense in depth) |
 | **ECR** | Container registry | 2 repos (frontend + backend), lifecycle policies |
-| **S3** | Static assets | Assets bucket, versioning, encryption, CORS, all public access blocked |
+| **S3** | Asset storage (prepared) | Assets bucket, versioning, encryption, CORS, all public access blocked |
 | **Cognito** | Admin auth | User pool, OAuth code flow, app client, admin group |
 | **GitHub OIDC** | CI/CD auth | OIDC provider, IAM role, 2 policies (deploy + terraform) |
 | **RDS** | Database | PostgreSQL 16, db.t3.micro, private subnets, 7-day backups |
 | **EKS** | Kubernetes | Cluster, spot node group, KMS encryption, OIDC/IRSA, add-ons |
-| **CloudFront** | CDN | Distribution, ACM cert (us-east-1), OAC for S3, Route 53 DNS |
+| **CloudFront** | CDN (prepared) | Distribution, ACM cert (us-east-1), OAC for S3, Route 53 DNS |
 
 ### Wave Deployment Strategy
 
@@ -207,11 +206,11 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 
 ### Infrastructure Security
 
-- All S3 public access blocked (CloudFront OAC only)
 - RDS in private subnets, accessible only from EKS nodes (SG-to-SG rules)
 - EKS secrets encrypted at rest via KMS
 - IRSA for pod-level IAM (least privilege: backend for Comprehend, ALB Controller for load balancing)
-- TLS 1.2+ enforced on CloudFront
+- S3 all public access blocked, CloudFront OAC-only access (prepared for image hosting)
+- TLS 1.2+ enforced on ALB and CloudFront
 - Cognito with strong password policy
 - No AWS credentials in CI/CD (OIDC federation)
 
@@ -279,7 +278,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Five workflows, all using OIDC federation (no long-lived AWS credentials):
+Seven workflows (5 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -327,7 +326,7 @@ Manual Trigger (type "DESTROY" to confirm)
 
 **Terraform workflow** (`terraform.yml`) and **Security scanning** (`security-scan.yml`) provide granular wave control and automatic PR security gates respectively.
 
-Only 2 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN` + `DB_PASSWORD`.
+Only 4 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
 
 ---
 
@@ -353,7 +352,7 @@ Only 2 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN` + `DB_PA
 
 | Track | Purpose | Monthly Cost | Infrastructure |
 |-------|---------|-------------|----------------|
-| **EKS** | Showcase for demos and interviews | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, CloudFront) at `blog.aws.his4irness23.de` |
+| **EKS** | Showcase for demos and interviews | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, Cognito, Comprehend) at `blog.aws.his4irness23.de` |
 | **Lightsail** | Permanent hosting | ~$5.50 | Single instance, PostgreSQL on-instance, Let's Encrypt SSL at `blog.his4irness23.de` |
 
 Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. Cognito and Comprehend stay as managed AWS services on both tracks.
@@ -390,8 +389,8 @@ Key highlights:
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 11 (namespace, config, secrets, services, deployments, ingress, HPA, db-init) |
-| CI/CD Workflows | 5 (deploy, provision, destroy, terraform, security-scan) |
-| Commits | 113+ |
+| CI/CD Workflows | 7 (deploy, provision, destroy, terraform, security-scan, 2x status monitors) |
+| Commits | 127+ |
 | Lessons Learned | 35 documented |
 
 ---

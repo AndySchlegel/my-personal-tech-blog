@@ -1,0 +1,27 @@
+# status-eks.yml - Automated health check for EKS deployment
+#
+# Pings the EKS blog URL every 5 minutes and reports status.
+# The workflow badge in README.md shows green (live) or red (offline).
+# Badge URL: https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-eks.yml/badge.svg
+
+name: EKS Status
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check EKS blog availability
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://blog.aws.his4irness23.de || echo "000")
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
+            echo "EKS blog is LIVE"
+          else
+            echo "EKS blog is OFFLINE (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
