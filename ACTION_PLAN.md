@@ -16,7 +16,7 @@
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
 | 2. Backend API | Done | Week 1-2 |
-| 3. Frontend | ~99% Done (about photo + CV open) | Week 1-2 |
+| 3. Frontend | Done (about photo fixed, CV dropped) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
@@ -52,7 +52,7 @@
 - [x] Seed data (11 articles, 7 categories, 32 tags -- real content from blog project)
 - [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
 
-## Phase 3: Frontend (~99% Done)
+## Phase 3: Frontend (Done)
 
 - [x] Blog homepage (post list with demo data, category badges, reading time)
 - [x] Single post view (Markdown rendered via marked.js + highlight.js)
@@ -83,8 +83,7 @@
 - [x] Footer links updated across all pages (Haftungsausschluss separated from Impressum)
 - [x] Scroll-reveal animations on all sections below the fold
 - [x] Blog content sync (K3s -> Lightsail dual-track across all posts)
-- [ ] About page photo decision (same vs different vs remove)
-- [ ] CV download button (simplified version)
+- [x] About page photo decision (object-position: 70% 20%, no crop)
 
 ## Phase 4: Terraform Infrastructure (Done)
 
@@ -176,6 +175,7 @@
 - [x] Documentation consistency pass (README, ACTION_PLAN, LESSONS_LEARNED)
 - [ ] Architecture diagram (visual, not ASCII)
 - [ ] Presentation slides (20-30 min)
+- [ ] Grafana + Prometheus dashboards on EKS (Helm)
 
 ## Phase 9: Lightsail Permanent Hosting (Planned)
 
@@ -205,12 +205,11 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 ## What's Next? (Priority Order)
 
-1. **About page photo fix** -- face centering in circular crop (unresolved from Session 24)
-2. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
-3. **CV download button** -- simplified version without job-specific header
+1. **Grafana + Prometheus via Helm on EKS** -- observability dashboards for presentation + learning
+2. **Deploy to EKS** -- verify all recent changes (photo, skip_tests fix) work on live cluster
+3. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
 4. **Architecture diagram** -- visual diagram for README (replace ASCII)
 5. **Presentation slides** -- 20-30 min for CloudHelden final presentation
-6. **deploy.yml skip_tests bug** -- `skip_tests=true` skips entire deploy, not just tests
 
 4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
@@ -302,3 +301,5 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 | 2026-03-11 | Comprehend auto-tags done, S3 uploads dropped | Focus on implemented features, pre-signed URL upload not needed for blog |
 | 2026-03-12 | Automated status badges (EKS + Lightsail) | GitHub Actions health check every 5 min, workflow badge shows live/offline |
 | 2026-03-12 | Honest S3/CloudFront documentation | S3+CloudFront deployed as infra but traffic goes ALB->pods when EKS live |
+| 2026-03-12 | CV download dropped | Blog IS the portfolio; CV stays stellenspezifisch via career-cv repo |
+| 2026-03-12 | Grafana + Prometheus for EKS | Helm-based observability dashboards for presentation + learning |
