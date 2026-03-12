@@ -92,8 +92,18 @@
           >
         </nav>
 
-        <!-- Right side: theme toggle + mobile menu -->
+        <!-- Right side: language toggle + theme toggle + mobile menu -->
         <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <span id="lang-label" class="text-xs font-bold">DE</span>
+          </button>
+
           <!-- Theme toggle button -->
           <button
             id="theme-toggle"
@@ -161,19 +171,25 @@
             <div class="flex-1 max-w-2xl">
               <h1
                 class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+                data-de="About me"
+                data-en="About me"
               >
                 About me
               </h1>
               <p
                 class="slide-in-left text-lg sm:text-xl text-sky-600 dark:text-sky-400 font-medium mb-3"
                 style="animation-delay: 0.1s; opacity: 0"
+                data-de="Fast zwei Jahrzehnte L&ouml;sungen f&uuml;r Kunden entwickelt &mdash; jetzt baue ich die Systeme, die sie antreiben."
+                data-en="Almost two decades of building solutions for customers &mdash; now I build the systems that power them."
               >
-                Fast zwei Jahrzehnte Lösungen für Kunden entwickelt — jetzt baue
-                ich die Systeme, die sie antreiben.
+                Fast zwei Jahrzehnte L&ouml;sungen f&uuml;r Kunden entwickelt
+                &mdash; jetzt baue ich die Systeme, die sie antreiben.
               </p>
               <p
                 class="slide-in-left text-base text-slate-600 dark:text-slate-400 leading-relaxed"
                 style="animation-delay: 0.15s; opacity: 0"
+                data-de="Cloud &amp; DevOps Engineer mit praktischer Erfahrung in AWS, Kubernetes und Terraform. Vertriebserfahrung als Basis, technische Kompetenz als Ergebnis."
+                data-en="Cloud &amp; DevOps Engineer with hands-on experience in AWS, Kubernetes and Terraform. Sales background as foundation, technical expertise as the result."
               >
                 Cloud &amp; DevOps Engineer mit praktischer Erfahrung in AWS,
                 Kubernetes und Terraform. Vertriebserfahrung als Basis,
@@ -185,6 +201,8 @@
                 <span
                   class="stat-badge stat-badge-sky scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.3s"
+                  data-de="<i class='ti ti-calendar-event text-base'></i> Career Changer 2025"
+                  data-en="<i class='ti ti-calendar-event text-base'></i> Career Changer 2025"
                 >
                   <i class="ti ti-calendar-event text-base"></i>
                   Career Changer 2025
@@ -192,6 +210,8 @@
                 <span
                   class="stat-badge stat-badge-amber scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.4s"
+                  data-de="<i class='ti ti-certificate text-base'></i> 4x Zertifiziert"
+                  data-en="<i class='ti ti-certificate text-base'></i> 4x Certified"
                 >
                   <i class="ti ti-certificate text-base"></i>
                   4x Zertifiziert
@@ -199,6 +219,8 @@
                 <span
                   class="stat-badge stat-badge-green scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.5s"
+                  data-de="<i class='devicon-docker-plain colored text-base'></i> 50+ Docker Services"
+                  data-en="<i class='devicon-docker-plain colored text-base'></i> 50+ Docker Services"
                 >
                   <i class="devicon-docker-plain colored text-base"></i>
                   50+ Docker Services
@@ -206,6 +228,8 @@
                 <span
                   class="stat-badge stat-badge-purple scale-up inline-flex items-center gap-1.5 px-4 py-2 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full text-sm font-medium cursor-default"
                   style="animation-delay: 0.6s"
+                  data-de="<i class='devicon-amazonwebservices-plain-wordmark colored text-base'></i> 4 Umgebungen"
+                  data-en="<i class='devicon-amazonwebservices-plain-wordmark colored text-base'></i> 4 Environments"
                 >
                   <i
                     class="devicon-amazonwebservices-plain-wordmark colored text-base"
@@ -236,6 +260,8 @@
         <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 reveal">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+            data-de="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-book text-xl text-sky-500'></i></span> Sales DNA meets Cloud Architecture"
+            data-en="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-book text-xl text-sky-500'></i></span> Sales DNA meets Cloud Architecture"
           >
             <span
               class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
@@ -248,36 +274,59 @@
           <div
             class="space-y-6 text-base text-slate-600 dark:text-slate-400 leading-relaxed"
           >
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+            <h3
+              class="text-lg font-semibold text-slate-900 dark:text-white"
+              data-de="Der Hintergrund"
+              data-en="The Background"
+            >
               Der Hintergrund
             </h3>
-            <p>
+            <p
+              data-de="Fast zwei Jahrzehnte im Sales &mdash; vom direkten Endkundengesch&auml;ft bis zu komplexen B2B-Projekten. Was mich dabei immer angetrieben hat: Bed&uuml;rfnisse verstehen, Rahmenbedingungen einordnen und daraus pragmatische, tragf&auml;hige L&ouml;sungen entwickeln. Diese Denkweise pr&auml;gt mich bis heute &mdash; genauso wie sechs Jahre Bundeswehr, in denen ich Verantwortung f&uuml;r ein kleines Team &uuml;bernommen und strukturiertes Handeln unter Druck gelernt habe."
+              data-en="Almost two decades in sales &mdash; from direct end-customer business to complex B2B projects. What always drove me: understanding needs, assessing constraints and developing pragmatic, sustainable solutions. This mindset still shapes me today &mdash; just like six years in the German military, where I took responsibility for a small team and learned structured decision-making under pressure."
+            >
               Fast zwei Jahrzehnte im Sales &mdash; vom direkten
-              Endkundengeschäft bis zu komplexen B2B-Projekten. Was mich dabei
-              immer angetrieben hat: Bedürfnisse verstehen, Rahmenbedingungen
-              einordnen und daraus pragmatische, tragfähige Lösungen entwickeln.
-              Diese Denkweise prägt mich bis heute &mdash; genauso wie sechs
-              Jahre Bundeswehr, in denen ich Verantwortung für ein kleines Team
-              übernommen und strukturiertes Handeln unter Druck gelernt habe.
+              Endkundengesch&auml;ft bis zu komplexen B2B-Projekten. Was mich
+              dabei immer angetrieben hat: Bed&uuml;rfnisse verstehen,
+              Rahmenbedingungen einordnen und daraus pragmatische,
+              tragf&auml;hige L&ouml;sungen entwickeln. Diese Denkweise
+              pr&auml;gt mich bis heute &mdash; genauso wie sechs Jahre
+              Bundeswehr, in denen ich Verantwortung f&uuml;r ein kleines Team
+              &uuml;bernommen und strukturiertes Handeln unter Druck gelernt
+              habe.
             </p>
 
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+            <h3
+              class="text-lg font-semibold text-slate-900 dark:text-white"
+              data-de="Neugier wird Neuanfang"
+              data-en="Curiosity Becomes a New Beginning"
+            >
               Neugier wird Neuanfang
             </h3>
-            <p>
-              Irgendwann reichte es nicht mehr, nur über Lösungen zu sprechen
-              &mdash; ich wollte verstehen, wie sie technisch entstehen. 2025
-              fiel der Startschuss in Richtung Cloud &amp; DevOps: Aus einem
-              einfachen NAS wurde ein produktives Homelab über vier Standorte,
-              aus Neugier wurden echte Projekte &mdash; serverlose Architekturen
-              auf AWS, Kubernetes-Cluster auf EKS und im Homelab, Self-Hosted
-              Services.
+            <p
+              data-de="Irgendwann reichte es nicht mehr, nur &uuml;ber L&ouml;sungen zu sprechen &mdash; ich wollte verstehen, wie sie technisch entstehen. 2025 fiel der Startschuss in Richtung Cloud &amp; DevOps: Aus einem einfachen NAS wurde ein produktives Homelab &uuml;ber vier Standorte, aus Neugier wurden echte Projekte &mdash; serverlose Architekturen auf AWS, Kubernetes-Cluster auf EKS und im Homelab, Self-Hosted Services."
+              data-en="At some point, just talking about solutions was no longer enough &mdash; I wanted to understand how they are built. In 2025, I made the leap toward Cloud &amp; DevOps: a simple NAS turned into a productive homelab across four locations, curiosity turned into real projects &mdash; serverless architectures on AWS, Kubernetes clusters on EKS and in the homelab, self-hosted services."
+            >
+              Irgendwann reichte es nicht mehr, nur &uuml;ber L&ouml;sungen zu
+              sprechen &mdash; ich wollte verstehen, wie sie technisch
+              entstehen. 2025 fiel der Startschuss in Richtung Cloud &amp;
+              DevOps: Aus einem einfachen NAS wurde ein produktives Homelab
+              &uuml;ber vier Standorte, aus Neugier wurden echte Projekte
+              &mdash; serverlose Architekturen auf AWS, Kubernetes-Cluster auf
+              EKS und im Homelab, Self-Hosted Services.
             </p>
 
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+            <h3
+              class="text-lg font-semibold text-slate-900 dark:text-white"
+              data-de="Vom Experiment zur Expertise"
+              data-en="From Experiment to Expertise"
+            >
               Vom Experiment zur Expertise
             </h3>
-            <p>
+            <p
+              data-de="Heute verbinde ich Praxiserfahrung in AWS, Kubernetes und Terraform mit einem soliden Fundament aus Zertifizierungen in AWS, Linux und GitHub. Parallel vertiefe ich das strategisch mit der IHK-Qualifikation zum Berufsspezialisten Systemintegration. 25+ Terraform-Module, 50+ containerisierte Services im Dauerbetrieb, CI/CD-Pipelines mit OIDC und DevSecOps-Scans &mdash; reale Infrastruktur statt isolierter Lernumgebungen."
+              data-en="Today I combine hands-on experience in AWS, Kubernetes and Terraform with a solid foundation of certifications in AWS, Linux and GitHub. In parallel, I am deepening this strategically with the IHK qualification for IT Systems Integration Specialist. 25+ Terraform modules, 50+ containerized services in continuous operation, CI/CD pipelines with OIDC and DevSecOps scans &mdash; real infrastructure instead of isolated learning environments."
+            >
               Heute verbinde ich Praxiserfahrung in AWS, Kubernetes und
               Terraform mit einem soliden Fundament aus Zertifizierungen in AWS,
               Linux und GitHub. Parallel vertiefe ich das strategisch mit der
@@ -301,9 +350,11 @@
               />
               <p
                 class="text-slate-600 dark:text-slate-300 italic leading-relaxed"
+                data-de="&ldquo;Ich baue Systeme, die zuverl&auml;ssig laufen &mdash; von Infrastruktur &uuml;ber CI/CD bis Monitoring.&rdquo;"
+                data-en="&ldquo;I build systems that run reliably &mdash; from infrastructure to CI/CD to monitoring.&rdquo;"
               >
-                &ldquo;Ich baue Systeme, die zuverlässig laufen &mdash; von
-                Infrastruktur über CI/CD bis Monitoring.&rdquo;
+                &ldquo;Ich baue Systeme, die zuverl&auml;ssig laufen &mdash; von
+                Infrastruktur &uuml;ber CI/CD bis Monitoring.&rdquo;
               </p>
             </div>
           </div>
@@ -314,6 +365,8 @@
       <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 reveal">
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
+          data-de="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-timeline-event text-xl text-sky-500'></i></span> Meine Roadmap"
+          data-en="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-timeline-event text-xl text-sky-500'></i></span> My Roadmap"
         >
           <span
             class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
@@ -325,7 +378,7 @@
 
         <!-- Vertical alternating timeline -->
         <div class="timeline">
-          <!-- 1: März 2025 - Weiterbildung gestartet -->
+          <!-- 1: M&auml;rz 2025 - Weiterbildung gestartet -->
           <div class="timeline-item" style="animation-delay: 0.1s">
             <div class="timeline-dot timeline-dot-sky">
               <i class="ti ti-school text-xs"></i>
@@ -333,17 +386,23 @@
             <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
-                >März 2025</span
+                >M&auml;rz 2025</span
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="Weiterbildung gestartet"
+                data-en="Training Started"
               >
                 Weiterbildung gestartet
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
-                  CloudHelden „Java DevOps Engineer" – Informatik, Netzwerke,
-                  AWS, Container von Grund auf.
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="CloudHelden &bdquo;Java DevOps Engineer&ldquo; &ndash; Informatik, Netzwerke, AWS, Container von Grund auf."
+                  data-en="CloudHelden &ldquo;Java DevOps Engineer&rdquo; &ndash; computer science, networking, AWS, containers from scratch."
+                >
+                  CloudHelden &bdquo;Java DevOps Engineer&ldquo; &ndash;
+                  Informatik, Netzwerke, AWS, Container von Grund auf.
                 </p>
               </div>
             </div>
@@ -368,8 +427,12 @@
                 AWS Cloud Practitioner
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
-                  Erste AWS-Zertifizierung – Cloud-Konzepte, IAM, VPC, S3
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="Erste AWS-Zertifizierung &ndash; Cloud-Konzepte, IAM, VPC, S3 verstanden."
+                  data-en="First AWS certification &ndash; cloud concepts, IAM, VPC, S3 understood."
+                >
+                  Erste AWS-Zertifizierung &ndash; Cloud-Konzepte, IAM, VPC, S3
                   verstanden.
                 </p>
               </div>
@@ -392,8 +455,12 @@
                 LPI Linux Essentials
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
-                  LPI Zertifizierung – Kommandozeile, Shell,
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="LPI Zertifizierung &ndash; Kommandozeile, Shell, Systemadministration gemeistert."
+                  data-en="LPI certification &ndash; command line, shell, system administration mastered."
+                >
+                  LPI Zertifizierung &ndash; Kommandozeile, Shell,
                   Systemadministration gemeistert.
                 </p>
               </div>
@@ -412,13 +479,20 @@
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="Homelab &amp; Hetzner Server"
+                data-en="Homelab &amp; Hetzner Server"
               >
                 Homelab &amp; Hetzner Server
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="Synology NAS aufgesetzt, erster Hetzner Cloud Server &mdash; Docker-Container, erste Services, Grundstein f&uuml;rs Homelab."
+                  data-en="Synology NAS set up, first Hetzner Cloud server &mdash; Docker containers, first services, foundation for the homelab."
+                >
                   Synology NAS aufgesetzt, erster Hetzner Cloud Server &mdash;
-                  Docker-Container, erste Services, Grundstein fürs Homelab.
+                  Docker-Container, erste Services, Grundstein f&uuml;rs
+                  Homelab.
                 </p>
               </div>
             </div>
@@ -436,11 +510,17 @@
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="EcoKart auf AWS"
+                data-en="EcoKart on AWS"
               >
                 EcoKart auf AWS
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="25+ Terraform-Module, serverless AWS-Architektur, OIDC/CI/CD implementiert."
+                  data-en="25+ Terraform modules, serverless AWS architecture, OIDC/CI/CD implemented."
+                >
                   25+ Terraform-Module, serverless AWS-Architektur, OIDC/CI/CD
                   implementiert.
                 </p>
@@ -460,12 +540,18 @@
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="UniFi Netzwerk"
+                data-en="UniFi Network"
               >
                 UniFi Netzwerk
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
-                  VLANs, Firewall-Regeln, Tailscale VPN – Networking auf
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="VLANs, Firewall-Regeln, Tailscale VPN &ndash; Networking auf Profi-Niveau."
+                  data-en="VLANs, firewall rules, Tailscale VPN &ndash; professional-grade networking."
+                >
+                  VLANs, Firewall-Regeln, Tailscale VPN &ndash; Networking auf
                   Profi-Niveau.
                 </p>
               </div>
@@ -491,7 +577,11 @@
                 AWS Solutions Architect
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="Architektur-Entscheidungen in Sicherheit, Resilienz, Performance und Kostenoptimierung zertifiziert."
+                  data-en="Certified in architectural decisions for security, resilience, performance and cost optimization."
+                >
                   Architektur-Entscheidungen in Sicherheit, Resilienz,
                   Performance und Kostenoptimierung zertifiziert.
                 </p>
@@ -511,11 +601,17 @@
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="IHK Berufsspezialist gestartet"
+                data-en="IHK IT Specialist Started"
               >
                 IHK Berufsspezialist gestartet
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="Strategische Weiterentwicklung &mdash; IHK-Qualifikation Systemintegration &amp; Vernetzung, berufsbegleitend."
+                  data-en="Strategic advancement &mdash; IHK qualification in systems integration &amp; networking, part-time alongside work."
+                >
                   Strategische Weiterentwicklung &mdash; IHK-Qualifikation
                   Systemintegration &amp; Vernetzung, berufsbegleitend.
                 </p>
@@ -523,7 +619,7 @@
             </div>
           </div>
 
-          <!-- 9: März 2026 - GitHub Foundations -->
+          <!-- 9: M&auml;rz 2026 - GitHub Foundations -->
           <div class="timeline-item" style="animation-delay: 0.9s">
             <div class="timeline-dot timeline-dot-slate">
               <i class="devicon-github-original text-xs"></i>
@@ -531,7 +627,7 @@
             <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-slate-500 uppercase tracking-wide"
-                >März 2026</span
+                >M&auml;rz 2026</span
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
@@ -539,15 +635,19 @@
                 GitHub Foundations
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
-                  GitHub-Ökosystem, Collaboration, Versionskontrolle
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="GitHub-&Ouml;kosystem, Collaboration, Versionskontrolle zertifiziert."
+                  data-en="GitHub ecosystem, collaboration, version control certified."
+                >
+                  GitHub-&Ouml;kosystem, Collaboration, Versionskontrolle
                   zertifiziert.
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- 10: März 2026 - Dieser Blog auf EKS -->
+          <!-- 10: M&auml;rz 2026 - Dieser Blog auf EKS -->
           <div class="timeline-item" style="animation-delay: 1s">
             <div class="timeline-dot timeline-dot-sky">
               <i class="devicon-kubernetes-plain text-xs"></i>
@@ -555,15 +655,21 @@
             <div class="timeline-card">
               <span
                 class="text-xs font-semibold text-sky-500 uppercase tracking-wide"
-                >März 2026</span
+                >M&auml;rz 2026</span
               >
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mt-1"
+                data-de="Dieser Blog auf EKS"
+                data-en="This Blog on EKS"
               >
                 Dieser Blog auf EKS
               </h3>
               <div class="timeline-detail">
-                <p class="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400"
+                  data-de="Abschlussprojekt: 9 TF-Module, 6 CI/CD-Pipelines, Cloud-native AWS."
+                  data-en="Final project: 9 TF modules, 6 CI/CD pipelines, cloud-native AWS."
+                >
                   Abschlussprojekt: 9 TF-Module, 6 CI/CD-Pipelines, Cloud-native
                   AWS.
                 </p>
@@ -578,6 +684,8 @@
         <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 reveal">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+            data-de="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-heart text-xl text-sky-500'></i></span> Was mich antreibt"
+            data-en="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-heart text-xl text-sky-500'></i></span> What Drives Me"
           >
             <span
               class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
@@ -599,19 +707,23 @@
               </div>
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                data-de="Lernen durch Bauen"
+                data-en="Learning by Building"
               >
                 Lernen durch Bauen
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Nicht Tutorials, sondern eigene Projekte. Jeder Blogpost dokumentiert eine echte Entscheidung &mdash; mit realen Konsequenzen und L&ouml;sungen, die funktionieren m&uuml;ssen."
+                data-en="Not tutorials, but real projects. Every blog post documents a real decision &mdash; with real consequences and solutions that have to work."
               >
                 Nicht Tutorials, sondern eigene Projekte. Jeder Blogpost
-                dokumentiert eine echte Entscheidung — mit realen Konsequenzen
-                und Lösungen, die funktionieren müssen.
+                dokumentiert eine echte Entscheidung &mdash; mit realen
+                Konsequenzen und L&ouml;sungen, die funktionieren m&uuml;ssen.
               </p>
             </div>
 
-            <!-- Card 2: Echte Probleme lösen -->
+            <!-- Card 2: Echte Probleme l&ouml;sen -->
             <div
               class="about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6"
             >
@@ -622,15 +734,19 @@
               </div>
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                data-de="Echte Probleme l&ouml;sen"
+                data-en="Solving Real Problems"
               >
-                Echte Probleme lösen
+                Echte Probleme l&ouml;sen
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Sandbox-Wipe, SCP-Limitierungen, rotierende Endpoints &mdash; die besten Lernmomente kamen ungeplant. Herausforderungen meistern statt Aufgaben abarbeiten."
+                data-en="Sandbox wipes, SCP limitations, rotating endpoints &mdash; the best learning moments came unplanned. Overcoming challenges instead of just completing tasks."
               >
-                Sandbox-Wipe, SCP-Limitierungen, rotierende Endpoints — die
-                besten Lernmomente kamen ungeplant. Herausforderungen meistern
-                statt Aufgaben abarbeiten.
+                Sandbox-Wipe, SCP-Limitierungen, rotierende Endpoints &mdash;
+                die besten Lernmomente kamen ungeplant. Herausforderungen
+                meistern statt Aufgaben abarbeiten.
               </p>
             </div>
 
@@ -645,15 +761,19 @@
               </div>
               <h3
                 class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                data-de="Tech trifft Business"
+                data-en="Tech Meets Business"
               >
                 Tech trifft Business
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Fast zwei Jahrzehnte Stakeholder-Kommunikation. Technische Architekturen verst&auml;ndlich erkl&auml;ren &mdash; die F&auml;higkeit, die mich von rein technischen Profilen abhebt."
+                data-en="Almost two decades of stakeholder communication. Explaining technical architectures clearly &mdash; the skill that sets me apart from purely technical profiles."
               >
                 Fast zwei Jahrzehnte Stakeholder-Kommunikation. Technische
-                Architekturen verständlich erklären — die Fähigkeit, die mich
-                von rein technischen Profilen abhebt.
+                Architekturen verst&auml;ndlich erkl&auml;ren &mdash; die
+                F&auml;higkeit, die mich von rein technischen Profilen abhebt.
               </p>
             </div>
           </div>
@@ -664,13 +784,15 @@
       <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-16 reveal">
         <h2
           class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+          data-de="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-list-numbers text-xl text-sky-500'></i></span> Fakten im &Uuml;berblick"
+          data-en="<span class='w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0'><i class='ti ti-list-numbers text-xl text-sky-500'></i></span> Facts at a Glance"
         >
           <span
             class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
           >
             <i class="ti ti-list-numbers text-xl text-sky-500"></i>
           </span>
-          Fakten im Überblick
+          Fakten im &Uuml;berblick
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -691,6 +813,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Zertifizierungen"
+              data-en="Certifications"
             >
               Zertifizierungen
             </div>
@@ -737,6 +861,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Terraform Module"
+              data-en="Terraform Modules"
             >
               Terraform Module
             </div>
@@ -759,6 +885,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Automatisierte Tests"
+              data-en="Automated Tests"
             >
               Automatisierte Tests
             </div>
@@ -781,6 +909,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Umgebungen"
+              data-en="Environments"
             >
               Umgebungen
             </div>
@@ -803,6 +933,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Blogposts"
+              data-en="Blog Posts"
             >
               Blogposts
             </div>
@@ -868,6 +1000,30 @@
         </div>
       </div>
     </footer>
+
+    <!-- Language toggle (must load before page-specific language update) -->
+    <script src="./js/lang.js"></script>
+
+    <!-- Page-specific language switcher -->
+    <script>
+      function updatePageLanguage() {
+        var lang = window.blogLang ? window.blogLang.get() : "de";
+        var elements = document.querySelectorAll("[data-de][data-en]");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].innerHTML =
+            elements[i].getAttribute("data-" + lang) || "";
+        }
+        var inputs = document.querySelectorAll(
+          "[data-de-placeholder][data-en-placeholder]",
+        );
+        for (var j = 0; j < inputs.length; j++) {
+          inputs[j].placeholder =
+            inputs[j].getAttribute("data-" + lang + "-placeholder") || "";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updatePageLanguage);
+      window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
 
     <!-- Mobile menu toggle script -->
     <script>
