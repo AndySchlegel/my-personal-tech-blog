@@ -480,6 +480,11 @@
     return filtered;
   }
 
+  // --- Get current language from lang.js ---
+  function getCurrentLang() {
+    return window.blogLang ? window.blogLang.get() : "de";
+  }
+
   // --- Fetch posts from the API with current filters ---
   function fetchFilteredPosts() {
     if (isDemo) {
@@ -494,6 +499,9 @@
     if (searchQuery) params.push("search=" + encodeURIComponent(searchQuery));
     if (activeCategory)
       params.push("category=" + encodeURIComponent(activeCategory));
+    // Add language parameter for translation
+    var lang = getCurrentLang();
+    if (lang === "en") params.push("lang=en");
     var queryString = params.length > 0 ? "?" + params.join("&") : "";
 
     fetch(API_BASE + "/posts" + queryString)
@@ -705,5 +713,10 @@
     setupScrollMemory();
     setupPostNavContext();
     restoreScrollPosition();
+
+    // Re-fetch posts when language is toggled (DE/EN)
+    window.addEventListener("languageChanged", function () {
+      fetchFilteredPosts();
+    });
   });
 })();

@@ -95,8 +95,19 @@
           >
         </nav>
 
-        <!-- Right side: theme toggle + mobile menu -->
+        <!-- Right side: language toggle + theme toggle + mobile menu -->
         <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="lang-toggle-btn h-9 px-2 flex items-center gap-1.5 rounded-lg text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <i class="ti ti-language text-base"></i>
+            <span id="lang-label">DE</span>
+          </button>
+
           <!-- Theme toggle button -->
           <button
             id="theme-toggle"
@@ -162,13 +173,26 @@
           >
             Blog
           </h1>
-          <p
-            class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
+          <!-- Subtitle as quote block with photo -->
+          <div
+            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 mt-4"
             style="animation-delay: 0.1s; opacity: 0"
           >
-            Meine Reise durch AWS, Kubernetes, Terraform und Security &mdash;
-            mit Lektionen aus Code, Containern und Konfigurationen.
-          </p>
+            <div class="flex items-start gap-3">
+              <img
+                src="./img/andy-professional.jpg"
+                alt="Andy Schlegel"
+                class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
+                style="object-position: center 30%"
+              />
+              <p
+                class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
+              >
+                Meine Reise durch AWS, Kubernetes, Terraform und Security
+                &mdash; mit Lektionen aus Code, Containern und Konfigurationen.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -357,6 +381,7 @@
     </script>
 
     <!-- Main app script (loads posts from API) -->
+    <script src="./js/lang.js"></script>
     <script src="./js/app.js"></script>
 
     <!-- Scroll-reveal for static elements (header, search, filters) -->

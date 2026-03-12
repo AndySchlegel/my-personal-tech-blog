@@ -23,6 +23,11 @@
   // --- Configuration ---
   var API_BASE = "/api";
 
+  // --- Get current language from lang.js ---
+  function getCurrentLang() {
+    return window.blogLang ? window.blogLang.get() : "de";
+  }
+
   // --- Category color + icon mapping ---
   // Matches the colors used in app.js and styles.css
   // Category slugs must match the DB exactly (see categories table)
@@ -990,7 +995,11 @@
 
     setupMarked();
 
-    fetch(API_BASE + "/posts/" + slug)
+    // Build URL with language parameter
+    var lang = getCurrentLang();
+    var langParam = lang === "en" ? "?lang=en" : "";
+
+    fetch(API_BASE + "/posts/" + slug + langParam)
       .then(function (response) {
         if (!response.ok) throw new Error("Not found");
         return response.json();
@@ -1008,5 +1017,12 @@
       });
   }
 
-  document.addEventListener("DOMContentLoaded", loadPost);
+  document.addEventListener("DOMContentLoaded", function () {
+    loadPost();
+
+    // Re-load post when language is toggled (DE/EN)
+    window.addEventListener("languageChanged", function () {
+      loadPost();
+    });
+  });
 })();
