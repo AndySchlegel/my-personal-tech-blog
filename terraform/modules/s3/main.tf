@@ -21,7 +21,8 @@ resource "aws_s3_bucket" "assets" {
   #checkov:skip=CKV_AWS_18:Access logging needs dedicated bucket, deferred to production
   #checkov:skip=CKV_AWS_145:KMS encryption costs extra, SSE-S3 (AES256) sufficient for dev
   #checkov:skip=CKV2_AWS_62:S3 event notifications not needed, no Lambda triggers planned
-  bucket = "${var.project_name}-assets-his4irness23"
+  bucket        = "${var.project_name}-assets-his4irness23"
+  force_destroy = true # Allow deletion even with Polly audio files inside
 
   tags = {
     Name = "${var.project_name}-assets-${var.environment}"
