@@ -281,6 +281,35 @@ jobs:
             --set vpcId=${{ steps.tf.outputs.vpc_id }} \
             --wait --timeout 5m0s
 
+      # --- Monitoring Stack (Prometheus + Grafana) ---
+      # kube-prometheus-stack bundles Prometheus, Grafana, node-exporter,
+      # and kube-state-metrics. Provides cluster-wide observability dashboards.
+      # Alertmanager disabled (not needed for showcase).
+      # Grafana accessible via port-forward: kubectl port-forward -n monitoring svc/monitoring-grafana 3001:80
+      - name: Install Prometheus + Grafana monitoring stack
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update prometheus-community
+          helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+            --namespace monitoring --create-namespace \
+            --set prometheus.prometheusSpec.retention=7d \
+            --set prometheus.prometheusSpec.resources.requests.cpu=100m \
+            --set prometheus.prometheusSpec.resources.requests.memory=256Mi \
+            --set prometheus.prometheusSpec.resources.limits.cpu=500m \
+            --set prometheus.prometheusSpec.resources.limits.memory=512Mi \
+            --set grafana.resources.requests.cpu=50m \
+            --set grafana.resources.requests.memory=128Mi \
+            --set grafana.resources.limits.cpu=200m \
+            --set grafana.resources.limits.memory=256Mi \
+            --set grafana.adminPassword=blog-monitoring-2026 \
+            --set grafana.service.type=ClusterIP \
+            --set alertmanager.enabled=false \
+            --set nodeExporter.resources.requests.cpu=25m \
+            --set nodeExporter.resources.requests.memory=32Mi \
+            --set kubeStateMetrics.resources.requests.cpu=25m \
+            --set kubeStateMetrics.resources.requests.memory=32Mi \
+            --wait --timeout 5m0s
+
       # Step 1: Create namespace and apply non-sensitive config.
       # These are safe to apply from the git manifests directly.
       - name: Apply namespace and ConfigMap
