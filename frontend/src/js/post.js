@@ -458,6 +458,76 @@
   }
 
   // ============================================
+  // AUDIO PLAYER (Amazon Polly text-to-speech)
+  // ============================================
+
+  var audioState = { loading: false, playing: false };
+
+  // --- Setup the audio (listen) button ---
+  function setupAudioButton(post) {
+    var btn = document.getElementById("audio-btn");
+    var player = document.getElementById("audio-player");
+    var icon = document.getElementById("audio-icon");
+    var label = document.getElementById("audio-label");
+    if (!btn || !player) return;
+
+    btn.addEventListener("click", function () {
+      // If already playing, pause
+      if (audioState.playing) {
+        player.pause();
+        audioState.playing = false;
+        icon.className = "ti ti-headphones text-lg";
+        label.textContent = getCurrentLang() === "en" ? "Listen" : "Vorlesen";
+        return;
+      }
+
+      // If audio is loaded (paused), resume
+      if (player.src && !audioState.loading) {
+        player.play();
+        audioState.playing = true;
+        icon.className = "ti ti-player-pause text-lg";
+        label.textContent = getCurrentLang() === "en" ? "Pause" : "Pause";
+        return;
+      }
+
+      // First click: fetch audio URL from API
+      if (audioState.loading) return;
+      audioState.loading = true;
+      icon.className = "ti ti-loader text-lg animate-spin";
+      label.textContent = getCurrentLang() === "en" ? "Loading..." : "Laden...";
+
+      var lang = getCurrentLang();
+      var langParam = lang === "en" ? "?lang=en" : "";
+
+      fetch(API_BASE + "/posts/" + post.id + "/audio" + langParam)
+        .then(function (response) {
+          if (!response.ok) throw new Error("Audio not available");
+          return response.json();
+        })
+        .then(function (data) {
+          player.src = data.audio_url;
+          player.play();
+          audioState.loading = false;
+          audioState.playing = true;
+          icon.className = "ti ti-player-pause text-lg";
+          label.textContent = getCurrentLang() === "en" ? "Pause" : "Pause";
+        })
+        .catch(function () {
+          audioState.loading = false;
+          icon.className = "ti ti-headphones text-lg";
+          label.textContent = getCurrentLang() === "en" ? "Listen" : "Vorlesen";
+        });
+    });
+
+    // When audio ends, reset button state
+    player.addEventListener("ended", function () {
+      audioState.playing = false;
+      icon.className = "ti ti-headphones text-lg";
+      label.textContent = getCurrentLang() === "en" ? "Listen" : "Vorlesen";
+    });
+  }
+
+  // ============================================
   // COMMENTS
   // ============================================
 
@@ -833,8 +903,9 @@
     // Setup content scroll-reveal animations
     setupContentAnimations();
 
-    // Setup like button
+    // Setup like button + audio player
     setupLikeButton(post);
+    setupAudioButton(post);
 
     // Load and display comments
     if (post.id) {

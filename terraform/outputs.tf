@@ -116,6 +116,13 @@ output "alb_controller_role_arn" {
   value       = module.eks.alb_controller_role_arn
 }
 
+# --- S3 Bucket ---
+# Used by the backend for Polly audio file storage (MP3s).
+output "s3_bucket_name" {
+  description = "S3 bucket name for assets (audio, images)"
+  value       = module.s3.bucket_id
+}
+
 # --- Backend IRSA Role ---
 # The IRSA role ARN for the blog-backend pod. Gives Comprehend permissions.
 # Used in the ServiceAccount annotation during deploy.

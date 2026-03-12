@@ -93,6 +93,18 @@ CREATE TABLE IF NOT EXISTS comments (
 -- Index for listing comments per post
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id, created_at DESC);
 
+-- ----- POST_AUDIO -----
+-- Cache for Amazon Polly audio files (text-to-speech).
+-- Stores the S3 key for each generated MP3 file.
+-- Audio is generated on first request and cached here.
+CREATE TABLE IF NOT EXISTS post_audio (
+  post_id       INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  language      VARCHAR(5) NOT NULL,            -- Language code: 'de' or 'en'
+  s3_key        VARCHAR(500) NOT NULL,           -- S3 object key: 'audio/post-1-de.mp3'
+  created_at    TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (post_id, language)                -- One audio per post per language
+);
+
 -- ----- POST_TRANSLATIONS -----
 -- Cache for Amazon Translate results (DE -> EN).
 -- Each post can have one translation per target language.

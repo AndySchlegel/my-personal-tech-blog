@@ -1,6 +1,7 @@
 BEGIN;
 
 -- Clean slate (safe to re-run)
+DELETE FROM post_audio;
 DELETE FROM post_translations;
 DELETE FROM post_tags;
 DELETE FROM comments;

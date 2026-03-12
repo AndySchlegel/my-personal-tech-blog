@@ -95,11 +95,20 @@ data:
       PRIMARY KEY (post_id, language)
     );
 
+    CREATE TABLE IF NOT EXISTS post_audio (
+      post_id       INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+      language      VARCHAR(5) NOT NULL,
+      s3_key        VARCHAR(500) NOT NULL,
+      created_at    TIMESTAMP DEFAULT NOW(),
+      PRIMARY KEY (post_id, language)
+    );
+
   # Seed data -- 11 real blog posts (idempotent via transaction)
   02-seed.sql: |
     BEGIN;
 
     -- Clean slate (safe to re-run)
+    DELETE FROM post_audio;
     DELETE FROM post_translations;
     DELETE FROM post_tags;
     DELETE FROM comments;

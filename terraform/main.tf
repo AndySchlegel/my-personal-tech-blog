@@ -189,6 +189,7 @@ module "eks" {
   node_desired           = var.eks_node_desired
   node_min               = var.eks_node_min
   node_max               = var.eks_node_max
+  s3_bucket_arn          = module.s3.bucket_arn
 }
 
 # Cross-module SG rule: allow EKS pods to reach RDS on port 5432.

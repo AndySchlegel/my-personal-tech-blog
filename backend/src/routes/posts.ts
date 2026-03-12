@@ -14,6 +14,7 @@ import { query } from '../models/database';
 import { CreatePostRequest } from '../models/types';
 import { requireAuth } from '../middleware/auth';
 import { translatePost, getCachedTranslation } from '../services/translate';
+import { getPostAudioUrl } from '../services/polly';
 
 export const postsRouter = Router();
 
@@ -350,6 +351,60 @@ postsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   } catch (err) {
     console.error('Error updating post:', err);
     res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
+/**
+ * GET /posts/:id/audio - Get audio URL for a post (text-to-speech)
+ *
+ * Returns a pre-signed S3 URL for the MP3 audio file.
+ * First request generates audio via Amazon Polly (~5-15 seconds).
+ * Subsequent requests return cached URL instantly.
+ *
+ * Query parameters:
+ *   ?lang=en - Get English audio (default: German)
+ */
+postsRouter.get('/:id/audio', async (req: Request, res: Response) => {
+  try {
+    const { lang } = req.query;
+    const language = typeof lang === 'string' && lang === 'en' ? 'en' : 'de';
+
+    // Fetch the post content
+    const postResult = await query('SELECT id, title, content FROM posts WHERE id = $1', [
+      req.params.id,
+    ]);
+
+    if (postResult.rows.length === 0) {
+      res.status(404).json({ error: 'Post not found' });
+      return;
+    }
+
+    const post = postResult.rows[0];
+
+    // For English audio, use translated content if available
+    let title = post.title;
+    let content = post.content;
+
+    if (language === 'en') {
+      const translation = await getCachedTranslation(post.id, 'en');
+      if (translation) {
+        title = translation.title;
+        content = translation.content;
+      }
+    }
+
+    // Generate or retrieve cached audio URL
+    const audioUrl = await getPostAudioUrl(post.id, title, content, language);
+
+    if (!audioUrl) {
+      res.status(503).json({ error: 'Audio generation not available' });
+      return;
+    }
+
+    res.json({ audio_url: audioUrl, language });
+  } catch (err) {
+    console.error('Error generating audio:', err);
+    res.status(500).json({ error: 'Failed to generate audio' });
   }
 });
 
