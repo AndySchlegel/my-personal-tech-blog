@@ -195,6 +195,24 @@
 
             <!-- Tags (inline under meta) -->
             <div id="post-tags" class="flex flex-wrap gap-2"></div>
+
+            <!-- Audio player button (text-to-speech via Amazon Polly) -->
+            <div class="mt-4">
+              <button
+                id="audio-btn"
+                class="social-link flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/50 transition-all"
+              >
+                <i id="audio-icon" class="ti ti-headphones text-lg"></i>
+                <span
+                  id="audio-label"
+                  class="text-sm font-semibold"
+                  data-de="Vorlesen"
+                  data-en="Listen"
+                  >Vorlesen</span
+                >
+              </button>
+              <audio id="audio-player" class="hidden"></audio>
+            </div>
           </div>
         </div>
       </div>
@@ -223,22 +241,6 @@
                 ><span id="like-count">0</span> Likes</span
               >
             </button>
-            <!-- Audio player (text-to-speech via Amazon Polly) -->
-            <button
-              id="audio-btn"
-              class="social-link flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/50 transition-all"
-            >
-              <i id="audio-icon" class="ti ti-headphones text-lg"></i>
-              <span
-                id="audio-label"
-                class="text-sm font-semibold"
-                data-de="Vorlesen"
-                data-en="Listen"
-                >Vorlesen</span
-              >
-            </button>
-            <!-- Hidden audio element (controlled by JS) -->
-            <audio id="audio-player" class="hidden"></audio>
             <!-- Jump to comments -->
             <a
               href="#post-comments-section"
