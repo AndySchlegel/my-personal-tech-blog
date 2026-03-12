@@ -743,3 +743,51 @@ kubectl run load-generator --namespace blog --image=busybox --restart=Never \
 A live demo beats any diagram. Watching pods spawn in real-time while Grafana shows the CPU spike is an immediate proof of auto-scaling capability. The approach is deterministic and reproducible -- same command, same result, every time. For presentations: set up Grafana beforehand (port-forward + login), then run one command live. Keep screenshots as backup in case of connectivity issues.
 
 ---
+
+## #38 - Amazon Translate: PostgreSQL Cache Beats Redis for Low-Volume Translation
+
+**Date:** 2026-03-12
+**Phase:** Phase 8 (Polish + ML Integration)
+
+**Context:**
+Adding bilingual DE/EN support to the blog required translating 11 blog posts via Amazon Translate API. Translation results rarely change, so caching was needed.
+
+**Decision:**
+Used PostgreSQL (existing RDS) instead of adding Redis (~$13/month). Created `post_translations` table with `(post_id, language)` primary key. Each text is translated once and cached permanently. Cost: ~$0.01 per deploy cycle for 11 posts. Read latency: <5ms from the same RDS instance.
+
+**Takeaway:**
+Not every caching problem needs Redis. When data is write-once-read-many and the existing database is fast enough, adding a new service is "Kanonen auf Spatzen" (overkill). Same principle applies to Polly audio: S3 cache with pre-signed URLs, no CDN needed for low-volume audio playback.
+
+---
+
+## #39 - Checkov Skip Comments: Position Matters
+
+**Date:** 2026-03-12
+**Phase:** Phase 8 (CI/CD Security)
+
+**Context:**
+Needed to suppress Checkov CKV_AWS_355 (IAM wildcard Resource=*) for Comprehend/Translate/Polly APIs that don't support resource-level permissions.
+
+**Decision:**
+First attempt: placed `#checkov:skip=CKV_AWS_355:...` comment ABOVE the resource block -- Checkov didn't recognize it and kept failing. Fix: moved the skip comment INSIDE the resource block (after the opening brace), matching the pattern of all other Checkov skips in the codebase.
+
+**Takeaway:**
+Checkov skip annotations are position-sensitive. They must be inside the resource block they apply to, not above it. This is different from tfsec which uses `#tfsec:ignore` above the block. When a CI check fails after adding a skip, check the comment position before assuming the skip syntax is wrong.
+
+---
+
+## #40 - Deploy Pipeline: Every Terraform Output Must Be Explicitly Read
+
+**Date:** 2026-03-12
+**Phase:** Phase 8 (CI/CD)
+
+**Context:**
+Amazon Polly was configured correctly (IRSA, IAM policy, S3 bucket) but the audio button did nothing. Backend logs showed no Polly error -- it silently returned null because `S3_BUCKET_NAME` env var was empty.
+
+**Decision:**
+Root cause: deploy.yml referenced `${{ steps.tf.outputs.s3_bucket_name }}` in the kubectl secret creation, but never read the output from Terraform state. The line `echo "s3_bucket_name=$(terraform output -raw s3_bucket_name)" >> "$GITHUB_OUTPUT"` was missing. The Terraform output existed, the K8s secret referenced it, but the bridge between them was missing.
+
+**Takeaway:**
+In GitHub Actions, Terraform outputs don't auto-propagate. Each output needs an explicit `terraform output -raw` -> `GITHUB_OUTPUT` line. When a feature silently fails (returns null instead of erroring), check the env vars on the running pod first: `kubectl exec deployment/blog-backend -- printenv | grep S3`. An empty value is worse than a missing value because the code sees it as "configured but empty" rather than "not configured".
+
+---

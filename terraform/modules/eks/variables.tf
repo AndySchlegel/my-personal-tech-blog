@@ -68,3 +68,8 @@ variable "node_max" {
   type        = number
   default     = 3
 }
+
+variable "s3_bucket_arn" {
+  description = "S3 bucket ARN for audio file uploads (Polly MP3s)"
+  type        = string
+}

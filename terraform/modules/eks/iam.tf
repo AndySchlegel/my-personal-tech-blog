@@ -153,12 +153,13 @@ resource "aws_iam_role" "backend" {
   }
 }
 
-# Comprehend + Translate permissions for the backend pod.
+# Comprehend + Translate + Polly permissions for the backend pod.
 # Comprehend: sentiment analysis on comments, key phrase extraction for auto-tags
 # Translate: on-demand DE->EN translation of blog posts (cached in PostgreSQL)
+# Polly: text-to-speech for blog posts (MP3 audio, cached in S3)
 resource "aws_iam_role_policy" "backend_comprehend" {
-  #checkov:skip=CKV_AWS_355:Comprehend and Translate APIs do not support resource-level permissions, Resource=* is required
-  name = "${var.project_name}-backend-comprehend-policy"
+  #checkov:skip=CKV_AWS_355:Comprehend, Translate, and Polly APIs do not support resource-level permissions, Resource=* is required
+  name = "${var.project_name}-backend-ml-policy"
   role = aws_iam_role.backend.id
 
   policy = jsonencode({
@@ -169,9 +170,18 @@ resource "aws_iam_role_policy" "backend_comprehend" {
         Action = [
           "comprehend:DetectSentiment",
           "comprehend:DetectKeyPhrases",
-          "translate:TranslateText"
+          "translate:TranslateText",
+          "polly:SynthesizeSpeech"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+        Resource = "${var.s3_bucket_arn}/audio/*"
       }
     ]
   })

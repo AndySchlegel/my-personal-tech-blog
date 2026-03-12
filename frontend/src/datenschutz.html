@@ -80,23 +80,25 @@
             >Blog</a
           >
         </nav>
-        <!-- Language toggle (DE/EN) -->
-        <button
-          id="lang-toggle"
-          class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
-          aria-label="Toggle language"
-          title="Switch language / Sprache wechseln"
-        >
-          <span id="lang-label" class="text-xs font-bold">DE</span>
-        </button>
-        <button
-          id="theme-toggle"
-          class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
-          aria-label="Toggle dark mode"
-        >
-          <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
-          <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <span id="lang-label" class="text-xs font-bold">DE</span>
+          </button>
+          <button
+            id="theme-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+            <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -247,6 +249,20 @@
           >
             <strong>Amazon Comprehend</strong> &ndash; Automatisierte
             Textanalyse (siehe Abschnitt 8)
+          </li>
+          <li
+            data-de="<strong>Amazon Translate</strong> &ndash; Automatische &Uuml;bersetzung von Blog-Inhalten (siehe Abschnitt 8)"
+            data-en="<strong>Amazon Translate</strong> &ndash; Automatic translation of blog content (see section 8)"
+          >
+            <strong>Amazon Translate</strong> &ndash; Automatische
+            &Uuml;bersetzung von Blog-Inhalten (siehe Abschnitt 8)
+          </li>
+          <li
+            data-de="<strong>Amazon Polly</strong> &ndash; Text-to-Speech f&uuml;r Blog-Beitr&auml;ge (siehe Abschnitt 8)"
+            data-en="<strong>Amazon Polly</strong> &ndash; Text-to-speech for blog posts (see section 8)"
+          >
+            <strong>Amazon Polly</strong> &ndash; Text-to-Speech f&uuml;r
+            Blog-Beitr&auml;ge (siehe Abschnitt 8)
           </li>
           <li
             data-de="<strong>Application Load Balancer</strong> &ndash; Lastverteilung und SSL-Terminierung"
@@ -662,6 +678,149 @@
         </p>
       </section>
 
+      <!-- 8.3 Amazon Translate -->
+      <section class="mb-8">
+        <h3
+          class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+          data-de="8.3 Automatische &Uuml;bersetzung (Amazon Translate)"
+          data-en="8.3 Automatic Translation (Amazon Translate)"
+        >
+          8.3 Automatische &Uuml;bersetzung (Amazon Translate)
+        </h3>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Diese Website bietet eine optionale &Uuml;bersetzung der Blog-Beitr&auml;ge ins Englische an. Bei Aktivierung des Sprach-Toggles (DE/EN) werden <strong>Titel, Inhalt und Kurzfassung</strong> der Blog-Beitr&auml;ge an <strong>Amazon Translate</strong> &uuml;bermittelt und maschinell &uuml;bersetzt."
+          data-en="This website offers an optional translation of blog posts into English. When the language toggle (DE/EN) is activated, <strong>title, content, and excerpt</strong> of blog posts are transmitted to <strong>Amazon Translate</strong> and machine-translated."
+        >
+          Diese Website bietet eine optionale &Uuml;bersetzung der
+          Blog-Beitr&auml;ge ins Englische an. Bei Aktivierung des
+          Sprach-Toggles (DE/EN) werden
+          <strong>Titel, Inhalt und Kurzfassung</strong> der Blog-Beitr&auml;ge
+          an <strong>Amazon Translate</strong> &uuml;bermittelt und maschinell
+          &uuml;bersetzt.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Verarbeitete Daten:</strong> Es werden ausschlie&szlig;lich &ouml;ffentlich ver&ouml;ffentlichte Blog-Inhalte &uuml;bermittelt &ndash; keine personenbezogenen Daten der Nutzer. Die &Uuml;bersetzungen werden in der Datenbank zwischengespeichert, sodass jeder Text nur einmal &uuml;bersetzt wird."
+          data-en="<strong>Data processed:</strong> Only publicly published blog content is transmitted &ndash; no personal data of users. Translations are cached in the database so that each text is only translated once."
+        >
+          <strong>Verarbeitete Daten:</strong> Es werden ausschlie&szlig;lich
+          &ouml;ffentlich ver&ouml;ffentlichte Blog-Inhalte &uuml;bermittelt
+          &ndash; keine personenbezogenen Daten der Nutzer. Die
+          &Uuml;bersetzungen werden in der Datenbank zwischengespeichert, sodass
+          jeder Text nur einmal &uuml;bersetzt wird.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Verarbeitungsort:</strong> eu-central-1 (Frankfurt). Amazon Translate speichert die &uuml;bermittelten Texte nicht dauerhaft."
+          data-en="<strong>Processing location:</strong> eu-central-1 (Frankfurt). Amazon Translate does not permanently store the transmitted texts."
+        >
+          <strong>Verarbeitungsort:</strong> eu-central-1 (Frankfurt). Amazon
+          Translate speichert die &uuml;bermittelten Texte nicht dauerhaft.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der mehrsprachigen Bereitstellung der Inhalte)."
+          data-en="<strong>Legal basis:</strong> Art. 6(1)(f) GDPR (legitimate interest in providing content in multiple languages)."
+        >
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der mehrsprachigen Bereitstellung der
+          Inhalte).
+        </p>
+      </section>
+
+      <!-- 8.4 Amazon Polly -->
+      <section class="mb-8">
+        <h3
+          class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+          data-de="8.4 Sprachausgabe (Amazon Polly)"
+          data-en="8.4 Text-to-Speech (Amazon Polly)"
+        >
+          8.4 Sprachausgabe (Amazon Polly)
+        </h3>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Blog-Beitr&auml;ge k&ouml;nnen optional als Audio abgespielt werden. Beim Klick auf &bdquo;Vorlesen&ldquo; wird der <strong>Beitragsinhalt</strong> (ohne Markdown-Formatierung) an <strong>Amazon Polly</strong> &uuml;bermittelt und als MP3-Audiodatei synthetisiert."
+          data-en="Blog posts can optionally be played as audio. When clicking &ldquo;Listen&rdquo;, the <strong>post content</strong> (without Markdown formatting) is transmitted to <strong>Amazon Polly</strong> and synthesized as an MP3 audio file."
+        >
+          Blog-Beitr&auml;ge k&ouml;nnen optional als Audio abgespielt werden.
+          Beim Klick auf &bdquo;Vorlesen&ldquo; wird der
+          <strong>Beitragsinhalt</strong> (ohne Markdown-Formatierung) an
+          <strong>Amazon Polly</strong> &uuml;bermittelt und als MP3-Audiodatei
+          synthetisiert.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Verarbeitete Daten:</strong> Es werden ausschlie&szlig;lich &ouml;ffentlich ver&ouml;ffentlichte Blog-Inhalte &uuml;bermittelt &ndash; keine personenbezogenen Daten der Nutzer. Die erzeugten Audiodateien werden in Amazon S3 zwischengespeichert."
+          data-en="<strong>Data processed:</strong> Only publicly published blog content is transmitted &ndash; no personal data of users. The generated audio files are cached in Amazon S3."
+        >
+          <strong>Verarbeitete Daten:</strong> Es werden ausschlie&szlig;lich
+          &ouml;ffentlich ver&ouml;ffentlichte Blog-Inhalte &uuml;bermittelt
+          &ndash; keine personenbezogenen Daten der Nutzer. Die erzeugten
+          Audiodateien werden in Amazon S3 zwischengespeichert.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Verarbeitungsort:</strong> eu-central-1 (Frankfurt). Amazon Polly speichert die &uuml;bermittelten Texte nicht dauerhaft und nutzt sie nicht zum Training eigener Modelle."
+          data-en="<strong>Processing location:</strong> eu-central-1 (Frankfurt). Amazon Polly does not permanently store the transmitted texts and does not use them for training its own models."
+        >
+          <strong>Verarbeitungsort:</strong> eu-central-1 (Frankfurt). Amazon
+          Polly speichert die &uuml;bermittelten Texte nicht dauerhaft und nutzt
+          sie nicht zum Training eigener Modelle.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der barrierefreien Bereitstellung der Inhalte)."
+          data-en="<strong>Legal basis:</strong> Art. 6(1)(f) GDPR (legitimate interest in providing accessible content)."
+        >
+          <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der barrierefreien Bereitstellung der
+          Inhalte).
+        </p>
+      </section>
+
+      <!-- 8.5 Prometheus & Grafana (Cluster-Monitoring) -->
+      <section class="mb-8">
+        <h3
+          class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+          data-de="8.5 Cluster-Monitoring (Prometheus &amp; Grafana)"
+          data-en="8.5 Cluster Monitoring (Prometheus &amp; Grafana)"
+        >
+          8.5 Cluster-Monitoring (Prometheus &amp; Grafana)
+        </h3>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Zur &Uuml;berwachung der technischen Infrastruktur werden <strong>Prometheus</strong> (Metrik-Sammlung) und <strong>Grafana</strong> (Visualisierung) innerhalb des Kubernetes-Clusters betrieben. Diese Werkzeuge erfassen ausschlie&szlig;lich <strong>technische Cluster-Metriken</strong> wie CPU-Auslastung, Arbeitsspeicher, Netzwerk-I/O und Pod-Status."
+          data-en="For monitoring the technical infrastructure, <strong>Prometheus</strong> (metric collection) and <strong>Grafana</strong> (visualization) are operated within the Kubernetes cluster. These tools collect exclusively <strong>technical cluster metrics</strong> such as CPU usage, memory, network I/O, and pod status."
+        >
+          Zur &Uuml;berwachung der technischen Infrastruktur werden
+          <strong>Prometheus</strong> (Metrik-Sammlung) und
+          <strong>Grafana</strong> (Visualisierung) innerhalb des
+          Kubernetes-Clusters betrieben. Diese Werkzeuge erfassen
+          ausschlie&szlig;lich <strong>technische Cluster-Metriken</strong> wie
+          CPU-Auslastung, Arbeitsspeicher, Netzwerk-I/O und Pod-Status.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Keine personenbezogenen Daten:</strong> Es werden weder Besucherdaten, IP-Adressen, Seitenaufrufe noch sonstige nutzerbezogene Informationen erfasst. Die Metriken betreffen ausschlie&szlig;lich die Cluster-Infrastruktur."
+          data-en="<strong>No personal data:</strong> No visitor data, IP addresses, page views, or other user-related information is collected. The metrics relate exclusively to the cluster infrastructure."
+        >
+          <strong>Keine personenbezogenen Daten:</strong> Es werden weder
+          Besucherdaten, IP-Adressen, Seitenaufrufe noch sonstige nutzerbezogene
+          Informationen erfasst. Die Metriken betreffen ausschlie&szlig;lich die
+          Cluster-Infrastruktur.
+        </p>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+          data-de="<strong>Speicherdauer:</strong> Metriken werden maximal 7 Tage im Cluster vorgehalten und bei Abbau der Infrastruktur vollst&auml;ndig gel&ouml;scht. Grafana ist nicht &ouml;ffentlich zug&auml;nglich."
+          data-en="<strong>Retention period:</strong> Metrics are retained for a maximum of 7 days within the cluster and are completely deleted when the infrastructure is torn down. Grafana is not publicly accessible."
+        >
+          <strong>Speicherdauer:</strong> Metriken werden maximal 7 Tage im
+          Cluster vorgehalten und bei Abbau der Infrastruktur vollst&auml;ndig
+          gel&ouml;scht. Grafana ist nicht &ouml;ffentlich zug&auml;nglich.
+        </p>
+      </section>
+
       <!-- 9. Like-Funktion -->
       <section class="mb-8">
         <h2
@@ -785,13 +944,14 @@
         </p>
         <p
           class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
-          data-de="Die prim&auml;re Datenverarbeitung (Datenbank, Anwendung, Comprehend) findet in der <strong>EU (Frankfurt, eu-central-1)</strong> statt. Lediglich CloudFront kann Inhalte &uuml;ber Edge-Standorte weltweit ausliefern (siehe Abschnitt 4)."
-          data-en="Primary data processing (database, application, Comprehend) takes place in the <strong>EU (Frankfurt, eu-central-1)</strong>. Only CloudFront may deliver content via edge locations worldwide (see section 4)."
+          data-de="Die prim&auml;re Datenverarbeitung (Datenbank, Anwendung, Comprehend, Translate, Polly, Prometheus/Grafana) findet in der <strong>EU (Frankfurt, eu-central-1)</strong> statt. Lediglich CloudFront kann Inhalte &uuml;ber Edge-Standorte weltweit ausliefern (siehe Abschnitt 4)."
+          data-en="Primary data processing (database, application, Comprehend, Translate, Polly, Prometheus/Grafana) takes place in the <strong>EU (Frankfurt, eu-central-1)</strong>. Only CloudFront may deliver content via edge locations worldwide (see section 4)."
         >
-          Die prim&auml;re Datenverarbeitung (Datenbank, Anwendung, Comprehend)
-          findet in der <strong>EU (Frankfurt, eu-central-1)</strong> statt.
-          Lediglich CloudFront kann Inhalte &uuml;ber Edge-Standorte weltweit
-          ausliefern (siehe Abschnitt 4).
+          Die prim&auml;re Datenverarbeitung (Datenbank, Anwendung, Comprehend,
+          Translate, Polly, Prometheus/Grafana) findet in der
+          <strong>EU (Frankfurt, eu-central-1)</strong> statt. Lediglich
+          CloudFront kann Inhalte &uuml;ber Edge-Standorte weltweit ausliefern
+          (siehe Abschnitt 4).
         </p>
       </section>
 

@@ -458,6 +458,198 @@
   }
 
   // ============================================
+  // AUDIO PLAYER (Amazon Polly text-to-speech)
+  // ============================================
+
+  var audioState = { loading: false, playing: false };
+
+  // --- Setup the audio (listen) button + speed controls + sticky bar ---
+  function setupAudioButton(post) {
+    var btn = document.getElementById("audio-btn");
+    var player = document.getElementById("audio-player");
+    var icon = document.getElementById("audio-icon");
+    var label = document.getElementById("audio-label");
+    var speedControl = document.getElementById("audio-speed-control");
+
+    // Sticky bar elements (mirrors main controls)
+    var stickyBar = document.getElementById("sticky-audio-bar");
+    var stickyTitle = document.getElementById("sticky-title");
+    var stickyBtn = document.getElementById("sticky-audio-btn");
+    var stickyIcon = document.getElementById("sticky-audio-icon");
+    var stickyLabel = document.getElementById("sticky-audio-label");
+    var stickySpeedControl = document.getElementById("sticky-speed-control");
+
+    if (!btn || !player) return;
+
+    // Set sticky bar title
+    if (stickyTitle) stickyTitle.textContent = post.title;
+
+    // --- Sync both buttons (main + sticky) to reflect current audio state ---
+    function syncUI(state) {
+      var lang = getCurrentLang();
+      var mainIconClass, stickyIconClass, text;
+
+      if (state === "loading") {
+        mainIconClass = "ti ti-loader text-lg animate-spin";
+        stickyIconClass = "ti ti-loader text-sm animate-spin";
+        text = lang === "en" ? "Loading..." : "Laden...";
+      } else if (state === "playing") {
+        mainIconClass = "ti ti-player-pause text-lg";
+        stickyIconClass = "ti ti-player-pause text-sm";
+        text = "Pause";
+      } else {
+        mainIconClass = "ti ti-headphones text-lg";
+        stickyIconClass = "ti ti-headphones text-sm";
+        text = lang === "en" ? "Listen" : "Vorlesen";
+      }
+
+      if (icon) icon.className = mainIconClass;
+      if (label) label.textContent = text;
+      if (stickyIcon) stickyIcon.className = stickyIconClass;
+      if (stickyLabel) stickyLabel.textContent = text;
+    }
+
+    // --- Speed button setup (works for both main and sticky controls) ---
+    function setupSpeedButtons(container, cssActive, cssInactive) {
+      if (!container) return;
+      var speedBtns = container.querySelectorAll(
+        ".audio-speed-btn, .sticky-speed-btn",
+      );
+      speedBtns.forEach(function (speedBtn) {
+        speedBtn.addEventListener("click", function () {
+          var speed = parseFloat(speedBtn.getAttribute("data-speed"));
+          player.playbackRate = speed;
+          // Sync active state across ALL speed buttons (main + sticky)
+          syncSpeedUI(speed);
+        });
+      });
+    }
+
+    // Highlight the active speed across both control bars
+    function syncSpeedUI(speed) {
+      [speedControl, stickySpeedControl].forEach(function (ctrl) {
+        if (!ctrl) return;
+        ctrl.querySelectorAll("[data-speed]").forEach(function (b) {
+          var isActive = parseFloat(b.getAttribute("data-speed")) === speed;
+          var isSticky = b.classList.contains("sticky-speed-btn");
+          if (isSticky) {
+            b.className = isActive
+              ? "sticky-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+              : "sticky-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all";
+          } else {
+            b.className = isActive
+              ? "audio-speed-btn active px-2 py-1 rounded-md text-xs font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+              : "audio-speed-btn px-2 py-1 rounded-md text-xs font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/50 transition-all";
+          }
+        });
+      });
+    }
+
+    setupSpeedButtons(speedControl);
+    setupSpeedButtons(stickySpeedControl);
+
+    // Show/hide speed controls on both bars
+    function showSpeedControls() {
+      if (speedControl) speedControl.classList.remove("hidden");
+      if (stickySpeedControl) stickySpeedControl.classList.remove("hidden");
+    }
+
+    // --- Audio play/pause handler (shared by both buttons) ---
+    function handleAudioClick() {
+      // If already playing, pause
+      if (audioState.playing) {
+        player.pause();
+        audioState.playing = false;
+        syncUI("idle");
+        return;
+      }
+
+      // If audio is loaded (paused), resume
+      if (player.src && !audioState.loading) {
+        player.play();
+        audioState.playing = true;
+        syncUI("playing");
+        return;
+      }
+
+      // First click: fetch audio URL from API
+      if (audioState.loading) return;
+      audioState.loading = true;
+      syncUI("loading");
+
+      var lang = getCurrentLang();
+      var langParam = lang === "en" ? "?lang=en" : "";
+
+      fetch(API_BASE + "/posts/" + post.id + "/audio" + langParam)
+        .then(function (response) {
+          if (!response.ok) throw new Error("Audio not available");
+          return response.json();
+        })
+        .then(function (data) {
+          player.src = data.audio_url;
+          player.play();
+          audioState.loading = false;
+          audioState.playing = true;
+          syncUI("playing");
+          showSpeedControls();
+        })
+        .catch(function () {
+          audioState.loading = false;
+          syncUI("idle");
+        });
+    }
+
+    // Attach click handler to both buttons
+    btn.addEventListener("click", handleAudioClick);
+    if (stickyBtn) stickyBtn.addEventListener("click", handleAudioClick);
+
+    // When audio ends, reset both buttons (keep speed controls visible)
+    player.addEventListener("ended", function () {
+      audioState.playing = false;
+      syncUI("idle");
+    });
+
+    // --- Sticky bar visibility (IntersectionObserver) ---
+    // Show sticky bar when the original post-header scrolls out of view
+    var postHeader = document.getElementById("post-header");
+    if (postHeader && stickyBar) {
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              // Header visible -> hide sticky bar
+              stickyBar.classList.add(
+                "translate-y-[-100%]",
+                "opacity-0",
+                "pointer-events-none",
+              );
+              stickyBar.classList.remove(
+                "translate-y-0",
+                "opacity-100",
+                "pointer-events-auto",
+              );
+            } else {
+              // Header scrolled away -> show sticky bar
+              stickyBar.classList.remove(
+                "translate-y-[-100%]",
+                "opacity-0",
+                "pointer-events-none",
+              );
+              stickyBar.classList.add(
+                "translate-y-0",
+                "opacity-100",
+                "pointer-events-auto",
+              );
+            }
+          });
+        },
+        { threshold: 0, rootMargin: "-64px 0px 0px 0px" },
+      );
+      observer.observe(postHeader);
+    }
+  }
+
+  // ============================================
   // COMMENTS
   // ============================================
 
@@ -833,8 +1025,9 @@
     // Setup content scroll-reveal animations
     setupContentAnimations();
 
-    // Setup like button
+    // Setup like button + audio player
     setupLikeButton(post);
+    setupAudioButton(post);
 
     // Load and display comments
     if (post.id) {
