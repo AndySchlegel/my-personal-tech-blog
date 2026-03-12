@@ -690,3 +690,56 @@ Kept Comprehend as a first-pass filter but made clear that manual moderation is 
 Managed AI services like Comprehend are powerful for obvious cases but have blind spots with nuanced language. German sarcasm is a known weak point. Always combine automated analysis with human moderation. For a blog comment system, this is acceptable -- the admin dashboard shows sentiment badges so the moderator can quickly spot misclassifications. For safety-critical applications (hate speech detection, content policy enforcement), a single-service approach would not be sufficient.
 
 ---
+
+## #36 - Helm-Based Observability: kube-prometheus-stack on EKS
+
+**Date:** 2026-03-12
+**Phase:** Phase 8 (Polish + Presentation)
+
+**Context:**
+Needed monitoring dashboards for the presentation and to understand cluster behavior during HPA scaling. The cluster had metrics-server for HPA but no visualization or history.
+
+**Decision:**
+Installed `kube-prometheus-stack` via Helm -- a single chart that bundles Prometheus, Grafana, node-exporter, kube-state-metrics, and Prometheus Operator. Key choices:
+- Alertmanager disabled (not needed for a showcase blog)
+- 7-day retention (enough for demo cycles)
+- Low resource limits (~40m CPU, ~520 MiB memory total)
+- Grafana password hardcoded in deploy.yml (reproducible across deploy cycles)
+- No persistent volume (data resets on destroy -- acceptable for showcase)
+- Integrated into all 3 CI/CD workflows: deploy.yml installs, infra-destroy.yml + terraform.yml clean up
+
+The entire stack costs $0 extra because it runs as pods on the existing Spot instances. From 27 pre-installed dashboards, only 3 are relevant: Namespace (Pods), Node (Pods), and Networking.
+
+**Takeaway:**
+Helm is the package manager for Kubernetes -- one command installs 6 pods with 27 dashboards. The key insight is that monitoring pods run alongside application pods on the same nodes at negligible cost. For a production system you would add persistent storage and alerting, but for a showcase demo the ephemeral setup is perfect. The live HPA stresstest (busybox load-generator -> watch CPU spike -> 4 pods spawn -> zero packet loss) is worth more than any slide.
+
+---
+
+## #37 - HPA Live Demo: Stresstest as Presentation Wow-Moment
+
+**Date:** 2026-03-12
+**Phase:** Phase 8 (Polish + Presentation)
+
+**Context:**
+HPA (Horizontal Pod Autoscaler) was configured since Session 23 (backend 1-4 pods, frontend 1-3 pods, 70% CPU target) but never demonstrated under real load.
+
+**Decision:**
+Created a simple stresstest approach using a busybox pod that sends continuous GET /api/posts requests to the backend service. The sequence:
+1. Backend CPU jumps from 1% to 249% (hitting the 250m limit)
+2. HPA scales from 1 to 4 pods within 60 seconds
+3. Load distributes across pods (249% -> 90% -> 65%)
+4. After stopping load, 5-minute cooldown, then scale-down to 1 pod
+5. Zero packets dropped throughout the entire cycle
+
+Key finding: Frontend (nginx) will practically never scale -- it uses 0.18% CPU for static files. Thousands of concurrent visitors would be needed. Backend scales first because every API call triggers a database query.
+
+The stresstest command is always the same regardless of destroy/deploy cycles:
+```
+kubectl run load-generator --namespace blog --image=busybox --restart=Never \
+  -- /bin/sh -c "while true; do wget -q -O- http://backend:3000/api/posts > /dev/null 2>&1; done"
+```
+
+**Takeaway:**
+A live demo beats any diagram. Watching pods spawn in real-time while Grafana shows the CPU spike is an immediate proof of auto-scaling capability. The approach is deterministic and reproducible -- same command, same result, every time. For presentations: set up Grafana beforehand (port-forward + login), then run one command live. Keep screenshots as backup in case of connectivity issues.
+
+---

@@ -104,6 +104,21 @@ jobs:
             echo "ALB Controller resources cleaned up"
           fi
 
+      # --- Pre-cleanup: uninstall Helm releases before EKS destroy ---
+      # Monitoring stack (Prometheus + Grafana) and ALB Controller are Helm-managed.
+      # Must be removed BEFORE destroying EKS to avoid orphaned resources.
+      - name: Clean up Helm releases
+        run: |
+          # Configure kubectl (may fail if EKS doesn't exist -- that's OK)
+          if aws eks update-kubeconfig --name blog-eks-dev --region ${{ env.AWS_REGION }} 2>/dev/null; then
+            echo "Uninstalling monitoring stack..."
+            helm uninstall monitoring --namespace monitoring 2>/dev/null || echo "monitoring not found -- skipping"
+            kubectl delete namespace monitoring 2>/dev/null || echo "monitoring namespace not found -- skipping"
+            echo "Helm cleanup complete"
+          else
+            echo "EKS cluster not available -- skipping Helm cleanup"
+          fi
+
       # --- Wave 3 destroy (EKS + CloudFront) ---
       # Must be destroyed FIRST because EKS depends on VPC subnets.
       # If Wave 3 was never deployed, the plan is empty and apply is a no-op.

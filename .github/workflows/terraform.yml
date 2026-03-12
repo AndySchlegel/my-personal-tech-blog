@@ -311,6 +311,21 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
+      # Clean up Helm releases before destroying EKS (wave-3/all).
+      # Monitoring stack and other Helm-managed resources must be removed
+      # before EKS is destroyed to avoid orphaned resources.
+      - name: Clean up Helm releases
+        if: ${{ inputs.wave == 'wave-3' || inputs.wave == 'all' }}
+        run: |
+          if aws eks update-kubeconfig --name blog-eks-dev --region ${{ env.AWS_REGION }} 2>/dev/null; then
+            echo "Uninstalling monitoring stack..."
+            helm uninstall monitoring --namespace monitoring 2>/dev/null || echo "monitoring not found -- skipping"
+            kubectl delete namespace monitoring 2>/dev/null || echo "monitoring namespace not found -- skipping"
+            echo "Helm cleanup complete"
+          else
+            echo "EKS cluster not available -- skipping Helm cleanup"
+          fi
+
       # Clean up ALB Controller resources before destroying EKS (wave-3/all).
       # The ALB is created by the controller inside EKS, not by Terraform.
       # If EKS is destroyed first, orphaned ALB ENIs block VPC deletion.

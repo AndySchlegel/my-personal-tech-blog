@@ -153,10 +153,11 @@ resource "aws_iam_role" "backend" {
   }
 }
 
-# Comprehend permissions for the backend pod.
-# DetectSentiment: analyzes comment text for positive/negative/neutral/mixed
-# DetectKeyPhrases: extracts key topics from text (used for auto-tagging)
+# Comprehend + Translate permissions for the backend pod.
+# Comprehend: sentiment analysis on comments, key phrase extraction for auto-tags
+# Translate: on-demand DE->EN translation of blog posts (cached in PostgreSQL)
 resource "aws_iam_role_policy" "backend_comprehend" {
+  #checkov:skip=CKV_AWS_355:Comprehend and Translate APIs do not support resource-level permissions, Resource=* is required
   name = "${var.project_name}-backend-comprehend-policy"
   role = aws_iam_role.backend.id
 
@@ -167,7 +168,8 @@ resource "aws_iam_role_policy" "backend_comprehend" {
         Effect = "Allow"
         Action = [
           "comprehend:DetectSentiment",
-          "comprehend:DetectKeyPhrases"
+          "comprehend:DetectKeyPhrases",
+          "translate:TranslateText"
         ]
         Resource = "*"
       }

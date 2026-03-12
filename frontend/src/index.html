@@ -93,8 +93,18 @@
           >
         </nav>
 
-        <!-- Right side: theme toggle + mobile menu -->
+        <!-- Right side: language toggle + theme toggle + mobile menu -->
         <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <span id="lang-label" class="text-xs font-bold">DE</span>
+          </button>
+
           <!-- Theme toggle button -->
           <button
             id="theme-toggle"
@@ -172,6 +182,8 @@
               <p
                 class="slide-in-left text-xl sm:text-2xl text-sky-600 dark:text-sky-400 font-semibold mb-5"
                 style="animation-delay: 0.1s; opacity: 0"
+                data-de="Cloud &amp; DevOps Engineer – von IaC bis Produktion"
+                data-en="Cloud &amp; DevOps Engineer – from IaC to Production"
               >
                 Cloud &amp; DevOps Engineer – von IaC bis Produktion
               </p>
@@ -180,6 +192,8 @@
               <p
                 class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
                 style="animation-delay: 0.15s; opacity: 0"
+                data-de="Ich baue Cloud-Infrastrukturen auf AWS mit Terraform, Kubernetes und CI/CD. Fast zwei Jahrzehnte Erfahrung in Stakeholder-Kommunikation treffen auf Hands-on Cloud Engineering."
+                data-en="I build cloud infrastructures on AWS with Terraform, Kubernetes and CI/CD. Almost two decades of stakeholder communication experience meets hands-on cloud engineering."
               >
                 Ich baue Cloud-Infrastrukturen auf AWS mit Terraform, Kubernetes
                 und CI/CD. Fast zwei Jahrzehnte Erfahrung in
@@ -201,6 +215,8 @@
                   />
                   <p
                     class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
+                    data-de="Von Business-Anforderungen zur technischen Umsetzung – Architektur, Infrastructure-as-Code und produktionsreife Deployments."
+                    data-en="From business requirements to technical implementation – architecture, infrastructure as code and production-ready deployments."
                   >
                     Von Business-Anforderungen zur technischen Umsetzung –
                     Architektur, Infrastructure-as-Code und produktionsreife
@@ -219,14 +235,18 @@
                   class="social-link inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400 text-sm font-semibold rounded-lg"
                 >
                   <i class="ti ti-arrow-down text-base"></i>
-                  Projekte ansehen
+                  <span data-de="Projekte ansehen" data-en="View Projects"
+                    >Projekte ansehen</span
+                  >
                 </a>
                 <a
                   href="./skills.html"
                   class="social-link inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400 text-sm font-semibold rounded-lg"
                 >
                   <i class="ti ti-compass text-base"></i>
-                  Skills entdecken
+                  <span data-de="Skills entdecken" data-en="Explore Skills"
+                    >Skills entdecken</span
+                  >
                 </a>
               </div>
 
@@ -316,7 +336,9 @@
             >
               <i class="ti ti-stack-2 text-xl text-sky-500"></i>
             </span>
-            Kernkompetenzen
+            <span data-de="Kernkompetenzen" data-en="Core Competencies"
+              >Kernkompetenzen</span
+            >
           </h2>
 
           <!-- Centered pill grid -->
@@ -430,7 +452,7 @@
           >
             <i class="ti ti-rocket text-xl text-orange-500"></i>
           </span>
-          Projekte
+          <span data-de="Projekte" data-en="Projects">Projekte</span>
         </h2>
 
         <div class="grid gap-6 sm:grid-cols-2">
@@ -465,6 +487,8 @@
             <!-- Subtitle -->
             <p
               class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+              data-de="Serverless E-Commerce Platform"
+              data-en="Serverless E-Commerce Platform"
             >
               Serverless E-Commerce Platform
             </p>
@@ -472,6 +496,8 @@
             <!-- Description -->
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+              data-de="Komplette serverless AWS-Architektur von Grund auf designed, implementiert und produktiv deployed."
+              data-en="Complete serverless AWS architecture designed from scratch, implemented and deployed to production."
             >
               Komplette serverless AWS-Architektur von Grund auf designed,
               implementiert und produktiv deployed.
@@ -483,13 +509,17 @@
             >
               <span class="flex items-center gap-1">
                 <i class="devicon-terraform-plain colored text-sm"></i>
-                15 TF-Module
+                <span data-de="15 TF-Module" data-en="15 TF Modules"
+                  >15 TF-Module</span
+                >
               </span>
               <span class="flex items-center gap-1">
                 <i
                   class="devicon-amazonwebservices-plain-wordmark colored text-sm"
                 ></i>
-                12 AWS-Services
+                <span data-de="12 AWS-Services" data-en="12 AWS Services"
+                  >12 AWS-Services</span
+                >
               </span>
               <span class="flex items-center gap-1">
                 <i class="ti ti-test-pipe text-sky-500"></i>
@@ -497,7 +527,9 @@
               </span>
               <span class="flex items-center gap-1">
                 <i class="ti ti-git-merge text-green-500"></i>
-                8 GH-Actions
+                <span data-de="8 GH-Actions" data-en="8 GH Actions"
+                  >8 GH-Actions</span
+                >
               </span>
               <span class="flex items-center gap-1">
                 <i class="ti ti-lock text-amber-500"></i>
@@ -563,6 +595,8 @@
             <!-- Subtitle -->
             <p
               class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+              data-de="Cloud-Native auf AWS EKS"
+              data-en="Cloud-Native on AWS EKS"
             >
               Cloud-Native auf AWS EKS
             </p>
@@ -570,6 +604,8 @@
             <!-- Description -->
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+              data-de="Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging und PostgreSQL aufgebaut, betrieben und kontinuierlich deployed."
+              data-en="Kubernetes cluster on AWS EKS with CI/CD pipeline, ML auto-tagging and PostgreSQL built, operated and continuously deployed."
             >
               Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging
               und PostgreSQL aufgebaut, betrieben und kontinuierlich deployed.
@@ -655,6 +691,8 @@
             <!-- Subtitle -->
             <p
               class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+              data-de="Verteilte Infrastruktur im Dauerbetrieb"
+              data-en="Distributed Infrastructure in Continuous Operation"
             >
               Verteilte Infrastruktur im Dauerbetrieb
             </p>
@@ -662,6 +700,8 @@
             <!-- Description -->
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+              data-de="Verteilte Infrastruktur wie ein internes Ops-Team aufgebaut: vier Standorte per Tailscale vernetzt, 50+ containerisierte Services und UniFi-Netzwerk im Dauerbetrieb."
+              data-en="Distributed infrastructure built like an internal ops team: four locations connected via Tailscale, 50+ containerized services and UniFi network in continuous operation."
             >
               Verteilte Infrastruktur wie ein internes Ops-Team aufgebaut: vier
               Standorte per Tailscale vernetzt, 50+ containerisierte Services
@@ -674,7 +714,9 @@
             >
               <span class="flex items-center gap-1">
                 <i class="ti ti-map-pin text-green-500"></i>
-                4 Standorte
+                <span data-de="4 Standorte" data-en="4 Locations"
+                  >4 Standorte</span
+                >
               </span>
               <span class="flex items-center gap-1">
                 <i class="devicon-docker-plain colored text-sm"></i>
@@ -748,6 +790,8 @@
             <!-- Subtitle -->
             <p
               class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
+              data-de="Zentrales Monitoring über alle Standorte"
+              data-en="Centralized Monitoring Across All Locations"
             >
               Zentrales Monitoring über alle Standorte
             </p>
@@ -755,6 +799,8 @@
             <!-- Description -->
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+              data-de="Zentrales Monitoring über alle Standorte aufgebaut: Prometheus, Grafana, Wazuh SIEM und dreistufiges Alerting für Echtzeit-Detection."
+              data-en="Centralized monitoring across all locations: Prometheus, Grafana, Wazuh SIEM and three-tier alerting for real-time detection."
             >
               Zentrales Monitoring über alle Standorte aufgebaut: Prometheus,
               Grafana, Wazuh SIEM und dreistufiges Alerting für
@@ -779,7 +825,9 @@
               </span>
               <span class="flex items-center gap-1">
                 <i class="ti ti-bell text-amber-500"></i>
-                3-Stufen-Alerting
+                <span data-de="3-Stufen-Alerting" data-en="3-Tier Alerting"
+                  >3-Stufen-Alerting</span
+                >
               </span>
             </div>
 
@@ -837,11 +885,15 @@
               </div>
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                data-de="Stakeholder-Kommunikation"
+                data-en="Stakeholder Communication"
               >
                 Stakeholder-Kommunikation
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Fast zwei Jahrzehnte Abstimmung mit internen und externen Entscheidern."
+                data-en="Almost two decades of alignment with internal and external decision-makers."
               >
                 Fast zwei Jahrzehnte Abstimmung mit internen und externen
                 Entscheidern.
@@ -859,11 +911,15 @@
               </div>
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                data-de="Prozessoptimierung"
+                data-en="Process Optimization"
               >
                 Prozessoptimierung
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Abläufe analysiert, standardisiert und automatisiert."
+                data-en="Workflows analyzed, standardized and automated."
               >
                 Abläufe analysiert, standardisiert und automatisiert.
               </p>
@@ -885,6 +941,8 @@
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Vertriebseinheiten ausgebaut, Kollegen onboarded."
+                data-en="Scaled sales units, onboarded colleagues."
               >
                 Vertriebseinheiten ausgebaut, Kollegen onboarded.
               </p>
@@ -901,11 +959,15 @@
               </div>
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                data-de="Krisenmanagement"
+                data-en="Crisis Management"
               >
                 Krisenmanagement
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Sechs Jahre Bundeswehr -- strukturiertes Handeln unter Druck."
+                data-en="Six years in the German Armed Forces -- structured action under pressure."
               >
                 Sechs Jahre Bundeswehr -- strukturiertes Handeln unter Druck.
               </p>
@@ -922,11 +984,15 @@
               </div>
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                data-de="Eigeninitiative"
+                data-en="Self-Motivation"
               >
                 Eigeninitiative
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on aufgebaut."
+                data-en="Built cloud and hybrid infrastructure hands-on alongside full-time work."
               >
                 Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on
                 aufgebaut.
@@ -944,11 +1010,15 @@
               </div>
               <h3
                 class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                data-de="Selbständiges Arbeiten"
+                data-en="Independent Work"
               >
                 Selbständiges Arbeiten
               </h3>
               <p
                 class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                data-de="Bundesweit remote -- eigenständige Planung und Umsetzung."
+                data-en="Nationwide remote -- independent planning and execution."
               >
                 Bundesweit remote -- eigenständige Planung und Umsetzung.
               </p>
@@ -968,7 +1038,9 @@
           >
             <i class="ti ti-chart-bar text-xl text-amber-500"></i>
           </span>
-          Auf einen Blick
+          <span data-de="Auf einen Blick" data-en="At a Glance"
+            >Auf einen Blick</span
+          >
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
@@ -989,6 +1061,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Zertifizierungen"
+              data-en="Certifications"
             >
               Zertifizierungen
             </div>
@@ -1034,6 +1108,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Monate Training"
+              data-en="Months of Training"
             >
               Monate Training
             </div>
@@ -1056,6 +1132,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Umgebungen"
+              data-en="Environments"
             >
               Umgebungen
             </div>
@@ -1079,6 +1157,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Jahre Key Account &amp; Sales"
+              data-en="Years Key Account &amp; Sales"
             >
               Jahre Key Account &amp; Sales
             </div>
@@ -1093,11 +1173,15 @@
           <div class="text-center">
             <h2
               class="reveal text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4"
+              data-de="Lass uns sprechen"
+              data-en="Let's talk"
             >
               Lass uns sprechen
             </h2>
             <p
               class="reveal reveal-delay-1 text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-xl mx-auto"
+              data-de="Ab April 2026 offen für neue Herausforderungen. Cloud Engineering, Solutions Architecture, Technical Consulting &mdash; oder die passende Rolle dazwischen."
+              data-en="Available from April 2026 for new challenges. Cloud Engineering, Solutions Architecture, Technical Consulting &mdash; or the right role in between."
             >
               Ab April 2026 offen für neue Herausforderungen. Cloud Engineering,
               Solutions Architecture, Technical Consulting &mdash; oder die
@@ -1145,7 +1229,7 @@
                 class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
               >
                 <i class="ti ti-article text-lg text-sky-500"></i>
-                Blog lesen
+                <span data-de="Blog lesen" data-en="Read Blog">Blog lesen</span>
               </a>
             </div>
           </div>
@@ -1169,7 +1253,7 @@
             <span>2026 Andy Schlegel</span>
           </div>
 
-          <!-- Center: legal links (required in Germany) -->
+          <!-- Center: legal links (required in Germany, stay in German) -->
           <div class="flex items-center gap-4 text-sm">
             <a
               href="./impressum.html"
@@ -1210,6 +1294,31 @@
         </div>
       </div>
     </footer>
+
+    <!-- Language toggle (must load before other app scripts) -->
+    <script src="./js/lang.js"></script>
+
+    <!-- Apply language to static text elements on this page -->
+    <script>
+      // Apply language to static text elements on this page
+      function updatePageLanguage() {
+        var lang = window.blogLang ? window.blogLang.get() : "de";
+        var elements = document.querySelectorAll("[data-de][data-en]");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].innerHTML =
+            elements[i].getAttribute("data-" + lang) || "";
+        }
+        var inputs = document.querySelectorAll(
+          "[data-de-placeholder][data-en-placeholder]",
+        );
+        for (var j = 0; j < inputs.length; j++) {
+          inputs[j].placeholder =
+            inputs[j].getAttribute("data-" + lang + "-placeholder") || "";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updatePageLanguage);
+      window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
 
     <!-- Mobile menu toggle script -->
     <script>

@@ -13,6 +13,7 @@ import { Router, Request, Response } from 'express';
 import { query } from '../models/database';
 import { CreatePostRequest } from '../models/types';
 import { requireAuth } from '../middleware/auth';
+import { translatePost, getCachedTranslation } from '../services/translate';
 
 export const postsRouter = Router();
 
@@ -23,6 +24,7 @@ export const postsRouter = Router();
  *   ?search=terraform    - Search in title and excerpt (case-insensitive)
  *   ?category=devops-ci-cd - Filter by category slug
  *   ?tag=aws             - Filter by tag slug
+ *   ?lang=en             - Return translated content (cached via Amazon Translate)
  *
  * Returns posts sorted by publish date (newest first).
  * Includes category name and tags for each post.
@@ -30,7 +32,8 @@ export const postsRouter = Router();
  */
 postsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const { search, category, tag } = req.query;
+    const { search, category, tag, lang } = req.query;
+    const targetLang = typeof lang === 'string' && lang === 'en' ? 'en' : null;
 
     // Build WHERE clause dynamically with parameterized queries
     const conditions: string[] = ["p.status = 'published'"];
@@ -82,7 +85,37 @@ postsRouter.get('/', async (req: Request, res: Response) => {
       values
     );
 
-    res.json(result.rows);
+    let posts = result.rows;
+
+    // If English translation requested, translate title + excerpt for each post.
+    // Uses cache when available, calls Amazon Translate on-demand for uncached posts.
+    // First request may be slower (translates all posts), subsequent requests are instant.
+    if (targetLang === 'en') {
+      const translated = await Promise.all(
+        posts.map(
+          async (post: { id: number; title: string; content: string; excerpt: string | null }) => {
+            const cached = await getCachedTranslation(post.id, 'en');
+            if (cached) {
+              return { ...post, title: cached.title, excerpt: cached.excerpt };
+            }
+            // No cache -- translate on-demand (also caches full content for single-post view)
+            const translation = await translatePost(
+              post.id,
+              post.title,
+              post.content,
+              post.excerpt
+            );
+            if (translation) {
+              return { ...post, title: translation.title, excerpt: translation.excerpt };
+            }
+            return post;
+          }
+        )
+      );
+      posts = translated;
+    }
+
+    res.json(posts);
   } catch (err) {
     console.error('Error fetching posts:', err);
     res.status(500).json({ error: 'Failed to fetch posts' });
@@ -94,9 +127,15 @@ postsRouter.get('/', async (req: Request, res: Response) => {
  *
  * Returns the full post including Markdown content, tags, and metadata.
  * Also increments the view counter.
+ *
+ * Query parameters:
+ *   ?lang=en - Return English translation (on-demand via Amazon Translate, cached in DB)
  */
 postsRouter.get('/:slug', async (req: Request, res: Response) => {
   try {
+    const { lang } = req.query;
+    const targetLang = typeof lang === 'string' && lang === 'en' ? 'en' : null;
+
     // Fetch the post with category and author info
     const postResult = await query(
       `SELECT
@@ -129,8 +168,26 @@ postsRouter.get('/:slug', async (req: Request, res: Response) => {
     // Increment view count (fire and forget - don't wait for it)
     query('UPDATE posts SET view_count = view_count + 1 WHERE id = $1', [post.id]);
 
+    // If English requested, translate on-demand (cached after first call)
+    let translatedFields = null;
+    if (targetLang === 'en') {
+      translatedFields = await translatePost(post.id, post.title, post.content, post.excerpt);
+    }
+
+    // Merge translation into response (original fields stay as fallback)
+    const responsePost = translatedFields
+      ? {
+          ...post,
+          title: translatedFields.title,
+          content: translatedFields.content,
+          excerpt: translatedFields.excerpt,
+          original_language: 'de',
+          language: 'en',
+        }
+      : { ...post, language: 'de' };
+
     res.json({
-      ...post,
+      ...responsePost,
       tags: tagsResult.rows,
     });
   } catch (err) {

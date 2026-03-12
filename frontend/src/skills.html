@@ -92,8 +92,18 @@
           >
         </nav>
 
-        <!-- Right side: theme toggle + mobile menu -->
+        <!-- Right side: language toggle + theme toggle + mobile menu -->
         <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <span id="lang-label" class="text-xs font-bold">DE</span>
+          </button>
+
           <!-- Theme toggle button -->
           <button
             id="theme-toggle"
@@ -157,12 +167,16 @@
           <div class="max-w-2xl">
             <h1
               class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+              data-de="Technische Skills"
+              data-en="Technical Skills"
             >
               Technische Skills
             </h1>
             <p
               class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
               style="animation-delay: 0.1s; opacity: 0"
+              data-de="12 Monate Hands-on-Projekte und produktives Homelab. Die Tools und Systeme, mit denen ich täglich arbeite."
+              data-en="12 months of hands-on projects and a productive homelab. The tools and systems I work with every day."
             >
               12 Monate Hands-on-Projekte und produktives Homelab. Die Tools und
               Systeme, mit denen ich täglich arbeite.
@@ -175,20 +189,25 @@
           <div
             class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400"
           >
-            <span class="font-medium text-slate-700 dark:text-slate-300"
+            <span
+              class="font-medium text-slate-700 dark:text-slate-300"
+              data-de="Kenntnisstand:"
+              data-en="Proficiency:"
               >Kenntnisstand:</span
             >
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-trophy text-green-500 text-sm"></i>
-              Zertifiziert
+              <span data-de="Zertifiziert" data-en="Certified"
+                >Zertifiziert</span
+              >
             </span>
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-circle-check text-sky-500 text-sm"></i>
-              Kompetent
+              <span data-de="Kompetent" data-en="Proficient">Kompetent</span>
             </span>
             <span class="inline-flex items-center gap-1.5">
               <i class="ti ti-loader text-amber-500 text-sm"></i>
-              In Arbeit
+              <span data-de="In Arbeit" data-en="In Progress">In Arbeit</span>
             </span>
           </div>
         </section>
@@ -205,7 +224,11 @@
             >
               <i class="ti ti-code text-xl text-sky-500"></i>
             </span>
-            Technische Kompetenzen
+            <span
+              data-de="Technische Kompetenzen"
+              data-en="Technical Competencies"
+              >Technische Kompetenzen</span
+            >
           </h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -231,6 +254,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Zertifizierte Cloud-Infrastruktur &amp; Security"
+                      data-en="Certified cloud infrastructure &amp; security"
                     >
                       Zertifizierte Cloud-Infrastruktur &amp; Security
                     </p>
@@ -260,7 +285,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-orange-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Kerndienste (EC2, VPC, S3, IAM, RDS)"
+                    data-en="Core Services (EC2, VPC, S3, IAM, RDS)"
                     >Kerndienste (EC2, VPC, S3, IAM, RDS)</span
                   >
                 </div>
@@ -270,7 +298,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-orange-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Anwendungsdienste (EKS, CloudFront, Cognito)"
+                    data-en="Application Services (EKS, CloudFront, Cognito)"
                     >Anwendungsdienste (EKS, CloudFront, Cognito)</span
                   >
                 </div>
@@ -290,7 +321,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-orange-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Sicherheit &amp; Compliance (IAM Policies, OIDC)"
+                    data-en="Security &amp; Compliance (IAM Policies, OIDC)"
                     >Sicherheit &amp; Compliance (IAM Policies, OIDC)</span
                   >
                 </div>
@@ -317,6 +351,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Reproduzierbare Infrastruktur mit Terraform"
+                      data-en="Reproducible infrastructure with Terraform"
                     >
                       Reproduzierbare Infrastruktur mit Terraform
                     </p>
@@ -327,6 +363,8 @@
                 </div>
                 <span
                   class="px-2 py-0.5 bg-purple-500/10 text-purple-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  data-de="PRODUKTIV"
+                  data-en="PRODUCTIVE"
                   >PRODUKTIV</span
                 >
               </div>
@@ -385,6 +423,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Docker, Kubernetes und Container-Ökosystem"
+                      data-en="Docker, Kubernetes and the container ecosystem"
                     >
                       Docker, Kubernetes und Container-Ökosystem
                     </p>
@@ -466,6 +506,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Automatisierte Pipelines und GitOps"
+                      data-en="Automated pipelines and GitOps"
                     >
                       Automatisierte Pipelines und GitOps
                     </p>
@@ -476,6 +518,8 @@
                 </div>
                 <span
                   class="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  data-de="PRODUKTIV"
+                  data-en="PRODUCTIVE"
                   >PRODUKTIV</span
                 >
               </div>
@@ -497,7 +541,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-sky-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Automatisierte Tests (Jest, Integration Tests)"
+                    data-en="Automated Tests (Jest, Integration Tests)"
                     >Automatisierte Tests (Jest, Integration Tests)</span
                   >
                 </div>
@@ -549,11 +596,15 @@
                   <div>
                     <h3
                       class="text-lg font-bold text-slate-900 dark:text-white"
+                      data-de="Monitoring &amp; Sicherheit"
+                      data-en="Monitoring &amp; Security"
                     >
                       Monitoring &amp; Sicherheit
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Dreistufiges Monitoring und SIEM"
+                      data-en="Three-tier monitoring and SIEM"
                     >
                       Dreistufiges Monitoring und SIEM
                     </p>
@@ -575,7 +626,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-red-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Prometheus &amp; Grafana (Metriken, Dashboards, Alerting)"
+                    data-en="Prometheus &amp; Grafana (Metrics, Dashboards, Alerting)"
                     >Prometheus &amp; Grafana (Metriken, Dashboards,
                     Alerting)</span
                   >
@@ -586,7 +640,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-red-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Wazuh SIEM (Threat Detection, Container-Monitoring)"
+                    data-en="Wazuh SIEM (Threat Detection, Container Monitoring)"
                     >Wazuh SIEM (Threat Detection, Container-Monitoring)</span
                   >
                 </div>
@@ -596,7 +653,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-red-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Uptime Kuma (Verfügbarkeit, HTTP/TCP Checks)"
+                    data-en="Uptime Kuma (Availability, HTTP/TCP Checks)"
                     >Uptime Kuma (Verfügbarkeit, HTTP/TCP Checks)</span
                   >
                 </div>
@@ -606,7 +666,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-red-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="CloudWatch (Logs, Metriken, Alarme)"
+                    data-en="CloudWatch (Logs, Metrics, Alarms)"
                     >CloudWatch (Logs, Metriken, Alarme)</span
                   >
                 </div>
@@ -643,6 +706,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Backend, Frontend und Datenbanken"
+                      data-en="Backend, frontend and databases"
                     >
                       Backend, Frontend und Datenbanken
                     </p>
@@ -704,7 +769,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-green-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Git &amp; Versionskontrolle"
+                    data-en="Git &amp; Version Control"
                     >Git &amp; Versionskontrolle</span
                   >
                 </div>
@@ -726,11 +794,15 @@
                   <div>
                     <h3
                       class="text-lg font-bold text-slate-900 dark:text-white"
+                      data-de="Methoden &amp; Kommunikation"
+                      data-en="Methods &amp; Communication"
                     >
                       Methoden &amp; Kommunikation
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Fast zwei Jahrzehnte B2B-Erfahrung"
+                      data-en="Nearly two decades of B2B experience"
                     >
                       Fast zwei Jahrzehnte B2B-Erfahrung
                     </p>
@@ -741,6 +813,8 @@
                 </div>
                 <span
                   class="px-2 py-0.5 bg-teal-500/10 text-teal-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  data-de="20 JAHRE"
+                  data-en="20 YEARS"
                   >20 JAHRE</span
                 >
               </div>
@@ -752,7 +826,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-teal-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Stakeholder-Kommunikation (C-Level, B2B)"
+                    data-en="Stakeholder Communication (C-Level, B2B)"
                     >Stakeholder-Kommunikation (C-Level, B2B)</span
                   >
                 </div>
@@ -762,7 +839,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-teal-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Anforderungsanalyse &amp; Lösungsdesign"
+                    data-en="Requirements Analysis &amp; Solution Design"
                     >Anforderungsanalyse &amp; Lösungsdesign</span
                   >
                 </div>
@@ -772,7 +852,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-teal-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Prozessoptimierung &amp; Standardisierung"
+                    data-en="Process Optimization &amp; Standardization"
                     >Prozessoptimierung &amp; Standardisierung</span
                   >
                 </div>
@@ -782,7 +865,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-teal-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Scrum / Agile Methoden"
+                    data-en="Scrum / Agile Methods"
                     >Scrum / Agile Methoden</span
                   >
                 </div>
@@ -792,7 +878,10 @@
                   <i
                     class="ti ti-circle-check text-sm text-teal-500 shrink-0"
                   ></i>
-                  <span class="text-sm text-slate-700 dark:text-slate-300"
+                  <span
+                    class="text-sm text-slate-700 dark:text-slate-300"
+                    data-de="Jira, GitHub Issues, Dokumentation"
+                    data-en="Jira, GitHub Issues, Documentation"
                     >Jira, GitHub Issues, Dokumentation</span
                   >
                 </div>
@@ -819,6 +908,8 @@
                     </h3>
                     <p
                       class="text-xs text-slate-500 dark:text-slate-400 italic"
+                      data-de="Verteilte Infrastruktur über vier Standorte"
+                      data-en="Distributed infrastructure across four locations"
                     >
                       Verteilte Infrastruktur über vier Standorte
                     </p>
@@ -900,7 +991,11 @@
           >
             <i class="ti ti-certificate text-xl text-amber-500"></i>
           </span>
-          Erworbene Zertifizierungen
+          <span
+            data-de="Erworbene Zertifizierungen"
+            data-en="Earned Certifications"
+            >Erworbene Zertifizierungen</span
+          >
         </h2>
 
         <div class="reveal grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -923,12 +1018,16 @@
             <div class="flex justify-center mb-2">
               <span
                 class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                data-de="ZERTIFIZIERT"
+                data-en="CERTIFIED"
                 >ZERTIFIZIERT</span
               >
             </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+                data-de='<i class="ti ti-circle-check text-sm"></i> Erworben Juni 2025'
+                data-en='<i class="ti ti-circle-check text-sm"></i> Earned June 2025'
               >
                 <i class="ti ti-circle-check text-sm"></i>
                 Erworben Juni 2025
@@ -942,7 +1041,9 @@
                 class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                ZERTIFIKAT ANSEHEN
+                <span data-de="ZERTIFIKAT ANSEHEN" data-en="VIEW CERTIFICATE"
+                  >ZERTIFIKAT ANSEHEN</span
+                >
               </a>
             </div>
           </div>
@@ -966,12 +1067,16 @@
             <div class="flex justify-center mb-2">
               <span
                 class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                data-de="ZERTIFIZIERT"
+                data-en="CERTIFIED"
                 >ZERTIFIZIERT</span
               >
             </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+                data-de='<i class="ti ti-circle-check text-sm"></i> Erworben Juli 2025'
+                data-en='<i class="ti ti-circle-check text-sm"></i> Earned July 2025'
               >
                 <i class="ti ti-circle-check text-sm"></i>
                 Erworben Juli 2025
@@ -985,7 +1090,9 @@
                 class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                ZERTIFIKAT ANSEHEN
+                <span data-de="ZERTIFIKAT ANSEHEN" data-en="VIEW CERTIFICATE"
+                  >ZERTIFIKAT ANSEHEN</span
+                >
               </a>
             </div>
           </div>
@@ -1009,12 +1116,16 @@
             <div class="flex justify-center mb-2">
               <span
                 class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                data-de="ZERTIFIZIERT"
+                data-en="CERTIFIED"
                 >ZERTIFIZIERT</span
               >
             </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+                data-de='<i class="ti ti-circle-check text-sm"></i> Erworben Februar 2026'
+                data-en='<i class="ti ti-circle-check text-sm"></i> Earned February 2026'
               >
                 <i class="ti ti-circle-check text-sm"></i>
                 Erworben Februar 2026
@@ -1028,7 +1139,9 @@
                 class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                ZERTIFIKAT ANSEHEN
+                <span data-de="ZERTIFIKAT ANSEHEN" data-en="VIEW CERTIFICATE"
+                  >ZERTIFIKAT ANSEHEN</span
+                >
               </a>
             </div>
           </div>
@@ -1052,12 +1165,16 @@
             <div class="flex justify-center mb-2">
               <span
                 class="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                data-de="ZERTIFIZIERT"
+                data-en="CERTIFIED"
                 >ZERTIFIZIERT</span
               >
             </div>
             <div class="flex justify-center mb-3">
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold"
+                data-de='<i class="ti ti-circle-check text-sm"></i> Erworben März 2026'
+                data-en='<i class="ti ti-circle-check text-sm"></i> Earned March 2026'
               >
                 <i class="ti ti-circle-check text-sm"></i>
                 Erworben März 2026
@@ -1071,7 +1188,9 @@
                 class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
               >
                 <i class="ti ti-external-link text-sm"></i>
-                ZERTIFIKAT ANSEHEN
+                <span data-de="ZERTIFIKAT ANSEHEN" data-en="VIEW CERTIFICATE"
+                  >ZERTIFIKAT ANSEHEN</span
+                >
               </a>
             </div>
           </div>
@@ -1089,7 +1208,11 @@
             >
               <i class="ti ti-map text-xl text-purple-500"></i>
             </span>
-            Zertifizierungs-Roadmap
+            <span
+              data-de="Zertifizierungs-Roadmap"
+              data-en="Certification Roadmap"
+              >Zertifizierungs-Roadmap</span
+            >
           </h2>
 
           <div class="reveal grid gap-4 sm:grid-cols-1 max-w-md">
@@ -1099,6 +1222,8 @@
             >
               <span
                 class="absolute top-3 right-3 px-2.5 py-1 bg-sky-500 text-white rounded-full text-xs font-bold uppercase tracking-wide"
+                data-de="GESTARTET"
+                data-en="STARTED"
                 >GESTARTET</span
               >
               <div
@@ -1113,6 +1238,8 @@
               </h3>
               <p
                 class="text-sm text-slate-500 dark:text-slate-400 mb-3 text-center"
+                data-de="Systemintegration &amp; Vernetzung"
+                data-en="System Integration &amp; Networking"
               >
                 Systemintegration &amp; Vernetzung
               </p>
@@ -1126,6 +1253,8 @@
               </div>
               <p
                 class="text-xs text-slate-400 dark:text-slate-500 text-center italic"
+                data-de="7 Monate berufsbegleitend"
+                data-en="7 months part-time alongside work"
               >
                 7 Monate berufsbegleitend
               </p>
@@ -1144,7 +1273,9 @@
           >
             <i class="ti ti-briefcase text-xl text-orange-500"></i>
           </span>
-          Projekt-Highlights
+          <span data-de="Projekt-Highlights" data-en="Project Highlights"
+            >Projekt-Highlights</span
+          >
         </h2>
 
         <div class="reveal grid gap-4 sm:grid-cols-2">
@@ -1168,13 +1299,19 @@
                 >
                   ecokart Webshop
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400"
+                  data-de="Produktive AWS E-Commerce Plattform"
+                  data-en="Production AWS e-commerce platform"
+                >
                   Produktive AWS E-Commerce Plattform
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+              data-de="Serverless Webshop mit 25+ Terraform Modulen, CI/CD via GitHub Actions mit OIDC, Cognito Auth. 63 automatisierte Tests. Vollständig reproduzierbare Infrastruktur &mdash; eigener AWS Account."
+              data-en="Serverless webshop with 25+ Terraform modules, CI/CD via GitHub Actions with OIDC, Cognito Auth. 63 automated tests. Fully reproducible infrastructure &mdash; dedicated AWS account."
             >
               Serverless Webshop mit 25+ Terraform Modulen, CI/CD via GitHub
               Actions mit OIDC, Cognito Auth. 63 automatisierte Tests.
@@ -1208,7 +1345,9 @@
               class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
             >
               <i class="ti ti-brand-github text-sm"></i>
-              AUF GITHUB ANSEHEN
+              <span data-de="AUF GITHUB ANSEHEN" data-en="VIEW ON GITHUB"
+                >AUF GITHUB ANSEHEN</span
+              >
             </a>
           </div>
 
@@ -1232,13 +1371,19 @@
                 >
                   Personal Tech Blog
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400"
+                  data-de="Full-Stack auf AWS EKS"
+                  data-en="Full-stack on AWS EKS"
+                >
                   Full-Stack auf AWS EKS
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+              data-de="Der Blog, den du gerade liest. Node.js + Express Backend, Tailwind Frontend auf nginx, PostgreSQL auf RDS, Comprehend ML für Sentiment-Analyse. 31 automatisierte Tests. Deployed auf EKS mit Terraform."
+              data-en="The blog you are reading right now. Node.js + Express backend, Tailwind frontend on nginx, PostgreSQL on RDS, Comprehend ML for sentiment analysis. 31 automated tests. Deployed on EKS with Terraform."
             >
               Der Blog, den du gerade liest. Node.js + Express Backend, Tailwind
               Frontend auf nginx, PostgreSQL auf RDS, Comprehend ML für
@@ -1271,7 +1416,9 @@
               class="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400"
             >
               <i class="ti ti-circle-check text-sm"></i>
-              DU BIST HIER
+              <span data-de="DU BIST HIER" data-en="YOU ARE HERE"
+                >DU BIST HIER</span
+              >
             </span>
           </div>
 
@@ -1295,13 +1442,19 @@
                 >
                   Agra Dashboard
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400"
+                  data-de="ECS zu Self-Hosted Migration"
+                  data-en="ECS to self-hosted migration"
+                >
                   ECS zu Self-Hosted Migration
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+              data-de="Dashboard ursprünglich auf AWS ECS gebaut, jetzt self-hosted auf Hetzner. Statisches HTML/CSS serviert via nginx Container über Traefik Reverse Proxy."
+              data-en="Dashboard originally built on AWS ECS, now self-hosted on Hetzner. Static HTML/CSS served via nginx container through Traefik reverse proxy."
             >
               Dashboard ursprünglich auf AWS ECS gebaut, jetzt self-hosted auf
               Hetzner. Statisches HTML/CSS serviert via nginx Container über
@@ -1330,7 +1483,9 @@
               class="social-link project-link inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors"
             >
               <i class="ti ti-brand-github text-sm"></i>
-              AUF GITHUB ANSEHEN
+              <span data-de="AUF GITHUB ANSEHEN" data-en="VIEW ON GITHUB"
+                >AUF GITHUB ANSEHEN</span
+              >
             </a>
           </div>
 
@@ -1354,13 +1509,19 @@
                 >
                   Monitoring &amp; Security Stack
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400"
+                  data-de="Multi-Server Infrastruktur"
+                  data-en="Multi-server infrastructure"
+                >
                   Multi-Server Infrastruktur
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+              data-de="Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Prometheus, Grafana verteilt auf NAS und Hetzner Server. Telegram-Benachrichtigungen. Entstanden aus echten Sicherheitsvorfällen."
+              data-en="Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Prometheus, Grafana distributed across NAS and Hetzner servers. Telegram notifications. Born from real security incidents."
             >
               Wazuh SIEM, UptimeKuma, Watchtower, Portainer, Prometheus, Grafana
               verteilt auf NAS und Hetzner Server. Telegram-Benachrichtigungen.
@@ -1392,7 +1553,11 @@
               class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500"
             >
               <i class="ti ti-lock text-sm"></i>
-              PRIVATE INFRASTRUKTUR
+              <span
+                data-de="PRIVATE INFRASTRUKTUR"
+                data-en="PRIVATE INFRASTRUCTURE"
+                >PRIVATE INFRASTRUKTUR</span
+              >
             </span>
           </div>
 
@@ -1402,6 +1567,8 @@
           >
             <span
               class="absolute top-3 right-3 px-2 py-0.5 bg-teal-500/10 text-teal-500 rounded-full text-xs font-semibold uppercase tracking-wide"
+              data-de="PROTOTYP"
+              data-en="PROTOTYPE"
               >PROTOTYP</span
             >
             <div class="flex items-center gap-3 mb-3">
@@ -1416,13 +1583,19 @@
                 >
                   SAB Pulse
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400"
+                  data-de="Fördermittel-Dashboard für Bildungsträger"
+                  data-en="Funding dashboard for education providers"
+                >
                   Fördermittel-Dashboard für Bildungsträger
                 </p>
               </div>
             </div>
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+              data-de="Frühes Stadium &mdash; Datenextraktion und Analyse für Förderprogramme."
+              data-en="Early stage &mdash; data extraction and analysis for funding programs."
             >
               Frühes Stadium &mdash; Datenextraktion und Analyse für
               Förderprogramme.
@@ -1445,7 +1618,11 @@
               class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500"
             >
               <i class="ti ti-lock text-sm"></i>
-              PRIVATE INFRASTRUKTUR
+              <span
+                data-de="PRIVATE INFRASTRUKTUR"
+                data-en="PRIVATE INFRASTRUCTURE"
+                >PRIVATE INFRASTRUKTUR</span
+              >
             </span>
           </div>
         </div>
@@ -1461,7 +1638,9 @@
           >
             <i class="ti ti-trending-up text-xl text-green-500"></i>
           </span>
-          Aktueller Fortschritt
+          <span data-de="Aktueller Fortschritt" data-en="Current Progress"
+            >Aktueller Fortschritt</span
+          >
         </h2>
 
         <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -1482,10 +1661,16 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Professionelle Zertifizierungen"
+              data-en="Professional Certifications"
             >
               Professionelle Zertifizierungen
             </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+            <div
+              class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic"
+              data-de="Erworben während meines Karrierewechsels"
+              data-en="Earned during my career transition"
+            >
               Erworben während meines Karrierewechsels
             </div>
           </div>
@@ -1511,7 +1696,11 @@
             >
               Docker Services
             </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+            <div
+              class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic"
+              data-de="Vom Homelab in die Produktion"
+              data-en="From homelab to production"
+            >
               Vom Homelab in die Produktion
             </div>
           </div>
@@ -1533,10 +1722,16 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Monate intensives Training"
+              data-en="Months of intensive training"
             >
               Monate intensives Training
             </div>
-            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+            <div
+              class="text-xs text-slate-400 dark:text-slate-500 mt-1 italic"
+              data-de="2.300 Stunden und es werden mehr"
+              data-en="2,300 hours and counting"
+            >
               2.300 Stunden und es werden mehr
             </div>
           </div>
@@ -1558,6 +1753,8 @@
             </div>
             <div
               class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              data-de="Automatisierte Tests"
+              data-en="Automated Tests"
             >
               Automatisierte Tests
             </div>
@@ -1579,7 +1776,7 @@
             >
               <i class="ti ti-tool text-xl text-sky-500"></i>
             </span>
-            Meine Tools
+            <span data-de="Meine Tools" data-en="My Tools">Meine Tools</span>
           </h2>
 
           <div class="reveal flex flex-wrap gap-3">
@@ -1687,7 +1884,9 @@
           >
             <i class="ti ti-loader text-xl text-teal-500"></i>
           </span>
-          Aktuelle Vertiefungen
+          <span data-de="Aktuelle Vertiefungen" data-en="Currently Deepening"
+            >Aktuelle Vertiefungen</span
+          >
         </h2>
 
         <div class="reveal space-y-4">
@@ -1698,10 +1897,18 @@
             <div class="pulse-dot shrink-0"></div>
             <i class="devicon-kubernetes-plain colored text-xl"></i>
             <div>
-              <p class="font-medium text-slate-900 dark:text-white">
+              <p
+                class="font-medium text-slate-900 dark:text-white"
+                data-de="Kubernetes vertiefen"
+                data-en="Deepening Kubernetes"
+              >
                 Kubernetes vertiefen
               </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400"
+                data-de="Fortgeschrittene Deployments, Helm Charts, Networking, CKA-Vorbereitung"
+                data-en="Advanced Deployments, Helm Charts, Networking, CKA preparation"
+              >
                 Fortgeschrittene Deployments, Helm Charts, Networking,
                 CKA-Vorbereitung
               </p>
@@ -1718,7 +1925,11 @@
               <p class="font-medium text-slate-900 dark:text-white">
                 Java &amp; Spring Boot
               </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400"
+                data-de="Deep Dive ab März/April 2026 im Rahmen der Java DevOps Engineer Weiterbildung"
+                data-en="Deep dive starting March/April 2026 as part of the Java DevOps Engineer training"
+              >
                 Deep Dive ab März/April 2026 im Rahmen der Java DevOps Engineer
                 Weiterbildung
               </p>
@@ -1734,10 +1945,18 @@
               class="devicon-amazonwebservices-plain-wordmark colored text-xl"
             ></i>
             <div>
-              <p class="font-medium text-slate-900 dark:text-white">
+              <p
+                class="font-medium text-slate-900 dark:text-white"
+                data-de="AWS vertiefen"
+                data-en="Deepening AWS"
+              >
                 AWS vertiefen
               </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400"
+                data-de="Well-Architected Framework, Kostenoptimierung, Multi-Account Strategien"
+                data-en="Well-Architected Framework, cost optimization, multi-account strategies"
+              >
                 Well-Architected Framework, Kostenoptimierung, Multi-Account
                 Strategien
               </p>
@@ -1751,10 +1970,18 @@
             <div class="pulse-dot shrink-0"></div>
             <i class="devicon-python-plain colored text-xl"></i>
             <div>
-              <p class="font-medium text-slate-900 dark:text-white">
+              <p
+                class="font-medium text-slate-900 dark:text-white"
+                data-de="Python für DevOps"
+                data-en="Python for DevOps"
+              >
                 Python für DevOps
               </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p
+                class="text-sm text-slate-500 dark:text-slate-400"
+                data-de="Scripting, Automatisierung, Boto3 SDK, Tooling"
+                data-en="Scripting, automation, Boto3 SDK, tooling"
+              >
                 Scripting, Automatisierung, Boto3 SDK, Tooling
               </p>
             </div>
@@ -1820,6 +2047,30 @@
         </div>
       </div>
     </footer>
+
+    <!-- Language toggle (must load before page-specific language script) -->
+    <script src="./js/lang.js"></script>
+
+    <!-- Page-specific language switcher -->
+    <script>
+      function updatePageLanguage() {
+        var lang = window.blogLang ? window.blogLang.get() : "de";
+        var elements = document.querySelectorAll("[data-de][data-en]");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].innerHTML =
+            elements[i].getAttribute("data-" + lang) || "";
+        }
+        var inputs = document.querySelectorAll(
+          "[data-de-placeholder][data-en-placeholder]",
+        );
+        for (var j = 0; j < inputs.length; j++) {
+          inputs[j].placeholder =
+            inputs[j].getAttribute("data-" + lang + "-placeholder") || "";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updatePageLanguage);
+      window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
 
     <!-- Mobile menu toggle script -->
     <script>

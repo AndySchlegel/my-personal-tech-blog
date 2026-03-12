@@ -480,6 +480,58 @@
     return filtered;
   }
 
+  // --- Get current language from lang.js ---
+  function getCurrentLang() {
+    return window.blogLang ? window.blogLang.get() : "de";
+  }
+
+  // --- Update static UI text based on current language ---
+  // Swaps text for elements with data-de / data-en attributes,
+  // and updates placeholders with data-de-placeholder / data-en-placeholder.
+  function updateStaticText() {
+    var lang = getCurrentLang();
+
+    // Swap innerHTML for elements with data-de/data-en
+    var elements = document.querySelectorAll("[data-de][data-en]");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = elements[i].getAttribute("data-" + lang) || "";
+    }
+
+    // Swap placeholder text
+    var inputs = document.querySelectorAll(
+      "[data-de-placeholder][data-en-placeholder]",
+    );
+    for (var j = 0; j < inputs.length; j++) {
+      inputs[j].placeholder =
+        inputs[j].getAttribute("data-" + lang + "-placeholder") || "";
+    }
+
+    // Sort label
+    var sortLabel = document.getElementById("sort-label");
+    if (sortLabel) {
+      if (lang === "en") {
+        sortLabel.textContent = sortNewest ? "Newest first" : "Chronological";
+      } else {
+        sortLabel.textContent = sortNewest ? "Neueste zuerst" : "Chronologisch";
+      }
+    }
+
+    // Post count suffix
+    var countEl = document.getElementById("post-count");
+    if (countEl && allPosts.length > 0) {
+      var isFiltered = activeCategory || searchQuery;
+      if (isFiltered && totalPostCount > 0) {
+        countEl.textContent =
+          allPosts.length +
+          (lang === "en" ? " of " : " von ") +
+          totalPostCount +
+          " posts";
+      } else {
+        countEl.textContent = allPosts.length + " posts";
+      }
+    }
+  }
+
   // --- Fetch posts from the API with current filters ---
   function fetchFilteredPosts() {
     if (isDemo) {
@@ -494,6 +546,9 @@
     if (searchQuery) params.push("search=" + encodeURIComponent(searchQuery));
     if (activeCategory)
       params.push("category=" + encodeURIComponent(activeCategory));
+    // Add language parameter for translation
+    var lang = getCurrentLang();
+    if (lang === "en") params.push("lang=en");
     var queryString = params.length > 0 ? "?" + params.join("&") : "";
 
     fetch(API_BASE + "/posts" + queryString)
@@ -633,7 +688,12 @@
           : "ti ti-arrow-up text-sm";
       }
       if (label) {
-        label.textContent = sortNewest ? "Neueste zuerst" : "Chronologisch";
+        var lang = getCurrentLang();
+        if (lang === "en") {
+          label.textContent = sortNewest ? "Newest first" : "Chronological";
+        } else {
+          label.textContent = sortNewest ? "Neueste zuerst" : "Chronologisch";
+        }
       }
       // Re-render with current data
       if (isDemo) {
@@ -705,5 +765,14 @@
     setupScrollMemory();
     setupPostNavContext();
     restoreScrollPosition();
+
+    // Re-fetch posts and update static text when language is toggled (DE/EN)
+    window.addEventListener("languageChanged", function () {
+      updateStaticText();
+      fetchFilteredPosts();
+    });
+
+    // Apply language on initial load (if EN was saved in localStorage)
+    updateStaticText();
   });
 })();

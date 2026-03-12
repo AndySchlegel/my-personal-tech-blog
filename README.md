@@ -37,7 +37,7 @@ What started as a local development setup grew into a full cloud infrastructure 
 ### Why This Project?
 
 1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles
-2. **Monitoring-first mindset** -- A three-tier alerting stack (performance, availability, security) battle-tested in a real incident
+2. **Monitoring-first mindset** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 3. **Multi-environment experience** -- From homelab to cloud, demonstrates hands-on infrastructure skills across NAS, VPS, and AWS
 4. **EKS complements serverless** -- Together with a previous serverless project (EcoKart), covers both cloud paradigms
 5. **Natural ML integration** -- Amazon Comprehend for auto-generated tags and comment sentiment analysis with auto-moderation
@@ -55,6 +55,7 @@ ALB (AWS Load Balancer Controller, managed via IRSA)
 EKS Cluster (eu-central-1, 2 AZs)
     |--- Frontend Pod (nginx + Tailwind CSS) -- HPA 1-3 replicas
     |--- Backend Pod (Express + TypeScript) -- HPA 1-4 replicas
+    |--- Monitoring (Prometheus + Grafana, kube-prometheus-stack)
     |
     +-- Private Subnets (10.0.10.0/24, 10.0.11.0/24)
     |       |--- EKS Nodes (Spot: t3.medium + t3a.medium)
@@ -69,6 +70,11 @@ Managed Services (outside VPC):
     |--- Amazon Comprehend (ML: auto-tags + sentiment, IRSA)
     |--- CloudFront + S3 (deployed, prepared for future CDN/image hosting)
     |--- Telegram Bot API (comment notifications)
+
+Monitoring (in-cluster, namespace: monitoring):
+    |--- Prometheus (metrics collection, 7-day retention)
+    |--- Grafana (dashboards, port-forward access)
+    |--- kube-state-metrics + node-exporter (cluster metrics)
 ```
 
 > **Traffic flow:** Route 53 -> ALB -> EKS Pods. CloudFront and S3 are deployed as Terraform modules and prepared for future image hosting (OAC, encryption, CORS configured), but all current traffic is served directly through the ALB.
@@ -89,6 +95,7 @@ Managed Services (outside VPC):
 | IaC | Terraform (9 modules, all from scratch) |
 | CI/CD | GitHub Actions with OIDC (no long-lived AWS credentials) |
 | Notifications | Telegram Bot API (native fetch, non-blocking) |
+| Monitoring | Prometheus + Grafana (kube-prometheus-stack via Helm) |
 | Container | Podman (multi-stage builds), EKS (Spot instances) |
 | Security | tfsec, Checkov, Trufflehog, ESLint, Husky |
 
@@ -121,6 +128,14 @@ Managed Services (outside VPC):
 - Auto-moderation: NEGATIVE comments (>= 70% confidence) get auto-flagged
 - Telegram bot notifications for new comments
 - Sidebar navigation with responsive mobile layout
+
+### Monitoring and Observability
+
+- Prometheus + Grafana deployed via Helm (kube-prometheus-stack)
+- HPA live scaling: backend 1-4 replicas, frontend 1-3 replicas (70% CPU target)
+- Grafana dashboards for cluster health, pod metrics, and node resources
+- Full lifecycle integration: monitoring deploys with app, cleans up on destroy
+- Zero additional cost (runs on existing EKS Spot nodes)
 
 ---
 
@@ -297,6 +312,7 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- OIDC auth
     +-- Read infra values from Terraform state (fully dynamic, no manual secrets)
     +-- Install metrics-server + ALB Controller (Helm)
+    +-- Install Prometheus + Grafana monitoring stack (Helm)
     +-- kubectl apply K8s manifests (10 files)
     +-- Create secrets, update images, apply ingress
     +-- Wait for rollout + print status
@@ -318,6 +334,7 @@ Manual Trigger (optional: include Wave 3 checkbox)
 
 ```
 Manual Trigger (type "DESTROY" to confirm)
+    +-- Clean up Helm releases (monitoring stack)
     +-- Clean up ALB Controller resources (prevents orphaned ALBs)
     +-- Destroy Wave 3 -> Wave 2 -> Wave 1
     +-- OIDC excluded (keeps pipeline auth alive)
@@ -361,7 +378,7 @@ Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertis
 
 ## Lessons Learned
 
-Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 35 lessons and counting.
+Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 37 lessons and counting.
 
 Key highlights:
 
@@ -374,6 +391,8 @@ Key highlights:
 - **#30** Full lifecycle reproducibility verified -- provision, deploy, destroy, repeat
 - **#32** Dual-track hosting: EKS for showcase, Lightsail for permanent
 - **#35** Amazon Comprehend misclassifies German sarcasm -- manual moderation still required
+- **#36** Helm-based observability: kube-prometheus-stack gives 27 dashboards at zero extra cost
+- **#37** HPA live demo: busybox load generator scales backend 1->4 pods in 60 seconds
 
 ---
 
@@ -390,8 +409,8 @@ Key highlights:
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 11 (namespace, config, secrets, services, deployments, ingress, HPA, db-init) |
 | CI/CD Workflows | 7 (deploy, provision, destroy, terraform, security-scan, 2x status monitors) |
-| Commits | 127+ |
-| Lessons Learned | 35 documented |
+| Commits | 134+ |
+| Lessons Learned | 37 documented |
 
 ---
 

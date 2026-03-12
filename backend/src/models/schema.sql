@@ -92,3 +92,17 @@ CREATE TABLE IF NOT EXISTS comments (
 
 -- Index for listing comments per post
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id, created_at DESC);
+
+-- ----- POST_TRANSLATIONS -----
+-- Cache for Amazon Translate results (DE -> EN).
+-- Each post can have one translation per target language.
+-- Translations are generated on first request and cached here.
+CREATE TABLE IF NOT EXISTS post_translations (
+  post_id       INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  language      VARCHAR(5) NOT NULL,            -- Target language code: 'en'
+  title         VARCHAR(500) NOT NULL,           -- Translated title
+  content       TEXT NOT NULL,                   -- Translated Markdown content
+  excerpt       TEXT,                            -- Translated excerpt
+  created_at    TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (post_id, language)                -- One translation per post per language
+);

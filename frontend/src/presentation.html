@@ -227,8 +227,8 @@
           box-shadow 0.35s ease;
       }
       .hover-card:hover {
-        transform: translateY(-8px) scale(1.03);
-        box-shadow: 0 12px 32px rgba(14, 165, 233, 0.15);
+        transform: translateY(-16px) scale(1.07);
+        box-shadow: 0 16px 40px rgba(14, 165, 233, 0.2);
       }
 
       /* --- Lesson cards --- */
@@ -238,8 +238,8 @@
           box-shadow 0.35s ease;
       }
       .lesson-card:hover {
-        transform: translateY(-8px) scale(1.03);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        transform: translateY(-16px) scale(1.07);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
       }
 
       /* --- Pipeline flow --- */
@@ -262,6 +262,47 @@
         display: none;
       }
 
+      /* --- Counter card (blog-matching: number scales, label moves) --- */
+      .counter-card {
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease,
+          border-color 0.4s ease,
+          background-color 0.4s ease;
+        position: relative;
+        z-index: 1;
+      }
+      .counter-card:hover {
+        transform: translateY(-16px) scale(1.07);
+        z-index: 10;
+        box-shadow:
+          0 40px 80px -20px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(56, 189, 248, 0.25),
+          0 0 40px rgba(56, 189, 248, 0.1);
+      }
+      .dark .counter-card:hover {
+        background-color: rgba(30, 41, 59, 0.95);
+        box-shadow:
+          0 40px 80px -20px rgba(0, 0, 0, 0.8),
+          0 0 0 1px rgba(56, 189, 248, 0.35),
+          0 0 50px rgba(56, 189, 248, 0.15);
+      }
+      .counter-card [data-count-to] {
+        transition:
+          transform 0.35s ease,
+          color 0.3s ease;
+      }
+      .counter-card:hover [data-count-to] {
+        transform: scale(1.15);
+        color: #38bdf8;
+      }
+      .counter-card .counter-label {
+        transition: transform 0.35s ease;
+      }
+      .counter-card:hover .counter-label {
+        transform: translateY(2px);
+      }
+
       /* --- Stat counter animation --- */
       .stat-value {
         font-variant-numeric: tabular-nums;
@@ -280,6 +321,19 @@
         font-weight: 600;
         color: #94a3b8;
         background: rgba(15, 23, 42, 0.5);
+      }
+
+      /* --- Scroll-reveal animations (blog-matching) --- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       /* --- Print styles --- */
@@ -640,7 +694,7 @@
             class="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-500/10 rounded-full text-sky-500 text-sm font-medium mb-6"
           >
             <i class="ti ti-cloud-code"></i>
-            CloudHelden Abschlussprojekt
+            Abschlussprojekt
           </div>
           <h1
             class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"
@@ -655,55 +709,77 @@
             class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
           >
             Cloud-native Blog auf AWS EKS &mdash; vom leeren Repo zum
-            produktionsreifen Deployment mit 9 Terraform-Modulen, 5
-            CI/CD-Pipelines und ML-Integration.
+            produktionsreifen Deployment mit 9 Terraform-Modulen, 7
+            CI/CD-Workflows und ML-Integration.
           </p>
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+        <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           <div
-            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center"
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
           >
-            <div class="text-3xl font-extrabold text-sky-500 stat-value">9</div>
-            <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <div
+              class="text-3xl font-extrabold text-sky-500 stat-value"
+              data-count-to="9"
+            >
+              0
+            </div>
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
               Terraform Module
             </div>
           </div>
           <div
-            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center"
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
           >
-            <div class="text-3xl font-extrabold text-emerald-500 stat-value">
-              5
+            <div
+              class="text-3xl font-extrabold text-emerald-500 stat-value"
+              data-count-to="7"
+            >
+              0
             </div>
-            <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              CI/CD Pipelines
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
+              CI/CD Workflows
             </div>
           </div>
           <div
-            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center"
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
           >
-            <div class="text-3xl font-extrabold text-amber-500 stat-value">
-              31
+            <div
+              class="text-3xl font-extrabold text-amber-500 stat-value"
+              data-count-to="31"
+            >
+              0
             </div>
-            <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
               Unit Tests
             </div>
           </div>
           <div
-            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center"
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
           >
-            <div class="text-3xl font-extrabold text-purple-500 stat-value">
-              35
+            <div
+              class="text-3xl font-extrabold text-purple-500 stat-value"
+              data-count-to="35"
+            >
+              0
             </div>
-            <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
               Lessons Learned
             </div>
           </div>
         </div>
 
         <!-- Why this project -->
-        <div class="grid sm:grid-cols-2 gap-6 mb-12">
+        <div class="reveal grid sm:grid-cols-2 gap-6 mb-12">
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
           >
@@ -728,21 +804,18 @@
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
-                  >EKS ergaenzt Serverless &mdash; beide Cloud-Paradigmen
+                  >EKS ergänzt Serverless &mdash; beide Cloud-Paradigmen
                   abgedeckt</span
                 >
               </li>
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                <span
-                  >Security Incident Recovery &mdash; Crypto-Miner als
-                  Motivation</span
-                >
+                <span>Multi-Environment &mdash; NAS, VPS, Lokal und AWS</span>
               </li>
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
-                  >ML-Integration &mdash; Comprehend fuer Auto-Tags und
+                  >ML-Integration &mdash; Comprehend für Auto-Tags und
                   Sentiment</span
                 >
               </li>
@@ -812,7 +885,7 @@
                 <i
                   class="devicon-amazonwebservices-plain-wordmark colored text-lg"
                 ></i>
-                AWS (10+)
+                AWS (12)
               </div>
               <div
                 class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
@@ -828,7 +901,7 @@
 
         <!-- Dual-track hosting -->
         <div
-          class="bg-gradient-to-r from-sky-500/5 to-emerald-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="reveal bg-gradient-to-r from-sky-500/5 to-emerald-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3
             class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
@@ -841,7 +914,9 @@
             Dual-Track Hosting
           </h3>
           <div class="grid sm:grid-cols-2 gap-6">
-            <div class="flex items-start gap-3">
+            <div
+              class="hover-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
               <div
                 class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 mt-0.5"
               >
@@ -855,12 +930,14 @@
                 </div>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   ~143 $/Monat, Sprint-basiert. Volle AWS-Architektur mit EKS,
-                  ALB, RDS, CloudFront. Wird fuer Demos hochgefahren, danach
-                  zerstoert.
+                  ALB, RDS, CloudFront. Wird für Demos hochgefahren, danach
+                  zerstört.
                 </p>
               </div>
             </div>
-            <div class="flex items-start gap-3">
+            <div
+              class="hover-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
               <div
                 class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5"
               >
@@ -994,7 +1071,7 @@
                 </div>
                 <span>CloudFront</span>
                 <span class="text-[10px] font-normal opacity-60"
-                  >CDN + TLS (PriceClass_100)</span
+                  >CDN (prepared, OAC)</span
                 >
               </div>
               <svg width="2" height="24">
@@ -1014,20 +1091,28 @@
                 </div>
                 <span>S3</span>
                 <span class="text-[10px] font-normal opacity-60"
-                  >Blog Images (OAC)</span
+                  >Assets (prepared, OAC)</span
                 >
+              </div>
+              <div
+                class="mt-2 text-[10px] text-slate-500 italic text-center max-w-[180px]"
+              >
+                Deployed als Terraform-Modul, prepared für Image Hosting
               </div>
             </div>
 
-            <!-- Right: ALB -> VPC -->
+            <!-- Right: ALB -> VPC (primary traffic path) -->
             <div class="flex flex-col items-center gap-2">
-              <div class="aws-service aws-network">
+              <div class="aws-service aws-network" style="border-width: 2.5px">
                 <div class="aws-icon">
                   <img src="./img/aws-icons/elb.svg" alt="ALB" />
                 </div>
                 <span>ALB</span>
                 <span class="text-[10px] font-normal opacity-60"
                   >AWS LB Controller (IRSA)</span
+                >
+                <span class="text-[9px] font-bold text-emerald-400"
+                  >Primary Traffic</span
                 >
               </div>
               <svg width="2" height="24">
@@ -1122,7 +1207,7 @@
                     </div>
                     <div class="text-center mt-2">
                       <span class="text-[10px] text-slate-500"
-                        >t3.medium + t3a.medium (~70% guenstiger als
+                        >t3.medium + t3a.medium (~70% günstiger als
                         On-Demand)</span
                       >
                     </div>
@@ -1152,7 +1237,7 @@
             <div
               class="text-xs text-center text-slate-400 mb-4 font-medium uppercase tracking-wider"
             >
-              Managed Services (ausserhalb VPC)
+              Managed Services (außerhalb VPC)
             </div>
             <div class="flex flex-wrap justify-center gap-4">
               <div class="aws-service aws-security">
@@ -1202,6 +1287,20 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Traffic flow note -->
+        <div
+          class="reveal bg-sky-500/5 rounded-lg border border-sky-500/20 p-4 mb-6"
+        >
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            <i class="ti ti-info-circle text-sky-500 mr-1"></i>
+            <strong class="text-slate-300">Traffic Flow:</strong>
+            Route 53 &rarr; ALB &rarr; EKS Pods. CloudFront + S3 sind als
+            Terraform-Module deployed und für zukünftiges Image Hosting
+            vorbereitet (OAC, Encryption, CORS konfiguriert), aber aktuell
+            fließt aller Traffic über den ALB.
+          </p>
         </div>
 
         <!-- Diagram legend -->
@@ -1277,7 +1376,7 @@
         </p>
 
         <!-- Module Grid -->
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+        <div class="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
@@ -1343,7 +1442,7 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Assets Bucket, Versioning, Encryption, CORS, OAC-only Access
+              Assets Bucket (prepared), Versioning, Encryption, CORS, OAC
             </p>
           </div>
           <div
@@ -1429,7 +1528,7 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              CDN Distribution, ACM Cert (us-east-1), OAC fuer S3, Route 53 DNS
+              CDN (prepared), ACM Cert (us-east-1), OAC für S3, Route 53
             </p>
           </div>
         </div>
@@ -1446,7 +1545,7 @@
           Wave Deployment Strategie
         </h3>
         <div
-          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-6"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-6"
         >
           <table class="w-full text-sm">
             <thead>
@@ -1552,7 +1651,7 @@
                 <td
                   class="text-right px-4 py-3 font-mono font-bold text-emerald-500"
                 >
-                  ~$0.65
+                  ~$0.50
                 </td>
               </tr>
             </tfoot>
@@ -1560,8 +1659,8 @@
         </div>
         <p class="text-sm text-slate-500 dark:text-slate-400">
           <i class="ti ti-info-circle text-sky-500 mr-1"></i>
-          Sprint-Strategie: ~4,20 $ fuer 8 Stunden EKS. Danach Destroy &rarr;
-          zurueck auf $0.65/Monat.
+          Sprint-Strategie: ~4,20 $ für 8 Stunden EKS. Danach Destroy &rarr;
+          zurück auf $0.50/Monat.
         </p>
       </section>
 
@@ -1578,8 +1677,8 @@
           CI/CD Pipelines
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          5 Workflows &mdash; alle mit OIDC Federation (keine langlebigen
-          AWS-Keys)
+          7 Workflows (5 Core + 2 Status Monitors) &mdash; alle mit OIDC
+          Federation (keine langlebigen AWS-Keys)
         </p>
 
         <!-- Pipelines -->
@@ -1619,7 +1718,7 @@
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
               Liest Infra-Werte dynamisch aus Terraform State (S3). Nur 4 GitHub
-              Secrets noetig.
+              Secrets nötig.
             </p>
           </div>
 
@@ -1661,7 +1760,7 @@
             </p>
           </div>
 
-          <!-- Provision + Destroy + Security -->
+          <!-- Provision + Destroy + Security + Status -->
           <div class="grid sm:grid-cols-3 gap-4">
             <div
               class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
@@ -1704,11 +1803,41 @@
               </p>
             </div>
           </div>
+
+          <!-- Status Monitor Workflows -->
+          <div class="grid sm:grid-cols-2 gap-4 mt-4">
+            <div
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            >
+              <h3
+                class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
+              >
+                <i class="ti ti-heartbeat text-emerald-500"></i>
+                status-eks.yml
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Health Check alle 5 Min. Badge zeigt Live/Offline im README.
+              </p>
+            </div>
+            <div
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            >
+              <h3
+                class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
+              >
+                <i class="ti ti-heartbeat text-emerald-500"></i>
+                status-lightsail.yml
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Health Check alle 5 Min. Lightsail Dauerbetrieb-Monitoring.
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- OIDC highlight -->
         <div
-          class="mt-8 bg-gradient-to-r from-sky-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card mt-8 bg-gradient-to-r from-sky-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3
             class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -1730,7 +1859,7 @@
             </div>
             <div>
               <div class="font-semibold text-slate-900 dark:text-white mb-1">
-                Loesung
+                Lösung
               </div>
               <p class="text-xs">
                 GitHub OIDC Provider in AWS + IAM Role mit Trust Policy.
@@ -1768,7 +1897,7 @@
         </p>
 
         <!-- Scanning tools -->
-        <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        <div class="reveal grid sm:grid-cols-3 gap-4 mb-8">
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-red-500 p-5"
           >
@@ -1777,7 +1906,7 @@
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">
               Erkennt versehentlich committete Secrets (API Keys, Tokens,
-              Passwoerter)
+              Passwörter)
             </p>
             <span
               class="text-[10px] px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium"
@@ -1817,7 +1946,7 @@
 
         <!-- Checkov triage -->
         <div
-          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Checkov Triage: 42 Findings &rarr; 3 fixed, 39 suppressed, 0
@@ -1899,19 +2028,19 @@
             class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
           >
             <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-            <span>EKS Secrets verschluesselt (KMS at rest)</span>
+            <span>EKS Secrets verschlüsselt (KMS at rest)</span>
           </div>
           <div
             class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
           >
             <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-            <span>IRSA fuer Pod-Level IAM (Least Privilege)</span>
+            <span>IRSA für Pod-Level IAM (Least Privilege)</span>
           </div>
           <div
             class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
           >
             <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-            <span>TLS 1.2+ auf CloudFront erzwungen</span>
+            <span>TLS 1.2+ auf ALB und CloudFront erzwungen</span>
           </div>
           <div
             class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
@@ -1949,14 +2078,14 @@
           Kubernetes auf EKS
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          11 Manifest-Dateien, nummeriert (00-10) fuer selbstdokumentierende
+          11 Manifest-Dateien, nummeriert (00-10) für selbstdokumentierende
           Apply-Reihenfolge &mdash; IRSA + HPA + Metrics-Server
         </p>
 
         <!-- Manifest overview -->
         <div class="grid sm:grid-cols-2 gap-4 mb-8">
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">
               K8s Manifeste
@@ -2006,7 +2135,7 @@
           </div>
 
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">
               Key Design Decisions
@@ -2023,7 +2152,7 @@
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
                   ><strong class="text-slate-300">Spot Instances</strong>
-                  &mdash; t3.medium + t3a.medium (~70% guenstiger)</span
+                  &mdash; t3.medium + t3a.medium (~70% günstiger)</span
                 >
               </li>
               <li class="flex items-start gap-2">
@@ -2060,7 +2189,7 @@
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
                   ><strong class="text-slate-300">IRSA</strong> &mdash;
-                  Pod-Level IAM fuer Comprehend (nicht Node-Level)</span
+                  Pod-Level IAM für Comprehend (nicht Node-Level)</span
                 >
               </li>
               <li class="flex items-start gap-2">
@@ -2077,7 +2206,7 @@
 
         <!-- Lifecycle -->
         <div
-          class="bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
             <i class="ti ti-refresh text-emerald-500 mr-1"></i>
@@ -2115,8 +2244,8 @@
             </div>
           </div>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-            Kein manuelles Secret-Update noetig. Pipeline liest alle Infra-Werte
-            aus Terraform State. OIDC-Rolle ueberlebt Destroy-Zyklen.
+            Kein manuelles Secret-Update nötig. Pipeline liest alle Infra-Werte
+            aus Terraform State. OIDC-Rolle überlebt Destroy-Zyklen.
           </p>
         </div>
       </section>
@@ -2134,7 +2263,7 @@
           Amazon Comprehend &mdash; ML-Integration
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          Natural Language Processing fuer Auto-Tags und Kommentar-Sentiment
+          Natural Language Processing für Auto-Tags und Kommentar-Sentiment
         </p>
 
         <div class="grid sm:grid-cols-2 gap-6 mb-8">
@@ -2149,8 +2278,8 @@
               Auto-Tags (detectKeyPhrases)
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Extrahiert automatisch Schluesselwoerter aus Blog-Posts und
-              schlaegt Tags vor.
+              Extrahiert automatisch Schlüsselwörter aus Blog-Posts und schlägt
+              Tags vor.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -2158,7 +2287,7 @@
               <div class="text-teal-500 mb-1">
                 // Comprehend detectKeyPhrases
               </div>
-              <div>Input: "Terraform Module fuer VPC..."</div>
+              <div>Input: "Terraform Module für VPC..."</div>
               <div class="text-emerald-400 mt-1">
                 &rarr; ["Terraform", "VPC", "Module",
               </div>
@@ -2179,7 +2308,7 @@
               Comment Sentiment (detectSentiment)
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Analysiert die Stimmung von Kommentaren fuer die Moderation.
+              Analysiert die Stimmung von Kommentaren für die Moderation.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -2201,7 +2330,7 @@
 
         <!-- Architecture -->
         <div
-          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Architektur-Integration
@@ -2253,8 +2382,8 @@
             <div>
               <div class="font-semibold text-slate-300 mb-1">Sprache</div>
               <p>
-                Comprehend unterstuetzt Deutsch nativ (LanguageCode: "de"). Kein
-                Workaround noetig.
+                Comprehend unterstützt Deutsch nativ (LanguageCode: "de"). Kein
+                Workaround nötig.
               </p>
             </div>
           </div>
@@ -2298,18 +2427,18 @@
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
               Comprehend erkennt keine Ironie oder Sarkasmus im Deutschen.
-              Manuelle Moderation bleibt noetig.
+              Manuelle Moderation bleibt nötig.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
             >
               <div class="text-amber-500 mb-1">// Sarkasmus-Beispiel</div>
-              <div>"Ganz schoen ueberzogen dargestellt!"</div>
+              <div>"Ganz schön überzogen dargestellt!"</div>
               <div class="text-emerald-400 mt-1">
                 &rarr; POSITIVE 100% <span class="text-red-400">(falsch!)</span>
               </div>
               <div class="text-slate-500 mt-2 text-[10px]">
-                "schoen" triggert den Positiv-Detektor, obwohl sarkastisch
+                "schön" triggert den Positiv-Detektor, obwohl sarkastisch
                 gemeint
               </div>
             </div>
@@ -2327,7 +2456,7 @@
             Telegram Benachrichtigungen
           </h3>
           <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
-            Neue Kommentare loesen eine Telegram-Nachricht an den Admin aus.
+            Neue Kommentare lösen eine Telegram-Nachricht an den Admin aus.
             Non-blocking, native fetch, kein npm-Paket.
           </p>
           <div class="flex flex-wrap gap-3 text-xs">
@@ -2361,11 +2490,11 @@
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
           35 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
-          Loesung
+          Lösung
         </p>
 
         <!-- Highlight lessons -->
-        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+        <div class="reveal grid sm:grid-cols-2 gap-4 mb-8">
           <div
             class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
@@ -2379,8 +2508,8 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Security ist kein Feature das man spaeter hinzufuegt &mdash; es
-              ist das Fundament auf dem man baut.
+              Security ist kein Feature das man später hinzufügt &mdash; es ist
+              das Fundament auf dem man baut.
             </p>
           </div>
           <div
@@ -2413,7 +2542,7 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              OIDC/IAM Zirkularabhaengigkeit. Fix: lifecycle ignore_changes +
+              OIDC/IAM Zirkularabhängigkeit. Fix: lifecycle ignore_changes +
               Wave 0 Pre-Step.
             </p>
           </div>
@@ -2431,7 +2560,7 @@
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
               Managed Nodes nutzen NICHT die Custom SG. EKS erstellt eine eigene
-              Cluster SG fuer alle Nodes.
+              Cluster SG für alle Nodes.
             </p>
           </div>
           <div
@@ -2447,8 +2576,8 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              K8s Controller erstellt ALBs ausserhalb von Terraform. Cleanup
-              BEFORE EKS Destroy noetig.
+              K8s Controller erstellt ALBs außerhalb von Terraform. Cleanup
+              BEFORE EKS Destroy nötig.
             </p>
           </div>
           <div
@@ -2477,7 +2606,7 @@
                 >#31</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >Telegram ueber SES</span
+                >Telegram über SES</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
@@ -2498,7 +2627,7 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              EKS fuer Showcase ($143/Sprint), Lightsail fuer Dauerbetrieb
+              EKS für Showcase ($143/Sprint), Lightsail für Dauerbetrieb
               ($5.50). Kubernetes-Expertise zeigt sich daran, wann man es NICHT
               nutzt.
             </p>
@@ -2520,7 +2649,7 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              "Ganz schoen ueberzogen dargestellt!" &rarr; POSITIVE 100%.
+              "Ganz schön überzogen dargestellt!" &rarr; POSITIVE 100%.
               Comprehend erkennt keinen deutschen Sarkasmus. Manuelle Moderation
               bleibt Pflicht.
             </p>
@@ -2529,33 +2658,70 @@
 
         <!-- Stats summary -->
         <div
-          class="bg-gradient-to-r from-amber-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="reveal bg-gradient-to-r from-amber-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Projekt in Zahlen
           </h3>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            <div>
-              <div class="text-2xl font-extrabold text-sky-500">4</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">
+            <div
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+            >
+              <div
+                class="text-2xl font-extrabold text-sky-500"
+                data-count-to="5"
+              >
+                0
+              </div>
+              <div
+                class="counter-label text-xs text-slate-500 dark:text-slate-400"
+              >
                 Wochen Entwicklung
               </div>
             </div>
-            <div>
-              <div class="text-2xl font-extrabold text-emerald-500">10+</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">
+            <div
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+            >
+              <div
+                class="text-2xl font-extrabold text-emerald-500"
+                data-count-to="12"
+              >
+                0
+              </div>
+              <div
+                class="counter-label text-xs text-slate-500 dark:text-slate-400"
+              >
                 AWS Services
               </div>
             </div>
-            <div>
-              <div class="text-2xl font-extrabold text-amber-500">12</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">
+            <div
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+            >
+              <div
+                class="text-2xl font-extrabold text-amber-500"
+                data-count-to="12"
+              >
+                0
+              </div>
+              <div
+                class="counter-label text-xs text-slate-500 dark:text-slate-400"
+              >
                 Blog-Artikel (DE)
               </div>
             </div>
-            <div>
-              <div class="text-2xl font-extrabold text-purple-500">100%</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">
+            <div
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+            >
+              <div
+                class="text-2xl font-extrabold text-purple-500"
+                data-count-to="100"
+                data-count-suffix="%"
+              >
+                0
+              </div>
+              <div
+                class="counter-label text-xs text-slate-500 dark:text-slate-400"
+              >
                 Reproduzierbar
               </div>
             </div>
@@ -2585,7 +2751,7 @@
 
         <!-- Comparison Table -->
         <div
-          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8"
         >
           <div
             class="grid grid-cols-3 text-xs font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-800"
@@ -2646,7 +2812,7 @@
               Typisch bei
             </div>
             <div class="p-4 text-slate-600 dark:text-slate-400">
-              Groessere Teams, komplexe Apps
+              Größere Teams, komplexe Apps
             </div>
             <div class="p-4 text-slate-600 dark:text-slate-400">
               Startups, event-driven Workloads
@@ -2679,12 +2845,12 @@
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
               <i class="devicon-kubernetes-plain colored text-lg"></i>
-              Warum EKS gewaehlt
+              Warum EKS gewählt
             </h3>
             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                <span>Tiefes Verstaendnis fuer Container-Orchestrierung</span>
+                <span>Tiefes Verständnis für Container-Orchestrierung</span>
               </li>
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
@@ -2727,7 +2893,7 @@
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
                 <span
-                  >EKS nur fuer Showcase/Demos &mdash; gezielt hoch- und
+                  >EKS nur für Showcase/Demos &mdash; gezielt hoch- und
                   runterfahren</span
                 >
               </li>
@@ -2735,7 +2901,7 @@
                 <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
                 <span
                   >Spot Instances (t3.medium + t3a.medium) &mdash; ~70%
-                  guenstiger</span
+                  günstiger</span
                 >
               </li>
               <li class="flex items-start gap-2">
@@ -2759,21 +2925,31 @@
           </div>
         </div>
 
-        <!-- Bottom quote -->
+        <!-- Bottom quote (blog-style with avatar) -->
         <div
-          class="bg-gradient-to-r from-orange-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6 text-center"
+          class="hover-card border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
         >
-          <p
-            class="text-sm text-slate-600 dark:text-slate-400 italic max-w-2xl mx-auto"
-          >
-            "K8s und Lambda sind die zwei dominierenden Muster im Cloud-Bereich.
-            Wer beides kennt hat einen klaren Vorteil. Fuer das Abschlussprojekt
-            reicht eines &mdash; aber es lohnt sich, das andere danach selbst
-            auszuprobieren."
-          </p>
-          <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">
-            &mdash; Aufgabenstellung, Seite 2
-          </p>
+          <div class="flex items-start gap-3">
+            <img
+              src="./img/andy-casual.jpg"
+              alt="Andy Schlegel"
+              class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
+              style="object-position: center 25%"
+            />
+            <div>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-300 italic leading-relaxed"
+              >
+                "K8s und Lambda sind die zwei dominierenden Muster im
+                Cloud-Bereich. Wer beides kennt hat einen klaren Vorteil. Für
+                das Abschlussprojekt reicht eines &mdash; aber es lohnt sich,
+                das andere danach selbst auszuprobieren."
+              </p>
+              <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">
+                &mdash; Aufgabenstellung, Seite 2
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -2790,13 +2966,13 @@
           Live-Demo &mdash; Terminal-Befehle
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          Leitfaden fuer die Live-Demonstration am Terminal
+          Leitfaden für die Live-Demonstration am Terminal
         </p>
 
         <!-- Step 1: Cluster Overview -->
         <div class="space-y-6">
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -2805,7 +2981,7 @@
                 class="w-6 h-6 rounded bg-sky-500 text-white text-xs font-bold flex items-center justify-center"
                 >1</span
               >
-              Cluster-Ueberblick
+              Cluster-Überblick
             </h3>
             <div
               class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
@@ -2831,7 +3007,7 @@
 
           <!-- Step 2: HPA -->
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -2865,7 +3041,7 @@
 
           <!-- Step 3: IRSA -->
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -2903,7 +3079,7 @@
 
           <!-- Step 4: Comprehend Live -->
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -2932,10 +3108,10 @@
                   ># Positiv: "Super Artikel, danke!"</span
                 ><br />
                 <span class="text-slate-400"
-                  ># Negativ: "Das ist kompletter Muell!"</span
+                  ># Negativ: "Das ist kompletter Müll!"</span
                 ><br />
                 <span class="text-slate-400"
-                  ># Ironie: "Ganz schoen ueberzogen!"</span
+                  ># Ironie: "Ganz schön überzogen!"</span
                 >
               </div>
             </div>
@@ -2948,7 +3124,7 @@
 
           <!-- Step 5: Admin Dashboard -->
           <div
-            class="bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -2963,7 +3139,7 @@
               class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
             >
               <div>
-                <span class="text-slate-500"># Im Browser oeffnen:</span><br />
+                <span class="text-slate-500"># Im Browser öffnen:</span><br />
                 <span class="text-sky-400">https://</span
                 >blog.aws.his4irness23.de/admin/
               </div>
@@ -2981,14 +3157,14 @@
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
               <i class="ti ti-info-circle mr-1"></i>
-              Dashboard refreshed automatisch alle 15 Sekunden &mdash; neue
-              Kommentare und Sentiment-Aenderungen sind sofort sichtbar
+              Dashboard Stats refreshen automatisch alle 15 Sekunden &mdash;
+              Sentiment-Änderungen sind sofort sichtbar
             </p>
           </div>
 
           <!-- Step 6: Full Lifecycle -->
           <div
-            class="bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+            class="hover-card bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -3046,7 +3222,7 @@
           Ausblick &mdash; Produktiv-Erweiterungen
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          Sinnvolle Erweiterungen fuer eine echte Produktivumgebung &mdash;
+          Sinnvolle Erweiterungen für eine echte Produktivumgebung &mdash;
           bewusst nicht im Demo-Scope
         </p>
 
@@ -3063,8 +3239,8 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Haeufige DB-Abfragen cachen, Session-Management. Reduziert
-              RDS-Last und verbessert Antwortzeiten.
+              Häufige DB-Abfragen cachen, Session-Management. Reduziert RDS-Last
+              und verbessert Antwortzeiten.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-emerald-500">cache.t3.micro ~$13/Monat</span>
@@ -3083,7 +3259,7 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Automatisches Failover bei AZ-Ausfall. Hochverfuegbarkeit fuer die
+              Automatisches Failover bei AZ-Ausfall. Hochverfügbarkeit für die
               Datenbank ohne manuellen Eingriff.
             </p>
             <div class="flex justify-between text-[11px]">
@@ -3110,7 +3286,7 @@
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-amber-500">~$6-10/Monat</span>
-              <span class="text-slate-400">Fuer Demo kein Mehrwert</span>
+              <span class="text-slate-400">Für Demo kein Mehrwert</span>
             </div>
           </div>
 
@@ -3125,12 +3301,12 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Zentrales Log-Management aller Anwendungs-Logs. Fehlersuche ueber
+              Zentrales Log-Management aller Anwendungs-Logs. Fehlersuche über
               alle Pods hinweg.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-amber-500">~$3-5/Monat</span>
-              <span class="text-slate-400">kubectl logs reicht fuer Demo</span>
+              <span class="text-slate-400">kubectl logs reicht für Demo</span>
             </div>
           </div>
 
@@ -3146,7 +3322,7 @@
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
               E-Mail/SMS-Benachrichtigungen bei Events. Aktuell via Telegram
-              geloest (funktioniert, aber nicht AWS-nativ).
+              gelöst (funktioniert, aber nicht AWS-nativ).
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-emerald-500">Kostenlos (Free Tier)</span>
@@ -3166,18 +3342,18 @@
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
               Dokumentierter Wiederherstellungsplan, Cross-Region Backups.
-              Zeitaufwand hoch, aber fuer Produktion essenziell.
+              Zeitaufwand hoch, aber für Produktion essenziell.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-emerald-500">Kein Kostenaufwand</span>
-              <span class="text-slate-400">Zeitaufwand zu hoch fuer Demo</span>
+              <span class="text-slate-400">Zeitaufwand zu hoch für Demo</span>
             </div>
           </div>
         </div>
 
         <!-- Fazit -->
         <div
-          class="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-3">
             <i class="ti ti-bulb text-amber-500 mr-1"></i>
@@ -3186,7 +3362,7 @@
           <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
             Jede Erweiterung wurde bewusst evaluiert und mit konkreten Kosten
             dokumentiert. Die Entscheidung, Features NICHT zu implementieren,
-            zeigt genauso viel Architektur-Verstaendnis wie die Implementierung
+            zeigt genauso viel Architektur-Verständnis wie die Implementierung
             selbst.
           </p>
           <div class="flex flex-wrap gap-3 text-xs">
@@ -3219,7 +3395,7 @@
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-cloud-code text-sky-500"></i>
-            <span>2026 Andy Schlegel &mdash; CloudHelden Abschlussprojekt</span>
+            <span>2026 Andy Schlegel &mdash; Abschlussprojekt</span>
           </div>
           <div class="flex items-center gap-4">
             <a
@@ -3233,6 +3409,75 @@
       </div>
     </footer>
 
-    <!-- Bottom script removed: tab controller is inline IIFE after nav -->
+    <!-- Animated counters (same as blog, scroll-triggered) -->
+    <script src="./js/counter.js"></script>
+
+    <!-- Scroll-reveal + counter re-trigger on tab switch -->
+    <script>
+      (function () {
+        // Scroll-reveal observer
+        var revealObserver = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        document.querySelectorAll(".reveal").forEach(function (el) {
+          revealObserver.observe(el);
+        });
+
+        // Counter observer (re-trigger on tab switch)
+        var DURATION = 2000;
+        function easeOut(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+        function animateCounter(el) {
+          var target = parseInt(el.getAttribute("data-count-to"), 10);
+          var suffix = el.getAttribute("data-count-suffix") || "";
+          if (isNaN(target)) return;
+          var startTime = null;
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / DURATION, 1);
+            var value = Math.round(easeOut(progress) * target);
+            el.textContent =
+              value.toLocaleString("en-US") + (progress >= 1 ? suffix : "");
+            if (progress < 1) requestAnimationFrame(step);
+          }
+          el.textContent = "0";
+          requestAnimationFrame(step);
+        }
+
+        // Re-observe reveals + re-trigger counters when tab switches
+        var nav = document.getElementById("tab-nav-bar");
+        if (nav) {
+          nav.addEventListener("click", function () {
+            setTimeout(function () {
+              // Re-observe scroll-reveal elements
+              document
+                .querySelectorAll(".reveal:not(.visible)")
+                .forEach(function (el) {
+                  revealObserver.observe(el);
+                });
+              // Re-trigger counters in the now-visible panel
+              var visiblePanel = document.querySelector(
+                '.tab-panel[style*="block"]',
+              );
+              if (visiblePanel) {
+                visiblePanel
+                  .querySelectorAll("[data-count-to]")
+                  .forEach(function (el) {
+                    animateCounter(el);
+                  });
+              }
+            }, 100);
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
