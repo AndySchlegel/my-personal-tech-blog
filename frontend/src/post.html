@@ -116,6 +116,61 @@
       </div>
     </header>
 
+    <!-- ==================== STICKY AUDIO BAR (appears when scrolling past post header) ==================== -->
+    <div
+      id="sticky-audio-bar"
+      class="fixed top-16 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm translate-y-[-100%] transition-transform duration-300 pointer-events-none opacity-0"
+    >
+      <div
+        class="max-w-3xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3"
+      >
+        <!-- Truncated title -->
+        <h2
+          id="sticky-title"
+          class="text-sm font-semibold text-slate-900 dark:text-white truncate flex-1"
+        ></h2>
+        <!-- Compact audio controls -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            id="sticky-audio-btn"
+            class="social-link flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/50 transition-all text-xs font-semibold"
+          >
+            <i id="sticky-audio-icon" class="ti ti-headphones text-sm"></i>
+            <span id="sticky-audio-label" data-de="Vorlesen" data-en="Listen"
+              >Vorlesen</span
+            >
+          </button>
+          <!-- Compact speed buttons (visible when audio loaded) -->
+          <div id="sticky-speed-control" class="hidden flex items-center gap-1">
+            <button
+              data-speed="0.75"
+              class="sticky-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+            >
+              0.75x
+            </button>
+            <button
+              data-speed="1"
+              class="sticky-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+            >
+              1x
+            </button>
+            <button
+              data-speed="1.5"
+              class="sticky-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+            >
+              1.5x
+            </button>
+            <button
+              data-speed="2"
+              class="sticky-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+            >
+              2x
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
       <!-- Section 1: Back link + Post header (default body bg) -->

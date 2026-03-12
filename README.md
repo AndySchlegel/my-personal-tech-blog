@@ -4,7 +4,7 @@
 
 [![EKS Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-eks.yml/badge.svg)](https://blog.aws.his4irness23.de)
 [![Lightsail Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-lightsail.yml/badge.svg)](https://blog.his4irness23.de)
-[![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend-orange)](https://aws.amazon.com/)
+[![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend%20%7C%20Translate%20%7C%20Polly-orange)](https://aws.amazon.com/)
 [![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
@@ -40,7 +40,7 @@ What started as a local development setup grew into a full cloud infrastructure 
 2. **Monitoring-first mindset** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 3. **Multi-environment experience** -- From homelab to cloud, demonstrates hands-on infrastructure skills across NAS, VPS, and AWS
 4. **EKS complements serverless** -- Together with a previous serverless project (EcoKart), covers both cloud paradigms
-5. **Natural ML integration** -- Amazon Comprehend for auto-generated tags and comment sentiment analysis with auto-moderation
+5. **Natural ML integration** -- Amazon Comprehend (auto-tags + sentiment), Amazon Translate (bilingual DE/EN), Amazon Polly (text-to-speech with playback speed control)
 6. **Dual-track hosting** -- EKS for showcase demos, Lightsail ($5.50/month) for permanent hosting
 
 ---
@@ -68,7 +68,10 @@ EKS Cluster (eu-central-1, 2 AZs)
 Managed Services (outside VPC):
     |--- Cognito (Admin JWT authentication, IRSA)
     |--- Amazon Comprehend (ML: auto-tags + sentiment, IRSA)
-    |--- CloudFront + S3 (deployed, prepared for future CDN/image hosting)
+    |--- Amazon Translate (bilingual DE/EN blog content, IRSA)
+    |--- Amazon Polly (text-to-speech audio, IRSA)
+    |--- S3 (Polly audio cache + prepared for image hosting)
+    |--- CloudFront (deployed, prepared for future CDN)
     |--- Telegram Bot API (comment notifications)
 
 Monitoring (in-cluster, namespace: monitoring):
@@ -91,6 +94,8 @@ Monitoring (in-cluster, namespace: monitoring):
 | Content | Markdown (stored in DB, rendered in frontend) |
 | Auth | AWS Cognito (OAuth 2.0 code flow, Hosted UI) |
 | ML | Amazon Comprehend (key phrase extraction + sentiment analysis) |
+| Translation | Amazon Translate (bilingual DE/EN with PostgreSQL cache) |
+| Text-to-Speech | Amazon Polly (neural voices: Vicki DE, Joanna EN) + S3 audio cache |
 | CDN/Storage | CloudFront + S3 (deployed, prepared for image hosting) |
 | IaC | Terraform (9 modules, all from scratch) |
 | CI/CD | GitHub Actions with OIDC (no long-lived AWS credentials) |
@@ -109,10 +114,12 @@ Monitoring (in-cluster, namespace: monitoring):
 - Search and category filtering (debounced, server-side SQL)
 - Auto-generated tags via Amazon Comprehend
 - Comment system with sentiment analysis and Telegram notifications
+- Bilingual DE/EN language toggle on all pages (static HTML + Amazon Translate for blog posts)
+- Text-to-speech audio playback with speed controls (0.5x - 2x) via Amazon Polly
 - Like button with animated heart icon (localStorage deduplication)
 - About page ("Sales DNA meets Cloud Architecture") with story sections, roadmap timeline, and quote blocks
 - Skills page with badge labels (AWS CERTIFIED, PRODUKTIV, HANDS-ON, LIVE), Credly cert links, and project highlights
-- Impressum, Datenschutz, and Haftungsausschluss (German legal pages)
+- Impressum, Datenschutz, and Haftungsausschluss (bilingual DE/EN legal pages, DSGVO-compliant)
 - Dark mode (default) with light mode toggle
 - Fully responsive (mobile-first)
 - Scroll-reveal animations and hover effects on all interactive elements
@@ -223,7 +230,7 @@ All security findings are uploaded to the GitHub Security tab via SARIF format.
 
 - RDS in private subnets, accessible only from EKS nodes (SG-to-SG rules)
 - EKS secrets encrypted at rest via KMS
-- IRSA for pod-level IAM (least privilege: backend for Comprehend, ALB Controller for load balancing)
+- IRSA for pod-level IAM (least privilege: backend for Comprehend + Translate + Polly + S3, ALB Controller for load balancing)
 - S3 all public access blocked, CloudFront OAC-only access (prepared for image hosting)
 - TLS 1.2+ enforced on ALB and CloudFront
 - Cognito with strong password policy
@@ -378,7 +385,7 @@ Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertis
 
 ## Lessons Learned
 
-Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 37 lessons and counting.
+Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 40 lessons and counting.
 
 Key highlights:
 
@@ -393,6 +400,9 @@ Key highlights:
 - **#35** Amazon Comprehend misclassifies German sarcasm -- manual moderation still required
 - **#36** Helm-based observability: kube-prometheus-stack gives 27 dashboards at zero extra cost
 - **#37** HPA live demo: busybox load generator scales backend 1->4 pods in 60 seconds
+- **#38** Amazon Translate: PostgreSQL cache over Redis -- $0.01/deploy cycle, <5ms reads, "Kanonen auf Spatzen"
+- **#39** Checkov skip comments must go INSIDE the resource block, not above it
+- **#40** Polly S3_BUCKET_NAME must be explicitly read from Terraform outputs in deploy.yml -- missing output read = empty env var
 
 ---
 
@@ -402,15 +412,15 @@ Key highlights:
 |--------|-------|
 | Development Duration | 5 weeks (Feb-Mar 2026) |
 | Terraform Modules | 9 in this project (25+ across all projects) |
-| AWS Services | 12 (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend, ALB, IAM) |
+| AWS Services | 14 (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend, Translate, Polly, ALB, IAM) |
 | Blog Articles | 11 (German, real content) + 1 added live as proof-of-concept |
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 11 (namespace, config, secrets, services, deployments, ingress, HPA, db-init) |
 | CI/CD Workflows | 7 (deploy, provision, destroy, terraform, security-scan, 2x status monitors) |
-| Commits | 134+ |
-| Lessons Learned | 37 documented |
+| Commits | 145+ |
+| Lessons Learned | 40 documented |
 
 ---
 

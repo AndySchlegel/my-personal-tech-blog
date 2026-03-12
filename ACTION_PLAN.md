@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 26 complete (Grafana/Prometheus, HPA stresstest, presentation overhaul)
-**Last Updated:** 2026-03-12 (Session 26)
+**Current Phase:** Session 28 complete (Bilingual DE/EN, Amazon Translate, Amazon Polly, legal updates)
+**Last Updated:** 2026-03-12 (Session 28)
 
 ---
 
@@ -175,7 +175,11 @@
 - [x] Documentation consistency pass (README, ACTION_PLAN, LESSONS_LEARNED)
 - [ ] Architecture diagram (visual, not ASCII)
 - [ ] Presentation slides (20-30 min)
-- [ ] Grafana + Prometheus dashboards on EKS (Helm)
+- [x] Grafana + Prometheus dashboards on EKS (Helm) -- Session 26
+- [x] Amazon Translate bilingual DE/EN (all 8 pages + blog posts via API) -- Session 27-28
+- [x] Amazon Polly text-to-speech with playback speed controls (0.5x-2x) -- Session 28
+- [x] Legal pages updated for Translate, Polly, Prometheus/Grafana (Datenschutz + Haftungsausschluss) -- Session 28
+- [x] Status badge workflows changed to manual-only (no more 5-min failure emails) -- Session 28
 
 ## Phase 9: Lightsail Permanent Hosting (Planned)
 
@@ -207,14 +211,14 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 1. ~~Grafana + Prometheus via Helm on EKS~~ -- **Done** (Session 26)
 2. ~~Deploy to EKS~~ -- **Done** (Session 26, stack live + verified)
-3. **Amazon Translate** -- DE/EN toggle on all blog content (PostgreSQL cache, IRSA)
-4. **Amazon Polly** -- Blog posts as podcast audio (MP3 -> S3 -> CloudFront -> audio player)
+3. ~~Amazon Translate~~ -- **Done** (Session 27-28, bilingual DE/EN on all pages)
+4. ~~Amazon Polly~~ -- **Done** (Session 28, text-to-speech with speed controls)
 5. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
 6. **Architecture diagram** -- visual diagram for README (replace ASCII)
 
 4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** EKS stack live (Wave 0-3 deployed, Session 26). Monitoring stack active.
+**Current infra state:** EKS stack live (Wave 0-3 deployed, Session 28). Full stack: Monitoring + Translate + Polly active.
 **Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
 
 ---
@@ -311,3 +315,8 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 | 2026-03-12 | Blog quote-style intro | andy-professional.jpg avatar + italic quote on blog.html (not skills -- factual statement, not quote) |
 | 2026-03-12 | PostgreSQL over Redis for translation cache | Data rarely changes, <5ms reads, saves ~$13/month Redis cost -- "Kanonen auf Spatzen" |
 | 2026-03-12 | Amazon Translate + Polly planned | DE/EN toggle (DB cache) + podcast audio (S3/CloudFront MP3). Both use IRSA pattern, Lightsail compatible |
+| 2026-03-12 | Amazon Translate for blog posts | DB cache (post_translations table), ~$0.01/deploy, chunked API (5000 byte limit) |
+| 2026-03-12 | Amazon Polly for text-to-speech | Neural voices (Vicki DE, Joanna EN), S3 cache, pre-signed URLs (1hr), ~$0.25/deploy |
+| 2026-03-12 | Playback speed controls (0.5x-2x) | Browser playbackRate API, purple active state, appears after audio loads |
+| 2026-03-12 | Status badges manual-only | Removed 5-min cron from status-eks.yml + status-lightsail.yml to stop failure email spam |
+| 2026-03-12 | Legal pages for all AWS services | Datenschutz sections 8.3-8.5 (Translate, Polly, Grafana) + Haftungsausschluss AWS services section |
