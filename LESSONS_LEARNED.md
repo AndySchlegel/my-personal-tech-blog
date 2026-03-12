@@ -654,7 +654,7 @@ When content exists in multiple files, designate one as the source of truth and 
 
 ---
 
-## #35 Amazon Comprehend: German Sarcasm and Irony Detection Limitation
+## #35 - Amazon Comprehend: German Sarcasm and Irony Detection Limitation
 
 > **IMPORTANT for presentation:** This is a real-world limitation worth showcasing.
 > It demonstrates critical thinking about managed AI services -- knowing what they
