@@ -185,7 +185,10 @@
                 style="object-position: center 30%"
               />
               <p
+                id="blog-subtitle"
                 class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
+                data-de="Meine Reise durch AWS, Kubernetes, Terraform und Security &mdash; mit Lektionen aus Code, Containern und Konfigurationen."
+                data-en="My journey through AWS, Kubernetes, Terraform and Security &mdash; with lessons from code, containers and configurations."
               >
                 Meine Reise durch AWS, Kubernetes, Terraform und Security
                 &mdash; mit Lektionen aus Code, Containern und Konfigurationen.
@@ -205,6 +208,8 @@
           <input
             id="search-input"
             type="text"
+            data-de-placeholder="Artikel durchsuchen..."
+            data-en-placeholder="Search articles..."
             placeholder="Artikel durchsuchen..."
             class="search-input w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none"
           />
@@ -237,7 +242,9 @@
             >
               <i class="ti ti-article text-xl text-sky-500"></i>
             </span>
-            Blog Posts
+            <span id="posts-heading" data-de="Blog Posts" data-en="Blog Posts"
+              >Blog Posts</span
+            >
           </h2>
           <div class="flex items-center gap-4">
             <button

@@ -87,18 +87,30 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 
     let posts = result.rows;
 
-    // If English translation requested, merge cached translations into response.
-    // For the list endpoint we only use cached translations (no on-demand API calls)
-    // to keep response times fast. Posts are translated on first single-post view.
+    // If English translation requested, translate title + excerpt for each post.
+    // Uses cache when available, calls Amazon Translate on-demand for uncached posts.
+    // First request may be slower (translates all posts), subsequent requests are instant.
     if (targetLang === 'en') {
       const translated = await Promise.all(
-        posts.map(async (post: { id: number; title: string; excerpt: string | null }) => {
-          const cached = await getCachedTranslation(post.id, 'en');
-          if (cached) {
-            return { ...post, title: cached.title, excerpt: cached.excerpt };
+        posts.map(
+          async (post: { id: number; title: string; content: string; excerpt: string | null }) => {
+            const cached = await getCachedTranslation(post.id, 'en');
+            if (cached) {
+              return { ...post, title: cached.title, excerpt: cached.excerpt };
+            }
+            // No cache -- translate on-demand (also caches full content for single-post view)
+            const translation = await translatePost(
+              post.id,
+              post.title,
+              post.content,
+              post.excerpt
+            );
+            if (translation) {
+              return { ...post, title: translation.title, excerpt: translation.excerpt };
+            }
+            return post;
           }
-          return post;
-        })
+        )
       );
       posts = translated;
     }

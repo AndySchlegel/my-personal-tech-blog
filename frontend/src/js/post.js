@@ -148,16 +148,24 @@
     });
   }
 
-  // --- Format relative time for comments (German) ---
+  // --- Format relative time for comments (DE/EN) ---
   function formatRelativeTime(dateString) {
     var date = new Date(dateString);
     var now = new Date();
     var diff = Math.floor((now - date) / 1000);
+    var lang = getCurrentLang();
 
-    if (diff < 60) return "gerade eben";
-    if (diff < 3600) return "vor " + Math.floor(diff / 60) + " Min.";
-    if (diff < 86400) return "vor " + Math.floor(diff / 3600) + " Std.";
-    if (diff < 604800) return "vor " + Math.floor(diff / 86400) + " Tagen";
+    if (lang === "en") {
+      if (diff < 60) return "just now";
+      if (diff < 3600) return Math.floor(diff / 60) + " min ago";
+      if (diff < 86400) return Math.floor(diff / 3600) + " hrs ago";
+      if (diff < 604800) return Math.floor(diff / 86400) + " days ago";
+    } else {
+      if (diff < 60) return "gerade eben";
+      if (diff < 3600) return "vor " + Math.floor(diff / 60) + " Min.";
+      if (diff < 86400) return "vor " + Math.floor(diff / 3600) + " Std.";
+      if (diff < 604800) return "vor " + Math.floor(diff / 86400) + " Tagen";
+    }
     return formatDate(dateString);
   }
 
@@ -567,7 +575,8 @@
 
       // Disable button during submit
       submitBtn.disabled = true;
-      submitBtn.textContent = "Wird gesendet...";
+      submitBtn.textContent =
+        getCurrentLang() === "en" ? "Sending..." : "Wird gesendet...";
 
       var data = {
         author_name: nameInput.value.trim(),
@@ -591,7 +600,8 @@
           // Reset form but keep visible (user can submit another)
           form.reset();
           submitBtn.disabled = false;
-          submitBtn.textContent = "Kommentar senden";
+          submitBtn.textContent =
+            getCurrentLang() === "en" ? "Send comment" : "Kommentar senden";
 
           // Scroll success message into view
           if (success) {
@@ -606,9 +616,12 @@
         .catch(function () {
           // Re-enable on error
           submitBtn.disabled = false;
-          submitBtn.textContent = "Kommentar senden";
+          submitBtn.textContent =
+            getCurrentLang() === "en" ? "Send comment" : "Kommentar senden";
           alert(
-            "Kommentar konnte nicht gesendet werden. Bitte versuche es erneut.",
+            getCurrentLang() === "en"
+              ? "Comment could not be sent. Please try again."
+              : "Kommentar konnte nicht gesendet werden. Bitte versuche es erneut.",
           );
         });
     });
@@ -938,8 +951,15 @@
       (isPrev ? "-translate-x-1" : "translate-x-1") +
       " transition-transform";
 
+    var lang = getCurrentLang();
     var labelText = document.createTextNode(
-      isPrev ? "Vorheriger Post" : "Nächster Post",
+      isPrev
+        ? lang === "en"
+          ? "Previous Post"
+          : "Vorheriger Post"
+        : lang === "en"
+          ? "Next Post"
+          : "Nächster Post",
     );
 
     if (isPrev) {
@@ -1017,11 +1037,33 @@
       });
   }
 
+  // --- Update static UI text based on current language ---
+  function updateStaticText() {
+    var lang = getCurrentLang();
+
+    // Swap innerHTML for elements with data-de/data-en
+    var elements = document.querySelectorAll("[data-de][data-en]");
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = elements[i].getAttribute("data-" + lang) || "";
+    }
+
+    // Swap placeholder text
+    var inputs = document.querySelectorAll(
+      "[data-de-placeholder][data-en-placeholder]",
+    );
+    for (var j = 0; j < inputs.length; j++) {
+      inputs[j].placeholder =
+        inputs[j].getAttribute("data-" + lang + "-placeholder") || "";
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     loadPost();
+    updateStaticText();
 
-    // Re-load post when language is toggled (DE/EN)
+    // Re-load post and update static text when language is toggled (DE/EN)
     window.addEventListener("languageChanged", function () {
+      updateStaticText();
       loadPost();
     });
   });
