@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 21 complete (engagement, legal, Telegram, content sync). Lightsail dual-track planned.
-**Last Updated:** 2026-03-10 (Session 21)
+**Current Phase:** Session 25 complete (documentation overhaul, status badges)
+**Last Updated:** 2026-03-12 (Session 25)
 
 ---
 
@@ -15,13 +15,13 @@
 | Phase | Status | Target |
 |-------|--------|--------|
 | 1. Project Setup | Done | Week 1 |
-| 2. Backend API | ~95% Done (S3 upload + Comprehend open) | Week 1-2 |
-| 3. Frontend | ~99% Done (engagement, legal pages done) | Week 1-2 |
+| 2. Backend API | Done | Week 1-2 |
+| 3. Frontend | ~99% Done (about photo + CV open) | Week 1-2 |
 | 4. Terraform Infrastructure | Done | Week 2 |
 | 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
-| 7. ML Integration (Comprehend) | Not Started | Week 3-4 |
-| 8. Polish + Presentation | In Progress (engagement + legal + content sync done) | Week 4 |
+| 7. ML Integration (Comprehend) | Done (IRSA, auto-tags, sentiment, auto-moderation) | Week 3-4 |
+| 8. Polish + Presentation | Done (README, screenshots, status badges) | Week 4 |
 | 9. Lightsail Permanent Hosting | Planned | Post-course |
 
 ---
@@ -41,19 +41,18 @@
 - [x] Docker setup (Dockerfiles for backend + frontend, docker-compose.yml)
 - [x] Podman als Docker-Alternative validiert
 
-## Phase 2: Backend API (~90% Done)
+## Phase 2: Backend API (Done)
 
 - [x] PostgreSQL schema design (6 tables: users, categories, posts, tags, post_tags, comments)
 - [x] Express routes: CRUD posts, comments, categories (11 endpoints)
 - [x] Search + filter query params (?search, ?category, ?tag with dynamic SQL WHERE)
 - [x] Auth middleware (Cognito JWT validation + dev bypass)
-- [ ] S3 image upload service (pre-signed URLs)
 - [x] Telegram bot notification service (native fetch, non-blocking, @my_tech_blog_bot)
 - [x] Unit tests (31 tests: health, posts, comments, categories, auth)
 - [x] Seed data (11 articles, 7 categories, 32 tags -- real content from blog project)
 - [x] Admin list endpoints (GET /api/admin/posts, posts/:id, comments)
 
-## Phase 3: Frontend (~98% Done)
+## Phase 3: Frontend (~99% Done)
 
 - [x] Blog homepage (post list with demo data, category badges, reading time)
 - [x] Single post view (Markdown rendered via marked.js + highlight.js)
@@ -86,7 +85,6 @@
 - [x] Blog content sync (K3s -> Lightsail dual-track across all posts)
 - [ ] About page photo decision (same vs different vs remove)
 - [ ] CV download button (simplified version)
-- [ ] Admin S3 image uploads (needs EKS deployment)
 
 ## Phase 4: Terraform Infrastructure (Done)
 
@@ -152,14 +150,17 @@
 - [x] Fix IAM eventual consistency: 15s sleep between Wave 0 and Wave 1 (PR #25)
 - [x] Wave 3 deployed via infra-provision.yml with optional checkbox (PR #23-#25)
 
-## Phase 7: ML Integration
+## Phase 7: ML Integration (Done)
 
-- [ ] Comprehend service (detectKeyPhrases for auto-tags)
-- [ ] Comprehend service (detectSentiment for comments)
-- [ ] IRSA role for Comprehend access (pod-level IAM)
-- [ ] Admin dashboard: ML results display
+- [x] Comprehend service (detectKeyPhrases for auto-tags)
+- [x] Comprehend service (detectSentiment for comments)
+- [x] IRSA role for Comprehend access (pod-level IAM)
+- [x] Admin dashboard: ML results display
+- [x] Auto-moderation: NEGATIVE comments >= 70% confidence auto-flagged
+- [x] Sentiment overview bar + legend on admin dashboard
+- [x] Sentiment badges on comment moderation page
 
-## Phase 8: Polish + Presentation (In Progress)
+## Phase 8: Polish + Presentation (Done)
 
 - [x] Frontend overhaul: LP, About, Skills, Blog pages (consistency, German locale, real data)
 - [x] Credly certification badge images
@@ -168,10 +169,13 @@
 - [x] Legal pages: Impressum lean, Datenschutz DSGVO rewrite, Haftungsausschluss standalone
 - [x] Telegram bot for comment notifications (PR #42)
 - [x] Blog content sync: 7 posts refined, K3s -> Lightsail across all posts
-- [ ] Final README with screenshots
-- [ ] Architecture diagram
+- [x] Final README with screenshots
+- [x] Cost documentation
+- [x] Automated status badges (EKS + Lightsail health check workflows)
+- [x] 8 screenshots selected, renamed, optimized, and embedded in README
+- [x] Documentation consistency pass (README, ACTION_PLAN, LESSONS_LEARNED)
+- [ ] Architecture diagram (visual, not ASCII)
 - [ ] Presentation slides (20-30 min)
-- [ ] Cost documentation
 
 ## Phase 9: Lightsail Permanent Hosting (Planned)
 
@@ -195,23 +199,22 @@
 | **2** | RDS (db.t3.micro) | ~$13 (stoppable) | Destroy+rebuild verified |
 | **3** | EKS + NAT GW + CloudFront | ~$126 | Deployed (optional checkbox in provision workflow) |
 
-After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.65/month.
+After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> back to ~$0.50/month.
 
 ---
 
 ## What's Next? (Priority Order)
 
-1. **Post 12 via admin dashboard** -- live proof-of-concept editing on EKS (locally tested, ready for EKS)
+1. **About page photo fix** -- face centering in circular crop (unresolved from Session 24)
 2. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
-3. **Comprehend integration** -- auto-tags (detectKeyPhrases) + comment sentiment (detectSentiment), requires IRSA
-4. **S3 image uploads** -- pre-signed URL upload from admin dashboard (requires Wave 1 S3)
-5. **About page photo decision** -- same vs different vs remove from About hero
-6. **CV download button** -- simplified version without job-specific header
-7. **Screenshots + Architecture diagram** -- for README and presentation
+3. **CV download button** -- simplified version without job-specific header
+4. **Architecture diagram** -- visual diagram for README (replace ASCII)
+5. **Presentation slides** -- 20-30 min for CloudHelden final presentation
+6. **deploy.yml skip_tests bug** -- `skip_tests=true` skips entire deploy, not just tests
 
 4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** All infra destroyed (Session 21), only OIDC remains. Full provision->deploy->destroy cycle verified clean.
+**Current infra state:** All infra destroyed (Session 24), only OIDC remains.
 **Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
 
 ---
@@ -227,7 +230,7 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 | 2026-02-20 | Terraform from scratch | Shows deeper understanding vs copying |
 | 2026-02-20 | OIDC for CI/CD | No long-lived credentials, best practice |
 | 2026-02-20 | Markdown in DB | Dev-friendly, portable, simple |
-| 2026-02-20 | S3 + CloudFront for images | Professional, scalable, shows S3 integration |
+| 2026-02-20 | S3 + CloudFront infrastructure | Deployed as modules, prepared for future image hosting (OAC, encryption, CORS) |
 | 2026-02-20 | Husky pre-commit hooks | Security from day 1, prevents secret leaks |
 | 2026-02-20 | 3 docs only | README + ACTION_PLAN + LESSONS_LEARNED, nothing else |
 | 2026-02-21 | Relative paths | All HTML uses `./` paths for file:// dev compatibility |
@@ -295,3 +298,7 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 | 2026-03-10 | CSS-only heart icon for like button | Tabler ti-heart-filled not rendering in CDN version, pure CSS heart shape works everywhere |
 | 2026-03-10 | Non-blocking Telegram notifications | Fire-and-forget pattern (.catch(() => {})), notification failures never block comment creation |
 | 2026-03-10 | 4 GitHub Secrets (was 2) | Added TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID to blog-secrets K8s Secret via deploy.yml |
+| 2026-03-11 | Remove CloudHelden name from README | Public repo should be vendor-neutral, "cloud engineering course" sufficient |
+| 2026-03-11 | Comprehend auto-tags done, S3 uploads dropped | Focus on implemented features, pre-signed URL upload not needed for blog |
+| 2026-03-12 | Automated status badges (EKS + Lightsail) | GitHub Actions health check every 5 min, workflow badge shows live/offline |
+| 2026-03-12 | Honest S3/CloudFront documentation | S3+CloudFront deployed as infra but traffic goes ALB->pods when EKS live |
