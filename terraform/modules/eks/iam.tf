@@ -156,6 +156,7 @@ resource "aws_iam_role" "backend" {
 # Comprehend + Translate permissions for the backend pod.
 # Comprehend: sentiment analysis on comments, key phrase extraction for auto-tags
 # Translate: on-demand DE->EN translation of blog posts (cached in PostgreSQL)
+#checkov:skip=CKV_AWS_355:Comprehend and Translate APIs do not support resource-level permissions, Resource=* is required
 resource "aws_iam_role_policy" "backend_comprehend" {
   name = "${var.project_name}-backend-comprehend-policy"
   role = aws_iam_role.backend.id
