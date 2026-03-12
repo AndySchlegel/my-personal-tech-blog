@@ -463,13 +463,42 @@
 
   var audioState = { loading: false, playing: false };
 
-  // --- Setup the audio (listen) button ---
+  // --- Setup the audio (listen) button + speed controls ---
   function setupAudioButton(post) {
     var btn = document.getElementById("audio-btn");
     var player = document.getElementById("audio-player");
     var icon = document.getElementById("audio-icon");
     var label = document.getElementById("audio-label");
+    var speedControl = document.getElementById("audio-speed-control");
     if (!btn || !player) return;
+
+    // Setup speed control buttons
+    function setupSpeedButtons() {
+      if (!speedControl) return;
+      var speedBtns = speedControl.querySelectorAll(".audio-speed-btn");
+      speedBtns.forEach(function (speedBtn) {
+        speedBtn.addEventListener("click", function () {
+          var speed = parseFloat(speedBtn.getAttribute("data-speed"));
+          player.playbackRate = speed;
+          // Update active state on all speed buttons
+          speedBtns.forEach(function (b) {
+            b.className =
+              "audio-speed-btn px-2 py-1 rounded-md text-xs font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 dark:hover:text-purple-400 hover:border-purple-300 dark:hover:border-purple-500/50 transition-all";
+          });
+          speedBtn.className =
+            "audio-speed-btn active px-2 py-1 rounded-md text-xs font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all";
+        });
+      });
+    }
+    setupSpeedButtons();
+
+    // Show speed controls when audio is available
+    function showSpeedControl() {
+      if (speedControl) speedControl.classList.remove("hidden");
+    }
+    function hideSpeedControl() {
+      if (speedControl) speedControl.classList.add("hidden");
+    }
 
     btn.addEventListener("click", function () {
       // If already playing, pause
@@ -511,6 +540,7 @@
           audioState.playing = true;
           icon.className = "ti ti-player-pause text-lg";
           label.textContent = getCurrentLang() === "en" ? "Pause" : "Pause";
+          showSpeedControl();
         })
         .catch(function () {
           audioState.loading = false;
@@ -519,7 +549,7 @@
         });
     });
 
-    // When audio ends, reset button state
+    // When audio ends, reset button state (keep speed controls visible)
     player.addEventListener("ended", function () {
       audioState.playing = false;
       icon.className = "ti ti-headphones text-lg";
