@@ -166,15 +166,16 @@
       <section
         class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10"
       >
-        <div class="max-w-2xl">
-          <h1
-            class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
-          >
-            Blog
-          </h1>
-          <!-- Subtitle as quote block with photo -->
+        <h1
+          class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+        >
+          Blog
+        </h1>
+        <!-- Quote block + Podcast player side by side -->
+        <div class="flex flex-col lg:flex-row gap-4 mt-4">
+          <!-- Left: Subtitle as quote block with photo -->
           <div
-            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 mt-4"
+            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 lg:flex-1"
             style="animation-delay: 0.1s; opacity: 0"
           >
             <div class="flex items-start gap-3">
@@ -193,6 +194,128 @@
                 Meine Reise durch AWS, Kubernetes, Terraform und Security
                 &mdash; mit Lektionen aus Code, Containern und Konfigurationen.
               </p>
+            </div>
+          </div>
+
+          <!-- Right: NotebookLM Podcast player -->
+          <div
+            class="slide-in-left lg:w-80 border-l-4 border-purple-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
+            style="animation-delay: 0.2s; opacity: 0"
+          >
+            <div class="flex items-start gap-3 mb-3">
+              <span
+                class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"
+              >
+                <i class="ti ti-headphones text-lg text-purple-500"></i>
+              </span>
+              <div>
+                <span
+                  class="text-sm font-semibold text-slate-900 dark:text-white block"
+                  >NotebookLM Podcast</span
+                >
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5"
+                  data-de="Alle 12 Blog-Artikel in einem KI-generierten Podcast &mdash; durchaus mit Schmunzlern ;)"
+                  data-en="All 12 blog articles in an AI-generated podcast &mdash; with a few chuckles along the way ;)"
+                >
+                  Alle 12 Blog-Artikel in einem KI-generierten Podcast &mdash;
+                  durchaus mit Schmunzlern ;)
+                </p>
+              </div>
+            </div>
+            <!-- Audio element -->
+            <audio id="podcast-player" class="hidden" preload="metadata">
+              <source src="./audio/notebooklm-podcast.m4a" type="audio/mp4" />
+            </audio>
+            <!-- Play/Pause button + progress -->
+            <div class="flex items-center gap-3 mb-2.5">
+              <button
+                id="podcast-play-btn"
+                class="social-link w-9 h-9 rounded-full bg-purple-500 hover:bg-purple-400 flex items-center justify-center transition-colors shrink-0"
+                aria-label="Play podcast"
+              >
+                <svg
+                  id="podcast-icon-play"
+                  class="w-4 h-4 text-white fill-current ml-0.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <svg
+                  id="podcast-icon-pause"
+                  class="w-4 h-4 text-white fill-current hidden"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
+                </svg>
+              </button>
+              <div class="flex-1 min-w-0">
+                <input
+                  id="podcast-progress"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="0"
+                  class="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-200 dark:bg-slate-700 accent-purple-500"
+                />
+                <div class="flex justify-between mt-0.5">
+                  <span
+                    id="podcast-time-current"
+                    class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
+                    >0:00</span
+                  >
+                  <span
+                    id="podcast-time-total"
+                    class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
+                    >--:--</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Speed control buttons -->
+            <div class="flex items-center gap-1.5">
+              <span
+                class="text-[10px] text-slate-400 dark:text-slate-500 mr-1"
+                data-de="Tempo:"
+                data-en="Speed:"
+                >Tempo:</span
+              >
+              <button
+                data-speed="0.5"
+                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+              >
+                0.5x
+              </button>
+              <button
+                data-speed="0.75"
+                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+              >
+                0.75x
+              </button>
+              <button
+                data-speed="1"
+                class="podcast-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+              >
+                1x
+              </button>
+              <button
+                data-speed="1.25"
+                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+              >
+                1.25x
+              </button>
+              <button
+                data-speed="1.5"
+                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+              >
+                1.5x
+              </button>
+              <button
+                data-speed="2"
+                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+              >
+                2x
+              </button>
             </div>
           </div>
         </div>
@@ -395,6 +518,84 @@
     <!-- Main app script (loads posts from API) -->
     <script src="./js/lang.js"></script>
     <script src="./js/app.js"></script>
+
+    <!-- Podcast player controls -->
+    <script>
+      (function () {
+        var audio = document.getElementById("podcast-player");
+        var playBtn = document.getElementById("podcast-play-btn");
+        var iconPlay = document.getElementById("podcast-icon-play");
+        var iconPause = document.getElementById("podcast-icon-pause");
+        var progress = document.getElementById("podcast-progress");
+        var timeCurrent = document.getElementById("podcast-time-current");
+        var timeTotal = document.getElementById("podcast-time-total");
+        var speedBtns = document.querySelectorAll(".podcast-speed-btn");
+
+        // Format seconds to M:SS or MM:SS
+        function fmt(s) {
+          if (isNaN(s)) return "--:--";
+          var m = Math.floor(s / 60);
+          var sec = Math.floor(s % 60);
+          return m + ":" + (sec < 10 ? "0" : "") + sec;
+        }
+
+        // Show total duration once metadata loads
+        audio.addEventListener("loadedmetadata", function () {
+          timeTotal.textContent = fmt(audio.duration);
+          progress.max = Math.floor(audio.duration);
+        });
+
+        // Play / pause toggle
+        function updatePlayIcon() {
+          if (audio.paused) {
+            iconPlay.classList.remove("hidden");
+            iconPause.classList.add("hidden");
+          } else {
+            iconPlay.classList.add("hidden");
+            iconPause.classList.remove("hidden");
+          }
+        }
+        playBtn.addEventListener("click", function () {
+          if (audio.paused) {
+            audio.play();
+          } else {
+            audio.pause();
+          }
+          updatePlayIcon();
+        });
+
+        // Update progress bar + current time during playback
+        audio.addEventListener("timeupdate", function () {
+          progress.value = Math.floor(audio.currentTime);
+          timeCurrent.textContent = fmt(audio.currentTime);
+        });
+
+        // Seek via progress bar
+        progress.addEventListener("input", function () {
+          audio.currentTime = progress.value;
+        });
+
+        // Reset icon when playback ends
+        audio.addEventListener("ended", function () {
+          updatePlayIcon();
+        });
+
+        // Speed buttons
+        speedBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var speed = parseFloat(btn.getAttribute("data-speed"));
+            audio.playbackRate = speed;
+            // Update active state on all speed buttons
+            speedBtns.forEach(function (b) {
+              var isActive = parseFloat(b.getAttribute("data-speed")) === speed;
+              b.className = isActive
+                ? "podcast-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+                : "podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all";
+            });
+          });
+        });
+      })();
+    </script>
 
     <!-- Scroll-reveal for static elements (header, search, filters) -->
     <script>
