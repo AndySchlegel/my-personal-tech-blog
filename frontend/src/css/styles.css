@@ -511,6 +511,19 @@ html {
   transform: rotate(180deg);
 }
 
+/* --- Language toggle animation (matches theme toggle) --- */
+#lang-toggle {
+  transition: transform 0.3s ease;
+}
+
+#lang-toggle:hover {
+  transform: rotate(20deg);
+}
+
+#lang-toggle:active {
+  transform: rotate(180deg);
+}
+
 /* --- Nav links hover effect --- */
 nav a {
   transition:

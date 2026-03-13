@@ -121,10 +121,10 @@ Entscheidungen und deren Begründungen. Lösungswege, die auf Anhieb funktionier
   '2026-02-14T10:00:00Z'
 );
 
--- Post 2: Der Moment, an dem Theorie zu Praxis wird
+-- Post 2: Von Kursunterlagen zu Logs und Alerts -- wie ein Moment Theorie in Alltag verwandelt hat
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Der Moment, an dem Theorie zu Praxis wird',
+  'Von Kursunterlagen zu Logs und Alerts -- wie ein Moment Theorie in Alltag verwandelt hat',
   'theorie-zu-praxis',
   '### Fundamente legen, ohne zu wissen, wohin
 
@@ -184,10 +184,10 @@ Der nächste Schritt kam fast zwangsläufig.',
   '2026-02-17T10:00:00Z'
 );
 
--- Post 3: Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk
+-- Post 3: Mein Netzwerk, meine Regeln -- wie ein NAS der Start fuer echte Infrastruktur war
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Blackbox kaputt: Vom Provider-Router zum eigenen Netzwerk',
+  'Mein Netzwerk, meine Regeln -- wie ein NAS der Start für echte Infrastruktur war',
   'provider-router-umstieg-unifi',
   '### Am Limit des Provider-Routers
 
@@ -254,10 +254,10 @@ Genau diese Kombination hat den weiteren Weg geprägt.',
   '2026-02-19T10:00:00Z'
 );
 
--- Post 4: Sichere Infrastruktur von Tag 1: VPN, Reverse Proxy und Netw...
+-- Post 4: Erst das Netzwerk, dann die Services -- mein Ansatz fuer sichere Infrastruktur
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Sichere Infrastruktur von Tag 1: VPN, Reverse Proxy und Networking in der Praxis',
+  'Erst das Netzwerk, dann die Services -- mein Ansatz für sichere Infrastruktur',
   'sichere-infrastruktur-vpn-reverse-proxy',
   '### Die zentrale Frage: Wie wird das produktionsreif?
 
@@ -339,10 +339,10 @@ Das ist kein Scheitern. Das ist Lernen.',
   '2026-02-21T10:00:00Z'
 );
 
--- Post 5: Sandbox kaputt, alles weg -- wie ich Terraform lieben gelern...
+-- Post 5: Von null auf Infrastruktur -- warum Reproduzierbarkeit mein wichtigstes Prinzip wurde
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Sandbox kaputt, alles weg -- wie ich Terraform lieben gelernt habe',
+  'Von null auf Infrastruktur -- warum Reproduzierbarkeit mein wichtigstes Prinzip wurde',
   'sandbox-reset-terraform',
   '### Wenn plötzlich alles weg ist
 
@@ -485,10 +485,10 @@ Terraform wurde dadurch zu einem zentralen Werkzeug in meinem Setup.',
   '2026-02-24T10:00:00Z'
 );
 
--- Post 6: EcoKart: Mein erster vollständiger Webshop auf AWS
+-- Post 6: Ein Webshop reproduzierbar als Code -- wie aus einer Uebung eine AWS-Umgebung mit Anspruch wurde
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'EcoKart: Mein erster vollständiger Webshop auf AWS',
+  'Ein Webshop reproduzierbar als Code -- wie aus einer Übung eine AWS-Umgebung mit Anspruch wurde',
   'ecokart-webshop-aws',
   '### Von Kostenvergleich zu eigenem Shop
 
@@ -586,10 +586,10 @@ Das ist kein Kursprojekt mehr. Das ist Praxiserfahrung.',
   '2026-02-26T10:00:00Z'
 );
 
--- Post 7: Das große Bild: Wie aus einzelnen Projekten eine Hybrid-Infr...
+-- Post 7: Von der ersten NAS zu einer Hybrid-Landschaft -- wie Projekte ein grosses Bild ergaben
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Das große Bild: Wie aus einzelnen Projekten eine Hybrid-Infrastruktur mit über 50 Services wurde',
+  'Von der ersten NAS zu einer Hybrid-Landschaft -- wie Projekte plötzlich ein großes Bild ergaben',
   'hybrid-infrastruktur-50-services',
   '### Vor einem Jahr existierte nichts davon
 
@@ -673,10 +673,10 @@ Angefangen mit Docker Compose, Shell-Skripten und Cronjobs -- und mit jedem neue
   '2026-02-28T10:00:00Z'
 );
 
--- Post 8: Monitoring und Security: Warum ich früh angefangen habe und ...
+-- Post 8: Monitoring ab dem ersten Container -- warum sich der fruehe Start ausgezahlt hat
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Monitoring und Security: Warum ich früh angefangen habe und es sich ausgezahlt hat',
+  'Monitoring ab dem ersten Container -- warum sich der frühe Start ausgezahlt hat',
   'monitoring-und-security',
   '### Prometheus/Grafana: Die ersten Metriken
 
@@ -769,10 +769,10 @@ Mein erstes Grafana-Dashboard hatte drei Panels. Heute überwache ich damit drei
   '2026-03-03T10:00:00Z'
 );
 
--- Post 9: Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt ...
+-- Post 9: Luefter auf Maximum, Telegram vibriert -- wie mein Monitoring den Ernstfall bestanden hat
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Crypto-Miner auf meinem Server: Wie ich den Angriff erkannt und gestoppt habe',
+  'Lüfter auf Maximum, Telegram vibriert -- wie mein Monitoring den Ernstfall bestanden hat',
   'crypto-miner-nas-angriff-erkannt',
   '### NAS auf Maximum, Telegram vibriert
 
@@ -849,10 +849,10 @@ Das ist keine Theorie mehr. Das ist Praxis.',
   '2026-03-05T10:00:00Z'
 );
 
--- Post 10: AWS Solutions Architect: Warum ich die Prüfung mit Praxis st...
+-- Post 10: Hunderte Fragen, echte Projekte -- mein Weg zum AWS Solutions Architect
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'AWS Solutions Architect: Warum ich die Prüfung mit Praxis statt nur Theorie vorbereitet habe',
+  'Hunderte Fragen, echte Projekte -- mein Weg zum AWS Solutions Architect',
   'aws-solutions-architect-praxis',
   '### Solutions, nicht Services
 
@@ -934,10 +934,10 @@ Die Prüfung war ein Meilenstein. Die Denkweise war schon da. Jetzt habe ich die
   '2026-03-08T10:00:00Z'
 );
 
--- Post 11: Diesen Blog auf AWS EKS deployen: Mein Abschlussprojekt
+-- Post 11: Ueberdimensioniert fuer einen Blog -- aber genau darum ging es
 INSERT INTO posts (title, slug, content, excerpt, status, featured, reading_time_minutes, author_id, category_id, published_at)
 VALUES (
-  'Diesen Blog auf AWS EKS deployen: Mein Abschlussprojekt',
+  'Überdimensioniert für einen Blog -- aber genau darum ging es',
   'blog-aws-eks-abschlussprojekt',
   '### Ein Blog mit Zukunft
 
@@ -973,7 +973,7 @@ Die Infrastruktur besteht aus neun Terraform-Modulen:
 
 **Authentifizierung:** Cognito User Pool mit OAuth 2.0 für den Admin-Bereich. Optionale MFA, rollenbasierte Zugriffskontrolle.
 
-**ML-Integration:** AWS Comprehend für automatische Sentiment-Analyse von Kommentaren -- die ML-Anforderung des Projekts, direkt in den Backend-Flow integriert.
+**ML und Sprachservices:** AWS Comprehend für Sentiment-Analyse von Kommentaren, Amazon Translate für bilinguale Inhalte und Amazon Polly für Text-to-Speech -- drei AWS-Services, die direkt in den Blog-Flow integriert sind.
 
 ---
 
@@ -1039,7 +1039,7 @@ Neun Terraform-Module, zehn Kubernetes-Manifeste, sechs Pipelines, 31 Tests. All
 
 Dieses Projekt bringt alles zusammen, was in den letzten Monaten entstanden ist. Terraform von EcoKart, Container-Erfahrung aus dem Homelab, CI/CD mit OIDC, Security-First-Denken aus dem Monitoring-Aufbau.
 
-Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir erarbeitet habe.
+Kein isoliertes Lernprojekt, sondern die Zusammenführung von allem, was ich mir erarbeitet habe. Jeder Artikel lässt sich in zwei Sprachen lesen und vorlesen -- automatisch, über AWS-Services, die direkt in die Anwendung integriert sind.
 
 Und ein Blog, der seinen eigenen Aufbau dokumentiert. Angefangen bei der Frage, warum ich nach fast zwanzig Jahren im Vertrieb noch einmal bei null angefangen habe -- bis hierher, wo die Infrastruktur hinter diesem Text genauso Teil der Geschichte ist wie der Text selbst.',
   'Das Abschlussprojekt meiner Weiterbildung: Diesen Tech-Blog als Cloud-Native Anwendung auf AWS EKS bauen. Neun Terraform-Module, sechs CI/CD-Pipelines, OIDC statt AWS-Keys und eine Wave-Strategie, die Kosten kontrollierbar macht. Überdimensioniert für einen Blog -- aber genau darum ging es.',

@@ -297,14 +297,21 @@
                     style="animation-delay: 0.45s"
                   />
                 </a>
-                <!-- GitHub Foundations (placeholder until real Credly badge image) -->
-                <div
-                  class="scale-up h-16 w-16 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-600 dark:to-slate-800 border-2 border-slate-500/50 flex items-center justify-center cursor-default drop-shadow-md"
-                  style="animation-delay: 0.5s"
+                <!-- GitHub Foundations -->
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   title="GitHub Foundations"
+                  class="social-link"
                 >
-                  <i class="devicon-github-original text-3xl text-white"></i>
-                </div>
+                  <img
+                    src="./img/certs/github-foundations.png"
+                    alt="GitHub Foundations"
+                    class="scale-up h-16 w-auto drop-shadow-md hover:scale-110 transition-transform"
+                    style="animation-delay: 0.5s"
+                  />
+                </a>
               </div>
             </div>
 
@@ -452,7 +459,9 @@
           >
             <i class="ti ti-rocket text-xl text-orange-500"></i>
           </span>
-          <span data-de="Projekte" data-en="Projects">Projekte</span>
+          <span data-de="Projekt-Highlights" data-en="Project Highlights"
+            >Projekt-Highlights</span
+          >
         </h2>
 
         <div class="grid gap-6 sm:grid-cols-2">
@@ -581,7 +590,7 @@
                 <h3
                   class="text-lg font-semibold text-slate-900 dark:text-white"
                 >
-                  Tech Blog
+                  Personal Tech Blog
                 </h3>
               </div>
               <span
@@ -604,11 +613,12 @@
             <!-- Description -->
             <p
               class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
-              data-de="Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging und PostgreSQL aufgebaut, betrieben und kontinuierlich deployed."
-              data-en="Kubernetes cluster on AWS EKS with CI/CD pipeline, ML auto-tagging and PostgreSQL built, operated and continuously deployed."
+              data-de="Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging, bilingualer Übersetzung und Text-to-Speech. PostgreSQL, Terraform und sechs Pipelines."
+              data-en="Kubernetes cluster on AWS EKS with CI/CD pipeline, ML auto-tagging, bilingual translation and text-to-speech. PostgreSQL, Terraform and six pipelines."
             >
-              Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging
-              und PostgreSQL aufgebaut, betrieben und kontinuierlich deployed.
+              Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline,
+              ML-Auto-Tagging, bilingualer Übersetzung und Text-to-Speech.
+              PostgreSQL, Terraform und sechs Pipelines.
             </p>
 
             <!-- Stats row -->
@@ -630,6 +640,14 @@
               <span class="flex items-center gap-1">
                 <i class="ti ti-brain text-amber-500"></i>
                 Comprehend ML
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-language text-teal-500"></i>
+                Translate
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-volume text-rose-500"></i>
+                Polly TTS
               </span>
               <span class="flex items-center gap-1">
                 <i class="ti ti-test-pipe text-sky-500"></i>
@@ -658,6 +676,14 @@
               <span
                 class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
                 >Comprehend</span
+              >
+              <span
+                class="px-2.5 py-1 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-full text-xs font-medium"
+                >Translate</span
+              >
+              <span
+                class="px-2.5 py-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-full text-xs font-medium"
+                >Polly</span
               >
             </div>
           </div>
@@ -776,7 +802,7 @@
                 <h3
                   class="text-lg font-semibold text-slate-900 dark:text-white"
                 >
-                  Monitoring &amp; Alerting
+                  Monitoring &amp; Security Stack
                 </h3>
               </div>
               <span
@@ -790,10 +816,10 @@
             <!-- Subtitle -->
             <p
               class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
-              data-de="Zentrales Monitoring über alle Standorte"
-              data-en="Centralized Monitoring Across All Locations"
+              data-de="Multi-Server Infrastruktur"
+              data-en="Multi-Server Infrastructure"
             >
-              Zentrales Monitoring über alle Standorte
+              Multi-Server Infrastruktur
             </p>
 
             <!-- Description -->
@@ -1253,21 +1279,27 @@
             <span>2026 Andy Schlegel</span>
           </div>
 
-          <!-- Center: legal links (required in Germany, stay in German) -->
+          <!-- Center: legal links (required in Germany) -->
           <div class="flex items-center gap-4 text-sm">
             <a
               href="./impressum.html"
               class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-de="Impressum"
+              data-en="Legal Notice"
               >Impressum</a
             >
             <a
               href="./datenschutz.html"
               class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-de="Datenschutz"
+              data-en="Privacy Policy"
               >Datenschutz</a
             >
             <a
               href="./haftungsausschluss.html"
               class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-de="Haftungsausschluss"
+              data-en="Disclaimer"
               >Haftungsausschluss</a
             >
           </div>
