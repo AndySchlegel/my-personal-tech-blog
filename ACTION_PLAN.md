@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 28 complete (Bilingual DE/EN, Amazon Translate, Amazon Polly, legal updates)
-**Last Updated:** 2026-03-12 (Session 28)
+**Current Phase:** Session 29 complete (Blog post titles, GitHub Foundations badge, footer bilingual, reading progress bar, view counts)
+**Last Updated:** 2026-03-13 (Session 29)
 
 ---
 
@@ -180,6 +180,15 @@
 - [x] Amazon Polly text-to-speech with playback speed controls (0.5x-2x) -- Session 28
 - [x] Legal pages updated for Translate, Polly, Prometheus/Grafana (Datenschutz + Haftungsausschluss) -- Session 28
 - [x] Status badge workflows changed to manual-only (no more 5-min failure emails) -- Session 28
+- [x] Blog post titles refined (all 11 posts, storytelling style, no colons) -- Session 29
+- [x] GitHub Foundations badge on index.html + skills.html -- Session 29
+- [x] Project card consistency across index.html and skills.html -- Session 29
+- [x] Footer bilingual (data-de/data-en) on all pages -- Session 29
+- [x] DE/EN toggle animation matching dark mode toggle -- Session 29
+- [x] Professional photo on blog.html quote block -- Session 29
+- [x] Reading progress bar on post pages -- Session 29
+- [x] View count display on blog overview cards -- Session 29
+- [x] Post 11 content updated with Translate + Polly references -- Session 29
 
 ## Phase 9: Lightsail Permanent Hosting (Planned)
 
@@ -218,7 +227,7 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** EKS stack live (Wave 0-3 deployed, Session 28). Full stack: Monitoring + Translate + Polly active.
+**Current infra state:** EKS stack live (Wave 0-3 deployed, Session 29). Full stack: Monitoring + Translate + Polly active.
 **Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
 
 ---

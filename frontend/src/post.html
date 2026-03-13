@@ -56,6 +56,13 @@
   <body
     class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
   >
+    <!-- Reading progress bar (grows 0-100% as user scrolls through article) -->
+    <div
+      id="reading-progress"
+      class="fixed top-0 left-0 h-[3px] bg-sky-500 z-[60] transition-none"
+      style="width: 0%"
+    ></div>
+
     <!-- ==================== HEADER ==================== -->
     <header
       class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
