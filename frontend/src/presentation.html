@@ -541,7 +541,7 @@
             white-space: nowrap;
           "
         >
-          Comprehend
+          ML &amp; Sprache
         </button>
         <button
           class="tab-btn"
@@ -710,7 +710,7 @@
           >
             Cloud-native Blog auf AWS EKS &mdash; vom leeren Repo zum
             produktionsreifen Deployment mit 9 Terraform-Modulen, 7
-            CI/CD-Workflows und ML-Integration.
+            CI/CD-Workflows, 3 AWS ML-Services und Self-Hosted Monitoring.
           </p>
         </div>
 
@@ -766,7 +766,7 @@
           >
             <div
               class="text-3xl font-extrabold text-purple-500 stat-value"
-              data-count-to="35"
+              data-count-to="42"
             >
               0
             </div>
@@ -815,8 +815,8 @@
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
-                  >ML-Integration &mdash; Comprehend für Auto-Tags und
-                  Sentiment</span
+                  >3 AWS ML-Services &mdash; Comprehend, Translate und
+                  Polly</span
                 >
               </li>
               <li class="flex items-start gap-2">
@@ -885,7 +885,7 @@
                 <i
                   class="devicon-amazonwebservices-plain-wordmark colored text-lg"
                 ></i>
-                AWS (12)
+                AWS (15+)
               </div>
               <div
                 class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
@@ -1204,6 +1204,28 @@
                           >Auto-Scaling</span
                         >
                       </div>
+                      <div
+                        class="aws-service aws-compute"
+                        style="font-size: 0.7rem"
+                      >
+                        <div
+                          class="aws-icon"
+                          style="
+                            width: 32px;
+                            height: 32px;
+                            background: #e65100;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                          "
+                        >
+                          <i class="ti ti-chart-line text-white text-sm"></i>
+                        </div>
+                        <span>Monitoring</span>
+                        <span class="text-[9px] font-normal opacity-60"
+                          >Grafana + Prometheus</span
+                        >
+                      </div>
                     </div>
                     <div class="text-center mt-2">
                       <span class="text-[10px] text-slate-500"
@@ -1256,6 +1278,40 @@
                 <span>Comprehend</span>
                 <span class="text-[10px] font-normal opacity-60"
                   >Auto-Tags + Sentiment</span
+                >
+              </div>
+              <div class="aws-service aws-ml">
+                <div
+                  class="aws-icon"
+                  style="
+                    background: #01a88d;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="ti ti-language text-white text-lg"></i>
+                </div>
+                <span>Translate</span>
+                <span class="text-[10px] font-normal opacity-60"
+                  >Bilingual DE/EN</span
+                >
+              </div>
+              <div class="aws-service aws-ml">
+                <div
+                  class="aws-icon"
+                  style="
+                    background: #01a88d;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="ti ti-volume text-white text-lg"></i>
+                </div>
+                <span>Polly</span>
+                <span class="text-[10px] font-normal opacity-60"
+                  >Text-to-Speech</span
                 >
               </div>
               <div class="aws-service aws-compute">
@@ -2078,8 +2134,8 @@
           Kubernetes auf EKS
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          11 Manifest-Dateien, nummeriert (00-10) für selbstdokumentierende
-          Apply-Reihenfolge &mdash; IRSA + HPA + Metrics-Server
+          12 Manifest-Dateien, nummeriert (00-11) für selbstdokumentierende
+          Apply-Reihenfolge &mdash; IRSA + HPA + Monitoring
         </p>
 
         <!-- Manifest overview -->
@@ -2130,6 +2186,9 @@
               <div class="flex items-center gap-2">
                 <span class="text-sky-500">10</span> HPA (Backend 1-4, Frontend
                 1-3)
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sky-500">11</span> Grafana AWS ML Dashboard
               </div>
             </div>
           </div>
@@ -2189,7 +2248,8 @@
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
                 <span
                   ><strong class="text-slate-300">IRSA</strong> &mdash;
-                  Pod-Level IAM für Comprehend (nicht Node-Level)</span
+                  Pod-Level IAM für Comprehend + Translate + Polly (3
+                  Rollen)</span
                 >
               </li>
               <li class="flex items-start gap-2">
@@ -2260,10 +2320,11 @@
           >
             <i class="ti ti-brain text-xl text-teal-500"></i>
           </span>
-          Amazon Comprehend &mdash; ML-Integration
+          ML &amp; Sprachservices &mdash; 3 AWS-Dienste
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          Natural Language Processing für Auto-Tags und Kommentar-Sentiment
+          Comprehend (NLP), Translate (Bilingual DE/EN) und Polly
+          (Text-to-Speech) &mdash; alle via IRSA
         </p>
 
         <div class="grid sm:grid-cols-2 gap-6 mb-8">
@@ -2275,11 +2336,11 @@
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
               <i class="ti ti-tags text-teal-500"></i>
-              Auto-Tags (detectKeyPhrases)
+              Comprehend: Auto-Tags
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Extrahiert automatisch Schlüsselwörter aus Blog-Posts und schlägt
-              Tags vor.
+              detectKeyPhrases extrahiert Schluesselwoerter aus Blog-Posts fuer
+              automatische Tag-Vorschlaege.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -2305,10 +2366,11 @@
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
               <i class="ti ti-mood-smile text-amber-500"></i>
-              Comment Sentiment (detectSentiment)
+              Comprehend: Sentiment
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Analysiert die Stimmung von Kommentaren für die Moderation.
+              detectSentiment analysiert Kommentar-Stimmung. NEGATIVE &ge; 70%
+              wird automatisch geflaggt.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -2326,6 +2388,67 @@
               <div class="text-red-400">&rarr; NEGATIVE (Score: 0.72)</div>
             </div>
           </div>
+
+          <!-- Translate -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="ti ti-language text-sky-500"></i>
+              Translate: Bilingual DE/EN
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              On-Demand Uebersetzung aller Blog-Posts via Amazon Translate API.
+              Ergebnisse in PostgreSQL gecacht (post_translations Tabelle).
+            </p>
+            <div
+              class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
+            >
+              <div class="text-sky-500 mb-1">
+                // Chunked Translation (5000 Byte API-Limit)
+              </div>
+              <div>Input: 11 Posts (DE) &rarr; TranslateText API</div>
+              <div class="text-emerald-400 mt-1">
+                &rarr; Cached in PostgreSQL (~$0.01/Deploy)
+              </div>
+              <div class="text-slate-500 mt-2 text-[10px]">
+                Toggle auf allen 8 Seiten via data-de/data-en Attribute +
+                lang.js
+              </div>
+            </div>
+          </div>
+
+          <!-- Polly -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <i class="ti ti-volume text-purple-500"></i>
+              Polly: Text-to-Speech
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              Neural Voices fuer Blog-Posts. MP3-Audio in S3 gecacht, Pre-Signed
+              URLs fuer Playback. Speed Controls 0.5x-2x.
+            </p>
+            <div
+              class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
+            >
+              <div class="text-purple-500 mb-1">
+                // Polly SynthesizeSpeech (Neural)
+              </div>
+              <div>Markdown &rarr; Strip &rarr; Chunk (2800 chars)</div>
+              <div class="text-emerald-400 mt-1">
+                &rarr; S3: audio/post-{id}-{lang}.mp3
+              </div>
+              <div class="text-slate-500 mt-2 text-[10px]">
+                1. Request ~5-15s (Synthese), danach &lt;100ms (Pre-Signed URL)
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Architecture -->
@@ -2333,7 +2456,7 @@
           class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
-            Architektur-Integration
+            Architektur-Integration (alle 3 Services)
           </h3>
           <div class="flex flex-wrap items-center gap-3 text-sm mb-4">
             <div
@@ -2351,13 +2474,13 @@
             <div
               class="px-3 py-2 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium"
             >
-              Comprehend API
+              Comprehend / Translate / Polly
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
               class="px-3 py-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium"
             >
-              RDS (Results)
+              RDS + S3 (Cache)
             </div>
           </div>
           <div
@@ -2365,25 +2488,27 @@
           >
             <div>
               <div class="font-semibold text-slate-300 mb-1">
-                IRSA (IAM Roles for Service Accounts)
+                IRSA (1 Role, 3 Services)
               </div>
               <p>
-                Pod-Level IAM statt Node-Level. Nur der Backend-Pod hat
-                Comprehend-Zugriff.
+                Pod-Level IAM: Comprehend + Translate + Polly + S3 in einer IAM
+                Policy. Nur der Backend-Pod hat Zugriff.
               </p>
             </div>
             <div>
               <div class="font-semibold text-slate-300 mb-1">Kosten</div>
               <p>
-                $0.0001 pro 100 Zeichen. Bei 11 Posts + Kommentaren: unter
-                $0.01/Monat.
+                Comprehend: ~$0.01/Monat. Translate: ~$0.01/Deploy (cached).
+                Polly: ~$0.25/Deploy (S3 cached). Minimal im Betrieb.
               </p>
             </div>
             <div>
-              <div class="font-semibold text-slate-300 mb-1">Sprache</div>
+              <div class="font-semibold text-slate-300 mb-1">
+                Caching-Strategie
+              </div>
               <p>
-                Comprehend unterstützt Deutsch nativ (LanguageCode: "de"). Kein
-                Workaround nötig.
+                Translate: PostgreSQL Cache (post_translations). Polly: S3 Cache
+                (audio/post-{id}-{lang}.mp3). Kosten nur beim ersten Aufruf.
               </p>
             </div>
           </div>
@@ -2489,7 +2614,7 @@
           Lessons Learned
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          35 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
+          42 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
           Lösung
         </p>
 
@@ -2552,15 +2677,16 @@
             <div class="flex items-center gap-2 mb-2">
               <span
                 class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
-                >#23</span
+                >#42</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >EKS Cluster Security Group</span
+                >Self-Hosted vs Managed Grafana</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Managed Nodes nutzen NICHT die Custom SG. EKS erstellt eine eigene
-              Cluster SG für alle Nodes.
+              Self-hosted Grafana via Helm statt Amazon Managed Grafana
+              (~$9/Monat). Gleiche Dashboards, $0 extra auf Spot Nodes. Managed
+              lohnt erst bei 24/7 Teams.
             </p>
           </div>
           <div
@@ -2606,7 +2732,7 @@
                 >#31</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >Telegram über SES</span
+                >Telegram statt SES</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
@@ -2684,7 +2810,7 @@
             >
               <div
                 class="text-2xl font-extrabold text-emerald-500"
-                data-count-to="12"
+                data-count-to="15"
               >
                 0
               </div>
@@ -2699,14 +2825,14 @@
             >
               <div
                 class="text-2xl font-extrabold text-amber-500"
-                data-count-to="12"
+                data-count-to="11"
               >
                 0
               </div>
               <div
                 class="counter-label text-xs text-slate-500 dark:text-slate-400"
               >
-                Blog-Artikel (DE)
+                Blog-Artikel (DE/EN)
               </div>
             </div>
             <div
@@ -3073,7 +3199,7 @@
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
               <i class="ti ti-info-circle mr-1"></i>
               IRSA injiziert AWS_ROLE_ARN + Token direkt in den Pod &mdash; nur
-              der Backend-Pod hat Comprehend-Zugriff, nicht die Nodes
+              der Backend-Pod hat Zugriff auf Comprehend, Translate und Polly
             </p>
           </div>
 
@@ -3122,7 +3248,93 @@
             </p>
           </div>
 
-          <!-- Step 5: Admin Dashboard -->
+          <!-- Step 5: Translate + Polly -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-sky-500 text-white text-xs font-bold flex items-center justify-center"
+                >5</span
+              >
+              Translate &amp; Polly Demo
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"
+                  ># Sprache umschalten (DE/EN Toggle im Browser)</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Blog-Post oeffnen &rarr; DE/EN Toggle klicken</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Translate API Call in Backend-Logs sichtbar</span
+                >
+              </div>
+              <div>
+                <span class="text-slate-500"># Audio abspielen (Polly TTS)</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Audio-Button unter Tags klicken</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Speed Controls: 0.5x bis 2x</span
+                >
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Erster Aufruf ~5-15s (Synthese + S3 Upload), danach &lt;100ms
+              (Pre-Signed URL aus Cache)
+            </p>
+          </div>
+
+          <!-- Step 6: Monitoring -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-orange-500 text-white text-xs font-bold flex items-center justify-center"
+                >6</span
+              >
+              Grafana Monitoring
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"># Port-Forward zu Grafana</span
+                ><br />
+                <span class="text-sky-400">$</span> kubectl port-forward -n
+                monitoring svc/monitoring-grafana 3001:80
+              </div>
+              <div>
+                <span class="text-slate-500"># Im Browser: localhost:3001</span
+                ><br />
+                <span class="text-slate-400"
+                  ># 27 K8s-Dashboards + Custom AWS ML Dashboard</span
+                ><br />
+                <span class="text-slate-400"
+                  ># CloudWatch: Translate/Polly/Comprehend API Calls</span
+                >
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Self-hosted via Helm (kube-prometheus-stack) &mdash; $0 extra.
+              IRSA fuer CloudWatch Datasource. Bewusst KEIN Amazon Managed
+              Grafana (~$9/Monat).
+            </p>
+          </div>
+
+          <!-- Step 7: Admin Dashboard -->
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
           >
@@ -3131,7 +3343,7 @@
             >
               <span
                 class="w-6 h-6 rounded bg-rose-500 text-white text-xs font-bold flex items-center justify-center"
-                >5</span
+                >7</span
               >
               Admin-Dashboard zeigen
             </h3>
@@ -3171,7 +3383,7 @@
             >
               <span
                 class="w-6 h-6 rounded bg-emerald-500 text-white text-xs font-bold flex items-center justify-center"
-                >6</span
+                >8</span
               >
               Reproduzierbarkeit beweisen (optional)
             </h3>
@@ -3290,23 +3502,23 @@
             </div>
           </div>
 
-          <!-- CloudWatch -->
+          <!-- FluentBit / Centralized Logging -->
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
-              <i class="ti ti-chart-line text-xl text-amber-500"></i>
+              <i class="ti ti-file-text text-xl text-amber-500"></i>
               <h3 class="font-bold text-sm text-slate-900 dark:text-white">
-                CloudWatch Logging
+                FluentBit / OpenSearch Logging
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Zentrales Log-Management aller Anwendungs-Logs. Fehlersuche über
-              alle Pods hinweg.
+              Zentrales Log-Management mit FluentBit DaemonSet + OpenSearch.
+              Monitoring (Grafana + Prometheus) ist bereits implementiert.
             </p>
             <div class="flex justify-between text-[11px]">
-              <span class="text-amber-500">~$3-5/Monat</span>
-              <span class="text-slate-400">kubectl logs reicht für Demo</span>
+              <span class="text-amber-500">OpenSearch ~$20+/Monat</span>
+              <span class="text-slate-400">kubectl logs + Grafana reichen</span>
             </div>
           </div>
 
