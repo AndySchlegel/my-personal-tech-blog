@@ -63,3 +63,10 @@ output "backend_role_arn" {
   # Used in the blog-backend ServiceAccount annotation.
   # Gives the backend pod credentials for Comprehend API calls.
 }
+
+output "grafana_role_arn" {
+  description = "ARN of the Grafana IRSA role (CloudWatch read access)"
+  value       = aws_iam_role.grafana.arn
+  # Used in the Grafana ServiceAccount annotation.
+  # Gives Grafana read access to CloudWatch metrics for AWS ML dashboards.
+}

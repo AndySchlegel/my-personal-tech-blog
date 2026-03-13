@@ -188,6 +188,68 @@ resource "aws_iam_role_policy" "backend_comprehend" {
 }
 
 # =============================================================================
+# 5. GRAFANA IRSA ROLE (CloudWatch read access for dashboards)
+# =============================================================================
+#
+# Grafana runs in the monitoring namespace and needs to query CloudWatch
+# metrics for the AWS ML Services dashboard (Translate/Polly/Comprehend).
+# Without IRSA, Grafana has no AWS credentials since EKS blocks IMDS from pods.
+
+resource "aws_iam_role" "grafana" {
+  name = "${var.project_name}-grafana-role"
+
+  # IRSA trust policy: only the Grafana ServiceAccount in the monitoring
+  # namespace can assume this role.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Condition = {
+          StringEquals = {
+            "${replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:monitoring:monitoring-grafana"
+            "${replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-grafana-role"
+  }
+}
+
+# CloudWatch read-only permissions for Grafana dashboards.
+# Only read operations -- Grafana cannot modify any CloudWatch resources.
+resource "aws_iam_role_policy" "grafana_cloudwatch" {
+  #checkov:skip=CKV_AWS_355:CloudWatch read APIs do not support resource-level permissions, Resource=* is required
+  name = "${var.project_name}-grafana-cloudwatch-policy"
+  role = aws_iam_role.grafana.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:GetMetricData",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:ListMetrics",
+          "cloudwatch:DescribeAlarmsForMetric",
+          "cloudwatch:DescribeAlarms"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# =============================================================================
 # 3. OIDC PROVIDER FOR IRSA (IAM Roles for Service Accounts)
 # =============================================================================
 #

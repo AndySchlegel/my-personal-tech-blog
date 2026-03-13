@@ -131,6 +131,14 @@ output "backend_role_arn" {
   value       = module.eks.backend_role_arn
 }
 
+# --- Grafana IRSA Role ---
+# The IRSA role ARN for the Grafana pod. Gives CloudWatch read access
+# for the AWS ML Services dashboard (Translate/Polly/Comprehend metrics).
+output "grafana_role_arn" {
+  description = "Grafana IRSA role ARN (CloudWatch read access)"
+  value       = module.eks.grafana_role_arn
+}
+
 # --- Route 53 ---
 # Zone ID needed by the deploy pipeline to update DNS (point to ALB).
 output "route53_zone_id" {
