@@ -1025,6 +1025,9 @@
     // Setup content scroll-reveal animations
     setupContentAnimations();
 
+    // Setup reading progress bar (tracks scroll through article)
+    setupReadingProgress();
+
     // Setup like button + audio player
     setupLikeButton(post);
     setupAudioButton(post);
@@ -1173,6 +1176,51 @@
     link.appendChild(label);
     link.appendChild(title);
     return link;
+  }
+
+  // ============================================
+  // READING PROGRESS BAR
+  // ============================================
+
+  // --- Update the reading progress bar width based on scroll position ---
+  // Calculates how far through the article content the user has scrolled.
+  // Uses requestAnimationFrame to avoid layout thrashing on scroll.
+  function setupReadingProgress() {
+    var progressBar = document.getElementById("reading-progress");
+    var articleEl = document.getElementById("post-content-section");
+    if (!progressBar || !articleEl) return;
+
+    var ticking = false;
+
+    function updateProgress() {
+      var articleTop = articleEl.offsetTop;
+      var articleHeight = articleEl.offsetHeight;
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var viewportHeight = window.innerHeight;
+
+      // Calculate progress: 0% at article start, 100% at article end
+      var articleEnd = articleTop + articleHeight - viewportHeight;
+      var progress = 0;
+
+      if (scrollTop >= articleTop) {
+        progress = (scrollTop - articleTop) / (articleEnd - articleTop);
+      }
+
+      // Clamp between 0 and 1
+      progress = Math.min(Math.max(progress, 0), 1);
+      progressBar.style.width = progress * 100 + "%";
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    });
+
+    // Run once on setup in case the page is already scrolled
+    updateProgress();
   }
 
   // ============================================

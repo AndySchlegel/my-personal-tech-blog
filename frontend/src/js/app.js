@@ -302,11 +302,17 @@
       "</span>" +
       featuredHtml +
       "</div>" +
+      '<div class="flex items-center gap-3">' +
+      '<span class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">' +
+      '<i class="ti ti-eye text-sm"></i> ' +
+      (post.view_count || 0) +
+      "</span>" +
       '<span class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">' +
       '<i class="ti ti-clock text-sm"></i>' +
       post.reading_time_minutes +
       " min read" +
       "</span>" +
+      "</div>" +
       "</div>" +
       // Title with gradient span
       '<h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">' +

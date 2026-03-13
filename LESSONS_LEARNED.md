@@ -791,3 +791,19 @@ Root cause: deploy.yml referenced `${{ steps.tf.outputs.s3_bucket_name }}` in th
 In GitHub Actions, Terraform outputs don't auto-propagate. Each output needs an explicit `terraform output -raw` -> `GITHUB_OUTPUT` line. When a feature silently fails (returns null instead of erroring), check the env vars on the running pod first: `kubectl exec deployment/blog-backend -- printenv | grep S3`. An empty value is worse than a missing value because the code sees it as "configured but empty" rather than "not configured".
 
 ---
+
+## #41 - CSS Animation `forwards` Fill-Mode Overrides Hover Transforms
+
+**Date:** 2026-03-13
+**Phase:** Phase 8 (Frontend Polish)
+
+**Context:**
+Cards with entrance animations using `animation: scaleUp 0.5s ease forwards` stopped responding to hover transforms like `hover:scale-110`. The hover effect worked fine on elements without the animation.
+
+**Decision:**
+Root cause: `animation-fill-mode: forwards` persists the final keyframe values after the animation completes. When `scaleUp` ends at `transform: scale(1)`, that value stays applied and takes precedence over hover pseudo-class transforms. Fix: apply the animation to a wrapper element so the animated `transform` and the hover `transform` live on different DOM nodes. Alternatively, use the `social-link` class which already handles this by separating animation and hover concerns.
+
+**Takeaway:**
+`animation-fill-mode: forwards` is a common CSS trap -- it locks the final `transform` value onto the element permanently, blocking any hover/focus transforms from taking effect. When hover stops working on animated elements, check for `forwards` first. The cleanest fix is structural: animate the wrapper, interact with the child. This avoids fighting CSS specificity altogether.
+
+---

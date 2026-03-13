@@ -32,11 +32,11 @@
 
 ## Overview
 
-What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 3 AWS/Linux certifications, and a monitoring stack that proved itself in a real security incident.
+What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 4 AWS/Linux/GitHub certifications, and a monitoring stack that proved itself in a real security incident.
 
 ### Why This Project?
 
-1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles
+1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles (storytelling-style titles)
 2. **Monitoring-first mindset** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 3. **Multi-environment experience** -- From homelab to cloud, demonstrates hands-on infrastructure skills across NAS, VPS, and AWS
 4. **EKS complements serverless** -- Together with a previous serverless project (EcoKart), covers both cloud paradigms
@@ -110,7 +110,8 @@ Monitoring (in-cluster, namespace: monitoring):
 
 ### Public
 
-- Blog posts with Markdown rendering and syntax highlighting
+- Blog posts with Markdown rendering, syntax highlighting, and reading progress bar
+- View count displayed on blog overview cards
 - Search and category filtering (debounced, server-side SQL)
 - Auto-generated tags via Amazon Comprehend
 - Comment system with sentiment analysis and Telegram notifications
@@ -434,5 +435,5 @@ Cloud & DevOps Engineer
 ---
 
 **Project Status:** Feature-complete. EKS showcase stack fully operational, Lightsail permanent hosting planned.
-**Last Updated:** 2026-03-12
+**Last Updated:** 2026-03-13
 **AWS Region:** eu-central-1 (Frankfurt)
