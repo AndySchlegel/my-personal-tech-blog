@@ -807,3 +807,19 @@ Root cause: `animation-fill-mode: forwards` persists the final keyframe values a
 `animation-fill-mode: forwards` is a common CSS trap -- it locks the final `transform` value onto the element permanently, blocking any hover/focus transforms from taking effect. When hover stops working on animated elements, check for `forwards` first. The cleanest fix is structural: animate the wrapper, interact with the child. This avoids fighting CSS specificity altogether.
 
 ---
+
+## #42 - Self-Hosted Grafana vs Amazon Managed Grafana
+
+**Date:** 2026-03-13
+**Phase:** Phase 8 (Monitoring)
+
+**Context:**
+AWS offers Amazon Managed Grafana (~$9/editor/month + data fees) and Amazon Managed Prometheus as fully managed observability services. The question was whether to use these managed services or self-host via Helm (kube-prometheus-stack) inside the EKS cluster.
+
+**Decision:**
+Chose self-hosted Grafana + Prometheus via Helm. Reasons: (1) Cost -- managed services add $10-20/month on top of existing EKS costs, while self-hosted runs on the existing Spot nodes at $0 extra. (2) Flexibility -- self-hosted allows any plugin, any data source (we added CloudWatch via IRSA for AWS ML metrics alongside the 27 built-in K8s dashboards). Managed Grafana restricts to pre-approved plugins only. (3) Lifecycle -- our stack is temporary (showcase), so monitoring should come and go with `helm install/uninstall`, not require separate managed service provisioning.
+
+**Takeaway:**
+Managed services shine for teams that need 24/7 HA, SSO integration, and zero maintenance. For a portfolio/showcase project on Spot instances, self-hosted is the pragmatic choice -- same Grafana, same dashboards, zero extra cost. The architecture decision itself (knowing when NOT to use a managed service) demonstrates more cloud maturity than defaulting to the AWS-managed option. This is a common interview question: "Why didn't you use the managed version?"
+
+---
