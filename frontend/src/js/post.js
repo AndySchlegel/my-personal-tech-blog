@@ -747,6 +747,10 @@
     var form = document.getElementById("comment-form");
     if (!form) return;
 
+    // Prevent duplicate listeners when loadPost() is called again (e.g. language switch)
+    if (form.dataset.listenerAttached) return;
+    form.dataset.listenerAttached = "true";
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -1052,7 +1056,9 @@
   // search, sort order). Falls back to full API list if no context
   // exists (e.g. direct link to a post).
   function loadPostNavigation(currentSlug) {
-    var saved = sessionStorage.getItem("postNavContext");
+    // Use language-specific cache key so prev/next titles match the active language
+    var lang = getCurrentLang();
+    var saved = sessionStorage.getItem("postNavContext_" + lang);
     if (saved) {
       try {
         var navList = JSON.parse(saved);
@@ -1063,7 +1069,11 @@
       }
     }
 
-    fetch(API_BASE + "/posts")
+    // Fetch posts with current language for correct translated titles
+    var lang = getCurrentLang();
+    var langParam = lang === "en" ? "?lang=en" : "";
+
+    fetch(API_BASE + "/posts" + langParam)
       .then(function (response) {
         if (!response.ok) throw new Error("Failed");
         return response.json();
@@ -1302,10 +1312,37 @@
     loadPost();
     updateStaticText();
 
-    // Re-load post and update static text when language is toggled (DE/EN)
+    // Re-load post content when language is toggled (DE/EN)
+    // Navigation is preserved -- only post body + labels update
     window.addEventListener("languageChanged", function () {
       updateStaticText();
-      loadPost();
+
+      // Re-fetch post content in new language (translated body from API)
+      var slug = getSlugFromUrl();
+      if (!slug) return;
+      var lang = getCurrentLang();
+      var langParam = lang === "en" ? "?lang=en" : "";
+
+      fetch(API_BASE + "/posts/" + slug + langParam)
+        .then(function (response) {
+          if (!response.ok) throw new Error("Not found");
+          return response.json();
+        })
+        .then(function (post) {
+          // Update only content areas, not navigation
+          var titleEl = document.getElementById("post-title");
+          var contentEl = document.getElementById("post-content");
+          if (titleEl) titleEl.textContent = post.title;
+          if (contentEl && post.content) {
+            contentEl.innerHTML =
+              typeof marked !== "undefined"
+                ? marked.parse(post.content)
+                : post.content;
+          }
+        })
+        .catch(function () {
+          // Silently fail -- keep current content
+        });
     });
   });
 })();

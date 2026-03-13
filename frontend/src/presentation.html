@@ -579,6 +579,23 @@
         </button>
         <button
           class="tab-btn"
+          data-tab="monitoring"
+          style="
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+          "
+        >
+          Monitoring
+        </button>
+        <button
+          class="tab-btn"
           data-tab="live-demo"
           style="
             padding: 12px 16px;
@@ -2496,19 +2513,25 @@
               </p>
             </div>
             <div>
-              <div class="font-semibold text-slate-300 mb-1">Kosten</div>
+              <div class="font-semibold text-slate-300 mb-1">
+                Kosten pro Deploy-Zyklus
+              </div>
               <p>
-                Comprehend: ~$0.01/Monat. Translate: ~$0.01/Deploy (cached).
-                Polly: ~$0.25/Deploy (S3 cached). Minimal im Betrieb.
+                Translate: ~$0.93 (62K Zeichen &times; $15/1M). Polly: ~$1.28
+                (80K Zeichen &times; $16/1M). Comprehend: ~$0.01.
+                <strong class="text-emerald-400"
+                  >Gesamt: ~$2.21 einmalig pro Deploy.</strong
+                >
               </p>
             </div>
             <div>
               <div class="font-semibold text-slate-300 mb-1">
-                Caching-Strategie
+                Caching &rarr; $0 pro User
               </div>
               <p>
                 Translate: PostgreSQL Cache (post_translations). Polly: S3 Cache
-                (audio/post-{id}-{lang}.mp3). Kosten nur beim ersten Aufruf.
+                (audio/post-{id}-{lang}.mp3). Erster Aufruf kostet &mdash;
+                danach unbegrenzt Nutzer zum Nulltarif.
               </p>
             </div>
           </div>
@@ -3076,6 +3099,239 @@
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB: MONITORING ==================== -->
+      <section class="tab-panel" id="panel-monitoring" style="display: none">
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+          >
+            <i class="ti ti-chart-dots-3 text-xl text-orange-500"></i>
+          </span>
+          Monitoring &mdash; Observability von Anfang an
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Prometheus + Grafana via Helm &mdash; Self-Hosted, $0 Zusatzkosten,
+          100% reproduzierbar bei jedem Deploy
+        </p>
+
+        <!-- Architecture diagram -->
+        <div
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+        >
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-4">
+            <i class="ti ti-topology-ring-3 text-orange-500 mr-1"></i>
+            Datenfluss im Monitoring-Stack
+          </h3>
+          <div class="flex flex-col items-center gap-3">
+            <!-- Row 1: Data Sources -->
+            <div class="flex flex-wrap justify-center gap-3">
+              <div
+                class="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-2 text-center min-w-[130px]"
+              >
+                <i class="ti ti-cpu text-green-400"></i>
+                <div class="text-xs text-green-400 font-semibold">
+                  node-exporter
+                </div>
+                <div class="text-[10px] text-slate-500">CPU, RAM, Disk</div>
+              </div>
+              <div
+                class="bg-purple-500/10 border border-purple-500/30 rounded-lg px-4 py-2 text-center min-w-[130px]"
+              >
+                <i class="ti ti-database text-purple-400"></i>
+                <div class="text-xs text-purple-400 font-semibold">
+                  kube-state-metrics
+                </div>
+                <div class="text-[10px] text-slate-500">Pods, HPA, Deploys</div>
+              </div>
+              <div
+                class="bg-sky-500/10 border border-sky-500/30 rounded-lg px-4 py-2 text-center min-w-[130px]"
+              >
+                <i class="ti ti-box text-sky-400"></i>
+                <div class="text-xs text-sky-400 font-semibold">Blog Pods</div>
+                <div class="text-[10px] text-slate-500">cAdvisor Metriken</div>
+              </div>
+              <div
+                class="bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-2 text-center min-w-[130px]"
+              >
+                <i class="ti ti-cloud text-amber-400"></i>
+                <div class="text-xs text-amber-400 font-semibold">
+                  CloudWatch
+                </div>
+                <div class="text-[10px] text-slate-500">
+                  Translate, Polly, Comprehend
+                </div>
+              </div>
+            </div>
+            <!-- Arrow -->
+            <div class="flex flex-col items-center">
+              <i class="ti ti-arrow-down text-slate-500 text-xl"></i>
+              <span class="text-[10px] text-slate-500"
+                >scrape alle 30s / IRSA CloudWatch API</span
+              >
+            </div>
+            <!-- Row 2: Prometheus + Grafana -->
+            <div class="flex flex-wrap justify-center gap-3">
+              <div
+                class="bg-orange-500/10 border-2 border-orange-500/40 rounded-xl px-6 py-3 text-center"
+              >
+                <i class="devicon-prometheus-original colored text-2xl"></i>
+                <div class="text-xs text-orange-400 font-bold mt-1">
+                  Prometheus
+                </div>
+                <div class="text-[10px] text-slate-500">
+                  Time-Series DB + Scraping
+                </div>
+              </div>
+              <div class="flex items-center">
+                <i class="ti ti-arrow-right text-slate-500 text-xl"></i>
+              </div>
+              <div
+                class="bg-orange-500/10 border-2 border-orange-500/40 rounded-xl px-6 py-3 text-center"
+              >
+                <i class="devicon-grafana-plain colored text-2xl"></i>
+                <div class="text-xs text-orange-400 font-bold mt-1">
+                  Grafana
+                </div>
+                <div class="text-[10px] text-slate-500">
+                  Dashboards + Alerting
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Dashboard cards -->
+        <div class="grid sm:grid-cols-3 gap-4 mb-8">
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-server text-sky-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                K8s Cluster
+              </h3>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Node CPU + Memory Auslastung
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Pod Status + Restart Counts
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Network I/O pro Container
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-arrows-maximize text-emerald-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                HPA Auto-Scaling
+              </h3>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+                Backend: 1 &rarr; 4 Replicas (CPU 70%)
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+                Frontend: 1 &rarr; 3 Replicas (CPU 70%)
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+                Stresstest: Skalierung in &lt;60s verifiziert
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i class="ti ti-cloud text-amber-500"></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                AWS ML Services
+              </h3>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                Translate Character Count
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                Polly Request Characters
+              </li>
+              <li class="flex items-start gap-1.5">
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                Comprehend Request Count
+              </li>
+            </ul>
+            <p class="text-[10px] text-slate-500 mt-2">
+              CloudWatch via IRSA (eigene Grafana IAM-Rolle)
+            </p>
+          </div>
+        </div>
+
+        <!-- Why self-hosted? (Lesson #42) -->
+        <div
+          class="hover-card bg-gradient-to-r from-orange-500/5 to-amber-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+        >
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
+            <i class="ti ti-bulb text-amber-500 mr-1"></i>
+            Warum Self-Hosted statt Amazon Managed Grafana?
+          </h3>
+          <div class="grid sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <div
+                class="text-sm font-bold text-emerald-500 dark:text-emerald-400 mb-1"
+              >
+                $0 vs. $9+/Monat
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Helm-Install im bestehenden EKS-Cluster kostet nichts extra.
+                Amazon Managed Grafana startet bei $9/Workspace + $5/User.
+              </p>
+            </div>
+            <div>
+              <div
+                class="text-sm font-bold text-sky-500 dark:text-sky-400 mb-1"
+              >
+                Volle Plugin-Freiheit
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Community-Plugins, Custom Dashboards, keine Einschraenkungen.
+                Managed Version hat limitierten Plugin-Katalog.
+              </p>
+            </div>
+            <div>
+              <div
+                class="text-sm font-bold text-purple-500 dark:text-purple-400 mb-1"
+              >
+                Lifecycle-Alignment
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Monitoring lebt und stirbt mit dem EKS-Stack. Kein verwaister
+                Managed-Service nach Teardown.
+              </p>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-3 italic">
+            Lesson #42 &mdash; "Self-Hosted Grafana vs Amazon Managed Grafana"
+          </p>
         </div>
       </section>
 

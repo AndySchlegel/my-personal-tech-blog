@@ -1,11 +1,13 @@
 # 11-grafana-aws-dashboard.yaml - Custom Grafana dashboard for AWS ML services
 #
-# Shows API call counts for Translate, Polly and Comprehend.
+# Shows character counts for Translate and Polly via CloudWatch.
+# Comprehend single-API calls (DetectSentiment) do NOT emit CloudWatch metrics
+# (only batch/async jobs do), so Comprehend is monitored via backend logs instead.
+#
 # Grafana's sidecar auto-discovers ConfigMaps with label grafana_dashboard: "1"
 # and loads them as dashboards on startup / refresh.
 #
-# Requires: CloudWatch data source configured in Grafana
-# (kube-prometheus-stack does NOT include this by default -- added via deploy.yml)
+# Requires: CloudWatch data source configured in Grafana (added via deploy.yml)
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,25 +24,29 @@ data:
       "graphTooltip": 1,
       "id": null,
       "links": [],
+      "refresh": "30s",
       "panels": [
         {
-          "title": "Amazon Translate -- API Calls",
-          "description": "TranslateText API calls (blog post translations DE/EN)",
+          "title": "Amazon Translate -- Characters",
+          "description": "TranslateText character count (blog post translations DE/EN)",
           "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
           "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "targets": [
             {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
+              "refId": "A",
+              "queryMode": "Metrics",
+              "namespace": "AWS/Translate",
+              "metricName": "CharacterCount",
               "dimensions": {
-                "Service": ["translate"],
-                "Type": ["API"],
-                "Resource": ["TranslateText"]
+                "LanguagePair": ["de-en"],
+                "Operation": ["TranslateText"]
               },
+              "matchExact": true,
               "statistic": "Sum",
               "period": "300",
-              "region": "eu-central-1"
+              "region": "eu-central-1",
+              "id": ""
             }
           ],
           "fieldConfig": {
@@ -57,23 +63,25 @@ data:
           }
         },
         {
-          "title": "Amazon Polly -- API Calls",
-          "description": "SynthesizeSpeech API calls (text-to-speech audio generation)",
+          "title": "Amazon Polly -- Characters",
+          "description": "SynthesizeSpeech character count (text-to-speech audio generation)",
           "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
           "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "targets": [
             {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
+              "refId": "A",
+              "queryMode": "Metrics",
+              "namespace": "AWS/Polly",
+              "metricName": "RequestCharacters",
               "dimensions": {
-                "Service": ["polly"],
-                "Type": ["API"],
-                "Resource": ["SynthesizeSpeech"]
+                "Operation": ["SynthesizeSpeech"]
               },
+              "matchExact": true,
               "statistic": "Sum",
               "period": "300",
-              "region": "eu-central-1"
+              "region": "eu-central-1",
+              "id": ""
             }
           ],
           "fieldConfig": {
@@ -90,83 +98,40 @@ data:
           }
         },
         {
-          "title": "Amazon Comprehend -- API Calls",
-          "description": "DetectSentiment API calls (comment sentiment analysis)",
-          "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
-          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
-          "targets": [
-            {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
-              "dimensions": {
-                "Service": ["comprehend"],
-                "Type": ["API"],
-                "Resource": ["DetectSentiment"]
-              },
-              "statistic": "Sum",
-              "period": "300",
-              "region": "eu-central-1"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "color": { "mode": "fixed", "fixedColor": "purple" },
-              "custom": {
-                "drawStyle": "bars",
-                "fillOpacity": 30,
-                "lineWidth": 1,
-                "pointSize": 5
-              },
-              "unit": "short"
-            }
-          }
-        },
-        {
-          "title": "AWS ML Services -- Übersicht",
-          "description": "Gesamtzahl API-Calls aller drei ML-Services",
+          "title": "AWS ML Services -- Total",
+          "description": "Total character counts for Translate and Polly",
           "type": "stat",
           "gridPos": { "h": 4, "w": 24, "x": 0, "y": 8 },
           "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
           "targets": [
             {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
+              "refId": "Translate",
+              "queryMode": "Metrics",
+              "namespace": "AWS/Translate",
+              "metricName": "CharacterCount",
               "dimensions": {
-                "Service": ["translate"],
-                "Type": ["API"],
-                "Resource": ["TranslateText"]
+                "LanguagePair": ["de-en"],
+                "Operation": ["TranslateText"]
               },
+              "matchExact": true,
               "statistic": "Sum",
               "period": "86400",
               "region": "eu-central-1",
-              "refId": "Translate"
+              "id": ""
             },
             {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
+              "refId": "Polly",
+              "queryMode": "Metrics",
+              "namespace": "AWS/Polly",
+              "metricName": "RequestCharacters",
               "dimensions": {
-                "Service": ["polly"],
-                "Type": ["API"],
-                "Resource": ["SynthesizeSpeech"]
+                "Operation": ["SynthesizeSpeech"]
               },
+              "matchExact": true,
               "statistic": "Sum",
               "period": "86400",
               "region": "eu-central-1",
-              "refId": "Polly"
-            },
-            {
-              "namespace": "AWS/Usage",
-              "metricName": "CallCount",
-              "dimensions": {
-                "Service": ["comprehend"],
-                "Type": ["API"],
-                "Resource": ["DetectSentiment"]
-              },
-              "statistic": "Sum",
-              "period": "86400",
-              "region": "eu-central-1",
-              "refId": "Comprehend"
+              "id": ""
             }
           ],
           "fieldConfig": {
@@ -193,7 +158,7 @@ data:
       "tags": ["aws", "ml", "custom"],
       "templating": { "list": [] },
       "time": { "from": "now-6h", "to": "now" },
-      "title": "AWS ML Services (Translate / Polly / Comprehend)",
+      "title": "AWS ML Services (Translate / Polly)",
       "uid": "aws-ml-services",
-      "version": 1
+      "version": 3
     }
