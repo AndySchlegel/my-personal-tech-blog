@@ -171,11 +171,11 @@
         >
           Blog
         </h1>
-        <!-- Quote block + Podcast player side by side -->
-        <div class="flex flex-col lg:flex-row gap-4 mt-4">
+        <!-- Quote block + Podcast player side by side (equal width) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
           <!-- Left: Subtitle as quote block with photo -->
           <div
-            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 lg:flex-1"
+            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
             style="animation-delay: 0.1s; opacity: 0"
           >
             <div class="flex items-start gap-3">
@@ -188,18 +188,20 @@
               <p
                 id="blog-subtitle"
                 class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
-                data-de="Meine Reise durch AWS, Kubernetes, Terraform und Security &mdash; mit Lektionen aus Code, Containern und Konfigurationen."
-                data-en="My journey through AWS, Kubernetes, Terraform and Security &mdash; with lessons from code, containers and configurations."
+                data-de="Vom ersten Container bis zur produktiven EKS-Infrastruktur &mdash; eine dokumentierte Reise durch AWS, Kubernetes, Terraform und Security, mit echten Projekten, Fehlern und den Lektionen daraus."
+                data-en="From the first container to production EKS infrastructure &mdash; a documented journey through AWS, Kubernetes, Terraform and Security, with real projects, mistakes and the lessons learned."
               >
-                Meine Reise durch AWS, Kubernetes, Terraform und Security
-                &mdash; mit Lektionen aus Code, Containern und Konfigurationen.
+                Vom ersten Container bis zur produktiven EKS-Infrastruktur
+                &mdash; eine dokumentierte Reise durch AWS, Kubernetes,
+                Terraform und Security, mit echten Projekten, Fehlern und den
+                Lektionen daraus.
               </p>
             </div>
           </div>
 
           <!-- Right: NotebookLM Podcast player -->
           <div
-            class="slide-in-left lg:w-80 border-l-4 border-purple-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
+            class="slide-in-left border-l-4 border-purple-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
             style="animation-delay: 0.2s; opacity: 0"
           >
             <div class="flex items-start gap-3 mb-3">
@@ -211,15 +213,15 @@
               <div>
                 <span
                   class="text-sm font-semibold text-slate-900 dark:text-white block"
-                  >NotebookLM Podcast</span
+                  >DevOps Journey Podcast</span
                 >
                 <p
                   class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5"
-                  data-de="Alle 12 Blog-Artikel in einem KI-generierten Podcast &mdash; durchaus mit Schmunzlern ;)"
-                  data-en="All 12 blog articles in an AI-generated podcast &mdash; with a few chuckles along the way ;)"
+                  data-de="Vom ersten Container bis zur Cloud-Architektur &mdash; meine DevOps-Reise jetzt als KI-Podcast."
+                  data-en="From the first container to cloud architecture &mdash; my DevOps journey now as an AI podcast."
                 >
-                  Alle 12 Blog-Artikel in einem KI-generierten Podcast &mdash;
-                  durchaus mit Schmunzlern ;)
+                  Vom ersten Container bis zur Cloud-Architektur &mdash; meine
+                  DevOps-Reise jetzt als KI-Podcast.
                 </p>
               </div>
             </div>
@@ -317,6 +319,11 @@
                 2x
               </button>
             </div>
+            <p
+              class="text-[10px] text-slate-500 dark:text-slate-600 mt-2 text-right"
+            >
+              Generated with NotebookLM
+            </p>
           </div>
         </div>
       </section>

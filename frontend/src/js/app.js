@@ -747,7 +747,9 @@
         return { slug: p.slug, title: p.title };
       });
 
-      sessionStorage.setItem("postNavContext", JSON.stringify(navList));
+      // Store with language key so prev/next titles match active language
+      var lang = getCurrentLang ? getCurrentLang() : "de";
+      sessionStorage.setItem("postNavContext_" + lang, JSON.stringify(navList));
     });
   }
 
