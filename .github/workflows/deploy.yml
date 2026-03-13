@@ -212,6 +212,7 @@ jobs:
           echo "cognito_domain=$(terraform output -raw cognito_domain)" >> "$GITHUB_OUTPUT"
           echo "backend_role_arn=$(terraform output -raw backend_role_arn)" >> "$GITHUB_OUTPUT"
           echo "s3_bucket_name=$(terraform output -raw s3_bucket_name)" >> "$GITHUB_OUTPUT"
+          echo "grafana_role_arn=$(terraform output -raw grafana_role_arn)" >> "$GITHUB_OUTPUT"
 
       # Configure kubectl to connect to our EKS cluster.
       # This writes ~/.kube/config with the cluster endpoint and CA cert.
@@ -286,6 +287,8 @@ jobs:
       # kube-prometheus-stack bundles Prometheus, Grafana, node-exporter,
       # and kube-state-metrics. Provides cluster-wide observability dashboards.
       # Alertmanager disabled (not needed for showcase).
+      # CloudWatch data source added for AWS ML Services dashboard (Translate/Polly/Comprehend).
+      # Grafana sidecar auto-discovers ConfigMaps with label grafana_dashboard: "1".
       # Grafana accessible via port-forward: kubectl port-forward -n monitoring svc/monitoring-grafana 3001:80
       - name: Install Prometheus + Grafana monitoring stack
         run: |
@@ -309,7 +312,22 @@ jobs:
             --set nodeExporter.resources.requests.memory=32Mi \
             --set kubeStateMetrics.resources.requests.cpu=25m \
             --set kubeStateMetrics.resources.requests.memory=32Mi \
+            --set grafana.sidecar.dashboards.enabled=true \
+            --set grafana.sidecar.dashboards.searchNamespace=ALL \
+            --set grafana.serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=${{ steps.tf.outputs.grafana_role_arn }} \
+            --set 'grafana.additionalDataSources[0].name=CloudWatch' \
+            --set 'grafana.additionalDataSources[0].type=cloudwatch' \
+            --set 'grafana.additionalDataSources[0].uid=cloudwatch' \
+            --set 'grafana.additionalDataSources[0].access=proxy' \
+            --set 'grafana.additionalDataSources[0].jsonData.authType=default' \
+            --set 'grafana.additionalDataSources[0].jsonData.defaultRegion=eu-central-1' \
             --wait --timeout 5m0s
+
+      # Apply custom Grafana dashboard for AWS ML Services (Translate/Polly/Comprehend).
+      # The sidecar picks up ConfigMaps with label grafana_dashboard: "1" and loads them
+      # automatically -- the dashboard appears alongside the 27 built-in dashboards.
+      - name: Apply Grafana AWS ML dashboard
+        run: kubectl apply -f k8s/11-grafana-aws-dashboard.yaml
 
       # Step 1: Create namespace and apply non-sensitive config.
       # These are safe to apply from the git manifests directly.

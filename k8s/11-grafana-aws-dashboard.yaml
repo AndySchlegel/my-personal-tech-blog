@@ -1,0 +1,199 @@
+# 11-grafana-aws-dashboard.yaml - Custom Grafana dashboard for AWS ML services
+#
+# Shows API call counts for Translate, Polly and Comprehend.
+# Grafana's sidecar auto-discovers ConfigMaps with label grafana_dashboard: "1"
+# and loads them as dashboards on startup / refresh.
+#
+# Requires: CloudWatch data source configured in Grafana
+# (kube-prometheus-stack does NOT include this by default -- added via deploy.yml)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-aws-ml-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  aws-ml-services.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "title": "Amazon Translate -- API Calls",
+          "description": "TranslateText API calls (blog post translations DE/EN)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "targets": [
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["translate"],
+                "Type": ["API"],
+                "Resource": ["TranslateText"]
+              },
+              "statistic": "Sum",
+              "period": "300",
+              "region": "eu-central-1"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "fixed", "fixedColor": "green" },
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 30,
+                "lineWidth": 1,
+                "pointSize": 5
+              },
+              "unit": "short"
+            }
+          }
+        },
+        {
+          "title": "Amazon Polly -- API Calls",
+          "description": "SynthesizeSpeech API calls (text-to-speech audio generation)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "targets": [
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["polly"],
+                "Type": ["API"],
+                "Resource": ["SynthesizeSpeech"]
+              },
+              "statistic": "Sum",
+              "period": "300",
+              "region": "eu-central-1"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "fixed", "fixedColor": "orange" },
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 30,
+                "lineWidth": 1,
+                "pointSize": 5
+              },
+              "unit": "short"
+            }
+          }
+        },
+        {
+          "title": "Amazon Comprehend -- API Calls",
+          "description": "DetectSentiment API calls (comment sentiment analysis)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "targets": [
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["comprehend"],
+                "Type": ["API"],
+                "Resource": ["DetectSentiment"]
+              },
+              "statistic": "Sum",
+              "period": "300",
+              "region": "eu-central-1"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "fixed", "fixedColor": "purple" },
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 30,
+                "lineWidth": 1,
+                "pointSize": 5
+              },
+              "unit": "short"
+            }
+          }
+        },
+        {
+          "title": "AWS ML Services -- Übersicht",
+          "description": "Gesamtzahl API-Calls aller drei ML-Services",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 24, "x": 0, "y": 8 },
+          "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+          "targets": [
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["translate"],
+                "Type": ["API"],
+                "Resource": ["TranslateText"]
+              },
+              "statistic": "Sum",
+              "period": "86400",
+              "region": "eu-central-1",
+              "refId": "Translate"
+            },
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["polly"],
+                "Type": ["API"],
+                "Resource": ["SynthesizeSpeech"]
+              },
+              "statistic": "Sum",
+              "period": "86400",
+              "region": "eu-central-1",
+              "refId": "Polly"
+            },
+            {
+              "namespace": "AWS/Usage",
+              "metricName": "CallCount",
+              "dimensions": {
+                "Service": ["comprehend"],
+                "Type": ["API"],
+                "Resource": ["DetectSentiment"]
+              },
+              "statistic": "Sum",
+              "period": "86400",
+              "region": "eu-central-1",
+              "refId": "Comprehend"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 100 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "options": {
+            "reduceOptions": { "calcs": ["sum"] },
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto"
+          }
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["aws", "ml", "custom"],
+      "templating": { "list": [] },
+      "time": { "from": "now-6h", "to": "now" },
+      "title": "AWS ML Services (Translate / Polly / Comprehend)",
+      "uid": "aws-ml-services",
+      "version": 1
+    }
