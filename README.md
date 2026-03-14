@@ -32,16 +32,16 @@
 
 ## Overview
 
-What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 4 AWS/Linux/GitHub certifications, and a full monitoring stack with Prometheus + Grafana.
+A cloud-native tech blog built from scratch in under 4 weeks -- from Express API to production EKS deployment with full CI/CD, monitoring, and ML integration. Designed as a reproducible showcase: spin up the entire stack in ~25 minutes, demonstrate it, tear it down.
 
 ### Why This Project?
 
-1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles (11 seeded + 1 added live via admin dashboard as proof-of-concept)
-2. **Monitoring-first mindset** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
-3. **Multi-environment experience** -- From homelab to cloud, demonstrates hands-on infrastructure skills across NAS, VPS, and AWS
-4. **EKS complements serverless** -- Together with a previous serverless project (EcoKart), covers both cloud paradigms
+1. **Real portfolio piece** -- 12 German blog articles documenting an authentic learning journey (11 seeded + 1 added live via admin dashboard as proof-of-concept)
+2. **Full AWS integration** -- EKS, RDS, Cognito, Comprehend, Translate, Polly, S3, CloudFront -- all wired together with Terraform and OIDC
+3. **100% reproducible lifecycle** -- Provision, deploy, destroy, repeat. No manual secret updates, no leftover resources
+4. **Monitoring built-in** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 5. **Natural ML integration** -- Amazon Comprehend (auto-tags + sentiment), Amazon Translate (bilingual DE/EN), Amazon Polly (text-to-speech with playback speed control)
-6. **Dual-track hosting** -- EKS for showcase demos, Lightsail ($5.50/month) for permanent hosting
+6. **Cost-conscious architecture** -- EKS for showcase demos (~$4.80/day), Lightsail ($5.50/month) planned for permanent hosting
 
 ---
 
@@ -437,7 +437,7 @@ Key highlights:
 
 | Metric | Value |
 |--------|-------|
-| Development Duration | 5 weeks (Feb-Mar 2026) |
+| Development Duration | ~3.5 weeks (Feb 20 - Mar 14, 2026) |
 | Terraform Modules | 9 in this project (25+ across all projects) |
 | AWS Services | 14 (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend, Translate, Polly, ALB, IAM) |
 | Blog Articles | 11 (German, real content) + 1 added live as proof-of-concept |
