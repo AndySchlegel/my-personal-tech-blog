@@ -823,3 +823,19 @@ Chose self-hosted Grafana + Prometheus via Helm. Reasons: (1) Cost -- managed se
 Managed services shine for teams that need 24/7 HA, SSO integration, and zero maintenance. For a portfolio/showcase project on Spot instances, self-hosted is the pragmatic choice -- same Grafana, same dashboards, zero extra cost. The architecture decision itself (knowing when NOT to use a managed service) demonstrates more cloud maturity than defaulting to the AWS-managed option. This is a common interview question: "Why didn't you use the managed version?"
 
 ---
+
+## #43 - Amazon Polly: 3000-Byte Chunk Limit
+
+**Date:** 2026-03-14
+**Phase:** Phase 8 (Presentation)
+
+**Context:**
+Amazon Polly's SynthesizeSpeech API has a hard limit of 3000 bytes per request for real-time synthesis. Blog posts easily exceed this -- a typical 800-word German article is 5000-8000 bytes. The first implementation sent the entire post text in one call and silently failed for longer posts.
+
+**Decision:**
+Implemented chunking in the Polly service: split text at sentence boundaries (`. `, `! `, `? `), accumulate chunks up to 2800 bytes (safety margin), synthesize each chunk separately, then concatenate the audio buffers before uploading to S3. The cached S3 audio is served via pre-signed URLs, so chunking only happens on first generation.
+
+**Takeaway:**
+Always check API limits before implementing integrations. Polly's 3000-byte limit is not prominently documented and the error is not descriptive. The fix (sentence-boundary chunking) is simple but you have to know about the limit first. Same pattern applies to Amazon Translate (5000-byte limit) and Comprehend (5000 UTF-8 bytes). AWS ML APIs consistently have byte limits that real-world text easily exceeds.
+
+---
