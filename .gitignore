@@ -46,3 +46,12 @@ feedback/
 
 # Raw photos (originals too large for git, only optimized versions committed)
 frontend/src/img/original-photo-*
+
+# Screenshots (local reference only)
+frontend/src/img/admin/Bildschirmfoto*
+frontend/src/img/blog/Bildschirmfoto*
+frontend/src/img/pipeline/Bildschirmfoto*
+
+# Terraform plan files (binary, local only)
+terraform/tfplan
+terraform/tfplan-*
