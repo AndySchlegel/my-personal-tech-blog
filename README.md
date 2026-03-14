@@ -47,6 +47,11 @@ A cloud-native tech blog built from scratch in under 4 weeks -- from Express API
 
 ## Architecture
 
+![Architecture Diagram](docs/architecture.svg)
+
+<details>
+<summary>Text version (click to expand)</summary>
+
 ```
 Route 53 (DNS: blog.aws.his4irness23.de)
     |
@@ -81,6 +86,8 @@ Monitoring (in-cluster, namespace: monitoring):
 ```
 
 > **Traffic flow:** Route 53 -> ALB -> EKS Pods. CloudFront and S3 are deployed as Terraform modules and prepared for future image hosting (OAC, encryption, CORS configured), but all current traffic is served directly through the ALB.
+
+</details>
 
 ---
 
