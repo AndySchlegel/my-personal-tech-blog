@@ -32,11 +32,11 @@
 
 ## Overview
 
-What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 4 AWS/Linux/GitHub certifications, and a monitoring stack that proved itself in a real security incident.
+What started as a local development setup grew into a full cloud infrastructure -- from writing the first Express route to deploying production workloads on AWS EKS. Along the way: 4 environments (local dev, NAS, VPS, AWS), 4 AWS/Linux/GitHub certifications, and a full monitoring stack with Prometheus + Grafana.
 
 ### Why This Project?
 
-1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles (storytelling-style titles)
+1. **Real portfolio piece** -- Documents an authentic learning journey with 12 German blog articles (11 seeded + 1 added live via admin dashboard as proof-of-concept)
 2. **Monitoring-first mindset** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 3. **Multi-environment experience** -- From homelab to cloud, demonstrates hands-on infrastructure skills across NAS, VPS, and AWS
 4. **EKS complements serverless** -- Together with a previous serverless project (EcoKart), covers both cloud paradigms
@@ -66,7 +66,7 @@ EKS Cluster (eu-central-1, 2 AZs)
             |--- NAT Gateway (conditional)
 
 Managed Services (outside VPC):
-    |--- Cognito (Admin JWT authentication, IRSA)
+    |--- Cognito (Admin JWT authentication, Hosted UI)
     |--- Amazon Comprehend (ML: auto-tags + sentiment, IRSA)
     |--- Amazon Translate (bilingual DE/EN blog content, IRSA)
     |--- Amazon Polly (text-to-speech audio, IRSA)
@@ -182,25 +182,51 @@ After sprint: destroy Waves 2-3 -> back to ~$0.50/month.
 
 ### Blog
 
-| Homepage | Blog Post List |
-|----------|---------------|
-| ![Homepage](frontend/src/img/blog/homepage.png) | ![Post List](frontend/src/img/blog/post-list.png) |
+| Homepage | About Page |
+|----------|-----------|
+| ![Homepage](frontend/src/img/blog/homepage.png) | ![About](frontend/src/img/blog/about-page.png) |
+
+| Skills Page | Blog Overview (DE) |
+|-------------|-------------------|
+| ![Skills](frontend/src/img/blog/skills-page.png) | ![Blog Overview](frontend/src/img/blog/blog-overview.png) |
+
+| Blog Overview (EN) | Post Detail |
+|--------------------|-------------|
+| ![Blog EN](frontend/src/img/blog/blog-overview-en.png) | ![Post Detail](frontend/src/img/blog/post-detail.png) |
+
+| Comments Section (Likes, Prev/Next Navigation, Sentiment) |
+|-----------------------------------------------------------|
+| ![Comments](frontend/src/img/blog/comments-section.png) |
 
 ### Admin Dashboard
 
-| Dashboard with Comprehend Sentiment | Markdown Post Editor |
-|-------------------------------------|---------------------|
-| ![Dashboard](frontend/src/img/admin/dashboard-overview.png) | ![Post Editor](frontend/src/img/admin/post-editor.png) |
+| Login (Cognito Hosted UI) | Dashboard with Comprehend Sentiment |
+|---------------------------|-------------------------------------|
+| ![Login](frontend/src/img/admin/login-admin.png) | ![Dashboard](frontend/src/img/admin/dashboard-overview.png) |
 
-| Comment Moderation with Sentiment Badges |
-|------------------------------------------|
-| ![Comments](frontend/src/img/admin/comments-sentiment.png) |
+| Markdown Post Editor | Comment Moderation with Sentiment Badges |
+|---------------------|------------------------------------------|
+| ![Post Editor](frontend/src/img/admin/post-editor.png) | ![Comments](frontend/src/img/admin/comments-sentiment.png) |
 
 ### CI/CD Pipelines
 
-| Infrastructure Provision | Deploy to EKS |
-|-------------------------|---------------|
-| ![Provision](frontend/src/img/pipeline/provision-complete.png) | ![Deploy](frontend/src/img/pipeline/deploy-complete.png) |
+| Infrastructure Provision | Deploy to EKS | Infrastructure Teardown |
+|-------------------------|---------------|------------------------|
+| ![Provision](frontend/src/img/pipeline/provision-complete.png) | ![Deploy](frontend/src/img/pipeline/deploy-complete.png) | ![Teardown](frontend/src/img/pipeline/teardown-complete.png) |
+
+### Monitoring (Prometheus + Grafana)
+
+| HPA Stresstest (Terminal) | HPA Scaling (1 -> 4 Replicas) |
+|--------------------------|------------------------------|
+| ![HPA Stresstest](frontend/src/img/monitoring/hpa-stresstest-terminal.png) | ![HPA Scaling](frontend/src/img/monitoring/hpa-scaling-terminal.png) |
+
+| Grafana Pod Metrics (before load) | Grafana Pod Metrics (under load) |
+|-----------------------------------|----------------------------------|
+| ![Grafana Metrics](frontend/src/img/monitoring/grafana-pod-metrics.png) | ![Grafana Load](frontend/src/img/monitoring/grafana-pod-metrics-load.png) |
+
+| Grafana Network Dashboard (kube-system) |
+|-----------------------------------------|
+| ![Grafana Network](frontend/src/img/monitoring/grafana-network.png) |
 
 ### Telegram Notifications
 
@@ -225,13 +251,13 @@ Automated security scanning on every push -- set up before the first line of app
 | **Prettier** | Enforces consistent code formatting | Push to main/develop (when backend/ changes) |
 | **Husky** | Pre-commit hooks -- blocks bad commits locally | Before every commit |
 
-All security findings are uploaded to the GitHub Security tab via SARIF format.
+All security findings are logged in the workflow output for review.
 
 ### Infrastructure Security
 
 - RDS in private subnets, accessible only from EKS nodes (SG-to-SG rules)
 - EKS secrets encrypted at rest via KMS
-- IRSA for pod-level IAM (least privilege: backend for Comprehend + Translate + Polly + S3, ALB Controller for load balancing)
+- IRSA for pod-level IAM (least privilege: backend for Comprehend + Translate + Polly + S3, Grafana for CloudWatch, ALB Controller for load balancing)
 - S3 all public access blocked, CloudFront OAC-only access (prepared for image hosting)
 - TLS 1.2+ enforced on ALB and CloudFront
 - Cognito with strong password policy
@@ -301,7 +327,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Seven workflows (5 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
+Eight workflows (6 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -321,7 +347,7 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- Read infra values from Terraform state (fully dynamic, no manual secrets)
     +-- Install metrics-server + ALB Controller (Helm)
     +-- Install Prometheus + Grafana monitoring stack (Helm)
-    +-- kubectl apply K8s manifests (10 files)
+    +-- kubectl apply K8s manifests (12 files)
     +-- Create secrets, update images, apply ingress
     +-- Wait for rollout + print status
 ```
@@ -349,7 +375,7 @@ Manual Trigger (type "DESTROY" to confirm)
     +-- Verify: only OIDC resources remain in state
 ```
 
-**Terraform workflow** (`terraform.yml`) and **Security scanning** (`security-scan.yml`) provide granular wave control and automatic PR security gates respectively.
+**Terraform workflow** (`terraform.yml`), **Security scanning** (`security-scan.yml`), and **Lint** (`lint.yml`) provide granular wave control, automatic PR security gates, and code quality checks respectively.
 
 Only 4 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
 
@@ -371,13 +397,13 @@ Only 4 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN`, `DB_PAS
 | **Full deployment** | **~$143** | **All services running** |
 | **After sprint** | **~$0.50** | **Only Route 53 + S3** |
 
-**EKS Strategy:** Deploy for sprints (~$4.20 for 8 hours of EKS), destroy after. Full lifecycle (provision -> deploy -> destroy) takes ~25 minutes and is 100% reproducible.
+**EKS Strategy:** Deploy for sprints (~$4.80/day with all services running), destroy after. Full lifecycle (provision -> deploy -> destroy) takes ~25 minutes and is 100% reproducible.
 
 ### Dual-Track Hosting
 
 | Track | Purpose | Monthly Cost | Infrastructure |
 |-------|---------|-------------|----------------|
-| **EKS** | Showcase for demos and interviews | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, Cognito, Comprehend) at `blog.aws.his4irness23.de` |
+| **EKS** | Showcase for demos and interviews | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, Cognito, Comprehend, Translate, Polly) at `blog.aws.his4irness23.de` |
 | **Lightsail** | Permanent hosting | ~$5.50 | Single instance, PostgreSQL on-instance, Let's Encrypt SSL at `blog.his4irness23.de` |
 
 Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. Cognito and Comprehend stay as managed AWS services on both tracks.
@@ -386,7 +412,7 @@ Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertis
 
 ## Lessons Learned
 
-Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 40 lessons and counting.
+Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 42 lessons and counting.
 
 Key highlights:
 
@@ -418,10 +444,10 @@ Key highlights:
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
-| K8s Manifests | 11 (namespace, config, secrets, services, deployments, ingress, HPA, db-init) |
-| CI/CD Workflows | 7 (deploy, provision, destroy, terraform, security-scan, 2x status monitors) |
-| Commits | 145+ |
-| Lessons Learned | 40 documented |
+| K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
+| CI/CD Workflows | 8 (deploy, provision, destroy, terraform, security-scan, lint, 2x status monitors) |
+| Commits | 165+ |
+| Lessons Learned | 42 documented |
 
 ---
 
@@ -435,5 +461,5 @@ Cloud & DevOps Engineer
 ---
 
 **Project Status:** Feature-complete. EKS showcase stack fully operational, Lightsail permanent hosting planned.
-**Last Updated:** 2026-03-13
+**Last Updated:** 2026-03-14
 **AWS Region:** eu-central-1 (Frankfurt)

@@ -212,12 +212,13 @@
         position: relative;
         cursor: pointer;
       }
+      /* Tooltip content hidden by default, shown via JS as fixed overlay */
       .arch-tooltip .tooltip-content {
         display: none;
-        position: absolute;
-        left: calc(100% + 12px);
-        top: 50%;
-        transform: translateY(-50%);
+      }
+      #arch-tooltip-overlay {
+        display: none;
+        position: fixed;
         background: #0f172a;
         border: 1px solid #334155;
         border-radius: 8px;
@@ -228,38 +229,26 @@
         white-space: normal;
         width: 240px;
         text-align: left;
-        z-index: 100;
+        z-index: 9999;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         line-height: 1.4;
         pointer-events: none;
       }
-      /* Right-edge elements: tooltip opens to the left */
-      .arch-tooltip.tt-left .tooltip-content {
-        left: auto;
-        right: calc(100% + 12px);
-      }
-      /* Inner VPC elements: tooltip opens above (enough vertical space) */
-      .arch-tooltip.tt-top .tooltip-content {
-        left: 50%;
-        top: auto;
-        bottom: calc(100% + 10px);
-        transform: translateX(-50%);
-      }
-      .arch-tooltip:hover .tooltip-content {
-        display: block;
-      }
-      .tooltip-content .tt-label {
+      .tooltip-content .tt-label,
+      #arch-tooltip-overlay .tt-label {
         font-weight: 700;
         color: #e2e8f0;
         margin-bottom: 4px;
         font-size: 0.75rem;
       }
-      .tooltip-content .tt-role {
+      .tooltip-content .tt-role,
+      #arch-tooltip-overlay .tt-role {
         color: #f59e0b;
         font-size: 0.65rem;
         margin-bottom: 4px;
       }
-      .tooltip-content .tt-cost {
+      .tooltip-content .tt-cost,
+      #arch-tooltip-overlay .tt-cost {
         color: #34d399;
         font-size: 0.65rem;
         margin-top: 4px;
@@ -1095,14 +1084,15 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">GitHub Actions</div>
-                <div class="tt-role">OIDC Federation &rarr; IAM Role</div>
-                3 Jobs: Test (Jest, 31 Tests) &rarr; Build (Docker) &rarr;
-                Deploy (kubectl apply). Keine AWS Keys gespeichert -- OIDC Token
-                wird bei jedem Run ausgestellt.
+                <div class="tt-role">
+                  CI/CD &middot; 3 Jobs &middot; OIDC Auth
+                </div>
+                Test (Jest, 31 Tests) &rarr; Build (Docker) &rarr; Deploy
+                (kubectl apply). OIDC-Token statt gespeicherter AWS Keys.
               </div>
             </div>
             <span class="flow-label">&rarr; OIDC</span>
-            <div class="aws-service aws-security arch-tooltip tt-left">
+            <div class="aws-service aws-security arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/iam.svg" alt="IAM" />
               </div>
@@ -1111,27 +1101,26 @@
               <div class="tooltip-content">
                 <div class="tt-label">IAM OIDC Role</div>
                 <div class="tt-role">blog-github-actions-role</div>
-                2 Policies: github-actions-policy (ECR Push + EKS Access) +
-                terraform-policy (14 Statements f&uuml;r komplette
-                Infra-Verwaltung). Gesch&uuml;tzt vor Teardown.
+                2 Policies: ECR Push + EKS Access, Terraform (14 Statements).
+                Gesch&uuml;tzt vor Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; push</span>
-            <div class="aws-service aws-compute arch-tooltip tt-left">
+            <div class="aws-service aws-compute arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/ecr.svg" alt="ECR" />
               </div>
               <span>ECR</span>
               <span class="text-[10px] font-normal opacity-60">2 Repos</span>
               <div class="tooltip-content">
-                <div class="tt-label">Elastic Container Registry</div>
-                2 Repos: blog-backend + blog-frontend. Images getaggt mit
-                sha-&lt;hash&gt; + latest. Lifecycle Policy: max 10 Images.
-                force_delete f&uuml;r sauberen Teardown.
+                <div class="tt-label">ECR (Container Registry)</div>
+                <div class="tt-role">2 Repos &middot; Lifecycle Policy</div>
+                blog-backend + blog-frontend. Tags: sha-&lt;hash&gt; + latest.
+                Max 10 Images, force_delete f&uuml;r Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; pull</span>
-            <div class="aws-service aws-compute arch-tooltip tt-left">
+            <div class="aws-service aws-compute arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/eks.svg" alt="EKS" />
               </div>
@@ -1141,9 +1130,9 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">EKS Cluster</div>
-                deploy.yml: erstellt Secrets, ServiceAccounts, applied 12 K8s
-                Manifeste, wartet auf ALB Hostname, updated Route 53 DNS.
-                Optional: DB Init Job (Schema + Seed).
+                <div class="tt-role">12 Manifeste &middot; kubectl apply</div>
+                Secrets, ServiceAccounts, Deployments, Ingress. Wartet auf ALB
+                Hostname, updated Route 53. Optional: DB Init Job.
               </div>
             </div>
           </div>
@@ -1177,16 +1166,16 @@
                 >blog.aws.his4irness23.de</span
               >
               <div class="tooltip-content">
-                <div class="tt-label">Route 53 DNS</div>
-                ALIAS Record zeigt auf ALB. Wird bei jedem Deploy automatisch
-                aktualisiert (ALB Hostname &auml;ndert sich). Hosted Zone:
-                his4irness23.de.
-                <div class="tt-cost">~$0.50/Monat (Hosted Zone)</div>
+                <div class="tt-label">Route 53</div>
+                <div class="tt-role">DNS &middot; ALIAS Record</div>
+                Zeigt auf ALB, wird bei jedem Deploy automatisch aktualisiert.
+                Hosted Zone: his4irness23.de.
+                <div class="tt-cost">~$0.50/Monat</div>
               </div>
             </div>
             <span class="flow-label">&rarr; HTTPS</span>
             <div
-              class="aws-service aws-network arch-tooltip tt-left"
+              class="aws-service aws-network arch-tooltip"
               style="border-width: 2.5px"
             >
               <div class="aws-icon">
@@ -1201,10 +1190,9 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Application Load Balancer</div>
-                <div class="tt-role">Managed by: ALB Controller Pod (IRSA)</div>
+                <div class="tt-role">Managed by: ALB Controller (IRSA)</div>
                 HTTPS via ACM Cert (eu-central-1). HTTP &rarr; HTTPS Redirect.
-                Target-Type: IP (direkt zu Pods). Verteilt Last &uuml;ber alle
-                Backend/Frontend Pods in beiden AZs.
+                Target-Type: IP (direkt zu Pods, beide AZs).
                 <div class="tt-cost">~$0.05/Monat</div>
               </div>
             </div>
@@ -1231,26 +1219,27 @@
                   </div>
                   <div class="flex flex-wrap gap-2">
                     <div
-                      class="arch-tooltip tt-top text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
+                      class="arch-tooltip text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
                     >
                       ALB Endpoint
                       <div class="tooltip-content">
                         <div class="tt-label">ALB Endpoint</div>
-                        ALB ist in beiden Public Subnets registriert.
-                        Eingehender HTTPS-Traffic wird hier empfangen und an
-                        Pods in den Private Subnets weitergeleitet.
+                        <div class="tt-role">
+                          Public Subnet &middot; HTTPS Eingang
+                        </div>
+                        In beiden AZs registriert. Leitet Traffic an Pods in
+                        Private Subnets weiter.
                       </div>
                     </div>
                     <div
-                      class="arch-tooltip tt-top text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
+                      class="arch-tooltip text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
                     >
                       NAT Gateway
                       <div class="tooltip-content">
                         <div class="tt-label">NAT Gateway</div>
-                        Erm&ouml;glicht ausgehenden Internet-Traffic f&uuml;r
-                        Pods in Private Subnets (z.B. ECR Pull,
-                        Comprehend/Translate/Polly API Calls). Kein eingehender
-                        Traffic.
+                        <div class="tt-role">Ausgehender Traffic</div>
+                        ECR Pull, Comprehend/Translate/Polly API Calls. Kein
+                        eingehender Traffic.
                         <div class="tt-cost">~$0.05/h wenn aktiv</div>
                       </div>
                     </div>
@@ -1272,7 +1261,7 @@
                     </div>
                     <div class="flex flex-wrap justify-center gap-2 mt-3 pt-1">
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1285,13 +1274,12 @@
                         <div class="tooltip-content">
                           <div class="tt-label">Frontend Pod (nginx)</div>
                           <div class="tt-role">HPA: 1-3 Replicas (CPU 70%)</div>
-                          Statische HTML/JS/CSS + Podcast Audio (43MB). Reverse
-                          Proxy: /api/* &rarr; Backend Service. Kein IRSA (kein
-                          AWS API Zugriff).
+                          Statisches HTML/JS/CSS + Podcast (43MB). Reverse
+                          Proxy: /api/* &rarr; Backend. Kein IRSA.
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1302,14 +1290,11 @@
                           >Express</span
                         >
                         <div class="tooltip-content">
-                          <div class="tt-label">
-                            Backend Pod (Express + TypeScript)
-                          </div>
+                          <div class="tt-label">Backend Pod (Express + TS)</div>
                           <div class="tt-role">IRSA: blog-backend-role</div>
-                          REST API (Posts, Comments, Admin). Zugriff auf
-                          Comprehend, Translate, Polly, S3 via IRSA.
-                          SSL-Verbindung zu RDS.
-                          <div class="tt-role">HPA: 1-4 Replicas (CPU 70%)</div>
+                          REST API. Zugriff auf Comprehend, Translate, Polly,
+                          S3. SSL zu RDS.
+                          <div class="tt-cost">HPA: 1-4 Replicas (CPU 70%)</div>
                         </div>
                       </div>
                     </div>
@@ -1359,7 +1344,7 @@
                     </div>
                     <div class="flex flex-wrap justify-center gap-2 mt-3 pt-1">
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1375,16 +1360,13 @@
                         <div class="tooltip-content">
                           <div class="tt-label">Grafana (Helm)</div>
                           <div class="tt-role">IRSA: blog-grafana-role</div>
-                          3 Dashboards: K8s Cluster, HPA Scaling, AWS ML
-                          Services (CloudWatch). Liest CloudWatch Metriken via
-                          IRSA.
-                          <div class="tt-cost">
-                            $0 (self-hosted vs. $9+/mo Managed)
-                          </div>
+                          3 Dashboards: K8s, HPA, AWS ML (CloudWatch).
+                          Self-hosted.
+                          <div class="tt-cost">$0 (vs. $9+/mo Managed)</div>
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1399,13 +1381,15 @@
                         >
                         <div class="tooltip-content">
                           <div class="tt-label">Prometheus (Helm)</div>
-                          Scraped alle Pods (15s Intervall). Node Exporter +
-                          kube-state-metrics. Speichert Metriken f&uuml;r
-                          Grafana Dashboards.
+                          <div class="tt-role">
+                            Metrics Collector &middot; 15s Scrape
+                          </div>
+                          node-exporter + kube-state-metrics. Datenquelle
+                          f&uuml;r Grafana.
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1419,15 +1403,12 @@
                           >Ingress</span
                         >
                         <div class="tooltip-content">
-                          <div class="tt-label">
-                            AWS Load Balancer Controller
-                          </div>
+                          <div class="tt-label">ALB Controller</div>
                           <div class="tt-role">
                             IRSA: blog-alb-controller-role
                           </div>
-                          Erstellt und verwaltet den ALB basierend auf K8s
-                          Ingress-Ressource. Registriert Pod-IPs direkt als
-                          Targets (target-type: ip).
+                          Erstellt ALB aus K8s Ingress. Pod-IPs als Targets
+                          (target-type: ip).
                         </div>
                       </div>
                     </div>
@@ -1438,7 +1419,7 @@
 
             <!-- RDS -->
             <div class="flex justify-center mt-4">
-              <div class="aws-service aws-database arch-tooltip tt-top">
+              <div class="aws-service aws-database arch-tooltip">
                 <div class="aws-icon">
                   <img src="./img/aws-icons/rds.svg" alt="RDS" />
                 </div>
@@ -1448,10 +1429,12 @@
                 >
                 <div class="tooltip-content">
                   <div class="tt-label">RDS PostgreSQL 16</div>
-                  db.t3.micro, Single-AZ, 7-Tage Backup. SSL-Verbindung. SG
-                  erlaubt nur Traffic von EKS Nodes. Speichert Posts, Comments,
-                  Translations, Audio-Referenzen.
-                  <div class="tt-cost">~$0.03/Monat (Free Tier eligible)</div>
+                  <div class="tt-role">
+                    db.t3.micro &middot; Single-AZ &middot; SSL
+                  </div>
+                  7-Tage Backup. SG: nur EKS Nodes. Posts, Comments,
+                  Translations, Audio-Refs.
+                  <div class="tt-cost">Free Tier eligible</div>
                 </div>
               </div>
             </div>
@@ -1544,9 +1527,9 @@
               <span class="text-[10px] font-normal opacity-60">Admin Auth</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Cognito</div>
-                Hosted UI f&uuml;r Admin-Login (OAuth 2.0). Self-Registration.
-                User werden bei Teardown gel&ouml;scht. JWT-Validierung im
-                Backend.
+                <div class="tt-role">Admin Auth &middot; OAuth 2.0</div>
+                Hosted UI Login + Self-Registration. JWT-Validierung im Backend.
+                User werden bei Teardown gel&ouml;scht.
                 <div class="tt-cost">Free Tier (50K MAU)</div>
               </div>
             </div>
@@ -1558,9 +1541,9 @@
               <span class="text-[10px] font-normal opacity-60">NLP</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Comprehend</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                DetectKeyPhrases (Auto-Tags) + DetectSentiment
-                (Kommentar-Stimmung). NEGATIVE &ge; 70% = auto-flag.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Auto-Tags (KeyPhrases) + Kommentar-Sentiment. NEGATIVE &ge;70% =
+                auto-flag.
                 <div class="tt-cost">~$0.01/Deploy</div>
               </div>
             </div>
@@ -1572,9 +1555,9 @@
               <span class="text-[10px] font-normal opacity-60">DE&rarr;EN</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Translate</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Chunked Translation (5000 Byte Limit). Cache in PostgreSQL.
-                Erster Aufruf: API. Danach: $0/User.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Chunked (5000 Byte Limit). Cache in PostgreSQL. Erster Aufruf:
+                API, danach $0.
                 <div class="tt-cost">~$0.93/Deploy (62K Zeichen)</div>
               </div>
             </div>
@@ -1586,9 +1569,9 @@
               <span class="text-[10px] font-normal opacity-60">TTS</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Polly (Neural)</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Markdown &rarr; Chunk (2800 chars) &rarr; SynthesizeSpeech
-                &rarr; S3. Pre-Signed URL (1h). Erst 5-15s, danach &lt;100ms.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Markdown &rarr; Chunks &rarr; S3 MP3. Pre-Signed URL (1h). Erst
+                ~5s, danach &lt;100ms.
                 <div class="tt-cost">~$1.28/Deploy (80K Zeichen)</div>
               </div>
             </div>
@@ -1602,10 +1585,9 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Amazon S3</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Prepared
-                f&uuml;r Image Hosting via CloudFront (OAC). Versioning
-                aktiviert.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Vorbereitet
+                f&uuml;r Image Hosting (OAC). Versioning aktiv.
               </div>
             </div>
             <div class="aws-service aws-network arch-tooltip">
@@ -1618,14 +1600,13 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Amazon CloudFront</div>
-                Terraform-Modul deployed, OAC konfiguriert. Aktuell nicht im
-                Traffic-Pfad -- vorbereitet f&uuml;r Image Hosting.
-                <div class="tt-role">
-                  ACM Cert: us-east-1 (CloudFront-Pflicht)
-                </div>
+                <div class="tt-role">CDN &middot; OAC konfiguriert</div>
+                Terraform-Modul deployed. Aktuell nicht im Traffic-Pfad --
+                vorbereitet f&uuml;r Images.
+                <div class="tt-cost">ACM Cert: us-east-1</div>
               </div>
             </div>
-            <div class="aws-service aws-network arch-tooltip tt-left">
+            <div class="aws-service aws-network arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/acm.svg" alt="ACM" />
               </div>
@@ -1633,24 +1614,53 @@
               <span class="text-[10px] font-normal opacity-60">2 Certs</span>
               <div class="tooltip-content">
                 <div class="tt-label">AWS Certificate Manager</div>
-                <strong>2 separate Zertifikate</strong> f&uuml;r dieselbe Domain
-                (beide kostenlos):<br />1. us-east-1 &rarr; CloudFront (globaler
-                Service)<br />2. eu-central-1 &rarr; ALB (regionales Cert)
-                <div class="tt-cost">$0 (kostenlos)</div>
+                <div class="tt-role">2 Zertifikate &middot; kostenlos</div>
+                us-east-1 &rarr; CloudFront (global). eu-central-1 &rarr; ALB
+                (regional). Beide f&uuml;r dieselbe Domain.
+                <div class="tt-cost">$0</div>
               </div>
             </div>
-            <div class="aws-service aws-security arch-tooltip tt-left">
+            <div class="aws-service aws-security arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/kms.svg" alt="KMS" />
               </div>
               <span>KMS</span>
               <span class="text-[10px] font-normal opacity-60">Encryption</span>
               <div class="tooltip-content">
-                <div class="tt-label">AWS Key Management Service</div>
-                Envelope Encryption f&uuml;r EKS Secrets. K8s Secrets werden
-                tats&auml;chlich verschl&uuml;sselt (nicht nur base64). Auto
-                Key-Rotation (365 Tage).
+                <div class="tt-label">AWS KMS</div>
+                <div class="tt-role">
+                  Envelope Encryption &middot; Auto-Rotation
+                </div>
+                EKS Secrets verschl&uuml;sselt (nicht nur base64). Key-Rotation
+                alle 365 Tage.
                 <div class="tt-cost">$1/Monat pro Key</div>
+              </div>
+            </div>
+            <div class="aws-service aws-devtools arch-tooltip">
+              <div
+                class="aws-icon"
+                style="
+                  background: #0088cc;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i
+                  class="ti ti-brand-telegram"
+                  style="font-size: 22px; color: #fff"
+                ></i>
+              </div>
+              <span>Telegram</span>
+              <span class="text-[10px] font-normal opacity-60"
+                >Notifications</span
+              >
+              <div class="tooltip-content">
+                <div class="tt-label">Telegram Bot API</div>
+                <div class="tt-role">Native fetch &middot; Non-Blocking</div>
+                Neue Kommentare &rarr; Telegram-Nachricht an Admin. Kein
+                AWS-Service, kein IRSA. Falls Env-Vars fehlen: stilles Skip.
+                <div class="tt-cost">$0 (Bot API kostenlos)</div>
               </div>
             </div>
           </div>
@@ -1705,6 +1715,40 @@
           ALB Controller: Load Balancer Management. Kein Pod hat vollen
           AWS-Zugriff.
         </div>
+
+        <!-- Fixed tooltip overlay - positioned via JS, never clipped -->
+        <div id="arch-tooltip-overlay"></div>
+        <script>
+          (function () {
+            var overlay = document.getElementById("arch-tooltip-overlay");
+            var tips = document.querySelectorAll(".arch-tooltip");
+            tips.forEach(function (el) {
+              el.addEventListener("mouseenter", function () {
+                var content = el.querySelector(".tooltip-content");
+                if (!content) return;
+                overlay.innerHTML = content.innerHTML;
+                overlay.style.display = "block";
+                var rect = el.getBoundingClientRect();
+                var ttWidth = 240;
+                var gap = 10;
+                // Horizontal: centered above element, clamped to viewport
+                var left = rect.left + rect.width / 2 - ttWidth / 2;
+                if (left < 10) left = 10;
+                if (left + ttWidth > window.innerWidth - 10)
+                  left = window.innerWidth - ttWidth - 10;
+                overlay.style.left = left + "px";
+                // Vertical: above element, fallback below if too close to top
+                var ttHeight = overlay.offsetHeight;
+                var top = rect.top - ttHeight - gap;
+                if (top < 10) top = rect.bottom + gap;
+                overlay.style.top = top + "px";
+              });
+              el.addEventListener("mouseleave", function () {
+                overlay.style.display = "none";
+              });
+            });
+          })();
+        </script>
       </section>
 
       <!-- ==================== TAB 3: TERRAFORM ==================== -->
