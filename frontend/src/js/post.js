@@ -1130,6 +1130,69 @@
     navEl.classList.remove("hidden");
   }
 
+  // --- Update prev/next titles in-place after language switch ---
+  // Reads slugs from existing nav links, fetches translated titles from API,
+  // and updates the text + labels without rebuilding or reordering navigation.
+  function updateNavTitles(lang, langParam) {
+    var navEl = document.getElementById("post-navigation");
+    if (!navEl) return;
+    var links = navEl.querySelectorAll("a");
+    if (!links.length) return;
+
+    // Collect slugs from existing nav links
+    var slugMap = {};
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute("href") || "";
+      var match = href.match(/slug=([^&]+)/);
+      if (match) slugMap[decodeURIComponent(match[1])] = links[i];
+    }
+
+    // Fetch all posts in new language to get translated titles
+    fetch(API_BASE + "/posts" + langParam)
+      .then(function (r) {
+        return r.ok ? r.json() : Promise.reject();
+      })
+      .then(function (posts) {
+        // Build slug->title lookup
+        var titleMap = {};
+        posts.forEach(function (p) {
+          titleMap[p.slug] = p.title;
+        });
+
+        // Update each nav link's title text + label
+        Object.keys(slugMap).forEach(function (slug) {
+          var link = slugMap[slug];
+          if (!titleMap[slug]) return;
+
+          // Title is the second child span (line-clamp-2)
+          var titleSpan = link.querySelector(".line-clamp-2");
+          if (titleSpan) titleSpan.textContent = titleMap[slug];
+
+          // Update label text (Vorheriger Post / Previous Post)
+          var labelSpan = link.querySelector(".text-xs");
+          if (labelSpan) {
+            var arrow = labelSpan.querySelector("i");
+            var isPrev = arrow && arrow.className.indexOf("arrow-left") !== -1;
+            var textNode = isPrev
+              ? labelSpan.childNodes[1]
+              : labelSpan.childNodes[0];
+            if (textNode && textNode.nodeType === 3) {
+              textNode.textContent = isPrev
+                ? lang === "en"
+                  ? "Previous Post"
+                  : "Vorheriger Post"
+                : lang === "en"
+                  ? "Next Post"
+                  : "Nächster Post";
+            }
+          }
+        });
+      })
+      .catch(function () {
+        /* keep current titles */
+      });
+  }
+
   // --- Build a single nav link element ---
   function buildNavLink(post, direction) {
     var isPrev = direction === "prev";
@@ -1329,7 +1392,7 @@
           return response.json();
         })
         .then(function (post) {
-          // Update only content areas, not navigation
+          // Update content areas
           var titleEl = document.getElementById("post-title");
           var contentEl = document.getElementById("post-content");
           if (titleEl) titleEl.textContent = post.title;
@@ -1339,6 +1402,8 @@
                 ? marked.parse(post.content)
                 : post.content;
           }
+          // Update prev/next titles without changing positions
+          updateNavTitles(lang, langParam);
         })
         .catch(function () {
           // Silently fail -- keep current content
