@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 29 complete (Blog post titles, GitHub Foundations badge, footer bilingual, reading progress bar, view counts)
-**Last Updated:** 2026-03-13 (Session 29)
+**Current Phase:** Session 32 complete (Presentation completeness check, assignment cross-reference, content fixes)
+**Last Updated:** 2026-03-14 (Session 32)
 
 ---
 
@@ -21,7 +21,7 @@
 | 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
 | 7. ML Integration (Comprehend) | Done (IRSA, auto-tags, sentiment, auto-moderation) | Week 3-4 |
-| 8. Polish + Presentation | Done (README, screenshots, status badges, Grafana/Prometheus, HPA demo) | Week 4 |
+| 8. Polish + Presentation | Done (README, screenshots, status badges, Grafana/Prometheus, HPA demo, presentation complete) | Week 4 |
 | 9. Lightsail Permanent Hosting | Planned | Post-course |
 
 ---
@@ -173,8 +173,8 @@
 - [x] Automated status badges (EKS + Lightsail health check workflows)
 - [x] 8 screenshots selected, renamed, optimized, and embedded in README
 - [x] Documentation consistency pass (README, ACTION_PLAN, LESSONS_LEARNED)
-- [ ] Architecture diagram (visual, not ASCII)
-- [ ] Presentation slides (20-30 min)
+- [x] Architecture diagram (SVG in docs/architecture.svg, embedded in README) -- Session 32
+- [x] Presentation (12-tab interactive HTML, assignment-verified, all Pflichtanforderungen covered) -- Session 32
 - [x] Grafana + Prometheus dashboards on EKS (Helm) -- Session 26
 - [x] Amazon Translate bilingual DE/EN (all 8 pages + blog posts via API) -- Session 27-28
 - [x] Amazon Polly text-to-speech with playback speed controls (0.5x-2x) -- Session 28
@@ -222,13 +222,15 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 2. ~~Deploy to EKS~~ -- **Done** (Session 26, stack live + verified)
 3. ~~Amazon Translate~~ -- **Done** (Session 27-28, bilingual DE/EN on all pages)
 4. ~~Amazon Polly~~ -- **Done** (Session 28, text-to-speech with speed controls)
-5. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
-6. **Architecture diagram** -- visual diagram for README (replace ASCII)
+5. ~~Architecture diagram~~ -- **Done** (Session 32, SVG in docs/architecture.svg)
+6. ~~Presentation~~ -- **Done** (Session 32, 12-tab HTML, assignment cross-checked)
+7. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
 
-4 GitHub Secrets needed: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
+2 GitHub Secrets required: `AWS_ROLE_ARN`, `DB_PASSWORD`. 2 optional: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** EKS stack live (Wave 0-3 deployed, Session 29). Full stack: Monitoring + Translate + Polly active.
+**Current infra state:** EKS stack torn down (Session 31). Full lifecycle 100% clean and reproducible.
 **Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
+**Presentation:** 12-tab interactive HTML (frontend/src/presentation.html), all CloudHelden assignment requirements verified and covered.
 
 ---
 

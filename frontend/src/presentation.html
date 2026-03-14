@@ -212,12 +212,13 @@
         position: relative;
         cursor: pointer;
       }
+      /* Tooltip content hidden by default, shown via JS as fixed overlay */
       .arch-tooltip .tooltip-content {
         display: none;
-        position: absolute;
-        left: calc(100% + 12px);
-        top: 50%;
-        transform: translateY(-50%);
+      }
+      #arch-tooltip-overlay {
+        display: none;
+        position: fixed;
         background: #0f172a;
         border: 1px solid #334155;
         border-radius: 8px;
@@ -228,38 +229,26 @@
         white-space: normal;
         width: 240px;
         text-align: left;
-        z-index: 100;
+        z-index: 9999;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         line-height: 1.4;
         pointer-events: none;
       }
-      /* Right-edge elements: tooltip opens to the left */
-      .arch-tooltip.tt-left .tooltip-content {
-        left: auto;
-        right: calc(100% + 12px);
-      }
-      /* Inner VPC elements: tooltip opens above (enough vertical space) */
-      .arch-tooltip.tt-top .tooltip-content {
-        left: 50%;
-        top: auto;
-        bottom: calc(100% + 10px);
-        transform: translateX(-50%);
-      }
-      .arch-tooltip:hover .tooltip-content {
-        display: block;
-      }
-      .tooltip-content .tt-label {
+      .tooltip-content .tt-label,
+      #arch-tooltip-overlay .tt-label {
         font-weight: 700;
         color: #e2e8f0;
         margin-bottom: 4px;
         font-size: 0.75rem;
       }
-      .tooltip-content .tt-role {
+      .tooltip-content .tt-role,
+      #arch-tooltip-overlay .tt-role {
         color: #f59e0b;
         font-size: 0.65rem;
         margin-bottom: 4px;
       }
-      .tooltip-content .tt-cost {
+      .tooltip-content .tt-cost,
+      #arch-tooltip-overlay .tt-cost {
         color: #34d399;
         font-size: 0.65rem;
         margin-top: 4px;
@@ -497,8 +486,8 @@
           class="tab-btn"
           data-tab="overview"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #0ea5e9;
             border: none;
@@ -514,8 +503,8 @@
           class="tab-btn"
           data-tab="architecture"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -531,8 +520,8 @@
           class="tab-btn"
           data-tab="terraform"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -548,8 +537,8 @@
           class="tab-btn"
           data-tab="cicd"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -565,8 +554,8 @@
           class="tab-btn"
           data-tab="security"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -582,8 +571,8 @@
           class="tab-btn"
           data-tab="kubernetes"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -599,8 +588,8 @@
           class="tab-btn"
           data-tab="comprehend"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -610,14 +599,14 @@
             white-space: nowrap;
           "
         >
-          ML &amp; Sprache
+          ML
         </button>
         <button
           class="tab-btn"
           data-tab="lessons"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -633,8 +622,8 @@
           class="tab-btn"
           data-tab="eks-vs-serverless"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -644,14 +633,14 @@
             white-space: nowrap;
           "
         >
-          EKS vs. Serverless
+          EKS vs. SL
         </button>
         <button
           class="tab-btn"
           data-tab="monitoring"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -667,8 +656,8 @@
           class="tab-btn"
           data-tab="live-demo"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -678,14 +667,14 @@
             white-space: nowrap;
           "
         >
-          Live-Demo
+          Demo
         </button>
         <button
           class="tab-btn"
           data-tab="ausblick"
           style="
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 12px 10px;
+            font-size: 13px;
             font-weight: 500;
             color: #94a3b8;
             border: none;
@@ -795,7 +784,7 @@
             class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
           >
             Cloud-native Blog auf AWS EKS &mdash; vom leeren Repo zum
-            produktionsreifen Deployment mit 9 Terraform-Modulen, 7
+            produktionsreifen Deployment mit 9 Terraform-Modulen, 8
             CI/CD-Workflows, 3 AWS ML-Services und Self-Hosted Monitoring.
           </p>
         </div>
@@ -822,7 +811,7 @@
           >
             <div
               class="text-3xl font-extrabold text-emerald-500 stat-value"
-              data-count-to="7"
+              data-count-to="8"
             >
               0
             </div>
@@ -896,7 +885,10 @@
               </li>
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                <span>Multi-Environment &mdash; NAS, VPS, Lokal und AWS</span>
+                <span
+                  >Dual-Track Hosting &mdash; EKS für Showcase, Lightsail für
+                  Dauerbetrieb</span
+                >
               </li>
               <li class="flex items-start gap-2">
                 <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
@@ -980,6 +972,91 @@
                   class="devicon-githubactions-plain text-lg dark:text-white"
                 ></i>
                 GitHub Actions
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 1: Strukturierte Planung -->
+        <div
+          class="reveal bg-gradient-to-r from-purple-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6"
+        >
+          <h3
+            class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
+          >
+            <span
+              class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-list-check text-purple-500"></i>
+            </span>
+            Phase 1: Strukturierte Planung
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Vor der ersten Zeile Code: Anforderungen analysiert, Architektur
+            entworfen, Best Practices definiert.
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div
+              class="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-shield-check text-red-500 mt-0.5 shrink-0"></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Security ab Tag 1
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  OIDC, IRSA, KMS Encryption, Checkov + tfsec als Pipeline-Gates
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-chart-dots-3 text-orange-500 mt-0.5 shrink-0"></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Monitoring geplant
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Prometheus + Grafana via Helm, CloudWatch IRSA, 3 Dashboards
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i
+                class="ti ti-arrows-maximize text-emerald-500 mt-0.5 shrink-0"
+              ></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Hochverf&uuml;gbarkeit
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  HPA (Backend 1-4, Frontend 1-3), 2 AZs, Spot Instance
+                  Diversit&auml;t
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-refresh text-sky-500 mt-0.5 shrink-0"></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Reproduzierbarkeit
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Wave-Strategie, OIDC-gesch&uuml;tzt, Dynamic Terraform Outputs
+                </p>
               </div>
             </div>
           </div>
@@ -1078,7 +1155,7 @@
           <div
             class="flex flex-wrap justify-center items-center gap-3 sm:gap-4"
           >
-            <div class="aws-service aws-devtools arch-tooltip tt-left">
+            <div class="aws-service aws-devtools arch-tooltip">
               <div
                 class="aws-icon"
                 style="background: #24292f; border-radius: 10px"
@@ -1095,14 +1172,15 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">GitHub Actions</div>
-                <div class="tt-role">OIDC Federation &rarr; IAM Role</div>
-                3 Jobs: Test (Jest, 31 Tests) &rarr; Build (Docker) &rarr;
-                Deploy (kubectl apply). Keine AWS Keys gespeichert -- OIDC Token
-                wird bei jedem Run ausgestellt.
+                <div class="tt-role">
+                  CI/CD &middot; 3 Jobs &middot; OIDC Auth
+                </div>
+                Test (Jest, 31 Tests) &rarr; Build (Docker) &rarr; Deploy
+                (kubectl apply). OIDC-Token statt gespeicherter AWS Keys.
               </div>
             </div>
             <span class="flow-label">&rarr; OIDC</span>
-            <div class="aws-service aws-security arch-tooltip tt-left">
+            <div class="aws-service aws-security arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/iam.svg" alt="IAM" />
               </div>
@@ -1111,27 +1189,26 @@
               <div class="tooltip-content">
                 <div class="tt-label">IAM OIDC Role</div>
                 <div class="tt-role">blog-github-actions-role</div>
-                2 Policies: github-actions-policy (ECR Push + EKS Access) +
-                terraform-policy (14 Statements f&uuml;r komplette
-                Infra-Verwaltung). Gesch&uuml;tzt vor Teardown.
+                2 Policies: ECR Push + EKS Access, Terraform (14 Statements).
+                Gesch&uuml;tzt vor Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; push</span>
-            <div class="aws-service aws-compute arch-tooltip tt-left">
+            <div class="aws-service aws-compute arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/ecr.svg" alt="ECR" />
               </div>
               <span>ECR</span>
               <span class="text-[10px] font-normal opacity-60">2 Repos</span>
               <div class="tooltip-content">
-                <div class="tt-label">Elastic Container Registry</div>
-                2 Repos: blog-backend + blog-frontend. Images getaggt mit
-                sha-&lt;hash&gt; + latest. Lifecycle Policy: max 10 Images.
-                force_delete f&uuml;r sauberen Teardown.
+                <div class="tt-label">ECR (Container Registry)</div>
+                <div class="tt-role">2 Repos &middot; Lifecycle Policy</div>
+                blog-backend + blog-frontend. Tags: sha-&lt;hash&gt; + latest.
+                Max 10 Images, force_delete f&uuml;r Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; pull</span>
-            <div class="aws-service aws-compute arch-tooltip tt-left">
+            <div class="aws-service aws-compute arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/eks.svg" alt="EKS" />
               </div>
@@ -1141,9 +1218,9 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">EKS Cluster</div>
-                deploy.yml: erstellt Secrets, ServiceAccounts, applied 12 K8s
-                Manifeste, wartet auf ALB Hostname, updated Route 53 DNS.
-                Optional: DB Init Job (Schema + Seed).
+                <div class="tt-role">12 Manifeste &middot; kubectl apply</div>
+                Secrets, ServiceAccounts, Deployments, Ingress. Wartet auf ALB
+                Hostname, updated Route 53. Optional: DB Init Job.
               </div>
             </div>
           </div>
@@ -1168,7 +1245,7 @@
               <i class="ti ti-user text-sky-500 mr-1"></i> User
             </div>
             <span class="flow-label">&rarr; DNS</span>
-            <div class="aws-service aws-network arch-tooltip tt-left">
+            <div class="aws-service aws-network arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/route53.svg" alt="Route 53" />
               </div>
@@ -1177,16 +1254,16 @@
                 >blog.aws.his4irness23.de</span
               >
               <div class="tooltip-content">
-                <div class="tt-label">Route 53 DNS</div>
-                ALIAS Record zeigt auf ALB. Wird bei jedem Deploy automatisch
-                aktualisiert (ALB Hostname &auml;ndert sich). Hosted Zone:
-                his4irness23.de.
-                <div class="tt-cost">~$0.50/Monat (Hosted Zone)</div>
+                <div class="tt-label">Route 53</div>
+                <div class="tt-role">DNS &middot; ALIAS Record</div>
+                Zeigt auf ALB, wird bei jedem Deploy automatisch aktualisiert.
+                Hosted Zone: his4irness23.de.
+                <div class="tt-cost">~$0.50/Monat</div>
               </div>
             </div>
             <span class="flow-label">&rarr; HTTPS</span>
             <div
-              class="aws-service aws-network arch-tooltip tt-left"
+              class="aws-service aws-network arch-tooltip"
               style="border-width: 2.5px"
             >
               <div class="aws-icon">
@@ -1201,10 +1278,9 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Application Load Balancer</div>
-                <div class="tt-role">Managed by: ALB Controller Pod (IRSA)</div>
+                <div class="tt-role">Managed by: ALB Controller (IRSA)</div>
                 HTTPS via ACM Cert (eu-central-1). HTTP &rarr; HTTPS Redirect.
-                Target-Type: IP (direkt zu Pods). Verteilt Last &uuml;ber alle
-                Backend/Frontend Pods in beiden AZs.
+                Target-Type: IP (direkt zu Pods, beide AZs).
                 <div class="tt-cost">~$0.05/Monat</div>
               </div>
             </div>
@@ -1231,26 +1307,27 @@
                   </div>
                   <div class="flex flex-wrap gap-2">
                     <div
-                      class="arch-tooltip tt-top text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
+                      class="arch-tooltip text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
                     >
                       ALB Endpoint
                       <div class="tooltip-content">
                         <div class="tt-label">ALB Endpoint</div>
-                        ALB ist in beiden Public Subnets registriert.
-                        Eingehender HTTPS-Traffic wird hier empfangen und an
-                        Pods in den Private Subnets weitergeleitet.
+                        <div class="tt-role">
+                          Public Subnet &middot; HTTPS Eingang
+                        </div>
+                        In beiden AZs registriert. Leitet Traffic an Pods in
+                        Private Subnets weiter.
                       </div>
                     </div>
                     <div
-                      class="arch-tooltip tt-top text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
+                      class="arch-tooltip text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
                     >
                       NAT Gateway
                       <div class="tooltip-content">
                         <div class="tt-label">NAT Gateway</div>
-                        Erm&ouml;glicht ausgehenden Internet-Traffic f&uuml;r
-                        Pods in Private Subnets (z.B. ECR Pull,
-                        Comprehend/Translate/Polly API Calls). Kein eingehender
-                        Traffic.
+                        <div class="tt-role">Ausgehender Traffic</div>
+                        ECR Pull, Comprehend/Translate/Polly API Calls. Kein
+                        eingehender Traffic.
                         <div class="tt-cost">~$0.05/h wenn aktiv</div>
                       </div>
                     </div>
@@ -1272,7 +1349,7 @@
                     </div>
                     <div class="flex flex-wrap justify-center gap-2 mt-3 pt-1">
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1285,13 +1362,12 @@
                         <div class="tooltip-content">
                           <div class="tt-label">Frontend Pod (nginx)</div>
                           <div class="tt-role">HPA: 1-3 Replicas (CPU 70%)</div>
-                          Statische HTML/JS/CSS + Podcast Audio (43MB). Reverse
-                          Proxy: /api/* &rarr; Backend Service. Kein IRSA (kein
-                          AWS API Zugriff).
+                          Statisches HTML/JS/CSS + Podcast (43MB). Reverse
+                          Proxy: /api/* &rarr; Backend. Kein IRSA.
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1302,14 +1378,11 @@
                           >Express</span
                         >
                         <div class="tooltip-content">
-                          <div class="tt-label">
-                            Backend Pod (Express + TypeScript)
-                          </div>
+                          <div class="tt-label">Backend Pod (Express + TS)</div>
                           <div class="tt-role">IRSA: blog-backend-role</div>
-                          REST API (Posts, Comments, Admin). Zugriff auf
-                          Comprehend, Translate, Polly, S3 via IRSA.
-                          SSL-Verbindung zu RDS.
-                          <div class="tt-role">HPA: 1-4 Replicas (CPU 70%)</div>
+                          REST API. Zugriff auf Comprehend, Translate, Polly,
+                          S3. SSL zu RDS.
+                          <div class="tt-cost">HPA: 1-4 Replicas (CPU 70%)</div>
                         </div>
                       </div>
                     </div>
@@ -1359,7 +1432,7 @@
                     </div>
                     <div class="flex flex-wrap justify-center gap-2 mt-3 pt-1">
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1375,16 +1448,13 @@
                         <div class="tooltip-content">
                           <div class="tt-label">Grafana (Helm)</div>
                           <div class="tt-role">IRSA: blog-grafana-role</div>
-                          3 Dashboards: K8s Cluster, HPA Scaling, AWS ML
-                          Services (CloudWatch). Liest CloudWatch Metriken via
-                          IRSA.
-                          <div class="tt-cost">
-                            $0 (self-hosted vs. $9+/mo Managed)
-                          </div>
+                          3 Dashboards: K8s, HPA, AWS ML (CloudWatch).
+                          Self-hosted.
+                          <div class="tt-cost">$0 (vs. $9+/mo Managed)</div>
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1399,13 +1469,15 @@
                         >
                         <div class="tooltip-content">
                           <div class="tt-label">Prometheus (Helm)</div>
-                          Scraped alle Pods (15s Intervall). Node Exporter +
-                          kube-state-metrics. Speichert Metriken f&uuml;r
-                          Grafana Dashboards.
+                          <div class="tt-role">
+                            Metrics Collector &middot; 15s Scrape
+                          </div>
+                          node-exporter + kube-state-metrics. Datenquelle
+                          f&uuml;r Grafana.
                         </div>
                       </div>
                       <div
-                        class="aws-service aws-compute arch-tooltip tt-top"
+                        class="aws-service aws-compute arch-tooltip"
                         style="font-size: 0.65rem; padding: 6px 8px"
                       >
                         <div class="aws-icon" style="width: 28px; height: 28px">
@@ -1419,15 +1491,12 @@
                           >Ingress</span
                         >
                         <div class="tooltip-content">
-                          <div class="tt-label">
-                            AWS Load Balancer Controller
-                          </div>
+                          <div class="tt-label">ALB Controller</div>
                           <div class="tt-role">
                             IRSA: blog-alb-controller-role
                           </div>
-                          Erstellt und verwaltet den ALB basierend auf K8s
-                          Ingress-Ressource. Registriert Pod-IPs direkt als
-                          Targets (target-type: ip).
+                          Erstellt ALB aus K8s Ingress. Pod-IPs als Targets
+                          (target-type: ip).
                         </div>
                       </div>
                     </div>
@@ -1438,7 +1507,7 @@
 
             <!-- RDS -->
             <div class="flex justify-center mt-4">
-              <div class="aws-service aws-database arch-tooltip tt-top">
+              <div class="aws-service aws-database arch-tooltip">
                 <div class="aws-icon">
                   <img src="./img/aws-icons/rds.svg" alt="RDS" />
                 </div>
@@ -1448,10 +1517,12 @@
                 >
                 <div class="tooltip-content">
                   <div class="tt-label">RDS PostgreSQL 16</div>
-                  db.t3.micro, Single-AZ, 7-Tage Backup. SSL-Verbindung. SG
-                  erlaubt nur Traffic von EKS Nodes. Speichert Posts, Comments,
-                  Translations, Audio-Referenzen.
-                  <div class="tt-cost">~$0.03/Monat (Free Tier eligible)</div>
+                  <div class="tt-role">
+                    db.t3.micro &middot; Single-AZ &middot; SSL
+                  </div>
+                  7-Tage Backup. SG: nur EKS Nodes. Posts, Comments,
+                  Translations, Audio-Refs.
+                  <div class="tt-cost">Free Tier eligible</div>
                 </div>
               </div>
             </div>
@@ -1536,7 +1607,7 @@
             &mdash; au&szlig;erhalb VPC
           </div>
           <div class="flex flex-wrap justify-center gap-4">
-            <div class="aws-service aws-security arch-tooltip tt-left">
+            <div class="aws-service aws-security arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/cognito.svg" alt="Cognito" />
               </div>
@@ -1544,13 +1615,13 @@
               <span class="text-[10px] font-normal opacity-60">Admin Auth</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Cognito</div>
-                Hosted UI f&uuml;r Admin-Login (OAuth 2.0). Self-Registration.
-                User werden bei Teardown gel&ouml;scht. JWT-Validierung im
-                Backend.
+                <div class="tt-role">Admin Auth &middot; OAuth 2.0</div>
+                Hosted UI Login + Self-Registration. JWT-Validierung im Backend.
+                User werden bei Teardown gel&ouml;scht.
                 <div class="tt-cost">Free Tier (50K MAU)</div>
               </div>
             </div>
-            <div class="aws-service aws-ml arch-tooltip tt-left">
+            <div class="aws-service aws-ml arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/comprehend.svg" alt="Comprehend" />
               </div>
@@ -1558,13 +1629,13 @@
               <span class="text-[10px] font-normal opacity-60">NLP</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Comprehend</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                DetectKeyPhrases (Auto-Tags) + DetectSentiment
-                (Kommentar-Stimmung). NEGATIVE &ge; 70% = auto-flag.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Auto-Tags (KeyPhrases) + Kommentar-Sentiment. NEGATIVE &ge;70% =
+                auto-flag.
                 <div class="tt-cost">~$0.01/Deploy</div>
               </div>
             </div>
-            <div class="aws-service aws-ml arch-tooltip tt-left">
+            <div class="aws-service aws-ml arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/translate.svg" alt="Translate" />
               </div>
@@ -1572,13 +1643,13 @@
               <span class="text-[10px] font-normal opacity-60">DE&rarr;EN</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Translate</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Chunked Translation (5000 Byte Limit). Cache in PostgreSQL.
-                Erster Aufruf: API. Danach: $0/User.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Chunked (5000 Byte Limit). Cache in PostgreSQL. Erster Aufruf:
+                API, danach $0.
                 <div class="tt-cost">~$0.93/Deploy (62K Zeichen)</div>
               </div>
             </div>
-            <div class="aws-service aws-ml arch-tooltip tt-left">
+            <div class="aws-service aws-ml arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/polly.svg" alt="Polly" />
               </div>
@@ -1586,13 +1657,13 @@
               <span class="text-[10px] font-normal opacity-60">TTS</span>
               <div class="tooltip-content">
                 <div class="tt-label">Amazon Polly (Neural)</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Markdown &rarr; Chunk (2800 chars) &rarr; SynthesizeSpeech
-                &rarr; S3. Pre-Signed URL (1h). Erst 5-15s, danach &lt;100ms.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Markdown &rarr; Chunks &rarr; S3 MP3. Pre-Signed URL (1h). Erst
+                ~5s, danach &lt;100ms.
                 <div class="tt-cost">~$1.28/Deploy (80K Zeichen)</div>
               </div>
             </div>
-            <div class="aws-service aws-storage arch-tooltip tt-left">
+            <div class="aws-service aws-storage arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/s3.svg" alt="S3" />
               </div>
@@ -1602,13 +1673,12 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Amazon S3</div>
-                <div class="tt-role">Via IRSA: blog-backend-role</div>
-                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Prepared
-                f&uuml;r Image Hosting via CloudFront (OAC). Versioning
-                aktiviert.
+                <div class="tt-role">IRSA: blog-backend-role</div>
+                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Vorbereitet
+                f&uuml;r Image Hosting (OAC). Versioning aktiv.
               </div>
             </div>
-            <div class="aws-service aws-network arch-tooltip tt-left">
+            <div class="aws-service aws-network arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/cloudfront.svg" alt="CloudFront" />
               </div>
@@ -1618,14 +1688,13 @@
               >
               <div class="tooltip-content">
                 <div class="tt-label">Amazon CloudFront</div>
-                Terraform-Modul deployed, OAC konfiguriert. Aktuell nicht im
-                Traffic-Pfad -- vorbereitet f&uuml;r Image Hosting.
-                <div class="tt-role">
-                  ACM Cert: us-east-1 (CloudFront-Pflicht)
-                </div>
+                <div class="tt-role">CDN &middot; OAC konfiguriert</div>
+                Terraform-Modul deployed. Aktuell nicht im Traffic-Pfad --
+                vorbereitet f&uuml;r Images.
+                <div class="tt-cost">ACM Cert: us-east-1</div>
               </div>
             </div>
-            <div class="aws-service aws-network arch-tooltip tt-left">
+            <div class="aws-service aws-network arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/acm.svg" alt="ACM" />
               </div>
@@ -1633,24 +1702,53 @@
               <span class="text-[10px] font-normal opacity-60">2 Certs</span>
               <div class="tooltip-content">
                 <div class="tt-label">AWS Certificate Manager</div>
-                <strong>2 separate Zertifikate</strong> f&uuml;r dieselbe Domain
-                (beide kostenlos):<br />1. us-east-1 &rarr; CloudFront (globaler
-                Service)<br />2. eu-central-1 &rarr; ALB (regionales Cert)
-                <div class="tt-cost">$0 (kostenlos)</div>
+                <div class="tt-role">2 Zertifikate &middot; kostenlos</div>
+                us-east-1 &rarr; CloudFront (global). eu-central-1 &rarr; ALB
+                (regional). Beide f&uuml;r dieselbe Domain.
+                <div class="tt-cost">$0</div>
               </div>
             </div>
-            <div class="aws-service aws-security arch-tooltip tt-left">
+            <div class="aws-service aws-security arch-tooltip">
               <div class="aws-icon">
                 <img src="./img/aws-icons/kms.svg" alt="KMS" />
               </div>
               <span>KMS</span>
               <span class="text-[10px] font-normal opacity-60">Encryption</span>
               <div class="tooltip-content">
-                <div class="tt-label">AWS Key Management Service</div>
-                Envelope Encryption f&uuml;r EKS Secrets. K8s Secrets werden
-                tats&auml;chlich verschl&uuml;sselt (nicht nur base64). Auto
-                Key-Rotation (365 Tage).
+                <div class="tt-label">AWS KMS</div>
+                <div class="tt-role">
+                  Envelope Encryption &middot; Auto-Rotation
+                </div>
+                EKS Secrets verschl&uuml;sselt (nicht nur base64). Key-Rotation
+                alle 365 Tage.
                 <div class="tt-cost">$1/Monat pro Key</div>
+              </div>
+            </div>
+            <div class="aws-service aws-devtools arch-tooltip">
+              <div
+                class="aws-icon"
+                style="
+                  background: #0088cc;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i
+                  class="ti ti-brand-telegram"
+                  style="font-size: 22px; color: #fff"
+                ></i>
+              </div>
+              <span>Telegram</span>
+              <span class="text-[10px] font-normal opacity-60"
+                >Notifications</span
+              >
+              <div class="tooltip-content">
+                <div class="tt-label">Telegram Bot API</div>
+                <div class="tt-role">Native fetch &middot; Non-Blocking</div>
+                Neue Kommentare &rarr; Telegram-Nachricht an Admin. Kein
+                AWS-Service, kein IRSA. Falls Env-Vars fehlen: stilles Skip.
+                <div class="tt-cost">$0 (Bot API kostenlos)</div>
               </div>
             </div>
           </div>
@@ -1705,6 +1803,40 @@
           ALB Controller: Load Balancer Management. Kein Pod hat vollen
           AWS-Zugriff.
         </div>
+
+        <!-- Fixed tooltip overlay - positioned via JS, never clipped -->
+        <div id="arch-tooltip-overlay"></div>
+        <script>
+          (function () {
+            var overlay = document.getElementById("arch-tooltip-overlay");
+            var tips = document.querySelectorAll(".arch-tooltip");
+            tips.forEach(function (el) {
+              el.addEventListener("mouseenter", function () {
+                var content = el.querySelector(".tooltip-content");
+                if (!content) return;
+                overlay.innerHTML = content.innerHTML;
+                overlay.style.display = "block";
+                var rect = el.getBoundingClientRect();
+                var ttWidth = 240;
+                var gap = 10;
+                // Horizontal: centered above element, clamped to viewport
+                var left = rect.left + rect.width / 2 - ttWidth / 2;
+                if (left < 10) left = 10;
+                if (left + ttWidth > window.innerWidth - 10)
+                  left = window.innerWidth - ttWidth - 10;
+                overlay.style.left = left + "px";
+                // Vertical: above element, fallback below if too close to top
+                var ttHeight = overlay.offsetHeight;
+                var top = rect.top - ttHeight - gap;
+                if (top < 10) top = rect.bottom + gap;
+                overlay.style.top = top + "px";
+              });
+              el.addEventListener("mouseleave", function () {
+                overlay.style.display = "none";
+              });
+            });
+          })();
+        </script>
       </section>
 
       <!-- ==================== TAB 3: TERRAFORM ==================== -->
@@ -2008,8 +2140,8 @@
         </div>
         <p class="text-sm text-slate-500 dark:text-slate-400">
           <i class="ti ti-info-circle text-sky-500 mr-1"></i>
-          Sprint-Strategie: ~4,20 $ für 8 Stunden EKS. Danach Destroy &rarr;
-          zurück auf $0.50/Monat.
+          Sprint-Strategie: ~4,80 $/Tag EKS (143$/30 Tage). Danach Destroy
+          &rarr; zurück auf $0.50/Monat.
         </p>
       </section>
 
@@ -2026,7 +2158,7 @@
           CI/CD Pipelines
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-          7 Workflows (5 Core + 2 Status Monitors) &mdash; alle mit OIDC
+          8 Workflows (6 Core + 2 Status Monitors) &mdash; alle mit OIDC
           Federation (keine langlebigen AWS-Keys)
         </p>
 
@@ -2066,8 +2198,9 @@
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Liest Infra-Werte dynamisch aus Terraform State (S3). Nur 4 GitHub
-              Secrets nötig.
+              Liest Infra-Werte dynamisch aus Terraform State (S3). Nur 2 GitHub
+              Secrets nötig (AWS_ROLE_ARN + DB_PASSWORD), plus 2 optionale
+              (Telegram).
             </p>
           </div>
 
@@ -2153,8 +2286,8 @@
             </div>
           </div>
 
-          <!-- Status Monitor Workflows -->
-          <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          <!-- Status Monitor + Lint Workflows -->
+          <div class="grid sm:grid-cols-3 gap-4 mt-4">
             <div
               class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
@@ -2179,6 +2312,20 @@
               </h3>
               <p class="text-xs text-slate-500 dark:text-slate-400">
                 Health Check alle 5 Min. Lightsail Dauerbetrieb-Monitoring.
+              </p>
+            </div>
+            <div
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            >
+              <h3
+                class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
+              >
+                <i class="ti ti-code text-sky-500"></i>
+                lint.yml
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                ESLint + TypeScript Check auf Push/PR. Code-Qualität als
+                Pipeline-Gate.
               </p>
             </div>
           </div>
@@ -2220,7 +2367,7 @@
                 Ergebnis
               </div>
               <p class="text-xs">
-                Nur 4 GitHub Secrets: AWS_ROLE_ARN, DB_PASSWORD,
+                2 Pflicht-Secrets: AWS_ROLE_ARN, DB_PASSWORD. 2 optional:
                 TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
               </p>
             </div>
@@ -2331,8 +2478,10 @@
                 >
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400">
-                Bewusste Entscheidungen (Kosten, Dev-Workflow, Architektur).
-                Jedes Finding mit checkov:skip dokumentiert.
+                Bewusste Entscheidungen: z.B. kein Multi-AZ RDS (Kosten), kein
+                VPC Flow Logs (Dev-Projekt), Public Subnets für EKS Nodes
+                (Architektur-Entscheidung). Jedes Finding einzeln evaluiert und
+                mit checkov:skip + Begründung dokumentiert.
               </p>
             </div>
             <div>
@@ -2569,13 +2718,13 @@
             <div
               class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
             >
-              <i class="ti ti-arrow-up mr-1"></i>Provision
+              <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
               class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
             >
-              <i class="ti ti-rocket mr-1"></i>Deploy
+              <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
@@ -2925,15 +3074,16 @@
             <div class="flex items-center gap-2 mb-2">
               <span
                 class="text-xs font-bold px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
-                >#1</span
+                >#8</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >Security Scanning ab Tag 1</span
+                >IRSA statt Node IAM</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Security ist kein Feature das man später hinzufügt &mdash; es ist
-              das Fundament auf dem man baut.
+              IMDS auf EKS-Nodes blockiert &mdash; Pod-Level IAM via IRSA ist
+              Pflicht. Ohne ServiceAccount-Annotation kein Zugriff auf
+              Comprehend, Translate, Polly.
             </p>
           </div>
           <div
@@ -3079,6 +3229,24 @@
               bleibt Pflicht.
             </p>
           </div>
+          <div
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span
+                class="text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                >#38</span
+              >
+              <span class="font-bold text-sm text-slate-900 dark:text-white"
+                >Polly Chunk-Limit (3000 Bytes)</span
+              >
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Polly akzeptiert max. 3000 Bytes pro Request. Markdown muss erst
+              gestrippt, dann in Chunks zerlegt werden. Ohne Chunking: stille
+              Fehler.
+            </p>
+          </div>
         </div>
 
         <!-- Stats summary -->
@@ -3092,12 +3260,7 @@
             <div
               class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
             >
-              <div
-                class="text-2xl font-extrabold text-sky-500"
-                data-count-to="5"
-              >
-                0
-              </div>
+              <div class="text-2xl font-extrabold text-sky-500">~3,5</div>
               <div
                 class="counter-label text-xs text-slate-500 dark:text-slate-400"
               >
@@ -3627,8 +3790,44 @@
           Leitfaden für die Live-Demonstration am Terminal
         </p>
 
-        <!-- Step 1: Cluster Overview -->
+        <!-- Step 0: kubeconfig setup -->
         <div class="space-y-6">
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-6"
+          >
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-slate-500 text-white text-xs font-bold flex items-center justify-center"
+                >0</span
+              >
+              Voraussetzung: kubeconfig
+            </h3>
+            <div
+              class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
+            >
+              <div>
+                <span class="text-slate-500"
+                  ># Kubeconfig f&uuml;r EKS Cluster laden</span
+                ><br />
+                <span class="text-sky-400">$</span> aws eks update-kubeconfig
+                --name blog-eks-dev --region eu-central-1
+              </div>
+              <div>
+                <span class="text-slate-500"># Kontext pr&uuml;fen</span><br />
+                <span class="text-sky-400">$</span> kubectl config
+                current-context
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              <i class="ti ti-info-circle mr-1"></i>
+              Einmalig nach Provision n&ouml;tig. Setzt den kubectl-Kontext auf
+              den EKS-Cluster.
+            </p>
+          </div>
+
+          <!-- Step 1: Cluster Overview -->
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
@@ -3934,13 +4133,13 @@
               <div
                 class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
               >
-                <i class="ti ti-arrow-up mr-1"></i>Provision
+                <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
               </div>
               <i class="ti ti-arrow-right text-slate-400"></i>
               <div
                 class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
               >
-                <i class="ti ti-rocket mr-1"></i>Deploy
+                <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
               </div>
               <i class="ti ti-arrow-right text-slate-400"></i>
               <div
@@ -3970,28 +4169,57 @@
           bewusst nicht im Demo-Scope
         </p>
 
-        <!-- Extensions Grid -->
-        <div class="grid sm:grid-cols-2 gap-4 mb-8">
-          <!-- Redis -->
-          <div
-            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-5"
-          >
-            <div class="flex items-center gap-2 mb-3">
-              <i class="devicon-redis-plain colored text-xl"></i>
-              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
-                Redis / ElastiCache
-              </h3>
+        <!-- Redis Deep-Dive (full-width) -->
+        <div
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6 mb-8"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <i class="devicon-redis-plain colored text-xl"></i>
+            <h3 class="font-bold text-slate-900 dark:text-white">
+              Redis / ElastiCache
+            </h3>
+            <span
+              class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium"
+              >Bewusst nicht implementiert</span
+            >
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <div class="font-semibold text-slate-300 mb-1">
+                Was kann Redis?
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                In-Memory Key-Value Store f&uuml;r Session-Caching,
+                API-Response-Caching, Rate Limiting, Pub/Sub Messaging und
+                Leaderboards. Sub-Millisekunden Antwortzeiten.
+              </p>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Häufige DB-Abfragen cachen, Session-Management. Reduziert RDS-Last
-              und verbessert Antwortzeiten.
-            </p>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-emerald-500">cache.t3.micro ~$13/Monat</span>
-              <span class="text-slate-400">Produktiv sinnvoll</span>
+            <div>
+              <div class="font-semibold text-slate-300 mb-1">
+                Warum hier nicht sinnvoll?
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Translate-Cache liegt in PostgreSQL (post_translations),
+                Polly-Audio in S3. Bei ~12 Posts und geringem Traffic w&uuml;rde
+                Redis nur Komplexit&auml;t hinzuf&uuml;gen ohne messbaren
+                Vorteil.
+              </p>
+            </div>
+            <div>
+              <div class="font-semibold text-slate-300 mb-1">
+                Wann lohnt sich Redis?
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Ab hunderten gleichzeitigen Usern, bei Session-basierter Auth,
+                oder wenn DB-Queries zum Bottleneck werden. Dann cache.t3.micro
+                (~$13/Monat) als ElastiCache.
+              </p>
             </div>
           </div>
+        </div>
 
+        <!-- Weitere Erweiterungen (Grid) -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <!-- Multi-AZ -->
           <div
             class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-5"
@@ -4002,14 +4230,12 @@
                 Multi-AZ RDS
               </h3>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Automatisches Failover bei AZ-Ausfall. Hochverfügbarkeit für die
-              Datenbank ohne manuellen Eingriff.
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              Automatisches Failover bei AZ-Ausfall. Hochverf&uuml;gbarkeit ohne
+              manuellen Eingriff. In Produktion Pflicht.
             </p>
             <div class="flex justify-between text-[11px]">
-              <span class="text-amber-500"
-                >Verdoppelt RDS-Kosten (~$15 extra)</span
-              >
+              <span class="text-amber-500">~$15 extra/Monat</span>
               <span class="text-slate-400">Produktiv Pflicht</span>
             </div>
           </div>
@@ -4021,16 +4247,17 @@
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-shield-lock text-xl text-purple-500"></i>
               <h3 class="font-bold text-sm text-slate-900 dark:text-white">
-                WAF (Web Application Firewall)
+                WAF
               </h3>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Schutz vor SQL Injection, XSS, Bot-Traffic. Managed Rules von AWS
-              vor den ALB geschaltet.
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              SQL Injection, XSS, Bot-Traffic. Managed Rules vor dem ALB.
+              F&uuml;r Demo-Projekt ohne &ouml;ffentlichen Traffic kein
+              Mehrwert.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-amber-500">~$6-10/Monat</span>
-              <span class="text-slate-400">Für Demo kein Mehrwert</span>
+              <span class="text-slate-400">Kein Demo-Mehrwert</span>
             </div>
           </div>
 
@@ -4041,16 +4268,16 @@
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-file-text text-xl text-amber-500"></i>
               <h3 class="font-bold text-sm text-slate-900 dark:text-white">
-                FluentBit / OpenSearch Logging
+                FluentBit + OpenSearch
               </h3>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Zentrales Log-Management mit FluentBit DaemonSet + OpenSearch.
-              Monitoring (Grafana + Prometheus) ist bereits implementiert.
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              Zentrales Log-Management. Grafana + Prometheus f&uuml;r Metriken
+              bereits implementiert. kubectl logs reicht f&uuml;r Demo.
             </p>
             <div class="flex justify-between text-[11px]">
-              <span class="text-amber-500">OpenSearch ~$20+/Monat</span>
-              <span class="text-slate-400">kubectl logs + Grafana reichen</span>
+              <span class="text-amber-500">~$20+/Monat</span>
+              <span class="text-slate-400">Grafana reicht</span>
             </div>
           </div>
 
@@ -4064,9 +4291,9 @@
                 SNS Notifications
               </h3>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              E-Mail/SMS-Benachrichtigungen bei Events. Aktuell via Telegram
-              gelöst (funktioniert, aber nicht AWS-nativ).
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              E-Mail/SMS bei Events. Telegram Bot bereits implementiert
+              (kostenlos, non-blocking, graceful degradation).
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-emerald-500">Kostenlos (Free Tier)</span>
@@ -4084,13 +4311,35 @@
                 Disaster Recovery
               </h3>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-              Dokumentierter Wiederherstellungsplan, Cross-Region Backups.
-              Zeitaufwand hoch, aber für Produktion essenziell.
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              Cross-Region Backups, dokumentierter Wiederherstellungsplan.
+              Essenziell in Produktion, Zeitaufwand f&uuml;r Demo zu hoch.
             </p>
             <div class="flex justify-between text-[11px]">
-              <span class="text-emerald-500">Kein Kostenaufwand</span>
-              <span class="text-slate-400">Zeitaufwand zu hoch für Demo</span>
+              <span class="text-emerald-500">$0 Kostenaufwand</span>
+              <span class="text-slate-400">Zeitaufwand zu hoch</span>
+            </div>
+          </div>
+
+          <!-- Lambda -->
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <i
+                class="devicon-amazonwebservices-plain-wordmark colored text-xl"
+              ></i>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">
+                Lambda + SQS
+              </h3>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+              ML-Aufrufe asynchron via SQS + Lambda. Entkoppelt Backend von
+              ML-Services. Kostenlos im Free Tier.
+            </p>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-emerald-500">Kostenlos (Free Tier)</span>
+              <span class="text-slate-400">Sinnvoll einbaubar</span>
             </div>
           </div>
         </div>
