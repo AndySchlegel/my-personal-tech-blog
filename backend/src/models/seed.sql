@@ -607,7 +607,7 @@ Die Infrastruktur verteilt sich auf drei Standorte:
 
 **Ein Cloud-Server in Deutschland** -- klein, ressourcenschonend, ARM-basiert. Hier laufen Web-Anwendungen wie n8n für Automatisierung sowie Traefik als Reverse Proxy mit TLS-Terminierung. Services, die von außen erreichbar sein müssen, aber wenig Rechenleistung brauchen.
 
-**Ein zweiter Cloud-Server** -- deutlich leistungsstärker, mit 16 vCPUs und 32 GB RAM. Hier laufen datenintensive Workloads: automatisierte Pipelines, die Daten verarbeiten, verifizieren und zwischen Standorten synchronisieren. Dazu Shell-Skripte und Cronjobs in regelmäßigen Intervallen.
+**Ein zweiter Cloud-Server** -- deutlich leistungsstärker, mit 16 vCPUs und 32 GB RAM. Hier laufen ressourcenintensive Workloads: automatisierte Pipelines, die Aufgaben verarbeiten, Ergebnisse verifizieren und zwischen Standorten synchronisieren. Dazu Shell-Skripte und Cronjobs in regelmäßigen Intervallen.
 
 Verbunden ist alles über Tailscale. Kein Port Forwarding, keine öffentlich exponierten Services. Jeder Server, jedes Gerät -- auch meine beiden MacBooks -- hängt im selben verschlüsselten Mesh-Netzwerk. Wenn ich von unterwegs auf Grafana oder Portainer zugreifen will, geht das über die Tailscale-IP. Ohne VPN-Client starten zu müssen, ohne Tunnel manuell aufzubauen. Es funktioniert einfach.
 
@@ -617,7 +617,7 @@ Verbunden ist alles über Tailscale. Kein Port Forwarding, keine öffentlich exp
 
 Die Entscheidung, welcher Service wo läuft, folgt einer einfachen Logik:
 
-**Rechenintensiv und datengetrieben** kommt auf den leistungsstarken Server. Dort stehen genug CPU-Ressourcen und schnelle NVMe-SSDs für I/O-intensive Workloads zur Verfügung. Automatisierte Pipelines verarbeiten Daten, verifizieren die Integrität und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
+**Rechenintensiv und ressourcenhungrig** kommt auf den leistungsstarken Server. Dort stehen genug CPU-Ressourcen und schneller Storage für I/O-intensive Workloads zur Verfügung. Automatisierte Pipelines verarbeiten Aufgaben, verifizieren Ergebnisse und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
 
 **Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht wenig Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
 
@@ -629,9 +629,9 @@ Die Entscheidung, welcher Service wo läuft, folgt einer einfachen Logik:
 
 Was mich am meisten überrascht hat: Die eigentliche Arbeit steckt nicht im Aufsetzen der Services, sondern in der Automatisierung drumherum.
 
-Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von minütlicher Datenverarbeitung bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
+Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von regelmäßigen Wartungsaufgaben bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
 
-Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn weniger als 20 GB frei sind. Kein einfaches `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
+Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn der Speicher knapp wird. Kein einfaches `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
 
 Shell-Skripte und Cron klingen nicht glamourös. Aber diese Skripte laufen seit Wochen zuverlässig -- und genau daran habe ich Fehlerbehandlung, Robustheit und die Realität von Automatisierung wirklich verstanden.
 
@@ -698,7 +698,7 @@ Gleichzeitig kamen Uptime Kuma und Portainer dazu. Uptime Kuma überwacht 12 Ser
 
 ---
 
-### Bestätigung durch den Ernstfall
+### Bewährungsprobe bestanden
 
 Dass sich dieses Setup bewährt, habe ich relativ früh erfahren. Einmal nachts unterwegs, mit einem Laptop, der nicht auf mein gewohntes Setup abgestimmt war -- weil ich alles ursprünglich über mein anderes MacBook konfiguriert hatte.
 
@@ -839,7 +839,7 @@ Das Monitoring stand. Der Alert kam innerhalb von Sekunden. Und weil ich wusste,
 
 **Ohne Monitoring bleibt ein Angriff unsichtbar.** Es ist die Grundlage dafür, dass man ihn in Minuten erkennt statt in Tagen.
 
-**Strukturiertes Vorgehen zahlt sich aus.** Erkennen, eingrenzen, isolieren, bereinigen, aufarbeiten. Kein hektisches Abschalten, kein Neuinstallieren ohne Plan.
+**Strukturiertes Vorgehen zahlt sich aus.** Erkennen, eingrenzen, isolieren, bereinigen -- und danach aufarbeiten. Dieser Beitrag ist im Grunde mein Post-Mortem: Timeline, Root Cause, Maßnahmen, Lessons Learned. Genau so, wie man es in einem professionellen Incident-Response-Prozess dokumentieren würde.
 
 Rückblickend bin ich froh, dass es passiert ist. Nicht weil ein Angriff auf die eigene Infrastruktur erstrebenswert wäre -- sondern weil es die Bestätigung war, dass das Monitoring funktioniert, die Reaktion sitzt und der eingeschlagene Weg der richtige ist.
 
