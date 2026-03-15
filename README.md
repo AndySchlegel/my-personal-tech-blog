@@ -32,7 +32,7 @@
 
 ## Overview
 
-A cloud-native tech blog built from scratch in under 4 weeks -- from Express API to production EKS deployment with full CI/CD, monitoring, and ML integration. Designed as a reproducible showcase: spin up the entire stack in ~25 minutes, demonstrate it, tear it down.
+A cloud-native tech blog built from scratch in under 4 weeks -- from Express API to production EKS deployment with full CI/CD, monitoring, and ML integration. Designed as a reproducible showcase: spin up the entire stack in under 30 minutes, demonstrate it, tear it down.
 
 ### Why This Project?
 
@@ -415,7 +415,7 @@ Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertis
 
 ## Lessons Learned
 
-Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 42 lessons and counting.
+Documented continuously in [LESSONS_LEARNED.md](LESSONS_LEARNED.md) -- 43 lessons and counting.
 
 Key highlights:
 
@@ -449,8 +449,8 @@ Key highlights:
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
 | CI/CD Workflows | 8 (deploy, provision, destroy, terraform, security-scan, lint, 2x status monitors) |
-| Commits | 165+ |
-| Lessons Learned | 42 documented |
+| Commits | 175+ |
+| Lessons Learned | 43 documented |
 
 ---
 
@@ -464,5 +464,5 @@ Cloud & DevOps Engineer
 ---
 
 **Project Status:** Feature-complete. EKS showcase stack fully operational, Lightsail permanent hosting planned.
-**Last Updated:** 2026-03-14
+**Last Updated:** 2026-03-15
 **AWS Region:** eu-central-1 (Frankfurt)
