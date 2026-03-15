@@ -647,6 +647,96 @@
         }
       }
 
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+
+      /* --- EFFECT: Ambient Background for Tab Panels ---
+         Slow-moving gradient blobs behind content. */
+      @keyframes ambient-drift {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(30px, -20px) scale(1.05);
+        }
+        50% {
+          transform: translate(-20px, 15px) scale(0.95);
+        }
+        75% {
+          transform: translate(15px, 25px) scale(1.02);
+        }
+      }
+      .tab-ambient {
+        position: relative;
+      }
+      .tab-ambient::before {
+        content: "";
+        position: absolute;
+        top: 10%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        filter: blur(120px);
+        opacity: 0.06;
+        background: radial-gradient(circle, #38bdf8, transparent 70%);
+        animation: ambient-drift 20s ease-in-out infinite;
+      }
+      .tab-ambient::after {
+        content: "";
+        position: absolute;
+        bottom: 10%;
+        right: -5%;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        filter: blur(120px);
+        opacity: 0.06;
+        background: radial-gradient(circle, #8b5cf6, transparent 70%);
+        animation: ambient-drift 25s ease-in-out infinite reverse;
+      }
+      .dark .tab-ambient::before,
+      .dark .tab-ambient::after {
+        opacity: 0.1;
+      }
+
       /* --- Theme transition smoothing --- */
       html.transition-theme,
       html.transition-theme *,
@@ -663,6 +753,9 @@
   <body
     class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
   >
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
+
     <!-- ==================== HEADER (V2 Glassmorphism) ==================== -->
     <header
       class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
@@ -1017,7 +1110,7 @@
     <!-- ==================== CONTENT ==================== -->
     <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
       <!-- ==================== TAB 1: PROJEKT (V2 with lamp + particles) ==================== -->
-      <section class="tab-panel lamp-effect" id="panel-overview">
+      <section class="tab-panel lamp-effect tab-ambient" id="panel-overview">
         <!-- Particle canvas for hero feel -->
         <canvas id="particle-canvas"></canvas>
 
@@ -1406,7 +1499,11 @@
       </section>
 
       <!-- ==================== TAB 2: ARCHITEKTUR ==================== -->
-      <section class="tab-panel" id="panel-architecture" style="display: none">
+      <section
+        class="tab-panel tab-ambient dot-grid"
+        id="panel-architecture"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -2120,7 +2217,11 @@
       </section>
 
       <!-- ==================== TAB 3: TERRAFORM ==================== -->
-      <section class="tab-panel" id="panel-terraform" style="display: none">
+      <section
+        class="tab-panel tab-ambient"
+        id="panel-terraform"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -2434,7 +2535,11 @@
       </section>
 
       <!-- ==================== TAB 4: CI/CD ==================== -->
-      <section class="tab-panel" id="panel-cicd" style="display: none">
+      <section
+        class="tab-panel tab-ambient dot-grid"
+        id="panel-cicd"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -2664,7 +2769,11 @@
       </section>
 
       <!-- ==================== TAB 5: SECURITY ==================== -->
-      <section class="tab-panel" id="panel-security" style="display: none">
+      <section
+        class="tab-panel tab-ambient"
+        id="panel-security"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -2856,7 +2965,11 @@
       </section>
 
       <!-- ==================== TAB 6: KUBERNETES ==================== -->
-      <section class="tab-panel" id="panel-kubernetes" style="display: none">
+      <section
+        class="tab-panel tab-ambient dot-grid"
+        id="panel-kubernetes"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -3051,7 +3164,11 @@
       </section>
 
       <!-- ==================== TAB 7: ML ==================== -->
-      <section class="tab-panel" id="panel-comprehend" style="display: none">
+      <section
+        class="tab-panel tab-ambient"
+        id="panel-comprehend"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -3347,7 +3464,11 @@
       </section>
 
       <!-- ==================== TAB 8: LESSONS LEARNED ==================== -->
-      <section class="tab-panel" id="panel-lessons" style="display: none">
+      <section
+        class="tab-panel tab-ambient dot-grid"
+        id="panel-lessons"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -3618,7 +3739,7 @@
 
       <!-- ==================== TAB 9: EKS vs. SERVERLESS ==================== -->
       <section
-        class="tab-panel"
+        class="tab-panel tab-ambient dot-grid"
         id="panel-eks-vs-serverless"
         style="display: none"
       >
@@ -3846,7 +3967,11 @@
       </section>
 
       <!-- ==================== TAB 10: MONITORING ==================== -->
-      <section class="tab-panel" id="panel-monitoring" style="display: none">
+      <section
+        class="tab-panel tab-ambient"
+        id="panel-monitoring"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -4079,7 +4204,11 @@
       </section>
 
       <!-- ==================== TAB 11: LIVE-DEMO ==================== -->
-      <section class="tab-panel" id="panel-live-demo" style="display: none">
+      <section
+        class="tab-panel tab-ambient dot-grid"
+        id="panel-live-demo"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -4442,7 +4571,11 @@
       </section>
 
       <!-- ==================== TAB 12: AUSBLICK ==================== -->
-      <section class="tab-panel" id="panel-ausblick" style="display: none">
+      <section
+        class="tab-panel tab-ambient"
+        id="panel-ausblick"
+        style="display: none"
+      >
         <div class="reveal-v2">
           <h2
             class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
@@ -4879,10 +5012,25 @@
           });
         }
 
+        // --- EFFECT: Cursor Glow ---
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
         // --- Initialize all effects ---
         initParticles();
         initGlowCards();
         initScrollReveal();
+        initCursorGlow();
       })();
     </script>
   </body>
