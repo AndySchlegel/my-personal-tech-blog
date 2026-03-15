@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Haftungsausschluss - Andy Schlegel Tech Blog</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -20,45 +20,250 @@
       };
     </script>
 
-    <!-- Fonts + Icons -->
+    <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Tabler Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
-    <!-- Devicon (colored tech/brand icons) -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-    />
-    <link rel="stylesheet" href="./css/styles.css" />
+
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Effects System (Legal Page - Lightweight)
+         Only includes effects relevant for legal pages:
+         lamp-effect, glow-card, reveal-v2, section-divider.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Lamp / Conic Gradient ---
+         Spotlight beam radiating down from top center. */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Glowing Card Border ---
+         Mouse-following gradient glow on card borders. */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        box-shadow:
+          0 12px 40px rgba(56, 189, 248, 0.08),
+          0 4px 16px rgba(139, 92, 246, 0.05);
+      }
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 12px 40px rgba(56, 189, 248, 0.06),
+          0 4px 16px rgba(139, 92, 246, 0.03);
+      }
+
+      /* --- EFFECT: Scroll Reveal --- */
+      .reveal-v2 {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-v2.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-v2.reveal-delay-1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-v2.reveal-delay-2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-v2.reveal-delay-3 {
+        transition-delay: 0.3s;
+      }
+
+      /* --- Section divider gradient line --- */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.3),
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col"
   >
-    <!-- ==================== HEADER (language toggle + theme toggle + mobile menu) ==================== -->
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
+
+    <!-- ==================== HEADER ==================== -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo (icon only) -->
+        <!-- Logo -->
         <a href="./index.html" class="flex items-center group">
           <div
-            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
         </a>
-        <nav class="hidden sm:flex items-center gap-6">
+
+        <!-- Desktop navigation (no item active on legal pages) -->
+        <nav class="hidden sm:flex items-center gap-8">
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -80,8 +285,9 @@
             >Blog</a
           >
         </nav>
+
+        <!-- Right side controls -->
         <div class="flex items-center gap-2">
-          <!-- Language toggle (DE/EN) -->
           <button
             id="lang-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -90,7 +296,6 @@
           >
             <span id="lang-label" class="text-xs font-bold">DE</span>
           </button>
-          <!-- Theme toggle (dark/light) -->
           <button
             id="theme-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -99,349 +304,422 @@
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
+          <button
+            id="mobile-menu-toggle"
+            class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Open menu"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
         </div>
       </div>
+
+      <!-- Mobile navigation -->
+      <nav
+        id="mobile-menu"
+        class="sm:hidden hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl"
+      >
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Home</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >About me</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
+          >
+        </div>
+      </nav>
     </header>
 
-    <!-- ==================== CONTENT ==================== -->
-    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
-      <h1
-        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
-      >
-        <span
-          class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1">
+      <!-- ===== HERO: Page title with lamp effect ===== -->
+      <section class="lamp-effect">
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-6 sm:pt-14 sm:pb-8 relative z-10"
         >
-          <i class="ti ti-alert-triangle text-xl text-sky-500"></i>
-        </span>
-        <span data-de="Haftungsausschluss" data-en="Disclaimer"
-          >Haftungsausschluss</span
-        >
-      </h1>
-
-      <!-- Portfolio-Haftungsausschluss / Portfolio Disclaimer -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Portfolio-Haftungsausschluss"
-          data-en="Portfolio Disclaimer"
-        >
-          Portfolio-Haftungsausschluss
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Diese Website dient als professionelles Portfolio, das meine technischen F&auml;higkeiten, Projekte und Erfahrungen in den Bereichen Cloud Engineering, DevOps und Infrastruktur zeigt. Alle bereitgestellten Informationen dienen ausschlie&szlig;lich informativen und dokumentarischen Zwecken."
-          data-en="This website serves as a professional portfolio showcasing my technical skills, projects, and experience in the areas of Cloud Engineering, DevOps, and Infrastructure. All information provided is for informational and documentary purposes only."
-        >
-          Diese Website dient als professionelles Portfolio, das meine
-          technischen F&auml;higkeiten, Projekte und Erfahrungen in den
-          Bereichen Cloud Engineering, DevOps und Infrastruktur zeigt. Alle
-          bereitgestellten Informationen dienen ausschlie&szlig;lich
-          informativen und dokumentarischen Zwecken.
-        </p>
-      </section>
-
-      <!-- Technische Inhaltsgenauigkeit / Technical Content Accuracy -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Technische Inhaltsgenauigkeit"
-          data-en="Technical Content Accuracy"
-        >
-          Technische Inhaltsgenauigkeit
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Obwohl ich mich bem&uuml;he, die Richtigkeit und Vollst&auml;ndigkeit aller technischen Informationen, Projektbeschreibungen und Code-Beispiele auf dieser Website sicherzustellen, kann ich nicht garantieren, dass alle Inhalte fehlerfrei oder aktuell sind. Technologien entwickeln sich schnell, und Verfahren k&ouml;nnen sich im Laufe der Zeit &auml;ndern."
-          data-en="While I strive to ensure the accuracy and completeness of all technical information, project descriptions, and code examples on this website, I cannot guarantee that all content is error-free or up to date. Technologies evolve rapidly, and practices may change over time."
-        >
-          Obwohl ich mich bem&uuml;he, die Richtigkeit und Vollst&auml;ndigkeit
-          aller technischen Informationen, Projektbeschreibungen und
-          Code-Beispiele auf dieser Website sicherzustellen, kann ich nicht
-          garantieren, dass alle Inhalte fehlerfrei oder aktuell sind.
-          Technologien entwickeln sich schnell, und Verfahren k&ouml;nnen sich
-          im Laufe der Zeit &auml;ndern.
-        </p>
-      </section>
-
-      <!-- Projektinformationen / Project Information -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Projektinformationen"
-          data-en="Project Information"
-        >
-          Projektinformationen
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed mb-2"
-          data-de="Alle auf dieser Website dokumentierten Projekte stellen echte Arbeit dar, die ich abgeschlossen habe. Jedoch:"
-          data-en="All projects documented on this website represent real work that I have completed. However:"
-        >
-          Alle auf dieser Website dokumentierten Projekte stellen echte Arbeit
-          dar, die ich abgeschlossen habe. Jedoch:
-        </p>
-        <ul
-          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1"
-        >
-          <li
-            data-de="Einige technische Details k&ouml;nnen zu Pr&auml;sentationszwecken vereinfacht sein"
-            data-en="Some technical details may be simplified for presentation purposes"
+          <h1
+            class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-4"
           >
-            Einige technische Details k&ouml;nnen zu Pr&auml;sentationszwecken
-            vereinfacht sein
-          </li>
-          <li
-            data-de="Sensible Informationen wurden aus Sicherheitsgr&uuml;nden anonymisiert oder entfernt"
-            data-en="Sensitive information has been anonymized or removed for security reasons"
+            <span
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-purple-500/20 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-alert-triangle text-2xl text-sky-500"></i>
+            </span>
+            <span data-de="Haftungsausschluss" data-en="Disclaimer"
+              >Haftungsausschluss</span
+            >
+          </h1>
+        </div>
+      </section>
+
+      <div class="section-divider max-w-6xl mx-auto"></div>
+
+      <!-- ===== DISCLAIMER CONTENT ===== -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div class="max-w-3xl mx-auto space-y-6">
+          <!-- Portfolio-Haftungsausschluss -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            Sensible Informationen wurden aus Sicherheitsgr&uuml;nden
-            anonymisiert oder entfernt
-          </li>
-          <li
-            data-de="Code-Snippets werden als Beispiele bereitgestellt und m&uuml;ssen ggf. f&uuml;r bestimmte Anwendungsf&auml;lle angepasst werden"
-            data-en="Code snippets are provided as examples and may need to be adapted for specific use cases"
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Portfolio-Haftungsausschluss"
+              data-en="Portfolio Disclaimer"
+            >
+              Portfolio-Haftungsausschluss
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Diese Website dient als professionelles Portfolio, das meine technischen F&auml;higkeiten, Projekte und Erfahrungen in den Bereichen Cloud Engineering, DevOps und Infrastruktur zeigt. Alle bereitgestellten Informationen dienen ausschlie&szlig;lich informativen und dokumentarischen Zwecken."
+              data-en="This website serves as a professional portfolio showcasing my technical skills, projects, and experience in the areas of Cloud Engineering, DevOps, and Infrastructure. All information provided is for informational and documentary purposes only."
+            >
+              Diese Website dient als professionelles Portfolio, das meine
+              technischen F&auml;higkeiten, Projekte und Erfahrungen in den
+              Bereichen Cloud Engineering, DevOps und Infrastruktur zeigt. Alle
+              bereitgestellten Informationen dienen ausschlie&szlig;lich
+              informativen und dokumentarischen Zwecken.
+            </p>
+          </div>
+
+          <!-- Technische Inhaltsgenauigkeit -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            Code-Snippets werden als Beispiele bereitgestellt und m&uuml;ssen
-            ggf. f&uuml;r bestimmte Anwendungsf&auml;lle angepasst werden
-          </li>
-          <li
-            data-de="Leistungskennzahlen basieren auf meinen spezifischen Testumgebungen"
-            data-en="Performance metrics are based on my specific test environments"
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Technische Inhaltsgenauigkeit"
+              data-en="Technical Content Accuracy"
+            >
+              Technische Inhaltsgenauigkeit
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Obwohl ich mich bem&uuml;he, die Richtigkeit und Vollst&auml;ndigkeit aller technischen Informationen, Projektbeschreibungen und Code-Beispiele auf dieser Website sicherzustellen, kann ich nicht garantieren, dass alle Inhalte fehlerfrei oder aktuell sind. Technologien entwickeln sich schnell, und Verfahren k&ouml;nnen sich im Laufe der Zeit &auml;ndern."
+              data-en="While I strive to ensure the accuracy and completeness of all technical information, project descriptions, and code examples on this website, I cannot guarantee that all content is error-free or up to date. Technologies evolve rapidly, and practices may change over time."
+            >
+              Obwohl ich mich bem&uuml;he, die Richtigkeit und
+              Vollst&auml;ndigkeit aller technischen Informationen,
+              Projektbeschreibungen und Code-Beispiele auf dieser Website
+              sicherzustellen, kann ich nicht garantieren, dass alle Inhalte
+              fehlerfrei oder aktuell sind. Technologien entwickeln sich
+              schnell, und Verfahren k&ouml;nnen sich im Laufe der Zeit
+              &auml;ndern.
+            </p>
+          </div>
+
+          <!-- Projektinformationen -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            Leistungskennzahlen basieren auf meinen spezifischen Testumgebungen
-          </li>
-        </ul>
-      </section>
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Projektinformationen"
+              data-en="Project Information"
+            >
+              Projektinformationen
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed mb-2"
+              data-de="Alle auf dieser Website dokumentierten Projekte stellen echte Arbeit dar, die ich abgeschlossen habe. Jedoch:"
+              data-en="All projects documented on this website represent real work that I have completed. However:"
+            >
+              Alle auf dieser Website dokumentierten Projekte stellen echte
+              Arbeit dar, die ich abgeschlossen habe. Jedoch:
+            </p>
+            <ul
+              class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1"
+            >
+              <li
+                data-de="Einige technische Details k&ouml;nnen zu Pr&auml;sentationszwecken vereinfacht sein"
+                data-en="Some technical details may be simplified for presentation purposes"
+              >
+                Einige technische Details k&ouml;nnen zu
+                Pr&auml;sentationszwecken vereinfacht sein
+              </li>
+              <li
+                data-de="Sensible Informationen wurden aus Sicherheitsgr&uuml;nden anonymisiert oder entfernt"
+                data-en="Sensitive information has been anonymized or removed for security reasons"
+              >
+                Sensible Informationen wurden aus Sicherheitsgr&uuml;nden
+                anonymisiert oder entfernt
+              </li>
+              <li
+                data-de="Code-Snippets werden als Beispiele bereitgestellt und m&uuml;ssen ggf. f&uuml;r bestimmte Anwendungsf&auml;lle angepasst werden"
+                data-en="Code snippets are provided as examples and may need to be adapted for specific use cases"
+              >
+                Code-Snippets werden als Beispiele bereitgestellt und
+                m&uuml;ssen ggf. f&uuml;r bestimmte Anwendungsf&auml;lle
+                angepasst werden
+              </li>
+              <li
+                data-de="Leistungskennzahlen basieren auf meinen spezifischen Testumgebungen"
+                data-en="Performance metrics are based on my specific test environments"
+              >
+                Leistungskennzahlen basieren auf meinen spezifischen
+                Testumgebungen
+              </li>
+            </ul>
+          </div>
 
-      <!-- Keine professionelle Beratung / No Professional Advice -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Keine professionelle Beratung"
-          data-en="No Professional Advice"
-        >
-          Keine professionelle Beratung
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Obwohl ich technisches Wissen und Erfahrungen teile, stellt diese Website keine professionelle Beratung dar. F&uuml;r spezifische technische Implementierungen oder Sicherheitsbewertungen beauftragen Sie bitte geeignete professionelle Dienstleister oder kontaktieren Sie mich direkt f&uuml;r eine Beratung."
-          data-en="While I share technical knowledge and experience, this website does not constitute professional advice. For specific technical implementations or security assessments, please engage appropriate professional service providers or contact me directly for consultation."
-        >
-          Obwohl ich technisches Wissen und Erfahrungen teile, stellt diese
-          Website keine professionelle Beratung dar. F&uuml;r spezifische
-          technische Implementierungen oder Sicherheitsbewertungen beauftragen
-          Sie bitte geeignete professionelle Dienstleister oder kontaktieren Sie
-          mich direkt f&uuml;r eine Beratung.
-        </p>
-      </section>
-
-      <!-- AWS-Dienste und Drittanbieter-Services / AWS Services and Third-Party Services -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="AWS-Dienste und Drittanbieter-Services"
-          data-en="AWS Services and Third-Party Services"
-        >
-          AWS-Dienste und Drittanbieter-Services
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed mb-2"
-          data-de="Diese Website nutzt verschiedene Cloud-Dienste von Amazon Web Services (AWS) sowie Open-Source-Werkzeuge. F&uuml;r diese gilt:"
-          data-en="This website uses various cloud services from Amazon Web Services (AWS) as well as open-source tools. The following applies to these:"
-        >
-          Diese Website nutzt verschiedene Cloud-Dienste von Amazon Web Services
-          (AWS) sowie Open-Source-Werkzeuge. F&uuml;r diese gilt:
-        </p>
-        <ul
-          class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2"
-        >
-          <li
-            data-de="<strong>Amazon Comprehend</strong> (Textanalyse): Automatisch generierte Tags und Sentiment-Bewertungen von Kommentaren k&ouml;nnen ungenau sein &ndash; insbesondere bei Ironie, Sarkasmus oder umgangssprachlichem Deutsch. Die Ergebnisse stellen keine inhaltliche Bewertung durch den Betreiber dar."
-            data-en="<strong>Amazon Comprehend</strong> (text analysis): Automatically generated tags and comment sentiment scores may be inaccurate &ndash; particularly with irony, sarcasm, or colloquial German. The results do not represent a content evaluation by the operator."
+          <!-- Keine professionelle Beratung -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            <strong>Amazon Comprehend</strong> (Textanalyse): Automatisch
-            generierte Tags und Sentiment-Bewertungen von Kommentaren
-            k&ouml;nnen ungenau sein &ndash; insbesondere bei Ironie, Sarkasmus
-            oder umgangssprachlichem Deutsch. Die Ergebnisse stellen keine
-            inhaltliche Bewertung durch den Betreiber dar.
-          </li>
-          <li
-            data-de="<strong>Amazon Translate</strong> (&Uuml;bersetzung): Blog-Beitr&auml;ge werden maschinell &uuml;bersetzt. Die &Uuml;bersetzungen k&ouml;nnen Ungenauigkeiten, fehlende Nuancen oder sachliche Fehler enthalten. Im Zweifel ist die deutsche Originalfassung ma&szlig;geblich."
-            data-en="<strong>Amazon Translate</strong> (translation): Blog posts are machine-translated. Translations may contain inaccuracies, missing nuances, or factual errors. In case of doubt, the German original version is authoritative."
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Keine professionelle Beratung"
+              data-en="No Professional Advice"
+            >
+              Keine professionelle Beratung
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Obwohl ich technisches Wissen und Erfahrungen teile, stellt diese Website keine professionelle Beratung dar. F&uuml;r spezifische technische Implementierungen oder Sicherheitsbewertungen beauftragen Sie bitte geeignete professionelle Dienstleister oder kontaktieren Sie mich direkt f&uuml;r eine Beratung."
+              data-en="While I share technical knowledge and experience, this website does not constitute professional advice. For specific technical implementations or security assessments, please engage appropriate professional service providers or contact me directly for consultation."
+            >
+              Obwohl ich technisches Wissen und Erfahrungen teile, stellt diese
+              Website keine professionelle Beratung dar. F&uuml;r spezifische
+              technische Implementierungen oder Sicherheitsbewertungen
+              beauftragen Sie bitte geeignete professionelle Dienstleister oder
+              kontaktieren Sie mich direkt f&uuml;r eine Beratung.
+            </p>
+          </div>
+
+          <!-- AWS-Dienste und Drittanbieter-Services -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            <strong>Amazon Translate</strong> (&Uuml;bersetzung):
-            Blog-Beitr&auml;ge werden maschinell &uuml;bersetzt. Die
-            &Uuml;bersetzungen k&ouml;nnen Ungenauigkeiten, fehlende Nuancen
-            oder sachliche Fehler enthalten. Im Zweifel ist die deutsche
-            Originalfassung ma&szlig;geblich.
-          </li>
-          <li
-            data-de="<strong>Amazon Polly</strong> (Sprachausgabe): Die Audioausgabe von Blog-Beitr&auml;gen erfolgt maschinell. Aussprache, Betonung und Intonation k&ouml;nnen von nat&uuml;rlicher Sprache abweichen. Die Audiodateien dienen der Barrierefreiheit und ersetzen nicht das Lesen des Originaltextes."
-            data-en="<strong>Amazon Polly</strong> (text-to-speech): Audio playback of blog posts is generated by machine. Pronunciation, emphasis, and intonation may differ from natural speech. The audio files serve accessibility purposes and do not replace reading the original text."
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="AWS-Dienste und Drittanbieter-Services"
+              data-en="AWS Services and Third-Party Services"
+            >
+              AWS-Dienste und Drittanbieter-Services
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed mb-2"
+              data-de="Diese Website nutzt verschiedene Cloud-Dienste von Amazon Web Services (AWS) sowie Open-Source-Werkzeuge. F&uuml;r diese gilt:"
+              data-en="This website uses various cloud services from Amazon Web Services (AWS) as well as open-source tools. The following applies to these:"
+            >
+              Diese Website nutzt verschiedene Cloud-Dienste von Amazon Web
+              Services (AWS) sowie Open-Source-Werkzeuge. F&uuml;r diese gilt:
+            </p>
+            <ul
+              class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2"
+            >
+              <li
+                data-de="<strong>Amazon Comprehend</strong> (Textanalyse): Automatisch generierte Tags und Sentiment-Bewertungen von Kommentaren k&ouml;nnen ungenau sein &ndash; insbesondere bei Ironie, Sarkasmus oder umgangssprachlichem Deutsch. Die Ergebnisse stellen keine inhaltliche Bewertung durch den Betreiber dar."
+                data-en="<strong>Amazon Comprehend</strong> (text analysis): Automatically generated tags and comment sentiment scores may be inaccurate &ndash; particularly with irony, sarcasm, or colloquial German. The results do not represent a content evaluation by the operator."
+              >
+                <strong>Amazon Comprehend</strong> (Textanalyse): Automatisch
+                generierte Tags und Sentiment-Bewertungen von Kommentaren
+                k&ouml;nnen ungenau sein &ndash; insbesondere bei Ironie,
+                Sarkasmus oder umgangssprachlichem Deutsch. Die Ergebnisse
+                stellen keine inhaltliche Bewertung durch den Betreiber dar.
+              </li>
+              <li
+                data-de="<strong>Amazon Translate</strong> (&Uuml;bersetzung): Blog-Beitr&auml;ge werden maschinell &uuml;bersetzt. Die &Uuml;bersetzungen k&ouml;nnen Ungenauigkeiten, fehlende Nuancen oder sachliche Fehler enthalten. Im Zweifel ist die deutsche Originalfassung ma&szlig;geblich."
+                data-en="<strong>Amazon Translate</strong> (translation): Blog posts are machine-translated. Translations may contain inaccuracies, missing nuances, or factual errors. In case of doubt, the German original version is authoritative."
+              >
+                <strong>Amazon Translate</strong> (&Uuml;bersetzung):
+                Blog-Beitr&auml;ge werden maschinell &uuml;bersetzt. Die
+                &Uuml;bersetzungen k&ouml;nnen Ungenauigkeiten, fehlende Nuancen
+                oder sachliche Fehler enthalten. Im Zweifel ist die deutsche
+                Originalfassung ma&szlig;geblich.
+              </li>
+              <li
+                data-de="<strong>Amazon Polly</strong> (Sprachausgabe): Die Audioausgabe von Blog-Beitr&auml;gen erfolgt maschinell. Aussprache, Betonung und Intonation k&ouml;nnen von nat&uuml;rlicher Sprache abweichen. Die Audiodateien dienen der Barrierefreiheit und ersetzen nicht das Lesen des Originaltextes."
+                data-en="<strong>Amazon Polly</strong> (text-to-speech): Audio playback of blog posts is generated by machine. Pronunciation, emphasis, and intonation may differ from natural speech. The audio files serve accessibility purposes and do not replace reading the original text."
+              >
+                <strong>Amazon Polly</strong> (Sprachausgabe): Die Audioausgabe
+                von Blog-Beitr&auml;gen erfolgt maschinell. Aussprache, Betonung
+                und Intonation k&ouml;nnen von nat&uuml;rlicher Sprache
+                abweichen. Die Audiodateien dienen der Barrierefreiheit und
+                ersetzen nicht das Lesen des Originaltextes.
+              </li>
+              <li
+                data-de="<strong>Prometheus &amp; Grafana</strong> (Monitoring): Das Cluster-Monitoring dient ausschlie&szlig;lich der internen Infrastruktur&uuml;berwachung. Daraus abgeleitete Kennzahlen (z.&thinsp;B. Verf&uuml;gbarkeit, Antwortzeiten) sind Momentaufnahmen und keine garantierten Leistungswerte."
+                data-en="<strong>Prometheus &amp; Grafana</strong> (monitoring): Cluster monitoring serves exclusively for internal infrastructure observation. Metrics derived from it (e.g., availability, response times) are snapshots and not guaranteed performance values."
+              >
+                <strong>Prometheus &amp; Grafana</strong> (Monitoring): Das
+                Cluster-Monitoring dient ausschlie&szlig;lich der internen
+                Infrastruktur&uuml;berwachung. Daraus abgeleitete Kennzahlen
+                (z.&thinsp;B. Verf&uuml;gbarkeit, Antwortzeiten) sind
+                Momentaufnahmen und keine garantierten Leistungswerte.
+              </li>
+            </ul>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
+              data-de="Die Verf&uuml;gbarkeit und Funktionalit&auml;t dieser Dienste unterliegt den jeweiligen Nutzungsbedingungen von AWS bzw. den Lizenzbedingungen der Open-Source-Projekte. Der Betreiber &uuml;bernimmt keine Haftung f&uuml;r Ausf&auml;lle, Fehler oder &Auml;nderungen seitens der Drittanbieter."
+              data-en="The availability and functionality of these services are subject to the respective terms of use of AWS or the license terms of the open-source projects. The operator assumes no liability for outages, errors, or changes on the part of third-party providers."
+            >
+              Die Verf&uuml;gbarkeit und Funktionalit&auml;t dieser Dienste
+              unterliegt den jeweiligen Nutzungsbedingungen von AWS bzw. den
+              Lizenzbedingungen der Open-Source-Projekte. Der Betreiber
+              &uuml;bernimmt keine Haftung f&uuml;r Ausf&auml;lle, Fehler oder
+              &Auml;nderungen seitens der Drittanbieter.
+            </p>
+          </div>
+
+          <!-- Externe Links -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            <strong>Amazon Polly</strong> (Sprachausgabe): Die Audioausgabe von
-            Blog-Beitr&auml;gen erfolgt maschinell. Aussprache, Betonung und
-            Intonation k&ouml;nnen von nat&uuml;rlicher Sprache abweichen. Die
-            Audiodateien dienen der Barrierefreiheit und ersetzen nicht das
-            Lesen des Originaltextes.
-          </li>
-          <li
-            data-de="<strong>Prometheus &amp; Grafana</strong> (Monitoring): Das Cluster-Monitoring dient ausschlie&szlig;lich der internen Infrastruktur&uuml;berwachung. Daraus abgeleitete Kennzahlen (z.&thinsp;B. Verf&uuml;gbarkeit, Antwortzeiten) sind Momentaufnahmen und keine garantierten Leistungswerte."
-            data-en="<strong>Prometheus &amp; Grafana</strong> (monitoring): Cluster monitoring serves exclusively for internal infrastructure observation. Metrics derived from it (e.g., availability, response times) are snapshots and not guaranteed performance values."
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Externe Links"
+              data-en="External Links"
+            >
+              Externe Links
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Diese Website enth&auml;lt Links zu externen Websites, Repositories und Ressourcen. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites. Links werden nur als Referenz bereitgestellt. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar."
+              data-en="This website contains links to external websites, repositories, and resources. I am not responsible for the content, accuracy, or availability of these external websites. Links are provided for reference only. Permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation."
+            >
+              Diese Website enth&auml;lt Links zu externen Websites,
+              Repositories und Ressourcen. Ich bin nicht verantwortlich f&uuml;r
+              den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser
+              externen Websites. Links werden nur als Referenz bereitgestellt.
+              Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist
+              ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+            </p>
+          </div>
+
+          <!-- Geistiges Eigentum -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
-            <strong>Prometheus &amp; Grafana</strong> (Monitoring): Das
-            Cluster-Monitoring dient ausschlie&szlig;lich der internen
-            Infrastruktur&uuml;berwachung. Daraus abgeleitete Kennzahlen
-            (z.&thinsp;B. Verf&uuml;gbarkeit, Antwortzeiten) sind
-            Momentaufnahmen und keine garantierten Leistungswerte.
-          </li>
-        </ul>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed mt-2"
-          data-de="Die Verf&uuml;gbarkeit und Funktionalit&auml;t dieser Dienste unterliegt den jeweiligen Nutzungsbedingungen von AWS bzw. den Lizenzbedingungen der Open-Source-Projekte. Der Betreiber &uuml;bernimmt keine Haftung f&uuml;r Ausf&auml;lle, Fehler oder &Auml;nderungen seitens der Drittanbieter."
-          data-en="The availability and functionality of these services are subject to the respective terms of use of AWS or the license terms of the open-source projects. The operator assumes no liability for outages, errors, or changes on the part of third-party providers."
-        >
-          Die Verf&uuml;gbarkeit und Funktionalit&auml;t dieser Dienste
-          unterliegt den jeweiligen Nutzungsbedingungen von AWS bzw. den
-          Lizenzbedingungen der Open-Source-Projekte. Der Betreiber
-          &uuml;bernimmt keine Haftung f&uuml;r Ausf&auml;lle, Fehler oder
-          &Auml;nderungen seitens der Drittanbieter.
-        </p>
-      </section>
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Geistiges Eigentum"
+              data-en="Intellectual Property"
+            >
+              Geistiges Eigentum
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Alle Originalinhalte, einschlie&szlig;lich Projektdokumentation, Code-Beispiele und schriftliche Materialien, sind mein geistiges Eigentum, sofern nicht anders angegeben. Materialien von Drittanbietern werden mit entsprechender Namensnennung und unter anwendbaren Lizenzen verwendet."
+              data-en="All original content, including project documentation, code examples, and written materials, is my intellectual property unless otherwise stated. Third-party materials are used with appropriate attribution and under applicable licenses."
+            >
+              Alle Originalinhalte, einschlie&szlig;lich Projektdokumentation,
+              Code-Beispiele und schriftliche Materialien, sind mein geistiges
+              Eigentum, sofern nicht anders angegeben. Materialien von
+              Drittanbietern werden mit entsprechender Namensnennung und unter
+              anwendbaren Lizenzen verwendet.
+            </p>
+          </div>
 
-      <!-- Externe Links / External Links -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Externe Links"
-          data-en="External Links"
-        >
-          Externe Links
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Diese Website enth&auml;lt Links zu externen Websites, Repositories und Ressourcen. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites. Links werden nur als Referenz bereitgestellt. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar."
-          data-en="This website contains links to external websites, repositories, and resources. I am not responsible for the content, accuracy, or availability of these external websites. Links are provided for reference only. Permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation."
-        >
-          Diese Website enth&auml;lt Links zu externen Websites, Repositories
-          und Ressourcen. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die
-          Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites.
-          Links werden nur als Referenz bereitgestellt. Eine permanente
-          inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete
-          Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
-        </p>
-      </section>
+          <!-- Keine Garantie -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Keine Garantie"
+              data-en="No Warranty"
+            >
+              Keine Garantie
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Diese Website und alle Inhalte werden &bdquo;wie besehen&ldquo; ohne jegliche Garantie zur Verf&uuml;gung gestellt. Ich lehne alle ausdr&uuml;cklichen oder stillschweigenden Garantien ab, einschlie&szlig;lich, aber nicht beschr&auml;nkt auf Garantien der Marktg&auml;ngigkeit, der Eignung f&uuml;r einen bestimmten Zweck und der Nichtverletzung."
+              data-en="This website and all content are provided &ldquo;as is&rdquo; without any warranty. I disclaim all express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement."
+            >
+              Diese Website und alle Inhalte werden &bdquo;wie besehen&ldquo;
+              ohne jegliche Garantie zur Verf&uuml;gung gestellt. Ich lehne alle
+              ausdr&uuml;cklichen oder stillschweigenden Garantien ab,
+              einschlie&szlig;lich, aber nicht beschr&auml;nkt auf Garantien der
+              Marktg&auml;ngigkeit, der Eignung f&uuml;r einen bestimmten Zweck
+              und der Nichtverletzung.
+            </p>
+          </div>
 
-      <!-- Geistiges Eigentum / Intellectual Property -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Geistiges Eigentum"
-          data-en="Intellectual Property"
-        >
-          Geistiges Eigentum
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Alle Originalinhalte, einschlie&szlig;lich Projektdokumentation, Code-Beispiele und schriftliche Materialien, sind mein geistiges Eigentum, sofern nicht anders angegeben. Materialien von Drittanbietern werden mit entsprechender Namensnennung und unter anwendbaren Lizenzen verwendet."
-          data-en="All original content, including project documentation, code examples, and written materials, is my intellectual property unless otherwise stated. Third-party materials are used with appropriate attribution and under applicable licenses."
-        >
-          Alle Originalinhalte, einschlie&szlig;lich Projektdokumentation,
-          Code-Beispiele und schriftliche Materialien, sind mein geistiges
-          Eigentum, sofern nicht anders angegeben. Materialien von
-          Drittanbietern werden mit entsprechender Namensnennung und unter
-          anwendbaren Lizenzen verwendet.
-        </p>
-      </section>
+          <!-- Offenlegung von Sicherheitsluecken -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Offenlegung von Sicherheitsl&uuml;cken"
+              data-en="Security Vulnerability Disclosure"
+            >
+              Offenlegung von Sicherheitsl&uuml;cken
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Wenn Sie Sicherheitsl&uuml;cken auf dieser Website entdecken, melden Sie diese bitte verantwortungsbewusst per E-Mail an <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
+              data-en="If you discover security vulnerabilities on this website, please report them responsibly via email to <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
+            >
+              Wenn Sie Sicherheitsl&uuml;cken auf dieser Website entdecken,
+              melden Sie diese bitte verantwortungsbewusst per E-Mail an
+              <a
+                href="mailto:andy.schlegel23@googlemail.com"
+                class="text-sky-500 hover:text-sky-400"
+                >andy.schlegel23@googlemail.com</a
+              >.
+            </p>
+          </div>
 
-      <!-- Keine Garantie / No Warranty -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Keine Garantie"
-          data-en="No Warranty"
-        >
-          Keine Garantie
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Diese Website und alle Inhalte werden &bdquo;wie besehen&ldquo; ohne jegliche Garantie zur Verf&uuml;gung gestellt. Ich lehne alle ausdr&uuml;cklichen oder stillschweigenden Garantien ab, einschlie&szlig;lich, aber nicht beschr&auml;nkt auf Garantien der Marktg&auml;ngigkeit, der Eignung f&uuml;r einen bestimmten Zweck und der Nichtverletzung."
-          data-en="This website and all content are provided &ldquo;as is&rdquo; without any warranty. I disclaim all express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement."
-        >
-          Diese Website und alle Inhalte werden &bdquo;wie besehen&ldquo; ohne
-          jegliche Garantie zur Verf&uuml;gung gestellt. Ich lehne alle
-          ausdr&uuml;cklichen oder stillschweigenden Garantien ab,
-          einschlie&szlig;lich, aber nicht beschr&auml;nkt auf Garantien der
-          Marktg&auml;ngigkeit, der Eignung f&uuml;r einen bestimmten Zweck und
-          der Nichtverletzung.
-        </p>
-      </section>
+          <!-- Kontakt -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="Kontakt"
+              data-en="Contact"
+            >
+              Kontakt
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Bei Fragen zu diesem Haftungsausschluss oder zu Inhalten auf dieser Website kontaktieren Sie mich bitte per E-Mail an <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
+              data-en="If you have questions about this disclaimer or content on this website, please contact me via email at <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
+            >
+              Bei Fragen zu diesem Haftungsausschluss oder zu Inhalten auf
+              dieser Website kontaktieren Sie mich bitte per E-Mail an
+              <a
+                href="mailto:andy.schlegel23@googlemail.com"
+                class="text-sky-500 hover:text-sky-400"
+                >andy.schlegel23@googlemail.com</a
+              >.
+            </p>
+          </div>
 
-      <!-- Offenlegung von Sicherheitslücken / Security Vulnerability Disclosure -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Offenlegung von Sicherheitsl&uuml;cken"
-          data-en="Security Vulnerability Disclosure"
-        >
-          Offenlegung von Sicherheitsl&uuml;cken
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Wenn Sie Sicherheitsl&uuml;cken auf dieser Website entdecken, melden Sie diese bitte verantwortungsbewusst per E-Mail an <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
-          data-en="If you discover security vulnerabilities on this website, please report them responsibly via email to <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
-        >
-          Wenn Sie Sicherheitsl&uuml;cken auf dieser Website entdecken, melden
-          Sie diese bitte verantwortungsbewusst per E-Mail an
-          <a
-            href="mailto:andy.schlegel23@googlemail.com"
-            class="text-sky-500 hover:text-sky-400"
-            >andy.schlegel23@googlemail.com</a
-          >.
-        </p>
-      </section>
-
-      <!-- Kontakt / Contact -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Kontakt"
-          data-en="Contact"
-        >
-          Kontakt
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Bei Fragen zu diesem Haftungsausschluss oder zu Inhalten auf dieser Website kontaktieren Sie mich bitte per E-Mail an <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
-          data-en="If you have questions about this disclaimer or content on this website, please contact me via email at <a href='mailto:andy.schlegel23@googlemail.com' class='text-sky-500 hover:text-sky-400'>andy.schlegel23@googlemail.com</a>."
-        >
-          Bei Fragen zu diesem Haftungsausschluss oder zu Inhalten auf dieser
-          Website kontaktieren Sie mich bitte per E-Mail an
-          <a
-            href="mailto:andy.schlegel23@googlemail.com"
-            class="text-sky-500 hover:text-sky-400"
-            >andy.schlegel23@googlemail.com</a
-          >.
-        </p>
-      </section>
-
-      <!-- Stand / Last Updated -->
-      <section class="mb-8">
-        <p
-          class="text-sm text-slate-400 dark:text-slate-500"
-          data-de="Stand: M&auml;rz 2026"
-          data-en="Last updated: March 2026"
-        >
-          Stand: M&auml;rz 2026
-        </p>
-      </section>
+          <!-- Stand / Last updated -->
+          <div class="reveal-v2 pt-4">
+            <p
+              class="text-sm text-slate-400 dark:text-slate-500"
+              data-de="Stand: M&auml;rz 2026"
+              data-en="Last updated: March 2026"
+            >
+              Stand: M&auml;rz 2026
+            </p>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div
           class="flex flex-col sm:flex-row items-center justify-between gap-4"
         >
@@ -468,7 +746,7 @@
             >
             <a
               href="./haftungsausschluss.html"
-              class="text-sky-600 dark:text-sky-400"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
               data-de="Haftungsausschluss"
               data-en="Disclaimer"
               >Haftungsausschluss</a
@@ -479,7 +757,7 @@
               href="https://github.com/AndySchlegel"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-github text-xl"></i>
             </a>
@@ -487,7 +765,7 @@
               href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-linkedin text-xl"></i>
             </a>
@@ -495,8 +773,13 @@
         </div>
       </div>
     </footer>
-    <!-- Language toggle script -->
+
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Language toggle -->
     <script src="./js/lang.js"></script>
+
+    <!-- Language switcher for static text -->
     <script>
       function updatePageLanguage() {
         var lang = window.blogLang ? window.blogLang.get() : "de";
@@ -508,6 +791,83 @@
       }
       document.addEventListener("DOMContentLoaded", updatePageLanguage);
       window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-menu-toggle");
+        var menu = document.getElementById("mobile-menu");
+        if (toggle && menu) {
+          toggle.addEventListener("click", function () {
+            menu.classList.toggle("hidden");
+          });
+        }
+      });
+    </script>
+
+    <!-- V2 Effects Engine (lightweight for legal pages) -->
+    <script>
+      (function () {
+        "use strict";
+
+        // --- EFFECT: Glowing Card Borders ---
+        function initGlowCards() {
+          var cards = document.querySelectorAll(".glow-card");
+          for (var i = 0; i < cards.length; i++) {
+            (function (card) {
+              card.addEventListener("mousemove", function (e) {
+                var rect = card.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                card.style.setProperty("--glow-x", x + "px");
+                card.style.setProperty("--glow-y", y + "px");
+              });
+            })(cards[i]);
+          }
+        }
+
+        // --- EFFECT: Cursor Glow ---
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
+        // --- EFFECT: Scroll Reveal ---
+        function initScrollReveal() {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          var elements = document.querySelectorAll(".reveal-v2");
+          for (var i = 0; i < elements.length; i++) {
+            observer.observe(elements[i]);
+          }
+        }
+
+        // --- Initialize effects on DOM ready ---
+        document.addEventListener("DOMContentLoaded", function () {
+          initGlowCards();
+          initScrollReveal();
+          initCursorGlow();
+        });
+      })();
     </script>
   </body>
 </html>

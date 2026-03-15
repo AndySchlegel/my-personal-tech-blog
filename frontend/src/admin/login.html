@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login - Blog Admin</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -34,33 +34,216 @@
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
-    <link rel="stylesheet" href="../css/styles.css" />
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="../js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Login Effects System
+         Inline CSS -- no styles.css import.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Lamp / Conic Gradient --- */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Glowing Card Border --- */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.1),
+          0 8px 24px rgba(139, 92, 246, 0.08);
+      }
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.08),
+          0 8px 24px rgba(139, 92, 246, 0.05);
+      }
+
+      /* --- EFFECT: Floating Animation --- */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      .float-slow {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      /* --- Fade In animation --- */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+
+      /* --- Gradient button --- */
+      .btn-gradient {
+        background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+        transition: all 0.3s ease;
+      }
+      .btn-gradient:hover {
+        box-shadow:
+          0 8px 24px rgba(56, 189, 248, 0.3),
+          0 4px 12px rgba(139, 92, 246, 0.2);
+        transform: translateY(-2px);
+      }
+      .btn-gradient:active {
+        transform: scale(0.98);
+      }
+
+      /* --- Dot grid background --- */
+      .dot-grid {
+        background-image: radial-gradient(
+          circle,
+          rgba(148, 163, 184, 0.08) 1px,
+          transparent 1px
+        );
+        background-size: 32px 32px;
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex items-center justify-center"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex items-center justify-center lamp-effect dot-grid"
   >
     <!-- Login Card -->
-    <div class="w-full max-w-sm mx-4">
-      <!-- Logo -->
+    <div class="w-full max-w-sm mx-4 relative z-10">
+      <!-- Logo with floating animation -->
       <div class="text-center mb-8 fade-in">
         <div
-          class="logo-icon w-14 h-14 bg-sky-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
+          class="float-slow w-16 h-16 bg-gradient-to-br from-sky-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-sky-500/25"
         >
-          <i class="ti ti-terminal-2 text-white text-2xl"></i>
+          <i class="ti ti-terminal-2 text-white text-3xl"></i>
         </div>
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-          Blog Admin
+        <h1 class="text-2xl font-extrabold">
+          <span class="text-slate-900 dark:text-white">Blog </span>
+          <span
+            class="bg-gradient-to-r from-sky-500 to-purple-600 bg-clip-text text-transparent"
+            >Admin</span
+          >
         </h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Admin Dashboard
         </p>
       </div>
 
-      <!-- Login box -->
+      <!-- Login box with glow-card effect -->
       <div
-        class="fade-in bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700/50 p-8"
+        class="glow-card fade-in bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 p-8"
         style="animation-delay: 0.1s"
       >
         <!-- Dev mode notice -->
@@ -79,11 +262,11 @@
           </p>
         </div>
 
-        <!-- Sign in button -->
+        <!-- Sign in button with gradient -->
         <button
           id="login-btn"
           onclick="AdminAuth.login()"
-          class="w-full flex items-center justify-center gap-2.5 px-5 py-3 bg-sky-500 hover:bg-sky-400 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-sky-500/25 active:scale-[0.98]"
+          class="btn-gradient w-full flex items-center justify-center gap-2.5 px-5 py-3 text-white font-medium rounded-xl"
         >
           <i class="ti ti-lock text-lg"></i>
           <span id="login-btn-text">Sign in with Cognito</span>
@@ -111,11 +294,11 @@
         </a>
       </div>
 
-      <!-- Theme toggle (bottom right) -->
+      <!-- Theme toggle (bottom right, glassmorphism) -->
       <div class="fixed bottom-4 right-4">
         <button
           id="theme-toggle"
-          class="theme-toggle-btn w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
+          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm transition-all hover:shadow-md"
           aria-label="Toggle dark mode"
         >
           <i id="theme-icon-sun" class="ti ti-sun text-lg"></i>
@@ -143,6 +326,15 @@
         if (AdminAuth.isAuthenticated()) {
           window.location.href = "/admin/index.html";
         }
+
+        // Glow-card mouse tracking
+        document.querySelectorAll(".glow-card").forEach(function (card) {
+          card.addEventListener("mousemove", function (e) {
+            var rect = card.getBoundingClientRect();
+            card.style.setProperty("--glow-x", e.clientX - rect.left + "px");
+            card.style.setProperty("--glow-y", e.clientY - rect.top + "px");
+          });
+        });
       });
     </script>
   </body>

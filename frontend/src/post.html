@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="de" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loading... - Andy Schlegel Tech Blog</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -20,17 +20,20 @@
       };
     </script>
 
-    <!-- Fonts + Icons -->
+    <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Tabler Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
+
     <!-- Devicon (colored tech/brand icons) -->
     <link
       rel="stylesheet"
@@ -47,59 +50,630 @@
     />
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 
-    <!-- Our styles + theme toggle -->
-    <link rel="stylesheet" href="./css/styles.css" />
-    <link rel="stylesheet" href="./css/prose.css" />
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Effects System + Post Page Styles
+         Inline CSS for all visual effects and
+         markdown prose styling. No external
+         styles.css needed.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Lamp / Conic Gradient ---
+         Spotlight beam radiating down from top center.
+         Creates a subtle "stage lighting" feel on the post header. */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Light mode: softer lamp beam */
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Glowing Card Border ---
+         Mouse-following gradient glow on card borders.
+         Used on comment cards and navigation cards. */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.1),
+          0 8px 24px rgba(139, 92, 246, 0.08);
+      }
+      /* Light mode: toned down glow */
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.08),
+          0 8px 24px rgba(139, 92, 246, 0.05);
+      }
+
+      /* --- EFFECT: Nav Link Hover ---
+         Simple color highlight on hover for nav links. */
+      .nav-link-v2 {
+        position: relative;
+        display: inline-block;
+        transition: color 0.3s ease;
+      }
+      .nav-link-v2:hover {
+        color: #0ea5e9 !important;
+      }
+      .dark .nav-link-v2:hover {
+        color: #38bdf8 !important;
+      }
+
+      /* --- EFFECT: Scroll Reveal ---
+         Elements fade in and slide up when scrolled into view. */
+      .reveal-v2 {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-v2.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-v2.reveal-delay-1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-v2.reveal-delay-2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-v2.reveal-delay-3 {
+        transition-delay: 0.3s;
+      }
+
+      /* --- EFFECT: Section divider gradient line --- */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.3),
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* --- Loading skeleton animation --- */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .skeleton {
+        animation: pulse 1.5s infinite;
+      }
+
+      /* --- PROSE: Markdown rendered content styles ---
+         These styles apply to the article body after
+         marked.js converts Markdown to HTML. */
+
+      /* Base text */
+      .prose {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #475569; /* slate-600 */
+      }
+      .dark .prose {
+        color: #94a3b8; /* slate-400 */
+      }
+
+      /* Headings */
+      .prose h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        color: #0f172a;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+      }
+      .dark .prose h2 {
+        color: #f1f5f9;
+        border-bottom-color: #1e293b;
+      }
+      .prose h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        color: #0f172a;
+      }
+      .dark .prose h3 {
+        color: #e2e8f0;
+      }
+      .prose h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #0f172a;
+      }
+      .dark .prose h4 {
+        color: #e2e8f0;
+      }
+
+      /* Paragraphs */
+      .prose p {
+        margin-bottom: 1.25rem;
+      }
+
+      /* Links */
+      .prose a {
+        color: #0284c7;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .dark .prose a {
+        color: #38bdf8;
+      }
+      .prose a:hover {
+        color: #0369a1;
+      }
+      .dark .prose a:hover {
+        color: #7dd3fc;
+      }
+
+      /* Bold text */
+      .prose strong {
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .dark .prose strong {
+        color: #f1f5f9;
+      }
+
+      /* Lists */
+      .prose ul,
+      .prose ol {
+        margin-bottom: 1.25rem;
+        padding-left: 1.5rem;
+      }
+      .prose ul {
+        list-style-type: disc;
+      }
+      .prose ol {
+        list-style-type: decimal;
+      }
+      .prose li {
+        margin-bottom: 0.5rem;
+      }
+      .prose li > ul,
+      .prose li > ol {
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+      }
+
+      /* Inline code (single backtick) */
+      .prose code {
+        font-family: "Fira Code", "JetBrains Mono", "Consolas", monospace;
+        font-size: 0.875rem;
+        background: #f1f5f9;
+        color: #0f172a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 0.25rem;
+      }
+      .dark .prose code {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
+
+      /* Code blocks (triple backtick) */
+      .prose pre {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+      }
+      .prose pre code {
+        background: transparent;
+        color: #e2e8f0;
+        padding: 0;
+        font-size: 0.85rem;
+        line-height: 1.7;
+      }
+
+      /* Blockquote */
+      .prose blockquote {
+        border-left: 4px solid #38bdf8;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.25rem;
+        background: #f1f5f9;
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
+      .dark .prose blockquote {
+        background: #1e293b;
+      }
+      .prose blockquote p {
+        margin-bottom: 0;
+        font-style: italic;
+      }
+
+      /* Horizontal rule */
+      .prose hr {
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 2rem 0;
+      }
+      .dark .prose hr {
+        border-top-color: #1e293b;
+      }
+
+      /* Images */
+      .prose img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        margin: 1.5rem 0;
+      }
+
+      /* Tables */
+      .prose table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+      }
+      .prose th {
+        text-align: left;
+        font-weight: 600;
+        padding: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+      }
+      .dark .prose th {
+        border-bottom-color: #334155;
+        color: #f1f5f9;
+      }
+      .prose td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .dark .prose td {
+        border-bottom-color: #1e293b;
+      }
+
+      /* --- Like button heart animation --- */
+      .like-btn.liked .like-heart {
+        color: #f43f5e;
+      }
+      .like-btn.liked {
+        border-color: rgba(244, 63, 94, 0.3) !important;
+        color: #f43f5e !important;
+      }
+
+      /* --- EFFECT: Ambient Background Animation ---
+         Slow-moving gradient blobs behind post content. */
+      @keyframes ambient-drift {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(30px, -20px) scale(1.05);
+        }
+        50% {
+          transform: translate(-20px, 15px) scale(0.95);
+        }
+        75% {
+          transform: translate(15px, 25px) scale(1.02);
+        }
+      }
+      .ambient-bg::before,
+      .ambient-bg::after {
+        content: "";
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        filter: blur(120px);
+        opacity: 0.08;
+      }
+      .dark .ambient-bg::before,
+      .dark .ambient-bg::after {
+        opacity: 0.12;
+      }
+      .ambient-bg::before {
+        top: 20%;
+        left: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, #38bdf8, transparent 70%);
+        animation: ambient-drift 20s ease-in-out infinite;
+      }
+      .ambient-bg::after {
+        bottom: 10%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, #8b5cf6, transparent 70%);
+        animation: ambient-drift 25s ease-in-out infinite reverse;
+      }
+
+      /* --- EFFECT: Content Area Subtle Background ---
+         Faint dot-grid + slow-moving inner glow for the article section. */
+      @keyframes content-glow-shift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+      #post-content-section {
+        position: relative;
+      }
+      #post-content-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          circle at 1px 1px,
+          rgba(148, 163, 184, 0.12) 1px,
+          transparent 0
+        );
+        background-size: 24px 24px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .dark #post-content-section::before {
+        background-image: radial-gradient(
+          circle at 1px 1px,
+          rgba(148, 163, 184, 0.08) 1px,
+          transparent 0
+        );
+      }
+      #post-content-section::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.07),
+          transparent 40%,
+          rgba(139, 92, 246, 0.07),
+          transparent 80%
+        );
+        background-size: 200% 200%;
+        animation: content-glow-shift 12s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .dark #post-content-section::after {
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.1),
+          transparent 40%,
+          rgba(139, 92, 246, 0.1),
+          transparent 80%
+        );
+        background-size: 200% 200%;
+      }
+      /* --- Comment fadeIn animation ---
+         Used by post.js when rendering comment items. */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #post-content-section > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+    class="ambient-bg bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col"
   >
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
     <!-- Reading progress bar (grows 0-100% as user scrolls through article) -->
     <div
       id="reading-progress"
-      class="fixed top-0 left-0 h-[3px] bg-sky-500 z-[60] transition-none"
+      class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-sky-500 to-purple-500 z-[60] transition-none"
       style="width: 0%"
     ></div>
 
     <!-- ==================== HEADER ==================== -->
+    <!-- Glassmorphism nav with gradient hover on links (V2 pattern) -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo (icon only) -->
+        <!-- Logo (gradient icon, V2 style) -->
         <a href="./index.html" class="flex items-center group">
           <div
-            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
         </a>
-        <nav class="hidden sm:flex items-center gap-6">
+
+        <!-- Desktop navigation with gradient hover (no active item on post page) -->
+        <nav class="hidden sm:flex items-center gap-8">
           <a
             href="./index.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Home</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Home
+          </a>
           <a
             href="./about.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About me</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            About me
+          </a>
           <a
             href="./skills.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Skills</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Skills
+          </a>
           <a
             href="./blog.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Blog</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Blog
+          </a>
         </nav>
+
+        <!-- Right side controls -->
         <div class="flex items-center gap-2">
           <!-- Language toggle (DE/EN) -->
           <button
@@ -111,6 +685,7 @@
             <span id="lang-label" class="text-xs font-bold">DE</span>
           </button>
 
+          <!-- Theme toggle -->
           <button
             id="theme-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -119,8 +694,46 @@
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
+
+          <!-- Mobile menu toggle -->
+          <button
+            id="mobile-menu-toggle"
+            class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Open menu"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
         </div>
       </div>
+
+      <!-- Mobile navigation (no active item on post page) -->
+      <nav
+        id="mobile-menu"
+        class="sm:hidden hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl"
+      >
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Home</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >About me</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
+          >
+        </div>
+      </nav>
     </header>
 
     <!-- ==================== STICKY AUDIO BAR (appears when scrolling past post header) ==================== -->
@@ -180,22 +793,26 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
-      <!-- Section 1: Back link + Post header (default body bg) -->
-      <div class="py-8 sm:py-12 pb-6">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <!-- Section 1: Back link + Post header with subtle lamp effect -->
+      <div class="lamp-effect pt-6 sm:pt-8 pb-4">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
           <!-- Back link (always goes to blog page) -->
           <a
             href="./blog.html"
-            class="inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors mb-8 group"
+            class="inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors mb-4 group"
           >
             <i
               class="ti ti-arrow-left text-base group-hover:-translate-x-1 transition-transform"
             ></i>
-            Back to Blog Posts
+            <span
+              data-de="Zurueck zu den Blog Posts"
+              data-en="Back to Blog Posts"
+              >Back to Blog Posts</span
+            >
           </a>
 
-          <!-- Loading state -->
-          <div id="post-loading" class="py-12">
+          <!-- Loading state (skeleton placeholders shown while API loads) -->
+          <div id="post-loading" class="py-6">
             <div
               class="skeleton h-6 w-24 bg-slate-200 dark:bg-slate-700 rounded-full mb-4"
             ></div>
@@ -222,12 +839,12 @@
             ></div>
           </div>
 
-          <!-- Post header (hidden until loaded) -->
+          <!-- Post header (hidden until loaded, revealed by post.js) -->
           <div id="post-header" class="hidden relative">
-            <!-- Category visual (animated floating blobs, rendered by JS) -->
+            <!-- Category visual (subtle ambient glow from category color) -->
             <div
               id="category-visual"
-              class="absolute -right-16 -top-16 w-80 h-80 pointer-events-none opacity-0 transition-opacity duration-1000"
+              class="absolute -right-24 -top-24 w-64 h-64 pointer-events-none opacity-15 blur-[80px] transition-opacity duration-1000"
               style="z-index: 0"
             ></div>
 
@@ -321,17 +938,23 @@
         </div>
       </div>
 
-      <!-- Section 2: Post content (alternating lighter bg) -->
-      <div id="post-content-section" class="bg-white dark:bg-slate-900 hidden">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <!-- Gradient divider between header and content -->
+      <div class="section-divider"></div>
+
+      <!-- Section 2: Post content (rendered Markdown article body) -->
+      <div
+        id="post-content-section"
+        class="bg-white/50 dark:bg-slate-900/50 hidden"
+      >
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
           <article id="post-article">
-            <!-- Rendered Markdown content -->
+            <!-- Rendered Markdown content (populated by post.js) -->
             <div id="post-content" class="prose"></div>
           </article>
         </div>
       </div>
 
-      <!-- Section 3: Engagement bar (like button + stats) -->
+      <!-- Section 3: Engagement bar (like button + jump to comments) -->
       <div id="post-engagement-section" class="hidden">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6">
           <div class="flex items-center justify-between">
@@ -352,14 +975,17 @@
             >
               <i class="ti ti-message-circle text-lg"></i>
               <span class="text-sm font-semibold"
-                ><span id="engagement-comment-count">0</span> Kommentare</span
+                ><span id="engagement-comment-count">0</span>
+                <span data-de="Kommentare" data-en="Comments"
+                  >Kommentare</span
+                ></span
               >
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Section 4: Navigation (default body bg) -->
+      <!-- Section 4: Prev/Next post navigation -->
       <div id="post-footer-section" class="hidden">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <!-- Prev/Next post navigation (populated by post.js) -->
@@ -370,11 +996,17 @@
         </div>
       </div>
 
+      <!-- Gradient divider before comments -->
+      <div class="section-divider"></div>
+
       <!-- Section 5: Discussion / Comments -->
-      <div id="post-comments-section" class="bg-white dark:bg-slate-900 hidden">
+      <div
+        id="post-comments-section"
+        class="bg-white/50 dark:bg-slate-900/50 hidden"
+      >
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-          <!-- Section header -->
-          <div class="flex items-center gap-3 mb-8">
+          <!-- Section header with icon in colored rounded-box (V2 pattern) -->
+          <div class="flex items-center gap-3 mb-8 reveal-v2">
             <div
               class="w-9 h-9 bg-sky-500/10 rounded-lg flex items-center justify-center"
             >
@@ -411,9 +1043,9 @@
             </p>
           </div>
 
-          <!-- Comment form -->
+          <!-- Comment form (glassmorphism card style) -->
           <div
-            class="p-6 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30"
+            class="glow-card p-6 rounded-xl border border-slate-200/50 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/30 backdrop-blur-sm reveal-v2"
           >
             <h3
               class="text-base font-semibold text-slate-900 dark:text-white mb-2"
@@ -472,7 +1104,7 @@
                 <button
                   type="submit"
                   id="comment-submit-btn"
-                  class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold rounded-lg transition-colors"
+                  class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white text-sm font-semibold rounded-lg transition-all shadow-sm hover:shadow-md"
                 >
                   <span data-de="Kommentar senden" data-en="Send comment"
                     >Kommentar senden</span
@@ -502,9 +1134,9 @@
 
     <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div
           class="flex flex-col sm:flex-row items-center justify-between gap-4"
         >
@@ -542,7 +1174,7 @@
               href="https://github.com/AndySchlegel"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-github text-xl"></i>
             </a>
@@ -550,7 +1182,7 @@
               href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-linkedin text-xl"></i>
             </a>
@@ -559,8 +1191,100 @@
       </div>
     </footer>
 
-    <!-- Post script (loads article + renders Markdown) -->
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Language toggle -->
     <script src="./js/lang.js"></script>
+
+    <!-- Post script (loads article from API + renders Markdown) -->
     <script src="./js/post.js"></script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-menu-toggle");
+        var menu = document.getElementById("mobile-menu");
+        if (toggle && menu) {
+          toggle.addEventListener("click", function () {
+            menu.classList.toggle("hidden");
+          });
+        }
+      });
+    </script>
+
+    <!-- ============================================
+         V2 Effects Engine (subset for post page)
+         Only includes effects used on this page:
+         glow cards and scroll reveal.
+         ============================================ -->
+    <script>
+      (function () {
+        "use strict";
+
+        // --- EFFECT: Glowing Card Borders ---
+        // Tracks mouse position on .glow-card elements
+        // and updates CSS custom properties for the radial gradient.
+        function initGlowCards() {
+          var cards = document.querySelectorAll(".glow-card");
+          for (var i = 0; i < cards.length; i++) {
+            (function (card) {
+              card.addEventListener("mousemove", function (e) {
+                var rect = card.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                card.style.setProperty("--glow-x", x + "px");
+                card.style.setProperty("--glow-y", y + "px");
+              });
+            })(cards[i]);
+          }
+        }
+
+        // --- EFFECT: Scroll Reveal ---
+        // Observes .reveal-v2 elements and adds .revealed class
+        // when they scroll into view.
+        function initScrollReveal() {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          var elements = document.querySelectorAll(".reveal-v2");
+          for (var i = 0; i < elements.length; i++) {
+            observer.observe(elements[i]);
+          }
+        }
+
+        // --- EFFECT: Cursor Glow ---
+        // Soft radial glow that follows the mouse pointer
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
+        // --- Initialize effects on DOM ready ---
+        document.addEventListener("DOMContentLoaded", function () {
+          initGlowCards();
+          initScrollReveal();
+          initCursorGlow();
+        });
+      })();
+    </script>
   </body>
 </html>

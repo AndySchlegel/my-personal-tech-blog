@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Impressum - Andy Schlegel Tech Blog</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -20,45 +20,256 @@
       };
     </script>
 
-    <!-- Fonts + Icons -->
+    <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Tabler Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
-    <!-- Devicon (colored tech/brand icons) -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-    />
-    <link rel="stylesheet" href="./css/styles.css" />
+
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Effects System (Legal Page - Lightweight)
+         Only includes effects relevant for legal pages:
+         lamp-effect, glow-card, reveal-v2, section-divider.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Lamp / Conic Gradient ---
+         Spotlight beam radiating down from top center.
+         Creates a subtle "stage lighting" feel on the hero. */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Light mode: softer lamp beam */
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Glowing Card Border ---
+         Mouse-following gradient glow on card borders.
+         Uses CSS custom properties set by JS. */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        box-shadow:
+          0 12px 40px rgba(56, 189, 248, 0.08),
+          0 4px 16px rgba(139, 92, 246, 0.05);
+      }
+      /* Light mode: toned down glow */
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 12px 40px rgba(56, 189, 248, 0.06),
+          0 4px 16px rgba(139, 92, 246, 0.03);
+      }
+
+      /* --- EFFECT: Scroll Reveal ---
+         Elements fade in and slide up when scrolled into view. */
+      .reveal-v2 {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-v2.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-v2.reveal-delay-1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-v2.reveal-delay-2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-v2.reveal-delay-3 {
+        transition-delay: 0.3s;
+      }
+
+      /* --- Section divider gradient line --- */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.3),
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col"
   >
-    <!-- ==================== HEADER (language toggle + theme toggle + mobile menu) ==================== -->
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <!-- Glassmorphism nav matching index-v2 design -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo (icon only) -->
+        <!-- Logo -->
         <a href="./index.html" class="flex items-center group">
           <div
-            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
         </a>
-        <nav class="hidden sm:flex items-center gap-6">
+
+        <!-- Desktop navigation (no item active on legal pages) -->
+        <nav class="hidden sm:flex items-center gap-8">
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -80,8 +291,10 @@
             >Blog</a
           >
         </nav>
+
+        <!-- Right side controls -->
         <div class="flex items-center gap-2">
-          <!-- Language toggle (DE/EN) -->
+          <!-- Language toggle -->
           <button
             id="lang-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -90,6 +303,8 @@
           >
             <span id="lang-label" class="text-xs font-bold">DE</span>
           </button>
+
+          <!-- Theme toggle -->
           <button
             id="theme-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -98,154 +313,223 @@
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
+
+          <!-- Mobile menu -->
+          <button
+            id="mobile-menu-toggle"
+            class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Open menu"
+          >
+            <i class="ti ti-menu-2 text-xl"></i>
+          </button>
         </div>
       </div>
+
+      <!-- Mobile navigation -->
+      <nav
+        id="mobile-menu"
+        class="sm:hidden hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl"
+      >
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Home</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >About me</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
+            >Blog</a
+          >
+        </div>
+      </nav>
     </header>
 
-    <!-- ==================== CONTENT ==================== -->
-    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
-      <h1
-        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
-      >
-        <span
-          class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1">
+      <!-- ===== HERO: Page title with lamp effect ===== -->
+      <section class="lamp-effect">
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-6 sm:pt-14 sm:pb-8 relative z-10"
         >
-          <i class="ti ti-gavel text-xl text-sky-500"></i>
-        </span>
-        <span data-de="Impressum" data-en="Legal Notice">Impressum</span>
-      </h1>
-
-      <!-- Angaben gemäß DDG (ehemals TMG) / Information pursuant to DDG -->
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Angaben gem. &sect; 5 DDG"
-          data-en="Information pursuant to &sect; 5 DDG (German Digital Services Act)"
-        >
-          Angaben gem. &sect; 5 DDG
-        </h2>
-        <div class="text-slate-600 dark:text-slate-400 space-y-1">
-          <p>Andy Schlegel</p>
-          <p>Zimmerstr. 2</p>
-          <p>04109 Leipzig</p>
-        </div>
-      </section>
-
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Kontakt"
-          data-en="Contact"
-        >
-          Kontakt
-        </h2>
-        <div class="text-slate-600 dark:text-slate-400 space-y-1">
-          <p
-            data-de="E-Mail: andy.schlegel23@googlemail.com"
-            data-en="Email: andy.schlegel23@googlemail.com"
+          <h1
+            class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-4"
           >
-            E-Mail: andy.schlegel23@googlemail.com
-          </p>
+            <span
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-purple-500/20 flex items-center justify-center shrink-0"
+            >
+              <i class="ti ti-gavel text-2xl text-sky-500"></i>
+            </span>
+            <span data-de="Impressum" data-en="Legal Notice">Impressum</span>
+          </h1>
         </div>
       </section>
 
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV"
-          data-en="Responsible for content pursuant to &sect; 18 para. 2 MStV (German Interstate Media Treaty)"
-        >
-          Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV
-        </h2>
-        <div class="text-slate-600 dark:text-slate-400 space-y-1">
-          <p>Andy Schlegel</p>
-          <p>Zimmerstr. 2, 04109 Leipzig</p>
+      <div class="section-divider max-w-6xl mx-auto"></div>
+
+      <!-- ===== LEGAL CONTENT ===== -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div class="max-w-3xl mx-auto space-y-6">
+          <!-- Angaben gem. DDG -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Angaben gem. &sect; 5 DDG"
+              data-en="Information pursuant to &sect; 5 DDG (German Digital Services Act)"
+            >
+              Angaben gem. &sect; 5 DDG
+            </h2>
+            <div class="text-slate-600 dark:text-slate-400 space-y-1">
+              <p>Andy Schlegel</p>
+              <p>Zimmerstr. 2</p>
+              <p>04109 Leipzig</p>
+            </div>
+          </div>
+
+          <!-- Kontakt -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Kontakt"
+              data-en="Contact"
+            >
+              Kontakt
+            </h2>
+            <div class="text-slate-600 dark:text-slate-400 space-y-1">
+              <p
+                data-de="E-Mail: andy.schlegel23@googlemail.com"
+                data-en="Email: andy.schlegel23@googlemail.com"
+              >
+                E-Mail: andy.schlegel23@googlemail.com
+              </p>
+            </div>
+          </div>
+
+          <!-- Verantwortlich fuer den Inhalt -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV"
+              data-en="Responsible for content pursuant to &sect; 18 para. 2 MStV (German Interstate Media Treaty)"
+            >
+              Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV
+            </h2>
+            <div class="text-slate-600 dark:text-slate-400 space-y-1">
+              <p>Andy Schlegel</p>
+              <p>Zimmerstr. 2, 04109 Leipzig</p>
+            </div>
+          </div>
+
+          <!-- Haftung fuer Inhalte -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Haftung f&uuml;r Inhalte"
+              data-en="Liability for Content"
+            >
+              Haftung f&uuml;r Inhalte
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder gespeicherte fremde Informationen zu &uuml;berwachen."
+              data-en="As a service provider, I am responsible for my own content on these pages in accordance with &sect; 7 para. 1 DDG and general legislation. However, pursuant to &sect;&sect; 8 to 10 DDG, I am not obligated to monitor transmitted or stored third-party information."
+            >
+              Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r
+              eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
+              verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als
+              Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder
+              gespeicherte fremde Informationen zu &uuml;berwachen.
+            </p>
+          </div>
+
+          <!-- Haftung fuer Links -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Haftung f&uuml;r Links"
+              data-en="Liability for Links"
+            >
+              Haftung f&uuml;r Links
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Diese Website enth&auml;lt Links zu externen Websites. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar."
+              data-en="This website contains links to external websites. I am not responsible for the content, accuracy, or availability of these external websites. Permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation."
+            >
+              Diese Website enth&auml;lt Links zu externen Websites. Ich bin
+              nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die
+              Verf&uuml;gbarkeit dieser externen Websites. Eine permanente
+              inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete
+              Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+            </p>
+          </div>
+
+          <!-- Weiterer Haftungsausschluss -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-3"
+              data-de="Weiterer Haftungsausschluss"
+              data-en="Additional Disclaimer"
+            >
+              Weiterer Haftungsausschluss
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten, technischer Genauigkeit, geistigem Eigentum und weiteren Themen finden Sie auf der separaten Seite <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Haftungsausschluss</a>."
+              data-en="A detailed disclaimer regarding portfolio content, technical accuracy, intellectual property, and other topics can be found on the separate <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Disclaimer</a> page."
+            >
+              Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten,
+              technischer Genauigkeit, geistigem Eigentum und weiteren Themen
+              finden Sie auf der separaten Seite
+              <a
+                href="./haftungsausschluss.html"
+                class="text-sky-500 hover:text-sky-400"
+                >Haftungsausschluss</a
+              >.
+            </p>
+          </div>
+
+          <!-- Stand / Last updated -->
+          <div class="reveal-v2 pt-4">
+            <p
+              class="text-sm text-slate-400 dark:text-slate-500"
+              data-de="Stand: M&auml;rz 2026"
+              data-en="Last updated: March 2026"
+            >
+              Stand: M&auml;rz 2026
+            </p>
+          </div>
         </div>
-      </section>
-
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Haftung f&uuml;r Inhalte"
-          data-en="Liability for Content"
-        >
-          Haftung f&uuml;r Inhalte
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder gespeicherte fremde Informationen zu &uuml;berwachen."
-          data-en="As a service provider, I am responsible for my own content on these pages in accordance with &sect; 7 para. 1 DDG and general legislation. However, pursuant to &sect;&sect; 8 to 10 DDG, I am not obligated to monitor transmitted or stored third-party information."
-        >
-          Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r eigene
-          Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
-          verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als
-          Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder
-          gespeicherte fremde Informationen zu &uuml;berwachen.
-        </p>
-      </section>
-
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Haftung f&uuml;r Links"
-          data-en="Liability for Links"
-        >
-          Haftung f&uuml;r Links
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Diese Website enth&auml;lt Links zu externen Websites. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar."
-          data-en="This website contains links to external websites. I am not responsible for the content, accuracy, or availability of these external websites. Permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation."
-        >
-          Diese Website enth&auml;lt Links zu externen Websites. Ich bin nicht
-          verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die
-          Verf&uuml;gbarkeit dieser externen Websites. Eine permanente
-          inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete
-          Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
-        </p>
-      </section>
-
-      <section class="mb-8">
-        <h2
-          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
-          data-de="Weiterer Haftungsausschluss"
-          data-en="Additional Disclaimer"
-        >
-          Weiterer Haftungsausschluss
-        </h2>
-        <p
-          class="text-slate-600 dark:text-slate-400 leading-relaxed"
-          data-de="Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten, technischer Genauigkeit, geistigem Eigentum und weiteren Themen finden Sie auf der separaten Seite <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Haftungsausschluss</a>."
-          data-en="A detailed disclaimer regarding portfolio content, technical accuracy, intellectual property, and other topics can be found on the separate <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Disclaimer</a> page."
-        >
-          Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten,
-          technischer Genauigkeit, geistigem Eigentum und weiteren Themen finden
-          Sie auf der separaten Seite
-          <a
-            href="./haftungsausschluss.html"
-            class="text-sky-500 hover:text-sky-400"
-            >Haftungsausschluss</a
-          >.
-        </p>
-      </section>
-
-      <!-- Stand / Last updated -->
-      <section class="mb-8">
-        <p
-          class="text-sm text-slate-400 dark:text-slate-500"
-          data-de="Stand: M&auml;rz 2026"
-          data-en="Last updated: March 2026"
-        >
-          Stand: M&auml;rz 2026
-        </p>
-      </section>
+      </div>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div
           class="flex flex-col sm:flex-row items-center justify-between gap-4"
         >
@@ -258,7 +542,7 @@
           <div class="flex items-center gap-4 text-sm">
             <a
               href="./impressum.html"
-              class="text-sky-600 dark:text-sky-400"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
               data-de="Impressum"
               data-en="Legal Notice"
               >Impressum</a
@@ -283,7 +567,7 @@
               href="https://github.com/AndySchlegel"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-github text-xl"></i>
             </a>
@@ -291,7 +575,7 @@
               href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <i class="ti ti-brand-linkedin text-xl"></i>
             </a>
@@ -299,8 +583,13 @@
         </div>
       </div>
     </footer>
-    <!-- Language toggle logic -->
+
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Language toggle -->
     <script src="./js/lang.js"></script>
+
+    <!-- Language switcher for static text -->
     <script>
       function updatePageLanguage() {
         var lang = window.blogLang ? window.blogLang.get() : "de";
@@ -312,6 +601,87 @@
       }
       document.addEventListener("DOMContentLoaded", updatePageLanguage);
       window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggle = document.getElementById("mobile-menu-toggle");
+        var menu = document.getElementById("mobile-menu");
+        if (toggle && menu) {
+          toggle.addEventListener("click", function () {
+            menu.classList.toggle("hidden");
+          });
+        }
+      });
+    </script>
+
+    <!-- V2 Effects Engine (lightweight for legal pages) -->
+    <script>
+      (function () {
+        "use strict";
+
+        // --- EFFECT: Glowing Card Borders ---
+        // Tracks mouse position on .glow-card elements
+        // and updates CSS custom properties for the radial gradient.
+        function initGlowCards() {
+          var cards = document.querySelectorAll(".glow-card");
+          for (var i = 0; i < cards.length; i++) {
+            (function (card) {
+              card.addEventListener("mousemove", function (e) {
+                var rect = card.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                card.style.setProperty("--glow-x", x + "px");
+                card.style.setProperty("--glow-y", y + "px");
+              });
+            })(cards[i]);
+          }
+        }
+
+        // --- EFFECT: Cursor Glow ---
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
+        // --- EFFECT: Scroll Reveal ---
+        // Observes .reveal-v2 elements and adds .revealed class
+        // when they scroll into view.
+        function initScrollReveal() {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          var elements = document.querySelectorAll(".reveal-v2");
+          for (var i = 0; i < elements.length; i++) {
+            observer.observe(elements[i]);
+          }
+        }
+
+        // --- Initialize effects on DOM ready ---
+        document.addEventListener("DOMContentLoaded", function () {
+          initGlowCards();
+          initScrollReveal();
+          initCursorGlow();
+        });
+      })();
     </script>
   </body>
 </html>

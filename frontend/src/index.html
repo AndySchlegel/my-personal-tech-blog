@@ -9,10 +9,9 @@
       content="Cloud & DevOps Engineer mit Hands-on-Kompetenz in AWS, Kubernetes, Terraform und CI/CD. Portfolio und Projekte von Andy Schlegel."
     />
 
-    <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Tailwind configuration -- same as all other pages
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -25,77 +24,522 @@
       };
     </script>
 
-    <!-- Inter font from Google Fonts -->
+    <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Tabler Icons (UI icons: arrows, menu, theme toggle, etc.) -->
+    <!-- Tabler Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
-    <!-- Devicon (colored tech/brand icons: AWS, Docker, K8s, Terraform, etc.) -->
+    <!-- Devicon -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
     />
 
-    <!-- Custom styles and theme toggle (loads early to prevent flash) -->
-    <link rel="stylesheet" href="./css/styles.css" />
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Effects System
+         Modular CSS for interactive effects.
+         Each effect is a self-contained block that
+         can be copied to other pages.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Particle Canvas ---
+         Full-screen canvas behind hero content.
+         Renders floating dots that drift slowly. */
+      #particle-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* --- EFFECT: Lamp / Conic Gradient ---
+         Spotlight beam radiating down from top center.
+         Creates a dramatic "stage lighting" feel. */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Light mode: softer lamp beam */
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Retro Perspective Grid ---
+         Subtle vanishing-point grid on section backgrounds.
+         Gives depth without being distracting. */
+      .retro-grid {
+        position: relative;
+        overflow: hidden;
+      }
+      .retro-grid::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200%;
+        height: 60%;
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(148, 163, 184, 0.06) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(148, 163, 184, 0.06) 1px,
+            transparent 1px
+          );
+        background-size: 60px 60px;
+        transform-origin: center bottom;
+        transform: translateX(-50%) perspective(400px) rotateX(55deg);
+        mask-image: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.4),
+          transparent 80%
+        );
+        -webkit-mask-image: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.4),
+          transparent 80%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* --- EFFECT: Glowing Card Border ---
+         Mouse-following gradient glow on card borders.
+         Uses CSS custom properties set by JS. */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.1),
+          0 8px 24px rgba(139, 92, 246, 0.08);
+      }
+      /* Light mode: toned down glow */
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.08),
+          0 8px 24px rgba(139, 92, 246, 0.05);
+      }
+
+      /* --- EFFECT: Nav Link Hover ---
+         Simple color highlight on hover for nav links. */
+      .nav-link-v2 {
+        position: relative;
+        display: inline-block;
+        transition: color 0.3s ease;
+      }
+      .nav-link-v2:hover {
+        color: #0ea5e9 !important;
+      }
+      .dark .nav-link-v2:hover {
+        color: #38bdf8 !important;
+      }
+
+      /* --- EFFECT: Floating Animation ---
+         Gentle up-down float for decorative elements. */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-12px);
+        }
+      }
+      .float-slow {
+        animation: float 6s ease-in-out infinite;
+      }
+      .float-medium {
+        animation: float 4s ease-in-out infinite;
+      }
+      .float-fast {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      /* --- EFFECT: Gradient Border Button ---
+         CTA buttons with animated gradient borders. */
+      .btn-glow {
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .btn-glow::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, #38bdf8, #8b5cf6, #38bdf8);
+        background-size: 200% 200%;
+        animation: gradient-shift 3s ease infinite;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .btn-glow::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        border-radius: inherit;
+        z-index: -1;
+        transition: background-color 0.3s ease;
+      }
+      .dark .btn-glow::after {
+        background: #0f172a;
+      }
+      html:not(.dark) .btn-glow::after {
+        background: #ffffff;
+      }
+      .btn-glow:hover::before {
+        opacity: 1;
+      }
+      @keyframes gradient-shift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* --- EFFECT: Scroll Reveal ---
+         Elements fade in and slide up when scrolled into view. */
+      .reveal-v2 {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-v2.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-v2.reveal-delay-1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-v2.reveal-delay-2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-v2.reveal-delay-3 {
+        transition-delay: 0.3s;
+      }
+      .reveal-v2.reveal-delay-4 {
+        transition-delay: 0.4s;
+      }
+      .reveal-v2.reveal-delay-5 {
+        transition-delay: 0.5s;
+      }
+      .reveal-v2.reveal-delay-6 {
+        transition-delay: 0.6s;
+      }
+
+      /* --- EFFECT: Ambient Dot Grid ---
+         Decorative dots in the background. */
+      .dot-grid {
+        background-image: radial-gradient(
+          circle,
+          rgba(148, 163, 184, 0.12) 1px,
+          transparent 1px
+        );
+        background-size: 32px 32px;
+      }
+      html:not(.dark) .dot-grid {
+        background-image: radial-gradient(
+          circle,
+          rgba(148, 163, 184, 0.15) 1px,
+          transparent 1px
+        );
+      }
+
+      /* --- EFFECT: Stagger Fade ---
+         Hero text lines stagger in from left. */
+      @keyframes stagger-in {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .stagger-in {
+        animation: stagger-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+
+      /* --- EFFECT: Pill Shimmer ---
+         Subtle light sweep across competency pills. */
+      .shimmer-pill {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer-pill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+        transition: left 0.6s ease;
+      }
+      .shimmer-pill:hover::after {
+        left: 100%;
+      }
+      html:not(.dark) .shimmer-pill::after {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.08),
+          transparent
+        );
+      }
+
+      /* --- EFFECT: Counter Glow ---
+         Stat cards get a colored ring pulse on scroll. */
+      @keyframes ring-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.3);
+        }
+        70% {
+          box-shadow: 0 0 0 12px rgba(56, 189, 248, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+        }
+      }
+      .counter-glow.revealed {
+        animation: ring-pulse 1.5s ease-out;
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* --- Section divider gradient line --- */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.3),
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+      }
+
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col"
   >
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
+
     <!-- ==================== HEADER ==================== -->
+    <!-- Glassmorphism nav with gradient hover on links -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo (icon only) -->
+        <!-- Logo -->
         <a href="./index.html" class="flex items-center group">
           <div
-            class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
+            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
         </a>
 
-        <!-- Desktop navigation -->
-        <nav class="hidden sm:flex items-center gap-6">
+        <!-- Desktop navigation with gradient hover -->
+        <nav class="hidden sm:flex items-center gap-8">
           <a
             href="./index.html"
-            class="text-sm font-medium text-sky-600 dark:text-sky-400"
-            >Home</a
+            class="nav-link-v2 text-sm font-medium text-sky-600 dark:text-sky-400"
           >
+            Home
+          </a>
           <a
             href="./about.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About me</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            About me
+          </a>
           <a
             href="./skills.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Skills</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Skills
+          </a>
           <a
             href="./blog.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Blog</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Blog
+          </a>
         </nav>
 
-        <!-- Right side: language toggle + theme toggle + mobile menu -->
+        <!-- Right side controls -->
         <div class="flex items-center gap-2">
-          <!-- Language toggle (DE/EN) -->
+          <!-- Language toggle -->
           <button
             id="lang-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -105,17 +549,17 @@
             <span id="lang-label" class="text-xs font-bold">DE</span>
           </button>
 
-          <!-- Theme toggle button -->
+          <!-- Theme toggle -->
           <button
             id="theme-toggle"
-            class="theme-toggle-btn w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
             aria-label="Toggle dark mode"
           >
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
 
-          <!-- Mobile menu button -->
+          <!-- Mobile menu -->
           <button
             id="mobile-menu-toggle"
             class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -126,12 +570,12 @@
         </div>
       </div>
 
-      <!-- Mobile navigation (hidden by default) -->
+      <!-- Mobile navigation -->
       <nav
         id="mobile-menu"
-        class="sm:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+        class="sm:hidden hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl"
       >
-        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
           <a
             href="./index.html"
             class="text-sm font-medium text-sky-600 dark:text-sky-400 py-2"
@@ -158,40 +602,62 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
-      <!-- ===== SECTION 1: HERO ===== -->
-      <!-- Full-width hero with name, title, tagline, CTA buttons, photo placeholder, and cert badges -->
-      <section
-        class="bg-gradient-to-br from-sky-500/5 via-purple-500/5 to-transparent dark:from-sky-500/10 dark:via-purple-500/5 dark:to-transparent"
-      >
+      <!-- ===== SECTION 1: HERO with Lamp + Particles ===== -->
+      <section class="lamp-effect relative">
+        <!-- Particle canvas (rendered by JS) -->
+        <canvas id="particle-canvas"></canvas>
+
         <div
-          class="max-w-5xl mx-auto px-4 sm:px-6 pt-14 pb-10 sm:pt-20 sm:pb-14"
+          class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-12 relative z-10 w-full"
         >
+          <!-- Asymmetric layout: large text left, photo + badges right -->
           <div
-            class="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12"
+            class="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12"
           >
-            <!-- Left: text content -->
+            <!-- Left: Hero text content -->
             <div class="flex-1 max-w-2xl">
-              <!-- Name -->
+              <!-- Small label above name -->
+              <div class="stagger-in mb-4" style="animation-delay: 0s">
+                <span
+                  class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 dark:bg-sky-500/10 border border-sky-500/20 text-xs font-medium text-sky-600 dark:text-sky-400"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"
+                  ></span>
+                  <span
+                    data-de="Offen für neue Herausforderungen"
+                    data-en="Open for new challenges"
+                    >Offen für neue Herausforderungen</span
+                  >
+                </span>
+              </div>
+
+              <!-- Name with large typography -->
               <h1
-                class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2"
+                class="stagger-in text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-3"
+                style="animation-delay: 0.1s"
               >
-                Andy Schlegel
+                <span class="text-slate-900 dark:text-white">Andy </span>
+                <span
+                  class="bg-gradient-to-r from-sky-500 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+                  >Schlegel</span
+                >
               </h1>
 
               <!-- Title -->
               <p
-                class="slide-in-left text-xl sm:text-2xl text-sky-600 dark:text-sky-400 font-semibold mb-5"
-                style="animation-delay: 0.1s; opacity: 0"
-                data-de="Cloud &amp; DevOps Engineer – von IaC bis Produktion"
-                data-en="Cloud &amp; DevOps Engineer – from IaC to Production"
+                class="stagger-in text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium mb-4"
+                style="animation-delay: 0.2s"
+                data-de="Cloud &amp; DevOps Engineer &ndash; von IaC bis Produktion"
+                data-en="Cloud &amp; DevOps Engineer &ndash; from IaC to Production"
               >
-                Cloud &amp; DevOps Engineer – von IaC bis Produktion
+                Cloud &amp; DevOps Engineer &ndash; von IaC bis Produktion
               </p>
 
               <!-- Value proposition -->
               <p
-                class="slide-in-left text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
-                style="animation-delay: 0.15s; opacity: 0"
+                class="stagger-in text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed mb-5 max-w-xl"
+                style="animation-delay: 0.3s"
                 data-de="Ich baue Cloud-Infrastrukturen auf AWS mit Terraform, Kubernetes und CI/CD. Fast zwei Jahrzehnte Erfahrung in Stakeholder-Kommunikation treffen auf Hands-on Cloud Engineering."
                 data-en="I build cloud infrastructures on AWS with Terraform, Kubernetes and CI/CD. Almost two decades of stakeholder communication experience meets hands-on cloud engineering."
               >
@@ -201,10 +667,10 @@
                 Engineering.
               </p>
 
-              <!-- Value statement as quote block -->
+              <!-- Quote block with photo -->
               <div
-                class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4 mb-6"
-                style="animation-delay: 0.2s; opacity: 0"
+                class="stagger-in border-l-2 border-sky-500/50 bg-slate-100/50 dark:bg-slate-800/20 rounded-r-xl px-4 py-3 mb-5"
+                style="animation-delay: 0.35s"
               >
                 <div class="flex items-start gap-3">
                   <img
@@ -214,148 +680,153 @@
                     style="object-position: center 25%"
                   />
                   <p
-                    class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
-                    data-de="Von Business-Anforderungen zur technischen Umsetzung – Architektur, Infrastructure-as-Code und produktionsreife Deployments."
-                    data-en="From business requirements to technical implementation – architecture, infrastructure as code and production-ready deployments."
+                    class="text-sm sm:text-base text-slate-500 dark:text-slate-400 italic leading-relaxed"
+                    data-de="Von Business-Anforderungen zur technischen Umsetzung &ndash; Architektur, Infrastructure-as-Code und produktionsreife Deployments."
+                    data-en="From business requirements to technical implementation &ndash; architecture, infrastructure as code and production-ready deployments."
                   >
-                    Von Business-Anforderungen zur technischen Umsetzung –
+                    Von Business-Anforderungen zur technischen Umsetzung &ndash;
                     Architektur, Infrastructure-as-Code und produktionsreife
                     Deployments.
                   </p>
                 </div>
               </div>
 
-              <!-- CTA buttons -->
+              <!-- CTA buttons with gradient border effect -->
               <div
-                class="slide-in-left flex flex-wrap gap-3"
-                style="animation-delay: 0.25s; opacity: 0"
+                class="stagger-in flex flex-wrap gap-4"
+                style="animation-delay: 0.4s"
               >
                 <a
                   href="#projekte"
-                  class="social-link inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400 text-sm font-semibold rounded-lg"
+                  class="btn-glow social-link inline-flex items-center gap-2 px-6 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
                 >
-                  <i class="ti ti-arrow-down text-base"></i>
                   <span data-de="Projekte ansehen" data-en="View Projects"
                     >Projekte ansehen</span
                   >
                 </a>
                 <a
                   href="./skills.html"
-                  class="social-link inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400 text-sm font-semibold rounded-lg"
+                  class="btn-glow social-link inline-flex items-center gap-2 px-6 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
                 >
-                  <i class="ti ti-compass text-base"></i>
                   <span data-de="Skills entdecken" data-en="Explore Skills"
                     >Skills entdecken</span
                   >
                 </a>
               </div>
+            </div>
 
-              <!-- Cert badges row (clickable, link to Credly validation) -->
-              <div class="flex flex-wrap items-center gap-4 mt-7">
-                <!-- AWS Solutions Architect -->
+            <!-- Right: Photo + Cert badges below -->
+            <div
+              class="shrink-0 flex flex-col items-center gap-6 stagger-in"
+              style="animation-delay: 0.5s"
+            >
+              <!-- Profile photo with gradient ring -->
+              <div class="relative float-slow">
+                <div
+                  class="absolute -inset-2 bg-gradient-to-br from-sky-500 via-purple-500 to-sky-500 rounded-full opacity-20 blur-xl"
+                ></div>
+                <div
+                  class="absolute -inset-0.5 bg-gradient-to-br from-sky-500 via-purple-500 to-sky-500 rounded-full opacity-40"
+                ></div>
+                <img
+                  src="./img/andy-home.jpg"
+                  alt="Andy Schlegel"
+                  class="relative w-44 h-44 md:w-56 md:h-56 rounded-full object-cover shadow-2xl"
+                  style="object-position: center 40%"
+                />
+              </div>
+
+              <!-- Cert badges 2x2 grid below photo -->
+              <div class="grid grid-cols-2 gap-3">
                 <a
                   href="https://www.credly.com/badges/ed096e21-8a20-4e36-992b-746f3e3fb84d/public_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Verify on Credly"
-                  class="social-link"
+                  class="social-link glow-card bg-white dark:bg-slate-800/50 rounded-xl p-2.5 flex items-center justify-center"
                 >
                   <img
                     src="./img/certs/aws-certified-solutions-architect-associate.png"
-                    alt="AWS Solutions Architect Associate"
-                    class="scale-up h-16 w-auto drop-shadow-md hover:scale-110 transition-transform"
-                    style="animation-delay: 0.35s"
+                    alt="AWS SAA"
+                    class="h-14 w-auto"
                   />
                 </a>
-                <!-- AWS Cloud Practitioner -->
                 <a
                   href="https://www.credly.com/badges/287b3212-4321-47c8-9a03-4344bdbfd89f/public_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Verify on Credly"
-                  class="social-link"
+                  class="social-link glow-card bg-white dark:bg-slate-800/50 rounded-xl p-2.5 flex items-center justify-center"
                 >
                   <img
                     src="./img/certs/aws-certified-cloud-practitioner.png"
-                    alt="AWS Cloud Practitioner"
-                    class="scale-up h-16 w-auto drop-shadow-md hover:scale-110 transition-transform"
-                    style="animation-delay: 0.4s"
+                    alt="AWS CCP"
+                    class="h-14 w-auto"
                   />
                 </a>
-                <!-- Linux Essentials -->
                 <a
                   href="https://www.credly.com/badges/a6995bd3-6f28-4d16-add8-435fff968c4c/public_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Verify on Credly"
-                  class="social-link"
+                  class="social-link glow-card bg-white dark:bg-slate-800/50 rounded-xl p-2.5 flex items-center justify-center"
                 >
                   <img
                     src="./img/certs/linux-essentials-certificate.9.png"
                     alt="Linux Essentials"
-                    class="scale-up h-16 w-auto drop-shadow-md hover:scale-110 transition-transform"
-                    style="animation-delay: 0.45s"
+                    class="h-14 w-auto"
                   />
                 </a>
-                <!-- GitHub Foundations -->
                 <a
-                  href="#"
+                  href="https://www.credly.com/badges/4f0cd67c-a268-4220-80c4-51fa34046e03/public_url"
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="GitHub Foundations"
-                  class="social-link"
+                  title="Verify on Credly"
+                  class="social-link glow-card bg-white dark:bg-slate-800/50 rounded-xl p-2.5 flex items-center justify-center"
                 >
                   <img
                     src="./img/certs/github-foundations.png"
                     alt="GitHub Foundations"
-                    class="scale-up h-16 w-auto drop-shadow-md hover:scale-110 transition-transform"
-                    style="animation-delay: 0.5s"
+                    class="h-14 w-auto"
                   />
                 </a>
               </div>
-            </div>
-
-            <!-- Right: profile photo -->
-            <div class="shrink-0 relative">
-              <div
-                class="absolute -inset-1.5 bg-gradient-to-br from-sky-500 via-purple-500 to-sky-500 rounded-full opacity-25 blur-md"
-              ></div>
-              <img
-                src="./img/andy-home.jpg"
-                alt="Andy Schlegel"
-                class="relative w-52 h-52 md:w-64 md:h-64 rounded-full object-cover ring-2 ring-sky-500/30 shadow-2xl"
-                style="object-position: center 40%"
-              />
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ===== SECTION 2: KEY COMPETENCIES ===== -->
-      <!-- Six core competency badges/pills in a centered layout -->
-      <div class="bg-white dark:bg-slate-900">
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <h2
-            class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center flex items-center justify-center gap-3"
-          >
-            <span
-              class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
-            >
-              <i class="ti ti-stack-2 text-xl text-sky-500"></i>
-            </span>
-            <span data-de="Kernkompetenzen" data-en="Core Competencies"
-              >Kernkompetenzen</span
-            >
-          </h2>
+      <!-- Gradient divider -->
+      <div class="section-divider"></div>
 
-          <!-- Centered pill grid -->
-          <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
-            <!-- AWS Cloud Architecture -->
+      <!-- ===== SECTION 2: CORE COMPETENCIES ===== -->
+      <!-- Clean centered header + 3x2 grid of competency cards with shimmer -->
+      <section class="relative dot-grid">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <!-- Centered heading -->
+          <div class="reveal-v2 text-center mb-8">
+            <span
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-purple-500/20 flex items-center justify-center mb-4 mx-auto"
+            >
+              <i class="ti ti-stack-2 text-2xl text-sky-500"></i>
+            </span>
+            <h2
+              class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
+            >
+              <span data-de="Kernkompetenzen" data-en="Core Competencies"
+                >Kernkompetenzen</span
+              >
+            </h2>
+          </div>
+
+          <!-- 3x2 grid of competency cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <!-- AWS -->
             <div
-              class="reveal reveal-delay-1 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-1 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0"
               >
                 <i
                   class="devicon-amazonwebservices-plain-wordmark colored text-2xl"
@@ -367,12 +838,12 @@
               >
             </div>
 
-            <!-- Infrastructure as Code -->
+            <!-- Terraform -->
             <div
-              class="reveal reveal-delay-2 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-2 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"
               >
                 <i class="devicon-terraform-plain colored text-xl"></i>
               </div>
@@ -382,12 +853,12 @@
               >
             </div>
 
-            <!-- Container & Kubernetes -->
+            <!-- Kubernetes -->
             <div
-              class="reveal reveal-delay-3 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-3 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-sky-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
               >
                 <i class="devicon-kubernetes-plain colored text-xl"></i>
               </div>
@@ -397,12 +868,12 @@
               >
             </div>
 
-            <!-- CI/CD & DevSecOps -->
+            <!-- CI/CD -->
             <div
-              class="reveal reveal-delay-4 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-4 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"
               >
                 <i class="devicon-githubactions-plain colored text-xl"></i>
               </div>
@@ -412,12 +883,12 @@
               >
             </div>
 
-            <!-- Security & Monitoring -->
+            <!-- Security -->
             <div
-              class="reveal reveal-delay-5 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-5 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0"
               >
                 <i class="devicon-prometheus-plain colored text-xl"></i>
               </div>
@@ -427,12 +898,12 @@
               >
             </div>
 
-            <!-- Linux & Networking -->
+            <!-- Linux -->
             <div
-              class="reveal reveal-delay-5 tool-pill inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl cursor-default"
+              class="reveal-v2 reveal-delay-6 shimmer-pill glow-card flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-800/50 rounded-xl cursor-default"
             >
               <div
-                class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0"
               >
                 <i class="devicon-linux-plain text-xl text-amber-500"></i>
               </div>
@@ -442,844 +913,797 @@
               >
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
-      <!-- ===== SECTION 3: SHOWCASE PROJECTS ===== -->
-      <!-- Four project cards from CV with tech badges and status indicators -->
-      <section
-        id="projekte"
-        class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16"
-      >
-        <h2
-          class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
+      <!-- Gradient divider -->
+      <div class="section-divider"></div>
+
+      <!-- ===== SECTION 3: PROJECTS ===== -->
+      <!-- Asymmetric: featured project large, others in column beside it -->
+      <section id="projekte" class="retro-grid relative">
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10"
         >
-          <span
-            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0"
-          >
-            <i class="ti ti-rocket text-xl text-orange-500"></i>
-          </span>
-          <span data-de="Projekt-Highlights" data-en="Project Highlights"
-            >Projekt-Highlights</span
-          >
-        </h2>
-
-        <div class="grid gap-6 sm:grid-cols-2">
-          <!-- Project 1: EcoKart -->
-          <div
-            class="reveal reveal-delay-1 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-6 flex flex-col"
-          >
-            <!-- Header with title and status badge -->
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
-                >
-                  <i
-                    class="devicon-amazonwebservices-plain-wordmark colored text-2xl"
-                  ></i>
-                </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
-                >
-                  EcoKart
-                </h3>
-              </div>
-              <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+          <!-- Section heading -->
+          <div class="reveal-v2 mb-8">
+            <span
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center mb-4"
+            >
+              <i class="ti ti-rocket text-2xl text-orange-500"></i>
+            </span>
+            <h2
+              class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
+            >
+              <span data-de="Projekt-Highlights" data-en="Project Highlights"
+                >Projekt-Highlights</span
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Live
-              </span>
-            </div>
+            </h2>
+          </div>
 
-            <!-- Subtitle -->
-            <p
-              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
-              data-de="Serverless E-Commerce Platform"
-              data-en="Serverless E-Commerce Platform"
-            >
-              Serverless E-Commerce Platform
-            </p>
-
-            <!-- Description -->
-            <p
-              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
-              data-de="Komplette serverless AWS-Architektur von Grund auf designed, implementiert und produktiv deployed."
-              data-en="Complete serverless AWS architecture designed from scratch, implemented and deployed to production."
-            >
-              Komplette serverless AWS-Architektur von Grund auf designed,
-              implementiert und produktiv deployed.
-            </p>
-
-            <!-- Stats row -->
+          <!-- Asymmetric layout: Blog featured left (tall), EcoKart + HomeLab stacked right -->
+          <div class="grid gap-6 lg:grid-cols-5">
+            <!-- Featured: Personal Tech Blog (spans 3 cols, detailed) -->
             <div
-              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
+              class="reveal-v2 reveal-delay-1 lg:col-span-3 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-8 flex flex-col"
             >
-              <span class="flex items-center gap-1">
-                <i class="devicon-terraform-plain colored text-sm"></i>
-                <span data-de="15 TF-Module" data-en="15 TF Modules"
-                  >15 TF-Module</span
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center"
+                  >
+                    <i class="devicon-kubernetes-plain colored text-2xl"></i>
+                  </div>
+                  <div>
+                    <h3
+                      class="text-xl font-bold text-slate-900 dark:text-white"
+                    >
+                      Personal Tech Blog
+                    </h3>
+                    <p
+                      class="text-sm text-slate-500 dark:text-slate-400"
+                      data-de="Cloud-Native auf AWS EKS"
+                      data-en="Cloud-Native on AWS EKS"
+                    >
+                      Cloud-Native auf AWS EKS
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
                 >
-              </span>
-              <span class="flex items-center gap-1">
-                <i
-                  class="devicon-amazonwebservices-plain-wordmark colored text-sm"
-                ></i>
-                <span data-de="12 AWS-Services" data-en="12 AWS Services"
-                  >12 AWS-Services</span
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+                  ></span>
+                  Live
+                </span>
+              </div>
+
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-3 flex-1"
+                data-de="Ein Tech-Blog, der gleichzeitig als Cloud-Native Plattform umgesetzt ist. Die gesamte Anwendung l&auml;uft vollst&auml;ndig auf AWS: ein EKS-Cluster, mit Terraform provisioniert und reproduzierbar deploybar, mit Node.js-Backend, PostgreSQL auf RDS und einem Tailwind-Frontend hinter nginx. Der Fokus liegt nicht nur auf dem Deployment einer Anwendung, sondern auf einer Infrastruktur, die wie ein reales System betrieben werden kann."
+                data-en="A tech blog built as a cloud-native platform. The entire application runs fully on AWS: an EKS cluster, provisioned with Terraform and reproducibly deployable, with a Node.js backend, PostgreSQL on RDS and a Tailwind frontend behind nginx. The focus is not just on deploying an application, but on infrastructure that can be operated like a real-world system."
+              >
+                Ein Tech-Blog, der gleichzeitig als Cloud-Native Plattform
+                umgesetzt ist. Die gesamte Anwendung l&auml;uft vollst&auml;ndig
+                auf AWS: ein EKS-Cluster, mit Terraform provisioniert und
+                reproduzierbar deploybar, mit Node.js-Backend, PostgreSQL auf
+                RDS und einem Tailwind-Frontend hinter nginx. Der Fokus liegt
+                nicht nur auf dem Deployment einer Anwendung, sondern auf einer
+                Infrastruktur, die wie ein reales System betrieben werden kann.
+              </p>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-5"
+                data-de="Automatisches Content-Tagging und Sentiment-Analyse erfolgen &uuml;ber Amazon Comprehend, bilinguale Inhalte werden &uuml;ber Amazon Translate bereitgestellt und Text-to-Speech &uuml;ber Amazon Polly generiert. Der Betrieb erfolgt &uuml;ber sechs CI/CD-Pipelines mit OIDC-Authentifizierung und integrierten DevSecOps-Scans. Die komplette Infrastruktur ist vollst&auml;ndig reproduzierbar &mdash; Provision, Deploy und Destroy lassen sich automatisiert in weniger als 30 Minuten durchf&uuml;hren."
+                data-en="Automatic content tagging and sentiment analysis are handled by Amazon Comprehend, bilingual content is provided via Amazon Translate, and text-to-speech is generated through Amazon Polly. Operations run through six CI/CD pipelines with OIDC authentication and integrated DevSecOps scans. The complete infrastructure is fully reproducible &mdash; provision, deploy and destroy can be automated in less than 30 minutes."
+              >
+                Automatisches Content-Tagging und Sentiment-Analyse erfolgen
+                &uuml;ber Amazon Comprehend, bilinguale Inhalte werden &uuml;ber
+                Amazon Translate bereitgestellt und Text-to-Speech &uuml;ber
+                Amazon Polly generiert. Der Betrieb erfolgt &uuml;ber sechs
+                CI/CD-Pipelines mit OIDC-Authentifizierung und integrierten
+                DevSecOps-Scans. Die komplette Infrastruktur ist
+                vollst&auml;ndig reproduzierbar &mdash; Provision, Deploy und
+                Destroy lassen sich automatisiert in weniger als 30 Minuten
+                durchf&uuml;hren.
+              </p>
+
+              <!-- Stats as inline badges -->
+              <div class="flex flex-wrap gap-2 mb-5">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
                 >
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-test-pipe text-sky-500"></i>
-                63 Tests
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-git-merge text-green-500"></i>
-                <span data-de="8 GH-Actions" data-en="8 GH Actions"
-                  >8 GH-Actions</span
+                  <i class="devicon-kubernetes-plain colored text-sm"></i>
+                  AWS EKS
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
                 >
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-lock text-amber-500"></i>
-                OIDC
-              </span>
+                  <i class="ti ti-database text-purple-500"></i>
+                  PostgreSQL RDS
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-brain text-amber-500"></i>
+                  Comprehend ML
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-language text-teal-500"></i>
+                  Translate DE/EN
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-volume text-rose-500"></i>
+                  Polly TTS
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-test-pipe text-sky-500"></i>
+                  31 Tests
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-git-merge text-green-500"></i>
+                  <span data-de="6 Pipelines" data-en="6 Pipelines"
+                    >6 Pipelines</span
+                  >
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/30 rounded-lg text-xs text-slate-600 dark:text-slate-400"
+                >
+                  <i class="ti ti-lock text-amber-500"></i>
+                  OIDC
+                </span>
+              </div>
+
+              <!-- Tech badges -->
+              <div class="flex flex-wrap gap-1.5">
+                <span
+                  class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                  >EKS</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                  >Kubernetes</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
+                  >Terraform</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
+                  >TypeScript</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
+                  >PostgreSQL</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                  >Comprehend</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-full text-xs font-medium"
+                  >Translate</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-full text-xs font-medium"
+                  >Polly</span
+                >
+              </div>
             </div>
 
-            <!-- Tech badges -->
-            <div class="tech-badges flex flex-wrap gap-1.5">
-              <span
-                class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
-                >AWS</span
+            <!-- Right column: EcoKart + HomeLab stacked -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+              <!-- EcoKart -->
+              <div
+                class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 flex-1 flex flex-col"
               >
-              <span
-                class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
-                >Terraform</span
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
+                    >
+                      <i
+                        class="devicon-amazonwebservices-plain-wordmark colored text-2xl"
+                      ></i>
+                    </div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      EcoKart
+                    </h3>
+                  </div>
+                  <span
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+                    ></span>
+                    Live
+                  </span>
+                </div>
+                <p
+                  class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2"
+                  data-de="Serverless E-Commerce Platform"
+                  data-en="Serverless E-Commerce Platform"
+                >
+                  Serverless E-Commerce Platform
+                </p>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+                  data-de="Komplette serverless AWS-Architektur von Grund auf designed, implementiert und produktiv deployed. 15 TF-Module, 63 Tests."
+                  data-en="Complete serverless AWS architecture designed from scratch, implemented and deployed to production. 15 TF modules, 63 tests."
+                >
+                  Komplette serverless AWS-Architektur von Grund auf designed,
+                  implementiert und produktiv deployed. 15 TF-Module, 63 Tests.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                  <span
+                    class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
+                    >AWS</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
+                    >Terraform</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                    >TypeScript</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                    >DynamoDB</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                    >Lambda</span
+                  >
+                </div>
+              </div>
+
+              <!-- HomeLab -->
+              <div
+                class="reveal-v2 reveal-delay-3 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 flex-1 flex flex-col"
               >
-              <span
-                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
-                >TypeScript</span
-              >
-              <span
-                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
-                >Next.js</span
-              >
-              <span
-                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
-                >DynamoDB</span
-              >
-              <span
-                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
-                >Lambda</span
-              >
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
+                    >
+                      <i class="devicon-docker-plain colored text-xl"></i>
+                    </div>
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Hybrid HomeLab
+                    </h3>
+                  </div>
+                  <span
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+                    ></span>
+                    Live
+                  </span>
+                </div>
+                <p
+                  class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2"
+                  data-de="Verteilte Infrastruktur im Dauerbetrieb"
+                  data-en="Distributed Infrastructure in Continuous Operation"
+                >
+                  Verteilte Infrastruktur im Dauerbetrieb
+                </p>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
+                  data-de="Vier Standorte per Tailscale vernetzt, 50+ containerisierte Services und UniFi-Netzwerk im Dauerbetrieb."
+                  data-en="Four locations connected via Tailscale, 50+ containerized services and UniFi network in continuous operation."
+                >
+                  Vier Standorte per Tailscale vernetzt, 50+ containerisierte
+                  Services und UniFi-Netzwerk im Dauerbetrieb.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                  <span
+                    class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
+                    >Docker</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
+                    >Synology</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
+                    >Hetzner</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                    >Tailscale</span
+                  >
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Project 2: Personal Tech Blog -->
+          <!-- Monitoring project: full width below -->
           <div
-            class="reveal reveal-delay-2 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-6 flex flex-col"
+            class="reveal-v2 reveal-delay-4 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 mt-6"
           >
-            <!-- Header with title and status badge -->
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex items-center gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div class="flex items-center gap-3 flex-1">
                 <div
-                  class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
-                >
-                  <i class="devicon-kubernetes-plain colored text-xl"></i>
-                </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
-                >
-                  Personal Tech Blog
-                </h3>
-              </div>
-              <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Live
-              </span>
-            </div>
-
-            <!-- Subtitle -->
-            <p
-              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
-              data-de="Cloud-Native auf AWS EKS"
-              data-en="Cloud-Native on AWS EKS"
-            >
-              Cloud-Native auf AWS EKS
-            </p>
-
-            <!-- Description -->
-            <p
-              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
-              data-de="Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline, ML-Auto-Tagging, bilingualer Übersetzung und Text-to-Speech. PostgreSQL, Terraform und sechs Pipelines."
-              data-en="Kubernetes cluster on AWS EKS with CI/CD pipeline, ML auto-tagging, bilingual translation and text-to-speech. PostgreSQL, Terraform and six pipelines."
-            >
-              Kubernetes-Cluster auf AWS EKS mit CI/CD-Pipeline,
-              ML-Auto-Tagging, bilingualer Übersetzung und Text-to-Speech.
-              PostgreSQL, Terraform und sechs Pipelines.
-            </p>
-
-            <!-- Stats row -->
-            <div
-              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
-            >
-              <span class="flex items-center gap-1">
-                <i class="devicon-kubernetes-plain colored text-sm"></i>
-                AWS EKS
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-server text-green-500"></i>
-                Express 5
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-database text-purple-500"></i>
-                PostgreSQL RDS
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-brain text-amber-500"></i>
-                Comprehend ML
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-language text-teal-500"></i>
-                Translate
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-volume text-rose-500"></i>
-                Polly TTS
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-test-pipe text-sky-500"></i>
-                31 Tests
-              </span>
-            </div>
-
-            <!-- Tech badges -->
-            <div class="tech-badges flex flex-wrap gap-1.5">
-              <span
-                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
-                >EKS</span
-              >
-              <span
-                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
-                >Kubernetes</span
-              >
-              <span
-                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
-                >TypeScript</span
-              >
-              <span
-                class="px-2.5 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium"
-                >PostgreSQL</span
-              >
-              <span
-                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
-                >Comprehend</span
-              >
-              <span
-                class="px-2.5 py-1 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-full text-xs font-medium"
-                >Translate</span
-              >
-              <span
-                class="px-2.5 py-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-full text-xs font-medium"
-                >Polly</span
-              >
-            </div>
-          </div>
-
-          <!-- Project 3: Hybrid HomeLab -->
-          <div
-            class="reveal reveal-delay-3 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-6 flex flex-col"
-          >
-            <!-- Header with title and status badge -->
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"
-                >
-                  <i class="devicon-docker-plain colored text-xl"></i>
-                </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
-                >
-                  Hybrid HomeLab
-                </h3>
-              </div>
-              <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Live
-              </span>
-            </div>
-
-            <!-- Subtitle -->
-            <p
-              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
-              data-de="Verteilte Infrastruktur im Dauerbetrieb"
-              data-en="Distributed Infrastructure in Continuous Operation"
-            >
-              Verteilte Infrastruktur im Dauerbetrieb
-            </p>
-
-            <!-- Description -->
-            <p
-              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
-              data-de="Verteilte Infrastruktur wie ein internes Ops-Team aufgebaut: vier Standorte per Tailscale vernetzt, 50+ containerisierte Services und UniFi-Netzwerk im Dauerbetrieb."
-              data-en="Distributed infrastructure built like an internal ops team: four locations connected via Tailscale, 50+ containerized services and UniFi network in continuous operation."
-            >
-              Verteilte Infrastruktur wie ein internes Ops-Team aufgebaut: vier
-              Standorte per Tailscale vernetzt, 50+ containerisierte Services
-              und UniFi-Netzwerk im Dauerbetrieb.
-            </p>
-
-            <!-- Stats row -->
-            <div
-              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
-            >
-              <span class="flex items-center gap-1">
-                <i class="ti ti-map-pin text-green-500"></i>
-                <span data-de="4 Standorte" data-en="4 Locations"
-                  >4 Standorte</span
-                >
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="devicon-docker-plain colored text-sm"></i>
-                50+ Services
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-router text-amber-500"></i>
-                UniFi Gateway
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-database text-orange-500"></i>
-                DS925+ (32GB)
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="devicon-gitlab-plain colored text-sm"></i>
-                GitLab CE
-              </span>
-            </div>
-
-            <!-- Tech badges -->
-            <div class="tech-badges flex flex-wrap gap-1.5">
-              <span
-                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
-                >Docker</span
-              >
-              <span
-                class="px-2.5 py-1 bg-slate-500/10 text-slate-600 dark:text-slate-400 rounded-full text-xs font-medium"
-                >Synology</span
-              >
-              <span
-                class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
-                >Hetzner</span
-              >
-              <span
-                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
-                >UniFi</span
-              >
-              <span
-                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
-                >Tailscale</span
-              >
-            </div>
-          </div>
-
-          <!-- Project 4: Monitoring & Alerting Stack -->
-          <div
-            class="reveal reveal-delay-4 project-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-6 flex flex-col"
-          >
-            <!-- Header with title and status badge -->
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
+                  class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0"
                 >
                   <i class="devicon-grafana-plain colored text-xl"></i>
                 </div>
-                <h3
-                  class="text-lg font-semibold text-slate-900 dark:text-white"
-                >
-                  Monitoring &amp; Security Stack
-                </h3>
+                <div>
+                  <div class="flex items-center gap-3">
+                    <h3
+                      class="text-lg font-bold text-slate-900 dark:text-white"
+                    >
+                      Monitoring &amp; Security Stack
+                    </h3>
+                    <span
+                      class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
+                    >
+                      <span
+                        class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+                      ></span>
+                      Live
+                    </span>
+                  </div>
+                  <p
+                    class="text-sm text-slate-600 dark:text-slate-400 mt-1"
+                    data-de="Zentrales Monitoring über alle Standorte: Prometheus, Grafana, Wazuh SIEM und dreistufiges Alerting."
+                    data-en="Centralized monitoring across all locations: Prometheus, Grafana, Wazuh SIEM and three-tier alerting."
+                  >
+                    Zentrales Monitoring &uuml;ber alle Standorte: Prometheus,
+                    Grafana, Wazuh SIEM und dreistufiges Alerting.
+                  </p>
+                </div>
               </div>
-              <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 rounded-full text-xs font-semibold uppercase tracking-wide"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Live
-              </span>
-            </div>
-
-            <!-- Subtitle -->
-            <p
-              class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2"
-              data-de="Multi-Server Infrastruktur"
-              data-en="Multi-Server Infrastructure"
-            >
-              Multi-Server Infrastruktur
-            </p>
-
-            <!-- Description -->
-            <p
-              class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 flex-1"
-              data-de="Zentrales Monitoring über alle Standorte aufgebaut: Prometheus, Grafana, Wazuh SIEM und dreistufiges Alerting für Echtzeit-Detection."
-              data-en="Centralized monitoring across all locations: Prometheus, Grafana, Wazuh SIEM and three-tier alerting for real-time detection."
-            >
-              Zentrales Monitoring über alle Standorte aufgebaut: Prometheus,
-              Grafana, Wazuh SIEM und dreistufiges Alerting für
-              Echtzeit-Detection.
-            </p>
-
-            <!-- Stats row -->
-            <div
-              class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4"
-            >
-              <span class="flex items-center gap-1">
-                <i class="devicon-prometheus-plain colored text-sm"></i>
-                Prometheus
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="devicon-grafana-plain colored text-sm"></i>
-                Grafana
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-shield-lock text-red-500"></i>
-                Wazuh SIEM
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="ti ti-bell text-amber-500"></i>
-                <span data-de="3-Stufen-Alerting" data-en="3-Tier Alerting"
-                  >3-Stufen-Alerting</span
+              <div class="flex flex-wrap gap-1.5 sm:shrink-0">
+                <span
+                  class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
+                  >Prometheus</span
                 >
-              </span>
-            </div>
-
-            <!-- Tech badges -->
-            <div class="tech-badges flex flex-wrap gap-1.5">
-              <span
-                class="px-2.5 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium"
-                >Prometheus</span
-              >
-              <span
-                class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
-                >Grafana</span
-              >
-              <span
-                class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
-                >Wazuh</span
-              >
-              <span
-                class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
-                >Alertmanager</span
-              >
-              <span
-                class="px-2.5 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
-                >Node Exporter</span
-              >
+                <span
+                  class="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-medium"
+                  >Grafana</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-red-500/10 text-red-600 dark:text-red-400 rounded-full text-xs font-medium"
+                  >Wazuh</span
+                >
+                <span
+                  class="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-medium"
+                  >Alertmanager</span
+                >
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      <!-- Gradient divider -->
+      <div class="section-divider"></div>
 
       <!-- ===== SECTION 4: KEY ACCOUNT STRENGTHS ===== -->
-      <!-- 2x3 grid of strengths from sales/military background -->
-      <div class="bg-white dark:bg-slate-900">
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <h2
-            class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3"
-          >
+      <!-- Asymmetric: 2 large cards left, 4 smaller stacked right -->
+      <section class="relative dot-grid">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <!-- Section heading -->
+          <div class="reveal-v2 mb-8">
             <span
-              class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-4"
             >
-              <i class="ti ti-users text-xl text-green-500"></i>
+              <i class="ti ti-users text-2xl text-green-500"></i>
             </span>
-            Key Account Strengths
-          </h2>
-
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <!-- Stakeholder-Kommunikation -->
-            <div
-              class="reveal reveal-delay-1 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-sky-500 p-5"
+            <h2
+              class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
             >
-              <div
-                class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-messages text-xl text-sky-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-                data-de="Stakeholder-Kommunikation"
-                data-en="Stakeholder Communication"
-              >
-                Stakeholder-Kommunikation
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Fast zwei Jahrzehnte Abstimmung mit internen und externen Entscheidern."
-                data-en="Almost two decades of alignment with internal and external decision-makers."
-              >
-                Fast zwei Jahrzehnte Abstimmung mit internen und externen
-                Entscheidern.
-              </p>
-            </div>
-
-            <!-- Prozessoptimierung -->
-            <div
-              class="reveal reveal-delay-2 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-purple-500 p-5"
-            >
-              <div
-                class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-arrows-sort text-xl text-purple-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-                data-de="Prozessoptimierung"
-                data-en="Process Optimization"
-              >
-                Prozessoptimierung
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Abläufe analysiert, standardisiert und automatisiert."
-                data-en="Workflows analyzed, standardized and automated."
-              >
-                Abläufe analysiert, standardisiert und automatisiert.
-              </p>
-            </div>
-
-            <!-- Team Building -->
-            <div
-              class="reveal reveal-delay-3 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-green-500 p-5"
-            >
-              <div
-                class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-user-plus text-xl text-green-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-              >
-                Team Building
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Vertriebseinheiten ausgebaut, Kollegen onboarded."
-                data-en="Scaled sales units, onboarded colleagues."
-              >
-                Vertriebseinheiten ausgebaut, Kollegen onboarded.
-              </p>
-            </div>
-
-            <!-- Krisenmanagement -->
-            <div
-              class="reveal reveal-delay-4 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-red-500 p-5"
-            >
-              <div
-                class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-shield-exclamation text-xl text-red-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-                data-de="Krisenmanagement"
-                data-en="Crisis Management"
-              >
-                Krisenmanagement
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Sechs Jahre Bundeswehr -- strukturiertes Handeln unter Druck."
-                data-en="Six years in the German Armed Forces -- structured action under pressure."
-              >
-                Sechs Jahre Bundeswehr -- strukturiertes Handeln unter Druck.
-              </p>
-            </div>
-
-            <!-- Eigeninitiative -->
-            <div
-              class="reveal reveal-delay-5 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-amber-500 p-5"
-            >
-              <div
-                class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-bolt text-xl text-amber-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-                data-de="Eigeninitiative"
-                data-en="Self-Motivation"
-              >
-                Eigeninitiative
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on aufgebaut."
-                data-en="Built cloud and hybrid infrastructure hands-on alongside full-time work."
-              >
-                Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on
-                aufgebaut.
-              </p>
-            </div>
-
-            <!-- Selbständiges Arbeiten -->
-            <div
-              class="reveal reveal-delay-5 about-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 border-t-2 border-t-orange-500 p-5"
-            >
-              <div
-                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3"
-              >
-                <i class="ti ti-compass text-xl text-orange-500"></i>
-              </div>
-              <h3
-                class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
-                data-de="Selbständiges Arbeiten"
-                data-en="Independent Work"
-              >
-                Selbständiges Arbeiten
-              </h3>
-              <p
-                class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-                data-de="Bundesweit remote -- eigenständige Planung und Umsetzung."
-                data-en="Nationwide remote -- independent planning and execution."
-              >
-                Bundesweit remote -- eigenständige Planung und Umsetzung.
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- ===== SECTION 5: QUICK STATS ===== -->
-      <!-- Animated counters, scroll-triggered via counter.js -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <h2
-          class="reveal text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
-        >
-          <span
-            class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0"
-          >
-            <i class="ti ti-chart-bar text-xl text-amber-500"></i>
-          </span>
-          <span data-de="Auf einen Blick" data-en="At a Glance"
-            >Auf einen Blick</span
-          >
-        </h2>
-
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <!-- Stat 1: Zertifizierungen -->
-          <div
-            class="reveal reveal-delay-1 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-certificate text-2xl text-amber-500"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="4"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-              data-de="Zertifizierungen"
-              data-en="Certifications"
-            >
-              Zertifizierungen
-            </div>
+              Key Account Strengths
+            </h2>
           </div>
 
-          <!-- Stat 2: Services -->
-          <div
-            class="reveal reveal-delay-2 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/10 flex items-center justify-center"
-            >
-              <i class="devicon-docker-plain colored text-2xl"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="50"
-              data-count-suffix="+"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-            >
-              Services
-            </div>
-          </div>
+          <!-- Asymmetric: 2 large left, 4 small right -->
+          <div class="grid gap-6 lg:grid-cols-5">
+            <!-- Left column: 2 taller cards -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+              <!-- Stakeholder-Kommunikation -->
+              <div
+                class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 flex-1"
+              >
+                <div
+                  class="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center mb-4"
+                >
+                  <i class="ti ti-messages text-xl text-sky-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-bold text-slate-900 dark:text-white mb-2"
+                  data-de="Stakeholder-Kommunikation"
+                  data-en="Stakeholder Communication"
+                >
+                  Stakeholder-Kommunikation
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Fast zwei Jahrzehnte Abstimmung mit internen und externen Entscheidern."
+                  data-en="Almost two decades of alignment with internal and external decision-makers."
+                >
+                  Fast zwei Jahrzehnte Abstimmung mit internen und externen
+                  Entscheidern.
+                </p>
+              </div>
 
-          <!-- Stat 3: Monate Training -->
-          <div
-            class="reveal reveal-delay-3 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-sky-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-clock text-2xl text-sky-500"></i>
+              <!-- Krisenmanagement -->
+              <div
+                class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 flex-1"
+              >
+                <div
+                  class="w-11 h-11 rounded-xl bg-red-500/10 flex items-center justify-center mb-4"
+                >
+                  <i class="ti ti-shield-exclamation text-xl text-red-500"></i>
+                </div>
+                <h3
+                  class="text-lg font-bold text-slate-900 dark:text-white mb-2"
+                  data-de="Krisenmanagement"
+                  data-en="Crisis Management"
+                >
+                  Krisenmanagement
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Sechs Jahre Bundeswehr &ndash; strukturiertes Handeln unter Druck."
+                  data-en="Six years in the German Armed Forces &ndash; structured action under pressure."
+                >
+                  Sechs Jahre Bundeswehr &ndash; strukturiertes Handeln unter
+                  Druck.
+                </p>
+              </div>
             </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="12"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-              data-de="Monate Training"
-              data-en="Months of Training"
-            >
-              Monate Training
-            </div>
-          </div>
 
-          <!-- Stat 4: Standorte -->
-          <div
-            class="reveal reveal-delay-4 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-map-pin text-2xl text-purple-500"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="4"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-              data-de="Umgebungen"
-              data-en="Environments"
-            >
-              Umgebungen
-            </div>
-          </div>
+            <!-- Right column: 4 compact cards in 2x2 grid -->
+            <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <!-- Prozessoptimierung -->
+              <div
+                class="reveal-v2 reveal-delay-3 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-5"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-3"
+                >
+                  <i class="ti ti-arrows-sort text-xl text-purple-500"></i>
+                </div>
+                <h3
+                  class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                  data-de="Prozessoptimierung"
+                  data-en="Process Optimization"
+                >
+                  Prozessoptimierung
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Abl&auml;ufe analysiert, standardisiert und automatisiert."
+                  data-en="Workflows analyzed, standardized and automated."
+                >
+                  Abl&auml;ufe analysiert, standardisiert und automatisiert.
+                </p>
+              </div>
 
-          <!-- Stat 5: Key Account Erfahrung -->
-          <div
-            class="reveal reveal-delay-5 counter-card bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6 text-center cursor-default"
-          >
-            <div
-              class="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/10 flex items-center justify-center"
-            >
-              <i class="ti ti-users text-2xl text-red-500"></i>
-            </div>
-            <div
-              class="text-3xl font-bold text-slate-900 dark:text-white"
-              data-count-to="18"
-              data-count-suffix="+"
-            >
-              0
-            </div>
-            <div
-              class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
-              data-de="Jahre Key Account &amp; Sales"
-              data-en="Years Key Account &amp; Sales"
-            >
-              Jahre Key Account &amp; Sales
+              <!-- Team Building -->
+              <div
+                class="reveal-v2 reveal-delay-4 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-5"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-3"
+                >
+                  <i class="ti ti-user-plus text-xl text-green-500"></i>
+                </div>
+                <h3
+                  class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                >
+                  Team Building
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Vertriebseinheiten ausgebaut, Kollegen onboarded."
+                  data-en="Scaled sales units, onboarded colleagues."
+                >
+                  Vertriebseinheiten ausgebaut, Kollegen onboarded.
+                </p>
+              </div>
+
+              <!-- Eigeninitiative -->
+              <div
+                class="reveal-v2 reveal-delay-5 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-5"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3"
+                >
+                  <i class="ti ti-bolt text-xl text-amber-500"></i>
+                </div>
+                <h3
+                  class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                  data-de="Eigeninitiative"
+                  data-en="Self-Motivation"
+                >
+                  Eigeninitiative
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on aufgebaut."
+                  data-en="Built cloud and hybrid infrastructure hands-on alongside full-time work."
+                >
+                  Cloud- und Hybrid-Infrastruktur berufsbegleitend hands-on
+                  aufgebaut.
+                </p>
+              </div>
+
+              <!-- Selbstaendiges Arbeiten -->
+              <div
+                class="reveal-v2 reveal-delay-6 glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-5"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3"
+                >
+                  <i class="ti ti-compass text-xl text-orange-500"></i>
+                </div>
+                <h3
+                  class="text-base font-semibold text-slate-900 dark:text-white mb-1.5"
+                  data-de="Selbst&auml;ndiges Arbeiten"
+                  data-en="Independent Work"
+                >
+                  Selbst&auml;ndiges Arbeiten
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
+                  data-de="Bundesweit remote &ndash; eigenst&auml;ndige Planung und Umsetzung."
+                  data-en="Nationwide remote &ndash; independent planning and execution."
+                >
+                  Bundesweit remote &ndash; eigenst&auml;ndige Planung und
+                  Umsetzung.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- Gradient divider -->
+      <div class="section-divider"></div>
+
+      <!-- ===== SECTION 5: QUICK STATS ===== -->
+      <!-- Horizontal flowing stats with counter glow -->
+      <section class="retro-grid relative">
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10"
+        >
+          <div class="reveal-v2 mb-8">
+            <span
+              class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-4"
+            >
+              <i class="ti ti-chart-bar text-2xl text-amber-500"></i>
+            </span>
+            <h2
+              class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
+            >
+              <span data-de="Auf einen Blick" data-en="At a Glance"
+                >Auf einen Blick</span
+              >
+            </h2>
+          </div>
+
+          <!-- Stats in a flowing row -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <!-- Certs -->
+            <div
+              class="reveal-v2 reveal-delay-1 counter-glow glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 text-center"
+            >
+              <div
+                class="w-12 h-12 mx-auto mb-3 rounded-xl bg-amber-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-certificate text-2xl text-amber-500"></i>
+              </div>
+              <div
+                class="text-3xl font-bold text-slate-900 dark:text-white"
+                data-count-to="4"
+              >
+                0
+              </div>
+              <div
+                class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+                data-de="Zertifizierungen"
+                data-en="Certifications"
+              >
+                Zertifizierungen
+              </div>
+            </div>
+
+            <!-- Services -->
+            <div
+              class="reveal-v2 reveal-delay-2 counter-glow glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 text-center"
+            >
+              <div
+                class="w-12 h-12 mx-auto mb-3 rounded-xl bg-green-500/10 flex items-center justify-center"
+              >
+                <i class="devicon-docker-plain colored text-2xl"></i>
+              </div>
+              <div
+                class="text-3xl font-bold text-slate-900 dark:text-white"
+                data-count-to="50"
+                data-count-suffix="+"
+              >
+                0
+              </div>
+              <div
+                class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+              >
+                Services
+              </div>
+            </div>
+
+            <!-- Months Training -->
+            <div
+              class="reveal-v2 reveal-delay-3 counter-glow glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 text-center"
+            >
+              <div
+                class="w-12 h-12 mx-auto mb-3 rounded-xl bg-sky-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-clock text-2xl text-sky-500"></i>
+              </div>
+              <div
+                class="text-3xl font-bold text-slate-900 dark:text-white"
+                data-count-to="12"
+              >
+                0
+              </div>
+              <div
+                class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+                data-de="Monate Training"
+                data-en="Months of Training"
+              >
+                Monate Training
+              </div>
+            </div>
+
+            <!-- Environments -->
+            <div
+              class="reveal-v2 reveal-delay-4 counter-glow glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 text-center"
+            >
+              <div
+                class="w-12 h-12 mx-auto mb-3 rounded-xl bg-purple-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-map-pin text-2xl text-purple-500"></i>
+              </div>
+              <div
+                class="text-3xl font-bold text-slate-900 dark:text-white"
+                data-count-to="4"
+              >
+                0
+              </div>
+              <div
+                class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+                data-de="Umgebungen"
+                data-en="Environments"
+              >
+                Umgebungen
+              </div>
+            </div>
+
+            <!-- Key Account -->
+            <div
+              class="reveal-v2 reveal-delay-5 counter-glow glow-card bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/30 p-6 text-center col-span-2 sm:col-span-1"
+            >
+              <div
+                class="w-12 h-12 mx-auto mb-3 rounded-xl bg-red-500/10 flex items-center justify-center"
+              >
+                <i class="ti ti-users text-2xl text-red-500"></i>
+              </div>
+              <div
+                class="text-3xl font-bold text-slate-900 dark:text-white"
+                data-count-to="18"
+                data-count-suffix="+"
+              >
+                0
+              </div>
+              <div
+                class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1"
+                data-de="Jahre Key Account &amp; Sales"
+                data-en="Years Key Account &amp; Sales"
+              >
+                Jahre Key Account &amp; Sales
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gradient divider -->
+      <div class="section-divider"></div>
+
       <!-- ===== SECTION 6: CTA / CONTACT ===== -->
-      <!-- Call to action with contact links -->
-      <div class="bg-white dark:bg-slate-900">
-        <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <section class="lamp-effect relative">
+        <div
+          class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 relative z-10"
+        >
           <div class="text-center">
             <h2
-              class="reveal text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4"
+              class="reveal-v2 text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
               data-de="Lass uns sprechen"
               data-en="Let's talk"
             >
               Lass uns sprechen
             </h2>
             <p
-              class="reveal reveal-delay-1 text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-xl mx-auto"
-              data-de="Ab April 2026 offen für neue Herausforderungen. Cloud Engineering, Solutions Architecture, Technical Consulting &mdash; oder die passende Rolle dazwischen."
+              class="reveal-v2 reveal-delay-1 text-base text-slate-500 dark:text-slate-400 leading-relaxed mb-10 max-w-xl mx-auto"
+              data-de="Ab April 2026 offen f&uuml;r neue Herausforderungen. Cloud Engineering, Solutions Architecture, Technical Consulting &mdash; oder die passende Rolle dazwischen."
               data-en="Available from April 2026 for new challenges. Cloud Engineering, Solutions Architecture, Technical Consulting &mdash; or the right role in between."
             >
-              Ab April 2026 offen für neue Herausforderungen. Cloud Engineering,
-              Solutions Architecture, Technical Consulting &mdash; oder die
-              passende Rolle dazwischen.
+              Ab April 2026 offen f&uuml;r neue Herausforderungen. Cloud
+              Engineering, Solutions Architecture, Technical Consulting &mdash;
+              oder die passende Rolle dazwischen.
             </p>
 
-            <!-- Contact links -->
-            <div
-              class="reveal reveal-delay-2 flex flex-wrap justify-center gap-4"
-            >
-              <!-- Email -->
+            <!-- Contact links with btn-glow style (same as hero buttons) -->
+            <div class="reveal-v2 reveal-delay-2 flex justify-center gap-4">
               <a
                 href="mailto:andy.schlegel23@googlemail.com"
-                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+                class="btn-glow social-link inline-flex items-center gap-2 px-5 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
               >
-                <i class="ti ti-mail text-lg text-sky-500"></i>
-                andy.schlegel23@googlemail.com
+                <i class="ti ti-mail text-lg"></i>
+                E-Mail
               </a>
-
-              <!-- LinkedIn -->
               <a
                 href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+                class="btn-glow social-link inline-flex items-center gap-2 px-5 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
               >
-                <i class="ti ti-brand-linkedin text-lg text-sky-500"></i>
+                <i class="ti ti-brand-linkedin text-lg"></i>
                 LinkedIn
               </a>
-
-              <!-- GitHub -->
               <a
                 href="https://github.com/AndySchlegel"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+                class="btn-glow social-link inline-flex items-center gap-2 px-5 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
               >
-                <i class="ti ti-brand-github text-lg text-sky-500"></i>
+                <i class="ti ti-brand-github text-lg"></i>
                 GitHub
               </a>
-
-              <!-- Blog -->
               <a
                 href="./blog.html"
-                class="social-link inline-flex items-center gap-2.5 px-5 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-600 dark:hover:text-sky-400"
+                class="btn-glow social-link inline-flex items-center gap-2 px-5 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 text-sm font-semibold rounded-xl transition-colors"
               >
-                <i class="ti ti-article text-lg text-sky-500"></i>
+                <i class="ti ti-article text-lg"></i>
                 <span data-de="Blog lesen" data-en="Read Blog">Blog lesen</span>
               </a>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div
           class="flex flex-col sm:flex-row items-center justify-between gap-4"
         >
-          <!-- Left: copyright -->
           <div
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
             <span>2026 Andy Schlegel</span>
           </div>
-
-          <!-- Center: legal links (required in Germany) -->
           <div class="flex items-center gap-4 text-sm">
             <a
               href="./impressum.html"
@@ -1303,8 +1727,6 @@
               >Haftungsausschluss</a
             >
           </div>
-
-          <!-- Right: social links -->
           <div class="flex items-center gap-4">
             <a
               href="https://github.com/AndySchlegel"
@@ -1327,12 +1749,13 @@
       </div>
     </footer>
 
-    <!-- Language toggle (must load before other app scripts) -->
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Language toggle -->
     <script src="./js/lang.js"></script>
 
-    <!-- Apply language to static text elements on this page -->
+    <!-- Language switcher for static text -->
     <script>
-      // Apply language to static text elements on this page
       function updatePageLanguage() {
         var lang = window.blogLang ? window.blogLang.get() : "de";
         var elements = document.querySelectorAll("[data-de][data-en]");
@@ -1352,9 +1775,8 @@
       window.addEventListener("languageChanged", updatePageLanguage);
     </script>
 
-    <!-- Mobile menu toggle script -->
+    <!-- Mobile menu toggle -->
     <script>
-      // Simple toggle for the mobile navigation menu
       document.addEventListener("DOMContentLoaded", function () {
         var toggle = document.getElementById("mobile-menu-toggle");
         var menu = document.getElementById("mobile-menu");
@@ -1366,29 +1788,168 @@
       });
     </script>
 
-    <!-- Animated counters (scroll-triggered) -->
+    <!-- Animated counters -->
     <script src="./js/counter.js"></script>
 
-    <!-- Scroll-reveal: animate elements into view -->
+    <!-- ============================================
+         V2 Effects Engine (modular, reusable)
+         Each effect is a self-contained function
+         that can be copied to other pages.
+         ============================================ -->
     <script>
-      // Scroll-reveal: animate elements into view as they enter the viewport
-      document.addEventListener("DOMContentLoaded", function () {
-        var observer = new IntersectionObserver(
-          function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("revealed");
-                observer.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1 },
-        );
+      (function () {
+        "use strict";
 
-        document.querySelectorAll(".reveal").forEach(function (el) {
-          observer.observe(el);
+        // --- EFFECT: Particle Canvas ---
+        // Renders floating dots that drift slowly in the hero background.
+        // Call initParticles() on any canvas element.
+        function initParticles() {
+          var canvas = document.getElementById("particle-canvas");
+          if (!canvas) return;
+          var ctx = canvas.getContext("2d");
+          var particles = [];
+          var PARTICLE_COUNT = 60;
+          var animFrameId;
+
+          function resize() {
+            var section = canvas.parentElement;
+            canvas.width = section.offsetWidth;
+            canvas.height = section.offsetHeight;
+          }
+
+          function createParticle() {
+            return {
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              vx: (Math.random() - 0.5) * 0.3,
+              vy: (Math.random() - 0.5) * 0.3,
+              radius: Math.random() * 1.5 + 0.5,
+              opacity: Math.random() * 0.4 + 0.1,
+            };
+          }
+
+          function initAll() {
+            particles = [];
+            for (var i = 0; i < PARTICLE_COUNT; i++) {
+              particles.push(createParticle());
+            }
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var isDark = document.documentElement.classList.contains("dark");
+            var color = isDark ? "148, 163, 184" : "100, 116, 139";
+
+            for (var i = 0; i < particles.length; i++) {
+              var p = particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
+
+              // Wrap around edges
+              if (p.x < 0) p.x = canvas.width;
+              if (p.x > canvas.width) p.x = 0;
+              if (p.y < 0) p.y = canvas.height;
+              if (p.y > canvas.height) p.y = 0;
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = "rgba(" + color + "," + p.opacity + ")";
+              ctx.fill();
+            }
+
+            // Draw connections between nearby particles
+            for (var a = 0; a < particles.length; a++) {
+              for (var b = a + 1; b < particles.length; b++) {
+                var dx = particles[a].x - particles[b].x;
+                var dy = particles[a].y - particles[b].y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[a].x, particles[a].y);
+                  ctx.lineTo(particles[b].x, particles[b].y);
+                  var lineOpacity = (1 - dist / 120) * 0.15;
+                  ctx.strokeStyle = "rgba(" + color + "," + lineOpacity + ")";
+                  ctx.lineWidth = 0.5;
+                  ctx.stroke();
+                }
+              }
+            }
+
+            animFrameId = requestAnimationFrame(draw);
+          }
+
+          resize();
+          initAll();
+          draw();
+
+          window.addEventListener("resize", function () {
+            resize();
+            initAll();
+          });
+        }
+
+        // --- EFFECT: Glowing Card Borders ---
+        // Tracks mouse position on .glow-card elements
+        // and updates CSS custom properties for the radial gradient.
+        function initGlowCards() {
+          var cards = document.querySelectorAll(".glow-card");
+          for (var i = 0; i < cards.length; i++) {
+            (function (card) {
+              card.addEventListener("mousemove", function (e) {
+                var rect = card.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                card.style.setProperty("--glow-x", x + "px");
+                card.style.setProperty("--glow-y", y + "px");
+              });
+            })(cards[i]);
+          }
+        }
+
+        // --- EFFECT: Cursor Glow ---
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
+        // --- EFFECT: Scroll Reveal ---
+        // Observes .reveal-v2 elements and adds .revealed class
+        // when they scroll into view.
+        function initScrollReveal() {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          var elements = document.querySelectorAll(".reveal-v2");
+          for (var i = 0; i < elements.length; i++) {
+            observer.observe(elements[i]);
+          }
+        }
+
+        // --- Initialize all effects on DOM ready ---
+        document.addEventListener("DOMContentLoaded", function () {
+          initParticles();
+          initGlowCards();
+          initScrollReveal();
+          initCursorGlow();
         });
-      });
+      })();
     </script>
   </body>
 </html>

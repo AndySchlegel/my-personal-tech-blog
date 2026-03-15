@@ -9,10 +9,9 @@
       content="Tech Blog von Andy Schlegel -- AWS, Kubernetes, Terraform, Homelab und der Weg in die Cloud."
     />
 
-    <!-- Tailwind CSS (CDN for development, will be replaced by build step for production) -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Tailwind configuration
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -25,79 +24,550 @@
       };
     </script>
 
-    <!-- Inter font from Google Fonts -->
+    <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Tabler Icons (4900+ modern icons, 2px stroke) -->
+    <!-- Tabler Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
-    <!-- Devicon (colored tech/brand icons) -->
+    <!-- Devicon -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
     />
 
-    <!-- Our custom styles (minimal, Tailwind does the heavy lifting) -->
-    <link rel="stylesheet" href="./css/styles.css" />
-
-    <!-- Theme toggle script (loads early to prevent flash of wrong theme) -->
+    <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
+
+    <!-- ============================================
+         V2 Effects System
+         Modular CSS for interactive effects.
+         Each effect is a self-contained block that
+         can be copied to other pages.
+         ============================================ -->
+    <style>
+      /* --- EFFECT: Particle Canvas ---
+         Full-screen canvas behind hero content.
+         Renders floating dots that drift slowly. */
+      #particle-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* --- EFFECT: Lamp / Conic Gradient ---
+         Spotlight beam radiating down from top center.
+         Creates a dramatic "stage lighting" feel. */
+      .lamp-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .lamp-effect::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 100%;
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.08) 45%,
+          rgba(139, 92, 246, 0.06) 50%,
+          rgba(56, 189, 248, 0.08) 55%,
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Light mode: softer lamp beam */
+      html:not(.dark) .lamp-effect::before {
+        background: conic-gradient(
+          from 90deg at 50% 0%,
+          transparent 40%,
+          rgba(56, 189, 248, 0.05) 45%,
+          rgba(139, 92, 246, 0.03) 50%,
+          rgba(56, 189, 248, 0.05) 55%,
+          transparent 60%
+        );
+      }
+
+      /* --- EFFECT: Glowing Card Border ---
+         Mouse-following gradient glow on card borders.
+         Uses CSS custom properties set by JS. */
+      .glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease;
+      }
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.35),
+          rgba(139, 92, 246, 0.2),
+          transparent 60%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 2;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .glow-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.1),
+          0 8px 24px rgba(139, 92, 246, 0.08);
+      }
+      /* Light mode: toned down glow */
+      html:not(.dark) .glow-card::before {
+        background: radial-gradient(
+          350px circle at var(--glow-x) var(--glow-y),
+          rgba(56, 189, 248, 0.2),
+          rgba(139, 92, 246, 0.12),
+          transparent 60%
+        );
+      }
+      html:not(.dark) .glow-card:hover {
+        box-shadow:
+          0 20px 60px rgba(56, 189, 248, 0.08),
+          0 8px 24px rgba(139, 92, 246, 0.05);
+      }
+
+      /* --- EFFECT: Nav Link Hover ---
+         Simple color highlight on hover for nav links. */
+      .nav-link-v2 {
+        position: relative;
+        display: inline-block;
+        transition: color 0.3s ease;
+      }
+      .nav-link-v2:hover {
+        color: #0ea5e9 !important;
+      }
+      .dark .nav-link-v2:hover {
+        color: #38bdf8 !important;
+      }
+
+      /* --- EFFECT: Scroll Reveal ---
+         Elements fade in and slide up when scrolled into view. */
+      .reveal-v2 {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-v2.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-v2.reveal-delay-1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-v2.reveal-delay-2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-v2.reveal-delay-3 {
+        transition-delay: 0.3s;
+      }
+      .reveal-v2.reveal-delay-4 {
+        transition-delay: 0.4s;
+      }
+      .reveal-v2.reveal-delay-5 {
+        transition-delay: 0.5s;
+      }
+      .reveal-v2.reveal-delay-6 {
+        transition-delay: 0.6s;
+      }
+
+      /* --- EFFECT: Stagger Fade ---
+         Hero text lines stagger in from left. */
+      @keyframes stagger-in {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .stagger-in {
+        animation: stagger-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+
+      /* --- Theme transition smoothing --- */
+      html.transition-theme,
+      html.transition-theme *,
+      html.transition-theme *::before,
+      html.transition-theme *::after {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* --- Custom scrollbar --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* --- Section divider gradient line --- */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.3),
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+      }
+
+      /* --- BLOG POST CARD STYLES ---
+         Styles for dynamically created post cards from app.js.
+         These match the original blog card design adapted for V2. */
+
+      /* Post card base styling */
+      .post-card {
+        transition:
+          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.4s ease,
+          border-color 0.3s ease;
+      }
+      .post-card:hover {
+        transform: translateY(-8px) scale(1.02);
+      }
+
+      /* Card blob -- subtle floating color accent behind card content */
+      .card-blob {
+        position: absolute;
+        top: -30%;
+        right: -20%;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.4;
+        animation: float-blob 8s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+      @keyframes float-blob {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(-15px, 10px) scale(1.1);
+        }
+        66% {
+          transform: translate(10px, -15px) scale(0.95);
+        }
+      }
+
+      /* Fade-in animation for post cards */
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fade-in-up 0.5s ease forwards;
+        opacity: 0;
+      }
+
+      /* Category glow effects on post card hover */
+      .glow-sky:hover {
+        box-shadow:
+          0 20px 50px rgba(14, 165, 233, 0.15),
+          0 8px 24px rgba(14, 165, 233, 0.08);
+      }
+      .glow-amber:hover {
+        box-shadow:
+          0 20px 50px rgba(245, 158, 11, 0.15),
+          0 8px 24px rgba(245, 158, 11, 0.08);
+      }
+      .glow-green:hover {
+        box-shadow:
+          0 20px 50px rgba(34, 197, 94, 0.15),
+          0 8px 24px rgba(34, 197, 94, 0.08);
+      }
+      .glow-red:hover {
+        box-shadow:
+          0 20px 50px rgba(239, 68, 68, 0.15),
+          0 8px 24px rgba(239, 68, 68, 0.08);
+      }
+      .glow-purple:hover {
+        box-shadow:
+          0 20px 50px rgba(168, 85, 247, 0.15),
+          0 8px 24px rgba(168, 85, 247, 0.08);
+      }
+      .glow-orange:hover {
+        box-shadow:
+          0 20px 50px rgba(249, 115, 22, 0.15),
+          0 8px 24px rgba(249, 115, 22, 0.08);
+      }
+      .glow-teal:hover {
+        box-shadow:
+          0 20px 50px rgba(20, 184, 166, 0.15),
+          0 8px 24px rgba(20, 184, 166, 0.08);
+      }
+
+      /* Gradient title text on card hover */
+      .post-card:hover .title-text {
+        background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Filter button base styles (hover + active overridden below) */
+      .filter-btn {
+        padding: 0.375rem 0.875rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid;
+        cursor: pointer;
+        background: transparent;
+        border-color: rgba(148, 163, 184, 0.3);
+        color: rgb(148, 163, 184);
+      }
+
+      /* Loading skeleton shimmer */
+      @keyframes skeleton-shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          transparent 25%,
+          rgba(148, 163, 184, 0.08) 50%,
+          transparent 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.8s infinite;
+      }
+
+      /* Badge pill base style */
+      .badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      /* Line clamp for excerpts */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* --- EFFECT: Excerpt Expand on Card Hover ---
+         Shows 2 lines by default as teaser,
+         expands to full excerpt on hover. */
+      .post-card .card-excerpt {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden;
+        max-height: 3.2em;
+        transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .post-card:hover .card-excerpt {
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        max-height: 300px;
+        overflow: visible;
+      }
+
+      /* --- V2 Filter Button Enhancements ---
+         Adds subtle glow and stronger hover transitions. */
+      .filter-btn {
+        box-shadow: none;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .filter-btn:hover {
+        border-color: rgba(56, 189, 248, 0.5);
+        color: rgb(56, 189, 248);
+        background: rgba(56, 189, 248, 0.08);
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.12);
+        transform: translateY(-1px);
+      }
+      .filter-btn-active {
+        border-color: rgba(56, 189, 248, 0.6) !important;
+        color: rgb(56, 189, 248) !important;
+        background: rgba(56, 189, 248, 0.1) !important;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.15) !important;
+      }
+      html:not(.dark) .filter-btn:hover {
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.08);
+      }
+      html:not(.dark) .filter-btn-active {
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.1) !important;
+      }
+
+      /* --- V2 Search Input Enhancement --- */
+      .search-input {
+        transition: all 0.3s ease;
+        box-shadow: none;
+      }
+      .search-input:focus {
+        border-color: rgba(56, 189, 248, 0.5);
+        box-shadow:
+          0 0 0 3px rgba(56, 189, 248, 0.1),
+          0 0 20px rgba(56, 189, 248, 0.06);
+      }
+
+      /* --- EFFECT: Custom Cursor Glow ---
+         Soft radial glow following the mouse pointer. */
+      .cursor-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        mix-blend-mode: screen;
+      }
+      .dark .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.12) 0%,
+          rgba(139, 92, 246, 0.06) 40%,
+          transparent 70%
+        );
+      }
+      html:not(.dark) .cursor-glow {
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.06) 0%,
+          rgba(139, 92, 246, 0.03) 40%,
+          transparent 70%
+        );
+      }
+    </style>
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col"
   >
+    <!-- Cursor glow element (follows mouse) -->
+    <div id="cursor-glow" class="cursor-glow" style="opacity: 0"></div>
+
     <!-- ==================== HEADER ==================== -->
+    <!-- Glassmorphism nav with gradient hover on links -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
     >
       <div
-        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+        class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo (icon only) -->
+        <!-- Logo -->
         <a href="./index.html" class="flex items-center group">
           <div
-            class="logo-icon w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400"
+            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
         </a>
 
-        <!-- Navigation -->
-        <nav class="hidden sm:flex items-center gap-6">
+        <!-- Desktop navigation with gradient hover -->
+        <nav class="hidden sm:flex items-center gap-8">
           <a
             href="./index.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Home</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Home
+          </a>
           <a
             href="./about.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >About me</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            About me
+          </a>
           <a
             href="./skills.html"
-            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >Skills</a
+            class="nav-link-v2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
+            Skills
+          </a>
           <a
             href="./blog.html"
-            class="text-sm font-medium text-sky-600 dark:text-sky-400"
-            >Blog</a
+            class="nav-link-v2 text-sm font-medium text-sky-600 dark:text-sky-400"
           >
+            Blog
+          </a>
         </nav>
 
-        <!-- Right side: language toggle + theme toggle + mobile menu -->
+        <!-- Right side controls -->
         <div class="flex items-center gap-2">
-          <!-- Language toggle (DE/EN) -->
+          <!-- Language toggle -->
           <button
             id="lang-toggle"
             class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -107,19 +577,17 @@
             <span id="lang-label" class="text-xs font-bold">DE</span>
           </button>
 
-          <!-- Theme toggle button -->
+          <!-- Theme toggle -->
           <button
             id="theme-toggle"
-            class="theme-toggle-btn w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
             aria-label="Toggle dark mode"
           >
-            <!-- Sun icon (shown in dark mode - click to go light) -->
             <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
-            <!-- Moon icon (shown in light mode - click to go dark) -->
             <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
           </button>
 
-          <!-- Mobile menu button -->
+          <!-- Mobile menu -->
           <button
             id="mobile-menu-toggle"
             class="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -130,12 +598,12 @@
         </div>
       </div>
 
-      <!-- Mobile navigation (hidden by default) -->
+      <!-- Mobile navigation -->
       <nav
         id="mobile-menu"
-        class="sm:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+        class="sm:hidden hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl"
       >
-        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
           <a
             href="./index.html"
             class="text-sm font-medium text-slate-500 dark:text-slate-400 py-2"
@@ -162,174 +630,206 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1">
-      <!-- Hero Section -->
-      <section
-        class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10"
-      >
-        <h1
-          class="hero-title slide-in-left text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
+      <!-- ===== HERO with Lamp + Particles ===== -->
+      <section class="lamp-effect relative">
+        <!-- Particle canvas (rendered by JS) -->
+        <canvas id="particle-canvas"></canvas>
+
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-6 sm:pt-14 sm:pb-8 relative z-10 w-full"
         >
-          Blog
-        </h1>
-        <!-- Quote block + Podcast player side by side (equal width) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-          <!-- Left: Subtitle as quote block with photo -->
-          <div
-            class="quote-block slide-in-left border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
-            style="animation-delay: 0.1s; opacity: 0"
-          >
-            <div class="flex items-start gap-3">
-              <img
-                src="./img/andy-professional.jpg"
-                alt="Andy Schlegel"
-                class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
-                style="object-position: center 30%"
-              />
-              <p
-                id="blog-subtitle"
-                class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
-                data-de="Vom ersten Container bis zur produktiven EKS-Infrastruktur &mdash; eine dokumentierte Reise durch AWS, Kubernetes, Terraform und Security, mit echten Projekten, Fehlern und den Lektionen daraus."
-                data-en="From the first container to production EKS infrastructure &mdash; a documented journey through AWS, Kubernetes, Terraform and Security, with real projects, mistakes and the lessons learned."
-              >
-                Vom ersten Container bis zur produktiven EKS-Infrastruktur
-                &mdash; eine dokumentierte Reise durch AWS, Kubernetes,
-                Terraform und Security, mit echten Projekten, Fehlern und den
-                Lektionen daraus.
-              </p>
-            </div>
+          <!-- Hero title -->
+          <div class="stagger-in mb-4" style="animation-delay: 0s">
+            <h1
+              class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white"
+            >
+              Blog
+            </h1>
           </div>
 
-          <!-- Right: NotebookLM Podcast player -->
-          <div
-            class="slide-in-left border-l-4 border-purple-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
-            style="animation-delay: 0.2s; opacity: 0"
-          >
-            <div class="flex items-start gap-3 mb-3">
-              <span
-                class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"
-              >
-                <i class="ti ti-headphones text-lg text-purple-500"></i>
-              </span>
-              <div>
-                <span
-                  class="text-sm font-semibold text-slate-900 dark:text-white block"
-                  >DevOps Journey Podcast</span
-                >
-                <p
-                  class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5"
-                  data-de="Vom ersten Container bis zur Cloud-Architektur &mdash; meine DevOps-Reise jetzt als KI-Podcast."
-                  data-en="From the first container to cloud architecture &mdash; my DevOps journey now as an AI podcast."
-                >
-                  Vom ersten Container bis zur Cloud-Architektur &mdash; meine
-                  DevOps-Reise jetzt als KI-Podcast.
-                </p>
-              </div>
-            </div>
-            <!-- Audio element -->
-            <audio id="podcast-player" class="hidden" preload="metadata">
-              <source src="./audio/notebooklm-podcast.m4a" type="audio/mp4" />
-            </audio>
-            <!-- Play/Pause button + progress -->
-            <div class="flex items-center gap-3 mb-2.5">
-              <button
-                id="podcast-play-btn"
-                class="social-link w-9 h-9 rounded-full bg-purple-500 hover:bg-purple-400 flex items-center justify-center transition-colors shrink-0"
-                aria-label="Play podcast"
-              >
-                <svg
-                  id="podcast-icon-play"
-                  class="w-4 h-4 text-white fill-current ml-0.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                <svg
-                  id="podcast-icon-pause"
-                  class="w-4 h-4 text-white fill-current hidden"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
-                </svg>
-              </button>
-              <div class="flex-1 min-w-0">
-                <input
-                  id="podcast-progress"
-                  type="range"
-                  min="0"
-                  max="100"
-                  value="0"
-                  class="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-200 dark:bg-slate-700 accent-purple-500"
+          <!-- Quote block + Podcast player side by side (equal height glow-cards) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <!-- Left: Quote glow-card with sky-500 gradient left border -->
+            <div
+              class="reveal-v2 glow-card bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 p-6 flex flex-col"
+              style="border-left: 3px solid rgb(14, 165, 233)"
+            >
+              <div class="flex items-start gap-4 flex-1">
+                <!-- Avatar with sky glow ring -->
+                <img
+                  src="./img/andy-casual.jpg"
+                  alt="Andy Schlegel"
+                  class="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-sky-500/30 shadow-lg shadow-sky-500/10"
+                  style="object-position: center 30%"
                 />
-                <div class="flex justify-between mt-0.5">
-                  <span
-                    id="podcast-time-current"
-                    class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
-                    >0:00</span
+                <div class="flex-1">
+                  <!-- Quote icon -->
+                  <i
+                    class="ti ti-quote text-sky-500/40 text-2xl mb-2 block"
+                  ></i>
+                  <!-- Quote text -->
+                  <p
+                    id="blog-subtitle"
+                    class="text-sm sm:text-base text-slate-600 dark:text-slate-300 italic leading-relaxed"
+                    data-de="Vom ersten Container bis zur produktiven EKS-Infrastruktur &mdash; eine dokumentierte Reise durch AWS, Kubernetes, Terraform und Security, mit echten Projekten, Fehlern und den Lektionen daraus."
+                    data-en="From the first container to production EKS infrastructure &mdash; a documented journey through AWS, Kubernetes, Terraform and Security, with real projects, mistakes and the lessons learned."
                   >
-                  <span
-                    id="podcast-time-total"
-                    class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
-                    >--:--</span
+                    Vom ersten Container bis zur produktiven EKS-Infrastruktur
+                    &mdash; eine dokumentierte Reise durch AWS, Kubernetes,
+                    Terraform und Security, mit echten Projekten, Fehlern und
+                    den Lektionen daraus.
+                  </p>
+                  <!-- Attribution -->
+                  <p
+                    class="text-xs text-slate-400 dark:text-slate-500 mt-3 font-medium"
                   >
+                    &mdash; Andy Schlegel
+                  </p>
                 </div>
               </div>
             </div>
-            <!-- Speed control buttons -->
-            <div class="flex items-center gap-1.5">
-              <span
-                class="text-[10px] text-slate-400 dark:text-slate-500 mr-1"
-                data-de="Tempo:"
-                data-en="Speed:"
-                >Tempo:</span
-              >
-              <button
-                data-speed="0.5"
-                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
-              >
-                0.5x
-              </button>
-              <button
-                data-speed="0.75"
-                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
-              >
-                0.75x
-              </button>
-              <button
-                data-speed="1"
-                class="podcast-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
-              >
-                1x
-              </button>
-              <button
-                data-speed="1.25"
-                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
-              >
-                1.25x
-              </button>
-              <button
-                data-speed="1.5"
-                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
-              >
-                1.5x
-              </button>
-              <button
-                data-speed="2"
-                class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
-              >
-                2x
-              </button>
-            </div>
-            <p
-              class="text-[10px] text-slate-500 dark:text-slate-600 mt-2 text-right"
+
+            <!-- Right: Podcast glow-card with purple gradient left border -->
+            <div
+              class="reveal-v2 reveal-delay-1 glow-card bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 p-6 flex flex-col"
+              style="border-left: 3px solid rgb(168, 85, 247)"
             >
-              Generated with NotebookLM
-            </p>
+              <!-- Podcast header -->
+              <div class="flex items-start gap-3 mb-4">
+                <span
+                  class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"
+                >
+                  <i class="ti ti-headphones text-xl text-purple-500"></i>
+                </span>
+                <div>
+                  <span
+                    class="text-sm font-semibold text-slate-900 dark:text-white block"
+                    >DevOps Journey Podcast</span
+                  >
+                  <p
+                    class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5"
+                    data-de="Vom ersten Container bis zur Cloud-Architektur &mdash; meine DevOps-Reise jetzt als KI-Podcast."
+                    data-en="From the first container to cloud architecture &mdash; my DevOps journey now as an AI podcast."
+                  >
+                    Vom ersten Container bis zur Cloud-Architektur &mdash; meine
+                    DevOps-Reise jetzt als KI-Podcast.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Audio element (hidden, controlled by JS) -->
+              <audio id="podcast-player" class="hidden" preload="metadata">
+                <source src="./audio/notebooklm-podcast.m4a" type="audio/mp4" />
+              </audio>
+
+              <!-- Play/Pause button + progress bar -->
+              <div class="flex items-center gap-3 mb-3 flex-1">
+                <button
+                  id="podcast-play-btn"
+                  class="social-link w-11 h-11 rounded-full bg-purple-500 hover:bg-purple-400 hover:shadow-lg hover:shadow-purple-500/25 flex items-center justify-center transition-all duration-300 shrink-0"
+                  aria-label="Play podcast"
+                >
+                  <!-- Play icon (inline SVG for reliability) -->
+                  <svg
+                    id="podcast-icon-play"
+                    class="w-5 h-5 text-white fill-current ml-0.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  <!-- Pause icon (shown when playing) -->
+                  <svg
+                    id="podcast-icon-pause"
+                    class="w-5 h-5 text-white fill-current hidden"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
+                  </svg>
+                </button>
+                <div class="flex-1 min-w-0">
+                  <input
+                    id="podcast-progress"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="0"
+                    class="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-200 dark:bg-slate-700 accent-purple-500"
+                  />
+                  <div class="flex justify-between mt-1">
+                    <span
+                      id="podcast-time-current"
+                      class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
+                      >0:00</span
+                    >
+                    <span
+                      id="podcast-time-total"
+                      class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums"
+                      >--:--</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Speed control buttons -->
+              <div class="flex items-center gap-1.5">
+                <span
+                  class="text-[10px] text-slate-400 dark:text-slate-500 mr-1"
+                  data-de="Tempo:"
+                  data-en="Speed:"
+                  >Tempo:</span
+                >
+                <button
+                  data-speed="0.5"
+                  class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+                >
+                  0.5x
+                </button>
+                <button
+                  data-speed="0.75"
+                  class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+                >
+                  0.75x
+                </button>
+                <button
+                  data-speed="1"
+                  class="podcast-speed-btn active px-1.5 py-0.5 rounded text-[10px] font-semibold border border-purple-400 dark:border-purple-500 text-purple-500 dark:text-purple-400 transition-all"
+                >
+                  1x
+                </button>
+                <button
+                  data-speed="1.25"
+                  class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+                >
+                  1.25x
+                </button>
+                <button
+                  data-speed="1.5"
+                  class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+                >
+                  1.5x
+                </button>
+                <button
+                  data-speed="2"
+                  class="podcast-speed-btn px-1.5 py-0.5 rounded text-[10px] font-semibold border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-purple-500 hover:border-purple-400 transition-all"
+                >
+                  2x
+                </button>
+              </div>
+              <p
+                class="text-[10px] text-slate-500 dark:text-slate-600 mt-2 text-right"
+              >
+                Generated with NotebookLM
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Filter Section (search + category pills) -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-6">
+      <!-- Section divider -->
+      <div class="section-divider max-w-6xl mx-auto"></div>
+
+      <!-- ===== FILTER SECTION (search + category pills) ===== -->
+      <section class="reveal-v2 max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-6">
         <!-- Search input -->
         <div class="relative mb-4">
           <i
@@ -341,7 +841,7 @@
             data-de-placeholder="Artikel durchsuchen..."
             data-en-placeholder="Search articles..."
             placeholder="Artikel durchsuchen..."
-            class="search-input w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none"
+            class="search-input w-full pl-10 pr-10 py-2.5 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all"
           />
           <button
             id="search-clear"
@@ -352,7 +852,7 @@
           </button>
         </div>
 
-        <!-- Category filter pills (populated by app.js, "All" is static) -->
+        <!-- Category filter pills (populated by app.js) -->
         <div id="category-filters" class="flex flex-wrap gap-2">
           <button class="filter-btn filter-btn-active" data-category="">
             All
@@ -360,8 +860,10 @@
         </div>
       </section>
 
-      <!-- Posts Section -->
-      <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+      <!-- ===== POSTS SECTION ===== -->
+      <section
+        class="reveal-v2 reveal-delay-1 max-w-6xl mx-auto px-4 sm:px-6 pb-16"
+      >
         <!-- Section header with sort toggle + post count -->
         <div class="flex items-center justify-between mb-6">
           <h2
@@ -380,7 +882,7 @@
             <button
               id="sort-toggle"
               class="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
-              title="Sortierung ändern"
+              title="Sortierung aendern"
             >
               <i class="ti ti-arrow-up text-sm"></i>
               <span id="sort-label">Chronologisch</span>
@@ -396,10 +898,10 @@
         <div id="api-status" class="mb-4"></div>
 
         <!-- Loading skeleton (shown while posts load) -->
-        <div id="posts-loading" class="grid gap-4 sm:grid-cols-2">
+        <div id="posts-loading" class="grid gap-6 sm:grid-cols-2">
           <!-- Skeleton card 1 -->
           <div
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6"
+            class="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-200/50 dark:border-slate-700/50 p-6"
           >
             <div
               class="skeleton h-5 w-20 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"
@@ -419,7 +921,7 @@
           </div>
           <!-- Skeleton card 2 -->
           <div
-            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-6"
+            class="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-200/50 dark:border-slate-700/50 p-6"
           >
             <div
               class="skeleton h-5 w-20 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"
@@ -440,27 +942,24 @@
         </div>
 
         <!-- Post grid (populated by app.js) -->
-        <div id="posts-grid" class="grid gap-4 sm:grid-cols-2"></div>
+        <div id="posts-grid" class="grid gap-6 sm:grid-cols-2"></div>
       </section>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm"
     >
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div
           class="flex flex-col sm:flex-row items-center justify-between gap-4"
         >
-          <!-- Left: copyright -->
           <div
             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
           >
             <i class="ti ti-code text-sky-500"></i>
             <span>2026 Andy Schlegel</span>
           </div>
-
-          <!-- Center: legal links (required in Germany) -->
           <div class="flex items-center gap-4 text-sm">
             <a
               href="./impressum.html"
@@ -484,8 +983,6 @@
               >Haftungsausschluss</a
             >
           </div>
-
-          <!-- Right: social links -->
           <div class="flex items-center gap-4">
             <a
               href="https://github.com/AndySchlegel"
@@ -508,9 +1005,19 @@
       </div>
     </footer>
 
-    <!-- Mobile menu toggle script -->
+    <!-- ==================== SCRIPTS ==================== -->
+
+    <!-- Language toggle -->
+    <script src="./js/lang.js"></script>
+
+    <!-- Main app script (loads posts from API) -->
+    <script src="./js/app.js"></script>
+
+    <!-- Visitor counter -->
+    <script src="./js/counter.js"></script>
+
+    <!-- Mobile menu toggle -->
     <script>
-      // Simple toggle for the mobile navigation menu
       document.addEventListener("DOMContentLoaded", function () {
         var toggle = document.getElementById("mobile-menu-toggle");
         var menu = document.getElementById("mobile-menu");
@@ -521,10 +1028,6 @@
         }
       });
     </script>
-
-    <!-- Main app script (loads posts from API) -->
-    <script src="./js/lang.js"></script>
-    <script src="./js/app.js"></script>
 
     <!-- Podcast player controls -->
     <script>
@@ -604,24 +1107,194 @@
       })();
     </script>
 
-    <!-- Scroll-reveal for static elements (header, search, filters) -->
+    <!-- ============================================
+         V2 Effects Engine (modular, reusable)
+         Each effect is a self-contained function
+         that can be copied to other pages.
+         ============================================ -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var observer = new IntersectionObserver(
-          function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("revealed");
-                observer.unobserve(entry.target);
+      (function () {
+        "use strict";
+
+        // --- EFFECT: Particle Canvas ---
+        // Renders floating dots that drift slowly in the hero background.
+        function initParticles() {
+          var canvas = document.getElementById("particle-canvas");
+          if (!canvas) return;
+          var ctx = canvas.getContext("2d");
+          var particles = [];
+          var PARTICLE_COUNT = 60;
+          var animFrameId;
+
+          function resize() {
+            var section = canvas.parentElement;
+            canvas.width = section.offsetWidth;
+            canvas.height = section.offsetHeight;
+          }
+
+          function createParticle() {
+            return {
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              vx: (Math.random() - 0.5) * 0.3,
+              vy: (Math.random() - 0.5) * 0.3,
+              radius: Math.random() * 1.5 + 0.5,
+              opacity: Math.random() * 0.4 + 0.1,
+            };
+          }
+
+          function initAll() {
+            particles = [];
+            for (var i = 0; i < PARTICLE_COUNT; i++) {
+              particles.push(createParticle());
+            }
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var isDark = document.documentElement.classList.contains("dark");
+            var color = isDark ? "148, 163, 184" : "100, 116, 139";
+
+            for (var i = 0; i < particles.length; i++) {
+              var p = particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
+
+              // Wrap around edges
+              if (p.x < 0) p.x = canvas.width;
+              if (p.x > canvas.width) p.x = 0;
+              if (p.y < 0) p.y = canvas.height;
+              if (p.y > canvas.height) p.y = 0;
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = "rgba(" + color + "," + p.opacity + ")";
+              ctx.fill();
+            }
+
+            // Draw connections between nearby particles
+            for (var a = 0; a < particles.length; a++) {
+              for (var b = a + 1; b < particles.length; b++) {
+                var dx = particles[a].x - particles[b].x;
+                var dy = particles[a].y - particles[b].y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[a].x, particles[a].y);
+                  ctx.lineTo(particles[b].x, particles[b].y);
+                  var lineOpacity = (1 - dist / 120) * 0.15;
+                  ctx.strokeStyle = "rgba(" + color + "," + lineOpacity + ")";
+                  ctx.lineWidth = 0.5;
+                  ctx.stroke();
+                }
               }
+            }
+
+            animFrameId = requestAnimationFrame(draw);
+          }
+
+          resize();
+          initAll();
+          draw();
+
+          window.addEventListener("resize", function () {
+            resize();
+            initAll();
+          });
+        }
+
+        // --- EFFECT: Glowing Card Borders ---
+        // Tracks mouse position on .glow-card elements
+        // and updates CSS custom properties for the radial gradient.
+        // Uses MutationObserver to handle dynamically added cards.
+        function initGlowCards() {
+          function attachGlow(card) {
+            card.addEventListener("mousemove", function (e) {
+              var rect = card.getBoundingClientRect();
+              var x = e.clientX - rect.left;
+              var y = e.clientY - rect.top;
+              card.style.setProperty("--glow-x", x + "px");
+              card.style.setProperty("--glow-y", y + "px");
             });
-          },
-          { threshold: 0.1 },
-        );
-        document.querySelectorAll(".reveal").forEach(function (el) {
-          observer.observe(el);
+          }
+
+          // Attach to existing cards
+          var cards = document.querySelectorAll(".glow-card");
+          for (var i = 0; i < cards.length; i++) {
+            attachGlow(cards[i]);
+          }
+
+          // Watch for dynamically added cards (from app.js)
+          var grid = document.getElementById("posts-grid");
+          if (grid) {
+            var observer = new MutationObserver(function (mutations) {
+              mutations.forEach(function (mutation) {
+                mutation.addedNodes.forEach(function (node) {
+                  if (node.nodeType === 1) {
+                    if (
+                      node.classList &&
+                      node.classList.contains("glow-card")
+                    ) {
+                      attachGlow(node);
+                    }
+                    var inner = node.querySelectorAll
+                      ? node.querySelectorAll(".glow-card")
+                      : [];
+                    for (var j = 0; j < inner.length; j++) {
+                      attachGlow(inner[j]);
+                    }
+                  }
+                });
+              });
+            });
+            observer.observe(grid, { childList: true, subtree: true });
+          }
+        }
+
+        // --- EFFECT: Cursor Glow ---
+        function initCursorGlow() {
+          var glow = document.getElementById("cursor-glow");
+          if (!glow) return;
+          document.addEventListener("mousemove", function (e) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+            glow.style.opacity = "1";
+          });
+          document.addEventListener("mouseleave", function () {
+            glow.style.opacity = "0";
+          });
+        }
+
+        // --- EFFECT: Scroll Reveal ---
+        // Observes .reveal-v2 elements and adds .revealed class
+        // when they scroll into view.
+        function initScrollReveal() {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("revealed");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          var elements = document.querySelectorAll(".reveal-v2");
+          for (var i = 0; i < elements.length; i++) {
+            observer.observe(elements[i]);
+          }
+        }
+
+        // --- Initialize all effects on DOM ready ---
+        document.addEventListener("DOMContentLoaded", function () {
+          initParticles();
+          initGlowCards();
+          initScrollReveal();
+          initCursorGlow();
         });
-      });
+      })();
     </script>
   </body>
 </html>

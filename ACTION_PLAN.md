@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 32 complete (Presentation completeness check, assignment cross-reference, content fixes)
-**Last Updated:** 2026-03-14 (Session 32)
+**Current Phase:** Session 33 complete (V2 design overhaul, presentation polish, bug fixes, final deploy prep)
+**Last Updated:** 2026-03-15 (Session 33)
 
 ---
 
@@ -21,7 +21,7 @@
 | 5. Kubernetes + CI/CD | Done (first deploy verified, full repro cycle tested) | Week 3 |
 | 6. Blog Content + Seed Script | Done | Week 3 |
 | 7. ML Integration (Comprehend) | Done (IRSA, auto-tags, sentiment, auto-moderation) | Week 3-4 |
-| 8. Polish + Presentation | Done (README, screenshots, status badges, Grafana/Prometheus, HPA demo, presentation complete) | Week 4 |
+| 8. Polish + Presentation | Done (V2 design, README, screenshots, Grafana/Prometheus, HPA demo, presentation complete) | Week 4 |
 | 9. Lightsail Permanent Hosting | Planned | Post-course |
 
 ---
@@ -228,9 +228,9 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 
 2 GitHub Secrets required: `AWS_ROLE_ARN`, `DB_PASSWORD`. 2 optional: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** EKS stack torn down (Session 31). Full lifecycle 100% clean and reproducible.
+**Current infra state:** EKS stack live (Session 33 deploy). Full lifecycle 100% clean and reproducible.
 **Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
-**Presentation:** 12-tab interactive HTML (frontend/src/presentation.html), all CloudHelden assignment requirements verified and covered.
+**Presentation:** 12-tab interactive HTML with V2 effects (cursor-glow, ambient backgrounds), presentation script ready. All CloudHelden assignment requirements verified and covered. Presentation date: 2026-03-16.
 
 ---
 
