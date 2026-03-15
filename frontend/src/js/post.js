@@ -1070,7 +1070,6 @@
     }
 
     // Fetch posts with current language for correct translated titles
-    var lang = getCurrentLang();
     var langParam = lang === "en" ? "?lang=en" : "";
 
     fetch(API_BASE + "/posts" + langParam)
@@ -1173,17 +1172,19 @@
           if (labelSpan) {
             var arrow = labelSpan.querySelector("i");
             var isPrev = arrow && arrow.className.indexOf("arrow-left") !== -1;
-            var textNode = isPrev
-              ? labelSpan.childNodes[1]
-              : labelSpan.childNodes[0];
-            if (textNode && textNode.nodeType === 3) {
-              textNode.textContent = isPrev
-                ? lang === "en"
-                  ? "Previous Post"
-                  : "Vorheriger Post"
-                : lang === "en"
-                  ? "Next Post"
-                  : "Nächster Post";
+            // Find the text node (robust: search all childNodes for text)
+            var nodes = labelSpan.childNodes;
+            for (var k = 0; k < nodes.length; k++) {
+              if (nodes[k].nodeType === 3 && nodes[k].textContent.trim()) {
+                nodes[k].textContent = isPrev
+                  ? lang === "en"
+                    ? "Previous Post "
+                    : "Vorheriger Post "
+                  : lang === "en"
+                    ? "Next Post "
+                    : "Nächster Post ";
+                break;
+              }
             }
           }
         });
