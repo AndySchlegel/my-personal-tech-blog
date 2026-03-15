@@ -1403,8 +1403,10 @@
                 ? marked.parse(post.content)
                 : post.content;
           }
-          // Update prev/next titles without changing positions
-          updateNavTitles(lang, langParam);
+          // Rebuild prev/next nav from scratch with correct language titles
+          // Clear cached nav context for this language so API fetch is used
+          sessionStorage.removeItem("postNavContext_" + lang);
+          loadPostNavigation(slug);
         })
         .catch(function () {
           // Silently fail -- keep current content
