@@ -1129,69 +1129,72 @@
     navEl.classList.remove("hidden");
   }
 
-  // --- Update prev/next titles in-place after language switch ---
-  // Reads slugs from existing nav links, fetches translated titles from API,
-  // and updates the text + labels without rebuilding or reordering navigation.
-  function updateNavTitles(lang, langParam) {
+  // --- Update prev/next titles + labels after language switch ---
+  // Keeps navigation structure intact (same prev/next posts), only updates
+  // visible text: post titles (from API) and direction labels (DE/EN).
+  // This avoids the position-swap bug that happened when rebuilding from
+  // the full API list (different order than the blog.html filtered list).
+  function refreshNavLanguage(lang) {
     var navEl = document.getElementById("post-navigation");
     if (!navEl) return;
     var links = navEl.querySelectorAll("a");
     if (!links.length) return;
 
-    // Collect slugs from existing nav links
-    var slugMap = {};
+    var langParam = lang === "en" ? "?lang=en" : "";
+
+    // Step 1: Update direction labels immediately (no API needed)
     for (var i = 0; i < links.length; i++) {
-      var href = links[i].getAttribute("href") || "";
-      var match = href.match(/slug=([^&]+)/);
-      if (match) slugMap[decodeURIComponent(match[1])] = links[i];
+      var labelSpan = links[i].querySelector(".text-xs");
+      if (!labelSpan) continue;
+      var arrow = labelSpan.querySelector("i");
+      var isPrev = arrow && arrow.className.indexOf("arrow-left") !== -1;
+      // Replace the text node content
+      var nodes = labelSpan.childNodes;
+      for (var k = 0; k < nodes.length; k++) {
+        if (nodes[k].nodeType === 3 && nodes[k].textContent.trim()) {
+          nodes[k].textContent = isPrev
+            ? lang === "en"
+              ? "Previous Post "
+              : "Vorheriger Post "
+            : lang === "en"
+              ? "Next Post "
+              : "Nächster Post ";
+          break;
+        }
+      }
     }
 
-    // Fetch all posts in new language to get translated titles
-    fetch(API_BASE + "/posts" + langParam)
-      .then(function (r) {
-        return r.ok ? r.json() : Promise.reject();
-      })
-      .then(function (posts) {
-        // Build slug->title lookup
-        var titleMap = {};
-        posts.forEach(function (p) {
-          titleMap[p.slug] = p.title;
-        });
+    // Step 2: Fetch translated titles from API
+    // Collect slugs from existing nav link hrefs
+    var slugs = [];
+    var linkBySlug = {};
+    for (var j = 0; j < links.length; j++) {
+      var href = links[j].getAttribute("href") || "";
+      var match = href.match(/slug=([^&]+)/);
+      if (match) {
+        var slug = decodeURIComponent(match[1]);
+        slugs.push(slug);
+        linkBySlug[slug] = links[j];
+      }
+    }
+    if (!slugs.length) return;
 
-        // Update each nav link's title text + label
-        Object.keys(slugMap).forEach(function (slug) {
-          var link = slugMap[slug];
-          if (!titleMap[slug]) return;
-
-          // Title is the second child span (line-clamp-2)
+    // Fetch each post individually to get its translated title
+    slugs.forEach(function (slug) {
+      fetch(API_BASE + "/posts/" + slug + langParam)
+        .then(function (r) {
+          return r.ok ? r.json() : Promise.reject();
+        })
+        .then(function (post) {
+          var link = linkBySlug[slug];
+          if (!link) return;
           var titleSpan = link.querySelector(".line-clamp-2");
-          if (titleSpan) titleSpan.textContent = titleMap[slug];
-
-          // Update label text (Vorheriger Post / Previous Post)
-          var labelSpan = link.querySelector(".text-xs");
-          if (labelSpan) {
-            var arrow = labelSpan.querySelector("i");
-            var isPrev = arrow && arrow.className.indexOf("arrow-left") !== -1;
-            // Find the text node (robust: search all childNodes for text)
-            var nodes = labelSpan.childNodes;
-            for (var k = 0; k < nodes.length; k++) {
-              if (nodes[k].nodeType === 3 && nodes[k].textContent.trim()) {
-                nodes[k].textContent = isPrev
-                  ? lang === "en"
-                    ? "Previous Post "
-                    : "Vorheriger Post "
-                  : lang === "en"
-                    ? "Next Post "
-                    : "Nächster Post ";
-                break;
-              }
-            }
-          }
+          if (titleSpan) titleSpan.textContent = post.title;
+        })
+        .catch(function () {
+          /* keep current title */
         });
-      })
-      .catch(function () {
-        /* keep current titles */
-      });
+    });
   }
 
   // --- Build a single nav link element ---
@@ -1403,10 +1406,8 @@
                 ? marked.parse(post.content)
                 : post.content;
           }
-          // Rebuild prev/next nav from scratch with correct language titles
-          // Clear cached nav context for this language so API fetch is used
-          sessionStorage.removeItem("postNavContext_" + lang);
-          loadPostNavigation(slug);
+          // Update nav titles + labels in-place (keeps prev/next positions stable)
+          refreshNavLanguage(lang);
         })
         .catch(function () {
           // Silently fail -- keep current content
