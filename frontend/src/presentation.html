@@ -221,15 +221,15 @@
       .dot-grid {
         background-image: radial-gradient(
           circle,
-          rgba(148, 163, 184, 0.12) 1px,
+          rgba(148, 163, 184, 0.25) 1px,
           transparent 1px
         );
-        background-size: 32px 32px;
+        background-size: 28px 28px;
       }
       html:not(.dark) .dot-grid {
         background-image: radial-gradient(
           circle,
-          rgba(148, 163, 184, 0.15) 1px,
+          rgba(148, 163, 184, 0.3) 1px,
           transparent 1px
         );
       }
@@ -701,19 +701,20 @@
       }
       .tab-ambient {
         position: relative;
+        overflow: visible;
       }
       .tab-ambient::before {
         content: "";
         position: absolute;
         top: 10%;
-        left: -5%;
-        width: 400px;
-        height: 400px;
+        left: 5%;
+        width: 500px;
+        height: 500px;
         border-radius: 50%;
         pointer-events: none;
         z-index: 0;
-        filter: blur(120px);
-        opacity: 0.06;
+        filter: blur(100px);
+        opacity: 0.15;
         background: radial-gradient(circle, #38bdf8, transparent 70%);
         animation: ambient-drift 20s ease-in-out infinite;
       }
@@ -721,20 +722,20 @@
         content: "";
         position: absolute;
         bottom: 10%;
-        right: -5%;
-        width: 350px;
-        height: 350px;
+        right: 5%;
+        width: 450px;
+        height: 450px;
         border-radius: 50%;
         pointer-events: none;
         z-index: 0;
-        filter: blur(120px);
-        opacity: 0.06;
+        filter: blur(100px);
+        opacity: 0.15;
         background: radial-gradient(circle, #8b5cf6, transparent 70%);
         animation: ambient-drift 25s ease-in-out infinite reverse;
       }
       .dark .tab-ambient::before,
       .dark .tab-ambient::after {
-        opacity: 0.1;
+        opacity: 0.2;
       }
 
       /* --- Theme transition smoothing --- */
@@ -3598,15 +3599,16 @@
             <div class="flex items-center gap-2 mb-2">
               <span
                 class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
-                >#31</span
+                >#24</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >Telegram statt SES</span
+                >Separate ACM-Zertifikate</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Native fetch statt npm-Paket. Non-blocking Fire-and-Forget.
-              Notification-Fehler blockieren nie die Antwort.
+              CloudFront verlangt ACM-Cert in us-east-1, ALB in eu-central-1.
+              Zwei separate Zertifikate f&uuml;r die gleiche Domain &mdash;
+              globale vs. regionale Services leben in getrennten Welten.
             </p>
           </div>
           <div
@@ -3655,16 +3657,16 @@
             <div class="flex items-center gap-2 mb-2">
               <span
                 class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-                >#38</span
+                >#14</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
-                >Polly Chunk-Limit (3000 Bytes)</span
+                >EKS Cluster Security Group</span
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Polly akzeptiert max. 3000 Bytes pro Request. Markdown muss erst
-              gestrippt, dann in Chunks zerlegt werden. Ohne Chunking: stille
-              Fehler.
+              EKS erstellt eine eigene Cluster-SG &mdash; Custom Node-SG-Regeln
+              greifen nicht. ALB-to-Pod Traffic muss auf die Cluster-SG, nicht
+              auf die eigene. Gilt auch f&uuml;r den ALB Controller.
             </p>
           </div>
         </div>
