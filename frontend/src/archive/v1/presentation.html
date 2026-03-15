@@ -40,292 +40,13 @@
     <!-- <link rel="stylesheet" href="./css/styles.css" /> -->
     <script src="./js/theme.js"></script>
 
+    <!-- Tab JS removed from head - moved to end of body -->
+
     <style>
       /* ============================================
-         V2 Effects System + Presentation Styles
-         Modular CSS for interactive effects.
+         Presentation-specific styles
+         Tab navigation, diagram elements, animations
          ============================================ */
-
-      /* --- EFFECT: Particle Canvas ---
-         Full-screen canvas behind hero/header content. */
-      #particle-canvas {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-      }
-
-      /* --- EFFECT: Lamp / Conic Gradient ---
-         Spotlight beam radiating down from top center. */
-      .lamp-effect {
-        position: relative;
-        overflow: hidden;
-      }
-      .lamp-effect::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 140%;
-        height: 100%;
-        background: conic-gradient(
-          from 90deg at 50% 0%,
-          transparent 40%,
-          rgba(56, 189, 248, 0.08) 45%,
-          rgba(139, 92, 246, 0.06) 50%,
-          rgba(56, 189, 248, 0.08) 55%,
-          transparent 60%
-        );
-        pointer-events: none;
-        z-index: 0;
-      }
-      html:not(.dark) .lamp-effect::before {
-        background: conic-gradient(
-          from 90deg at 50% 0%,
-          transparent 40%,
-          rgba(56, 189, 248, 0.05) 45%,
-          rgba(139, 92, 246, 0.03) 50%,
-          rgba(56, 189, 248, 0.05) 55%,
-          transparent 60%
-        );
-      }
-
-      /* --- EFFECT: Retro Perspective Grid --- */
-      .retro-grid {
-        position: relative;
-        overflow: hidden;
-      }
-      .retro-grid::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 200%;
-        height: 60%;
-        background-image:
-          linear-gradient(
-            to right,
-            rgba(148, 163, 184, 0.06) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(148, 163, 184, 0.06) 1px,
-            transparent 1px
-          );
-        background-size: 60px 60px;
-        transform-origin: center bottom;
-        transform: translateX(-50%) perspective(400px) rotateX(55deg);
-        mask-image: linear-gradient(
-          to top,
-          rgba(0, 0, 0, 0.4),
-          transparent 80%
-        );
-        -webkit-mask-image: linear-gradient(
-          to top,
-          rgba(0, 0, 0, 0.4),
-          transparent 80%
-        );
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      /* --- EFFECT: Glowing Card Border ---
-         Mouse-following gradient glow on card borders. */
-      .glow-card {
-        --glow-x: 50%;
-        --glow-y: 50%;
-        position: relative;
-        border-radius: 1rem;
-        overflow: hidden;
-        transition:
-          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-          box-shadow 0.4s ease;
-      }
-      .glow-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1.5px;
-        background: radial-gradient(
-          350px circle at var(--glow-x) var(--glow-y),
-          rgba(56, 189, 248, 0.35),
-          rgba(139, 92, 246, 0.2),
-          transparent 60%
-        );
-        -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        z-index: 2;
-      }
-      .glow-card:hover::before {
-        opacity: 1;
-      }
-      .glow-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow:
-          0 20px 60px rgba(56, 189, 248, 0.1),
-          0 8px 24px rgba(139, 92, 246, 0.08);
-      }
-      html:not(.dark) .glow-card::before {
-        background: radial-gradient(
-          350px circle at var(--glow-x) var(--glow-y),
-          rgba(56, 189, 248, 0.2),
-          rgba(139, 92, 246, 0.12),
-          transparent 60%
-        );
-      }
-      html:not(.dark) .glow-card:hover {
-        box-shadow:
-          0 20px 60px rgba(56, 189, 248, 0.08),
-          0 8px 24px rgba(139, 92, 246, 0.05);
-      }
-
-      /* --- EFFECT: Scroll Reveal V2 --- */
-      .reveal-v2 {
-        opacity: 0;
-        transform: translateY(30px);
-        transition:
-          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .reveal-v2.revealed {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .reveal-v2.reveal-delay-1 {
-        transition-delay: 0.1s;
-      }
-      .reveal-v2.reveal-delay-2 {
-        transition-delay: 0.2s;
-      }
-      .reveal-v2.reveal-delay-3 {
-        transition-delay: 0.3s;
-      }
-      .reveal-v2.reveal-delay-4 {
-        transition-delay: 0.4s;
-      }
-
-      /* --- EFFECT: Ambient Dot Grid --- */
-      .dot-grid {
-        background-image: radial-gradient(
-          circle,
-          rgba(148, 163, 184, 0.12) 1px,
-          transparent 1px
-        );
-        background-size: 32px 32px;
-      }
-      html:not(.dark) .dot-grid {
-        background-image: radial-gradient(
-          circle,
-          rgba(148, 163, 184, 0.15) 1px,
-          transparent 1px
-        );
-      }
-
-      /* --- EFFECT: Pill Shimmer --- */
-      .shimmer-pill {
-        position: relative;
-        overflow: hidden;
-      }
-      .shimmer-pill::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.08),
-          transparent
-        );
-        transition: left 0.6s ease;
-      }
-      .shimmer-pill:hover::after {
-        left: 100%;
-      }
-      html:not(.dark) .shimmer-pill::after {
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(56, 189, 248, 0.08),
-          transparent
-        );
-      }
-
-      /* --- EFFECT: Counter Glow --- */
-      @keyframes ring-pulse {
-        0% {
-          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.3);
-        }
-        70% {
-          box-shadow: 0 0 0 12px rgba(56, 189, 248, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
-        }
-      }
-      .counter-glow.revealed {
-        animation: ring-pulse 1.5s ease-out;
-      }
-
-      /* --- Section divider gradient line --- */
-      .section-divider {
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(56, 189, 248, 0.3),
-          rgba(139, 92, 246, 0.3),
-          transparent
-        );
-      }
-
-      /* --- Floating Animation --- */
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-12px);
-        }
-      }
-      .float-slow {
-        animation: float 6s ease-in-out infinite;
-      }
-
-      /* --- Custom scrollbar --- */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
 
       /* --- Tab navigation --- */
       .tab-btn {
@@ -334,11 +55,11 @@
         white-space: nowrap;
       }
       .tab-btn:hover {
-        color: #38bdf8;
+        color: #0ea5e9;
       }
       .tab-btn.active {
-        color: #38bdf8 !important;
-        border-bottom-color: #38bdf8;
+        color: #0ea5e9 !important;
+        border-bottom-color: #0ea5e9;
       }
       /* Panels hidden by default, shown via inline style from JS */
       .tab-panel {
@@ -491,6 +212,7 @@
         position: relative;
         cursor: pointer;
       }
+      /* Tooltip content hidden by default, shown via JS as fixed overlay */
       .arch-tooltip .tooltip-content {
         display: none;
       }
@@ -543,9 +265,39 @@
         white-space: nowrap;
       }
 
+      /* --- Arrow connectors (SVG overlay) --- */
+      .diagram-arrow {
+        stroke: #64748b;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead);
+      }
+
       /* --- Wave table highlights --- */
       .wave-row:hover {
         background: rgba(14, 165, 233, 0.05);
+      }
+
+      /* --- Card hover (blog-style: translateY + scale + glow) --- */
+      .hover-card {
+        transition:
+          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.35s ease;
+      }
+      .hover-card:hover {
+        transform: translateY(-16px) scale(1.07);
+        box-shadow: 0 16px 40px rgba(14, 165, 233, 0.2);
+      }
+
+      /* --- Lesson cards --- */
+      .lesson-card {
+        transition:
+          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.35s ease;
+      }
+      .lesson-card:hover {
+        transform: translateY(-16px) scale(1.07);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
       }
 
       /* --- Pipeline flow --- */
@@ -568,7 +320,7 @@
         display: none;
       }
 
-      /* --- Counter card (V2: with counter-glow pulse) --- */
+      /* --- Counter card (blog-matching: number scales, label moves) --- */
       .counter-card {
         transition:
           transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -629,11 +381,17 @@
         background: rgba(15, 23, 42, 0.5);
       }
 
-      /* --- Lesson cards --- */
-      .lesson-card {
+      /* --- Scroll-reveal animations (blog-matching) --- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
         transition:
-          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-          box-shadow 0.35s ease;
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       /* --- Print styles --- */
@@ -646,34 +404,23 @@
           display: none !important;
         }
       }
-
-      /* --- Theme transition smoothing --- */
-      html.transition-theme,
-      html.transition-theme *,
-      html.transition-theme *::before,
-      html.transition-theme *::after {
-        transition:
-          background-color 0.3s ease,
-          color 0.3s ease,
-          border-color 0.3s ease;
-      }
     </style>
   </head>
 
   <body
     class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
   >
-    <!-- ==================== HEADER (V2 Glassmorphism) ==================== -->
+    <!-- ==================== HEADER ==================== -->
     <header
-      class="sticky top-0 z-50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
     >
       <div
         class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
       >
-        <!-- Logo with gradient -->
+        <!-- Logo -->
         <a href="./index.html" class="flex items-center gap-3 group">
           <div
-            class="w-9 h-9 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-sky-500/25 transition-all duration-300"
+            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
           >
             <i class="ti ti-cloud-code text-white text-lg"></i>
           </div>
@@ -713,17 +460,15 @@
       </div>
     </header>
 
-    <!-- ==================== TAB NAVIGATION (V2 Glassmorphism) ==================== -->
+    <!-- ==================== TAB NAVIGATION ==================== -->
     <nav
       id="tab-nav-bar"
       style="
         position: sticky;
         top: 64px;
         z-index: 9999;
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        background: #0f172a;
+        border-bottom: 1px solid #1e293b;
         pointer-events: auto;
       "
     >
@@ -744,11 +489,11 @@
             padding: 12px 10px;
             font-size: 13px;
             font-weight: 500;
-            color: #38bdf8;
+            color: #0ea5e9;
             border: none;
             background: none;
             cursor: pointer;
-            border-bottom: 2px solid #38bdf8;
+            border-bottom: 2px solid #0ea5e9;
             white-space: nowrap;
           "
         >
@@ -968,8 +713,8 @@
                 allBtns[b].style.color = "#94a3b8";
                 allBtns[b].style.borderBottomColor = "transparent";
               }
-              btn.style.color = "#38bdf8";
-              btn.style.borderBottomColor = "#38bdf8";
+              btn.style.color = "#0ea5e9";
+              btn.style.borderBottomColor = "#0ea5e9";
               // Scroll to top so panel content is visible
               window.scrollTo({ top: 0, behavior: "smooth" });
             });
@@ -978,7 +723,7 @@
         // Helper: find current active tab index
         function getCurrentIndex() {
           for (var k = 0; k < btns.length; k++) {
-            if (btns[k].style.color === "rgb(56, 189, 248)") return k;
+            if (btns[k].style.color === "rgb(14, 165, 233)") return k;
           }
           return 0;
         }
@@ -992,7 +737,7 @@
           btns[(c + 1) % btns.length].click();
         }
 
-        // Arrow button clicks
+        // Arrow button clicks (← →)
         var prevBtn = document.getElementById("tab-prev");
         var nextBtn = document.getElementById("tab-next");
         if (prevBtn) prevBtn.addEventListener("click", goPrev);
@@ -1016,389 +761,364 @@
 
     <!-- ==================== CONTENT ==================== -->
     <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
-      <!-- ==================== TAB 1: PROJEKT (V2 with lamp + particles) ==================== -->
-      <section class="tab-panel lamp-effect" id="panel-overview">
-        <!-- Particle canvas for hero feel -->
-        <canvas id="particle-canvas"></canvas>
-
-        <div class="relative z-10">
-          <!-- Hero -->
-          <div class="text-center mb-12">
-            <div
-              class="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-500/10 rounded-full text-sky-400 text-sm font-medium mb-6 shimmer-pill"
-            >
-              <span
-                class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"
-              ></span>
-              <i class="ti ti-cloud-code"></i>
-              Abschlussprojekt
-            </div>
-            <h1
-              class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"
-            >
-              My Personal
-              <span
-                class="bg-gradient-to-r from-sky-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
-                >Tech Blog</span
-              >
-            </h1>
-            <p
-              class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
-            >
-              Cloud-native Blog auf AWS EKS &mdash; vom leeren Repo zum
-              produktionsreifen Deployment mit 9 Terraform-Modulen, 8
-              CI/CD-Workflows, 3 AWS ML-Services und Self-Hosted Monitoring.
-            </p>
-          </div>
-
-          <!-- Stats Grid (V2: counter-glow + glow-card) -->
-          <div class="reveal-v2 grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-            <div
-              class="counter-card counter-glow glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
-            >
-              <div
-                class="text-3xl font-extrabold text-sky-500 stat-value"
-                data-count-to="9"
-              >
-                0
-              </div>
-              <div
-                class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
-              >
-                Terraform Module
-              </div>
-            </div>
-            <div
-              class="counter-card counter-glow glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
-            >
-              <div
-                class="text-3xl font-extrabold text-emerald-500 stat-value"
-                data-count-to="8"
-              >
-                0
-              </div>
-              <div
-                class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
-              >
-                CI/CD Workflows
-              </div>
-            </div>
-            <div
-              class="counter-card counter-glow glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
-            >
-              <div
-                class="text-3xl font-extrabold text-amber-500 stat-value"
-                data-count-to="31"
-              >
-                0
-              </div>
-              <div
-                class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
-              >
-                Unit Tests
-              </div>
-            </div>
-            <div
-              class="counter-card counter-glow glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
-            >
-              <div
-                class="text-3xl font-extrabold text-purple-500 stat-value"
-                data-count-to="42"
-              >
-                0
-              </div>
-              <div
-                class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
-              >
-                Lessons Learned
-              </div>
-            </div>
-          </div>
-
-          <!-- Section divider -->
-          <div class="section-divider mb-12"></div>
-
-          <!-- Why this project (V2: glow-card) -->
-          <div class="reveal-v2 reveal-delay-1 grid sm:grid-cols-2 gap-6 mb-12">
-            <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
-            >
-              <h3
-                class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
-              >
-                <span
-                  class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500/20 to-purple-500/20 flex items-center justify-center"
-                >
-                  <i class="ti ti-target text-sky-500"></i>
-                </span>
-                Warum dieses Projekt?
-              </h3>
-              <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-                <li class="flex items-start gap-2">
-                  <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                  <span
-                    >Echtes Portfolio &mdash; dokumentiert eine authentische
-                    Lernreise</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                  <span
-                    >Bewusst Container-basiert &mdash; erg&auml;nzt
-                    Serverless-Erfahrung im Portfolio</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                  <span
-                    >Dual-Track Hosting &mdash; EKS f&uuml;r Showcase, Lightsail
-                    f&uuml;r Dauerbetrieb</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                  <span
-                    >3 AWS ML-Services &mdash; Comprehend, Translate und
-                    Polly</span
-                  >
-                </li>
-                <li class="flex items-start gap-2">
-                  <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
-                  <span
-                    >100% reproduzierbar &mdash; Destroy + Apply ohne manuelle
-                    Schritte</span
-                  >
-                </li>
-              </ul>
-            </div>
-
-            <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
-            >
-              <h3
-                class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
-              >
-                <span
-                  class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-sky-500/20 flex items-center justify-center"
-                >
-                  <i class="ti ti-code text-emerald-500"></i>
-                </span>
-                Tech Stack
-              </h3>
-              <div class="grid grid-cols-2 gap-3 text-sm">
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i class="devicon-typescript-plain colored text-lg"></i>
-                  TypeScript
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i
-                    class="devicon-express-original text-lg dark:text-white"
-                  ></i>
-                  Express.js
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i class="devicon-tailwindcss-original colored text-lg"></i>
-                  Tailwind CSS
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i class="devicon-postgresql-plain colored text-lg"></i>
-                  PostgreSQL 16
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i class="devicon-terraform-plain colored text-lg"></i>
-                  Terraform
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i class="devicon-kubernetes-plain colored text-lg"></i>
-                  Kubernetes
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i
-                    class="devicon-amazonwebservices-plain-wordmark colored text-lg"
-                  ></i>
-                  AWS (15+)
-                </div>
-                <div
-                  class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
-                >
-                  <i
-                    class="devicon-githubactions-plain text-lg dark:text-white"
-                  ></i>
-                  GitHub Actions
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phase 1: Strukturierte Planung (V2: dot-grid background + glow-card items) -->
+      <!-- ==================== TAB 1: PROJEKT ==================== -->
+      <section class="tab-panel" id="panel-overview">
+        <!-- Hero -->
+        <div class="text-center mb-12">
           <div
-            class="reveal-v2 reveal-delay-2 dot-grid bg-gradient-to-r from-purple-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6"
+            class="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-500/10 rounded-full text-sky-500 text-sm font-medium mb-6"
+          >
+            <i class="ti ti-cloud-code"></i>
+            Abschlussprojekt
+          </div>
+          <h1
+            class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"
+          >
+            My Personal
+            <span
+              class="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent"
+              >Tech Blog</span
+            >
+          </h1>
+          <p
+            class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
+          >
+            Cloud-native Blog auf AWS EKS &mdash; vom leeren Repo zum
+            produktionsreifen Deployment mit 9 Terraform-Modulen, 8
+            CI/CD-Workflows, 3 AWS ML-Services und Self-Hosted Monitoring.
+          </p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+          <div
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
+          >
+            <div
+              class="text-3xl font-extrabold text-sky-500 stat-value"
+              data-count-to="9"
+            >
+              0
+            </div>
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Terraform Module
+            </div>
+          </div>
+          <div
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
+          >
+            <div
+              class="text-3xl font-extrabold text-emerald-500 stat-value"
+              data-count-to="8"
+            >
+              0
+            </div>
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
+              CI/CD Workflows
+            </div>
+          </div>
+          <div
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
+          >
+            <div
+              class="text-3xl font-extrabold text-amber-500 stat-value"
+              data-count-to="31"
+            >
+              0
+            </div>
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Unit Tests
+            </div>
+          </div>
+          <div
+            class="counter-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 text-center cursor-default"
+          >
+            <div
+              class="text-3xl font-extrabold text-purple-500 stat-value"
+              data-count-to="42"
+            >
+              0
+            </div>
+            <div
+              class="counter-label text-sm text-slate-500 dark:text-slate-400 mt-1"
+            >
+              Lessons Learned
+            </div>
+          </div>
+        </div>
+
+        <!-- Why this project -->
+        <div class="reveal grid sm:grid-cols-2 gap-6 mb-12">
+          <div
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
           >
             <h3
               class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
             >
               <span
-                class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-sky-500/20 flex items-center justify-center"
+                class="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center"
               >
-                <i class="ti ti-list-check text-purple-500"></i>
+                <i class="ti ti-target text-sky-500"></i>
               </span>
-              Strukturierte Planung von Beginn an
+              Warum dieses Projekt?
             </h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Vor der ersten Zeile Code: Anforderungen analysiert, Architektur
-              entworfen, Best Practices definiert.
-            </p>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div
-                class="glow-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
-              >
-                <i class="ti ti-shield-check text-red-500 mt-0.5 shrink-0"></i>
-                <div>
-                  <div
-                    class="font-semibold text-xs text-slate-900 dark:text-white"
-                  >
-                    Security ab Tag 1
-                  </div>
-                  <p
-                    class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"
-                  >
-                    OIDC, IRSA, KMS Encryption, Checkov + tfsec als
-                    Pipeline-Gates
-                  </p>
-                </div>
-              </div>
-              <div
-                class="glow-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
-              >
-                <i
-                  class="ti ti-chart-dots-3 text-orange-500 mt-0.5 shrink-0"
-                ></i>
-                <div>
-                  <div
-                    class="font-semibold text-xs text-slate-900 dark:text-white"
-                  >
-                    Monitoring geplant
-                  </div>
-                  <p
-                    class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"
-                  >
-                    Prometheus + Grafana via Helm, CloudWatch IRSA, 3 Dashboards
-                  </p>
-                </div>
-              </div>
-              <div
-                class="glow-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
-              >
-                <i
-                  class="ti ti-arrows-maximize text-emerald-500 mt-0.5 shrink-0"
-                ></i>
-                <div>
-                  <div
-                    class="font-semibold text-xs text-slate-900 dark:text-white"
-                  >
-                    Hochverf&uuml;gbarkeit
-                  </div>
-                  <p
-                    class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"
-                  >
-                    HPA (Backend 1-4, Frontend 1-3), 2 AZs, Spot Instance
-                    Diversit&auml;t
-                  </p>
-                </div>
-              </div>
-              <div
-                class="glow-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
-              >
-                <i class="ti ti-refresh text-sky-500 mt-0.5 shrink-0"></i>
-                <div>
-                  <div
-                    class="font-semibold text-xs text-slate-900 dark:text-white"
-                  >
-                    Reproduzierbarkeit
-                  </div>
-                  <p
-                    class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"
-                  >
-                    Wave-Strategie, OIDC-gesch&uuml;tzt, Dynamic Terraform
-                    Outputs
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Echtes Portfolio &mdash; dokumentiert eine authentische
+                  Lernreise</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Bewusst Container-basiert &mdash; ergänzt
+                  Serverless-Erfahrung im Portfolio</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >Dual-Track Hosting &mdash; EKS für Showcase, Lightsail für
+                  Dauerbetrieb</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >3 AWS ML-Services &mdash; Comprehend, Translate und
+                  Polly</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
+                  >100% reproduzierbar &mdash; Destroy + Apply ohne manuelle
+                  Schritte</span
+                >
+              </li>
+            </ul>
           </div>
 
-          <!-- Dual-track hosting (V2: glow-card items) -->
           <div
-            class="reveal-v2 reveal-delay-3 bg-gradient-to-r from-sky-500/5 to-emerald-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
           >
             <h3
               class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
             >
               <span
-                class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center"
+                class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center"
               >
-                <i class="ti ti-git-branch text-amber-500"></i>
+                <i class="ti ti-code text-emerald-500"></i>
               </span>
-              Dual-Track Hosting
+              Tech Stack
             </h3>
-            <div class="grid sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-3 text-sm">
               <div
-                class="glow-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
               >
-                <div
-                  class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 mt-0.5"
-                >
-                  <i class="devicon-kubernetes-plain colored text-xl"></i>
-                </div>
-                <div>
-                  <div
-                    class="font-semibold text-slate-900 dark:text-white text-sm"
-                  >
-                    EKS &mdash; Showcase
-                  </div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    ~143 $/Monat, Sprint-basiert. Volle AWS-Architektur mit EKS,
-                    ALB, RDS, CloudFront. Wird f&uuml;r Demos hochgefahren,
-                    danach runtergefahren.
-                  </p>
-                </div>
+                <i class="devicon-typescript-plain colored text-lg"></i>
+                TypeScript
               </div>
               <div
-                class="glow-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
               >
+                <i class="devicon-express-original text-lg dark:text-white"></i>
+                Express.js
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i class="devicon-tailwindcss-original colored text-lg"></i>
+                Tailwind CSS
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i class="devicon-postgresql-plain colored text-lg"></i>
+                PostgreSQL 16
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i class="devicon-terraform-plain colored text-lg"></i>
+                Terraform
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i class="devicon-kubernetes-plain colored text-lg"></i>
+                Kubernetes
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i
+                  class="devicon-amazonwebservices-plain-wordmark colored text-lg"
+                ></i>
+                AWS (15+)
+              </div>
+              <div
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-400"
+              >
+                <i
+                  class="devicon-githubactions-plain text-lg dark:text-white"
+                ></i>
+                GitHub Actions
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 1: Strukturierte Planung -->
+        <div
+          class="reveal bg-gradient-to-r from-purple-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6"
+        >
+          <h3
+            class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
+          >
+            <span
+              class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-list-check text-purple-500"></i>
+            </span>
+            Strukturierte Planung von Beginn an
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Vor der ersten Zeile Code: Anforderungen analysiert, Architektur
+            entworfen, Best Practices definiert.
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div
+              class="hover-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-shield-check text-red-500 mt-0.5 shrink-0"></i>
+              <div>
                 <div
-                  class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5"
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
                 >
-                  <i
-                    class="devicon-amazonwebservices-plain-wordmark colored text-xl"
-                  ></i>
+                  Security ab Tag 1
                 </div>
-                <div>
-                  <div
-                    class="font-semibold text-slate-900 dark:text-white text-sm"
-                  >
-                    Lightsail &mdash; Dauerbetrieb
-                  </div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    ~5,50 $/Monat. Single Instance, PostgreSQL auf Instance,
-                    Let's Encrypt. Gleicher Code, gleicher Repo, separate
-                    Terraform-Config.
-                  </p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  OIDC, IRSA, KMS Encryption, Checkov + tfsec als Pipeline-Gates
+                </p>
+              </div>
+            </div>
+            <div
+              class="hover-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-chart-dots-3 text-orange-500 mt-0.5 shrink-0"></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Monitoring geplant
                 </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Prometheus + Grafana via Helm, CloudWatch IRSA, 3 Dashboards
+                </p>
+              </div>
+            </div>
+            <div
+              class="hover-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i
+                class="ti ti-arrows-maximize text-emerald-500 mt-0.5 shrink-0"
+              ></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Hochverfügbarkeit
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  HPA (Backend 1-4, Frontend 1-3), 2 AZs, Spot Instance
+                  Diversität
+                </p>
+              </div>
+            </div>
+            <div
+              class="hover-card flex items-start gap-2 p-3 rounded-lg bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <i class="ti ti-refresh text-sky-500 mt-0.5 shrink-0"></i>
+              <div>
+                <div
+                  class="font-semibold text-xs text-slate-900 dark:text-white"
+                >
+                  Reproduzierbarkeit
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  Wave-Strategie, OIDC-geschützt, Dynamic Terraform Outputs
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual-track hosting -->
+        <div
+          class="reveal bg-gradient-to-r from-sky-500/5 to-emerald-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+        >
+          <h3
+            class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
+          >
+            <span
+              class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center"
+            >
+              <i class="ti ti-git-branch text-amber-500"></i>
+            </span>
+            Dual-Track Hosting
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div
+              class="hover-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="devicon-kubernetes-plain colored text-xl"></i>
+              </div>
+              <div>
+                <div
+                  class="font-semibold text-slate-900 dark:text-white text-sm"
+                >
+                  EKS &mdash; Showcase
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  ~143 $/Monat, Sprint-basiert. Volle AWS-Architektur mit EKS,
+                  ALB, RDS, CloudFront. Wird für Demos hochgefahren, danach
+                  runtergefahren.
+                </p>
+              </div>
+            </div>
+            <div
+              class="hover-card flex items-start gap-3 p-4 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-transparent dark:border-slate-700/30"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i
+                  class="devicon-amazonwebservices-plain-wordmark colored text-xl"
+                ></i>
+              </div>
+              <div>
+                <div
+                  class="font-semibold text-slate-900 dark:text-white text-sm"
+                >
+                  Lightsail &mdash; Dauerbetrieb
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  ~5,50 $/Monat. Single Instance, PostgreSQL auf Instance, Let's
+                  Encrypt. Gleicher Code, gleicher Repo, separate
+                  Terraform-Config.
+                </p>
               </div>
             </div>
           </div>
@@ -1407,26 +1127,24 @@
 
       <!-- ==================== TAB 2: ARCHITEKTUR ==================== -->
       <section class="tab-panel" id="panel-architecture" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-sky-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-topology-star-3 text-xl text-purple-500"></i>
-            </span>
-            AWS-Architektur
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Region: eu-central-1 (Frankfurt) &mdash; alle 9 Module von Grund auf
-            geschrieben. Hover &uuml;ber Komponenten f&uuml;r Details.
-          </p>
-        </div>
+            <i class="ti ti-topology-star-3 text-xl text-purple-500"></i>
+          </span>
+          AWS-Architektur
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Region: eu-central-1 (Frankfurt) &mdash; alle 9 Module von Grund auf
+          geschrieben. Hover über Komponenten für Details.
+        </p>
 
-        <!-- LAYER 1: DEPLOY FLOW -->
+        <!-- ========== LAYER 1: DEPLOY FLOW ========== -->
         <div
-          class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
+          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
         >
           <div
             class="text-xs text-center text-slate-400 mb-4 font-medium uppercase tracking-wider"
@@ -1472,7 +1190,7 @@
                 <div class="tt-label">IAM OIDC Role</div>
                 <div class="tt-role">blog-github-actions-role</div>
                 2 Policies: ECR Push + EKS Access, Terraform (14 Statements).
-                Gesch&uuml;tzt vor Teardown.
+                Geschützt vor Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; push</span>
@@ -1486,7 +1204,7 @@
                 <div class="tt-label">ECR (Container Registry)</div>
                 <div class="tt-role">2 Repos &middot; Lifecycle Policy</div>
                 blog-backend + blog-frontend. Tags: sha-&lt;hash&gt; + latest.
-                Max 10 Images, force_delete f&uuml;r Teardown.
+                Max 10 Images, force_delete für Teardown.
               </div>
             </div>
             <span class="flow-label">&rarr; pull</span>
@@ -1508,9 +1226,9 @@
           </div>
         </div>
 
-        <!-- LAYER 2: TRAFFIC FLOW -->
+        <!-- ========== LAYER 2: TRAFFIC FLOW ========== -->
         <div
-          class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
+          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
         >
           <div
             class="text-xs text-center text-slate-400 mb-4 font-medium uppercase tracking-wider"
@@ -1670,7 +1388,7 @@
                     </div>
                     <div class="text-center mt-1">
                       <span class="text-[9px] text-slate-500"
-                        >t3.medium / t3a.medium Spot (~70% g&uuml;nstiger)</span
+                        >t3.medium / t3a.medium Spot (~70% günstiger)</span
                       >
                     </div>
                   </div>
@@ -1754,8 +1472,8 @@
                           <div class="tt-role">
                             Metrics Collector &middot; 15s Scrape
                           </div>
-                          node-exporter + kube-state-metrics. Datenquelle
-                          f&uuml;r Grafana.
+                          node-exporter + kube-state-metrics. Datenquelle für
+                          Grafana.
                         </div>
                       </div>
                       <div
@@ -1836,7 +1554,7 @@
                   (DE&rarr;EN)
                 </div>
                 Backend &rarr; Translate API (IRSA) &rarr; Cache in RDS &rarr;
-                n&auml;chster User: aus DB
+                nächster User: aus DB
               </div>
               <div
                 class="text-[11px] text-slate-400 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30"
@@ -1845,7 +1563,7 @@
                   <i class="ti ti-volume text-xs mr-1"></i>Polly (TTS)
                 </div>
                 Backend &rarr; Polly API (IRSA) &rarr; S3 Upload &rarr;
-                Pre-Signed URL &rarr; n&auml;chster User: direkt S3
+                Pre-Signed URL &rarr; nächster User: direkt S3
               </div>
               <div
                 class="text-[11px] text-slate-400 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30"
@@ -1871,22 +1589,22 @@
                 <div class="font-bold text-orange-400 mb-1">
                   <i class="ti ti-chart-line text-xs mr-1"></i>Monitoring
                 </div>
-                Prometheus scrapes &rarr; Grafana (IRSA) &rarr; CloudWatch
-                f&uuml;r Translate/Polly
+                Prometheus scrapes &rarr; Grafana (IRSA) &rarr; CloudWatch für
+                Translate/Polly
               </div>
             </div>
           </div>
         </div>
 
-        <!-- LAYER 3: MANAGED SERVICES -->
+        <!-- ========== LAYER 3: MANAGED SERVICES ========== -->
         <div
-          class="reveal-v2 reveal-delay-3 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
+          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 overflow-x-auto mb-4"
         >
           <div
             class="text-xs text-center text-slate-400 mb-4 font-medium uppercase tracking-wider"
           >
             <i class="ti ti-cloud text-purple-500 mr-1"></i> Managed Services
-            &mdash; au&szlig;erhalb VPC
+            &mdash; außerhalb VPC
           </div>
           <div class="flex flex-wrap justify-center gap-4">
             <div class="aws-service aws-security arch-tooltip">
@@ -1899,7 +1617,7 @@
                 <div class="tt-label">Amazon Cognito</div>
                 <div class="tt-role">Admin Auth &middot; OAuth 2.0</div>
                 Hosted UI Login + Self-Registration. JWT-Validierung im Backend.
-                User werden bei Teardown gel&ouml;scht.
+                User werden bei Teardown gelöscht.
                 <div class="tt-cost">Free Tier (50K MAU)</div>
               </div>
             </div>
@@ -1956,8 +1674,8 @@
               <div class="tooltip-content">
                 <div class="tt-label">Amazon S3</div>
                 <div class="tt-role">IRSA: blog-backend-role</div>
-                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Vorbereitet
-                f&uuml;r Image Hosting (OAC). Versioning aktiv.
+                Polly Audio Cache (audio/post-{id}-{lang}.mp3). Vorbereitet für
+                Image Hosting (OAC). Versioning aktiv.
               </div>
             </div>
             <div class="aws-service aws-network arch-tooltip">
@@ -1972,7 +1690,7 @@
                 <div class="tt-label">Amazon CloudFront</div>
                 <div class="tt-role">CDN &middot; OAC konfiguriert</div>
                 Terraform-Modul deployed. Aktuell nicht im Traffic-Pfad --
-                vorbereitet f&uuml;r Images.
+                vorbereitet für Images.
                 <div class="tt-cost">ACM Cert: us-east-1</div>
               </div>
             </div>
@@ -1986,7 +1704,7 @@
                 <div class="tt-label">AWS Certificate Manager</div>
                 <div class="tt-role">2 Zertifikate &middot; kostenlos</div>
                 us-east-1 &rarr; CloudFront (global). eu-central-1 &rarr; ALB
-                (regional). Beide f&uuml;r dieselbe Domain.
+                (regional). Beide für dieselbe Domain.
                 <div class="tt-cost">$0</div>
               </div>
             </div>
@@ -2001,8 +1719,8 @@
                 <div class="tt-role">
                   Envelope Encryption &middot; Auto-Rotation
                 </div>
-                EKS Secrets verschl&uuml;sselt (nicht nur base64). Key-Rotation
-                alle 365 Tage.
+                EKS Secrets verschlüsselt (nicht nur base64). Key-Rotation alle
+                365 Tage.
                 <div class="tt-cost">$1/Monat pro Key</div>
               </div>
             </div>
@@ -2086,7 +1804,7 @@
           AWS-Zugriff.
         </div>
 
-        <!-- Fixed tooltip overlay -->
+        <!-- Fixed tooltip overlay - positioned via JS, never clipped -->
         <div id="arch-tooltip-overlay"></div>
         <script>
           (function () {
@@ -2101,11 +1819,13 @@
                 var rect = el.getBoundingClientRect();
                 var ttWidth = 240;
                 var gap = 10;
+                // Horizontal: centered above element, clamped to viewport
                 var left = rect.left + rect.width / 2 - ttWidth / 2;
                 if (left < 10) left = 10;
                 if (left + ttWidth > window.innerWidth - 10)
                   left = window.innerWidth - ttWidth - 10;
                 overlay.style.left = left + "px";
+                // Vertical: above element, fallback below if too close to top
                 var ttHeight = overlay.offsetHeight;
                 var top = rect.top - ttHeight - gap;
                 if (top < 10) top = rect.bottom + gap;
@@ -2121,29 +1841,25 @@
 
       <!-- ==================== TAB 3: TERRAFORM ==================== -->
       <section class="tab-panel" id="panel-terraform" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
-          >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-sky-500/20 flex items-center justify-center"
-            >
-              <i class="devicon-terraform-plain colored text-xl"></i>
-            </span>
-            Terraform Infrastructure as Code
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            9 Module, alle von Grund auf geschrieben &mdash; keine
-            vorgefertigten Module
-          </p>
-        </div>
-
-        <!-- Module Grid (V2: glow-card) -->
-        <div
-          class="reveal-v2 reveal-delay-1 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
         >
+          <span
+            class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"
+          >
+            <i class="devicon-terraform-plain colored text-xl"></i>
+          </span>
+          Terraform Infrastructure as Code
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          9 Module, alle von Grund auf geschrieben &mdash; keine vorgefertigten
+          Module
+        </p>
+
+        <!-- Module Grid -->
+        <div class="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2160,7 +1876,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2177,7 +1893,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2194,7 +1910,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2211,7 +1927,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2228,7 +1944,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2246,7 +1962,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2263,7 +1979,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2280,7 +1996,7 @@
             </p>
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <div
@@ -2293,170 +2009,164 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              CDN (prepared), ACM Cert (us-east-1), OAC f&uuml;r S3, Route 53
+              CDN (prepared), ACM Cert (us-east-1), OAC für S3, Route 53
             </p>
           </div>
         </div>
 
         <!-- Wave Strategy -->
-        <div class="reveal-v2 reveal-delay-2">
-          <h3
-            class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
+        <h3
+          class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
+        >
+          <span
+            class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-layers-intersect text-amber-500"></i>
-            </span>
-            Wave Deployment Strategie
-          </h3>
-          <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-6"
-          >
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-slate-200 dark:border-slate-800">
-                  <th
-                    class="text-left px-4 py-3 font-semibold text-slate-900 dark:text-white"
-                  >
-                    Wave
-                  </th>
-                  <th
-                    class="text-left px-4 py-3 font-semibold text-slate-900 dark:text-white"
-                  >
-                    Ressourcen
-                  </th>
-                  <th
-                    class="text-right px-4 py-3 font-semibold text-slate-900 dark:text-white"
-                  >
-                    Kosten/Monat
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="text-slate-600 dark:text-slate-400">
-                <tr
-                  class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+            <i class="ti ti-layers-intersect text-amber-500"></i>
+          </span>
+          Wave Deployment Strategie
+        </h3>
+        <div
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-6"
+        >
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800">
+                <th
+                  class="text-left px-4 py-3 font-semibold text-slate-900 dark:text-white"
                 >
-                  <td class="px-4 py-3">
-                    <span
-                      class="shimmer-pill px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs font-bold"
-                      >0</span
-                    >
-                  </td>
-                  <td class="px-4 py-3">
-                    Bootstrap (S3 State + DynamoDB Lock) + IAM Policies
-                  </td>
-                  <td class="text-right px-4 py-3 font-mono text-emerald-500">
-                    $0
-                  </td>
-                </tr>
-                <tr
-                  class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+                  Wave
+                </th>
+                <th
+                  class="text-left px-4 py-3 font-semibold text-slate-900 dark:text-white"
                 >
-                  <td class="px-4 py-3">
-                    <span
-                      class="shimmer-pill px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 text-xs font-bold"
-                      >1</span
-                    >
-                  </td>
-                  <td class="px-4 py-3">
-                    VPC, SGs, ECR, S3, Cognito, GitHub OIDC
-                  </td>
-                  <td class="text-right px-4 py-3 font-mono text-emerald-500">
-                    ~$0.50
-                  </td>
-                </tr>
-                <tr
-                  class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+                  Ressourcen
+                </th>
+                <th
+                  class="text-right px-4 py-3 font-semibold text-slate-900 dark:text-white"
                 >
-                  <td class="px-4 py-3">
-                    <span
-                      class="shimmer-pill px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-xs font-bold"
-                      >2</span
-                    >
-                  </td>
-                  <td class="px-4 py-3">
-                    RDS PostgreSQL (stoppbar bis 7 Tage)
-                  </td>
-                  <td class="text-right px-4 py-3 font-mono text-amber-500">
-                    ~$13
-                  </td>
-                </tr>
-                <tr class="wave-row">
-                  <td class="px-4 py-3">
-                    <span
-                      class="shimmer-pill px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold"
-                      >3</span
-                    >
-                  </td>
-                  <td class="px-4 py-3">EKS + NAT Gateway + CloudFront</td>
-                  <td class="text-right px-4 py-3 font-mono text-red-500">
-                    ~$126
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr class="border-t border-slate-200 dark:border-slate-700">
-                  <td
-                    colspan="2"
-                    class="px-4 py-3 font-semibold text-slate-900 dark:text-white"
+                  Kosten/Monat
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-600 dark:text-slate-400">
+              <tr
+                class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+              >
+                <td class="px-4 py-3">
+                  <span
+                    class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs font-bold"
+                    >0</span
                   >
-                    Gesamt (Full Deployment)
-                  </td>
-                  <td
-                    class="text-right px-4 py-3 font-mono font-bold text-slate-900 dark:text-white"
+                </td>
+                <td class="px-4 py-3">
+                  Bootstrap (S3 State + DynamoDB Lock) + IAM Policies
+                </td>
+                <td class="text-right px-4 py-3 font-mono text-emerald-500">
+                  $0
+                </td>
+              </tr>
+              <tr
+                class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+              >
+                <td class="px-4 py-3">
+                  <span
+                    class="px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 text-xs font-bold"
+                    >1</span
                   >
-                    ~$143
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    colspan="2"
-                    class="px-4 py-3 font-semibold text-emerald-600 dark:text-emerald-400"
+                </td>
+                <td class="px-4 py-3">
+                  VPC, SGs, ECR, S3, Cognito, GitHub OIDC
+                </td>
+                <td class="text-right px-4 py-3 font-mono text-emerald-500">
+                  ~$0.50
+                </td>
+              </tr>
+              <tr
+                class="wave-row border-b border-slate-100 dark:border-slate-800/50"
+              >
+                <td class="px-4 py-3">
+                  <span
+                    class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-xs font-bold"
+                    >2</span
                   >
-                    Nach Sprint (nur Route 53 + S3)
-                  </td>
-                  <td
-                    class="text-right px-4 py-3 font-mono font-bold text-emerald-500"
+                </td>
+                <td class="px-4 py-3">RDS PostgreSQL (stoppbar bis 7 Tage)</td>
+                <td class="text-right px-4 py-3 font-mono text-amber-500">
+                  ~$13
+                </td>
+              </tr>
+              <tr class="wave-row">
+                <td class="px-4 py-3">
+                  <span
+                    class="px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold"
+                    >3</span
                   >
-                    ~$0.50
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <p class="text-sm text-slate-500 dark:text-slate-400">
-            <i class="ti ti-info-circle text-sky-500 mr-1"></i>
-            Sprint-Strategie: ~4,80 $/Tag EKS (143$/30 Tage). Danach Destroy
-            &rarr; zur&uuml;ck auf $0.50/Monat.
-          </p>
+                </td>
+                <td class="px-4 py-3">EKS + NAT Gateway + CloudFront</td>
+                <td class="text-right px-4 py-3 font-mono text-red-500">
+                  ~$126
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="border-t border-slate-200 dark:border-slate-700">
+                <td
+                  colspan="2"
+                  class="px-4 py-3 font-semibold text-slate-900 dark:text-white"
+                >
+                  Gesamt (Full Deployment)
+                </td>
+                <td
+                  class="text-right px-4 py-3 font-mono font-bold text-slate-900 dark:text-white"
+                >
+                  ~$143
+                </td>
+              </tr>
+              <tr>
+                <td
+                  colspan="2"
+                  class="px-4 py-3 font-semibold text-emerald-600 dark:text-emerald-400"
+                >
+                  Nach Sprint (nur Route 53 + S3)
+                </td>
+                <td
+                  class="text-right px-4 py-3 font-mono font-bold text-emerald-500"
+                >
+                  ~$0.50
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          <i class="ti ti-info-circle text-sky-500 mr-1"></i>
+          Sprint-Strategie: ~4,80 $/Tag EKS (143$/30 Tage). Danach Destroy
+          &rarr; zurück auf $0.50/Monat.
+        </p>
       </section>
 
       <!-- ==================== TAB 4: CI/CD ==================== -->
       <section class="tab-panel" id="panel-cicd" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-500/20 to-purple-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-git-merge text-xl text-sky-500"></i>
-            </span>
-            CI/CD Pipelines
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            8 Workflows (6 Core + 2 Status Monitors) &mdash; alle mit OIDC
-            Federation (keine langlebigen AWS-Keys)
-          </p>
-        </div>
+            <i class="ti ti-git-merge text-xl text-sky-500"></i>
+          </span>
+          CI/CD Pipelines
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          8 Workflows (6 Core + 2 Status Monitors) &mdash; alle mit OIDC
+          Federation (keine langlebigen AWS-Keys)
+        </p>
 
         <!-- Pipelines -->
         <div class="space-y-4">
           <!-- Deploy -->
           <div
-            class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center justify-between mb-3">
               <h3
@@ -2465,7 +2175,7 @@
                 <i class="ti ti-rocket text-sky-500"></i> deploy.yml
               </h3>
               <span
-                class="shimmer-pill text-xs px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 font-medium"
+                class="text-xs px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 font-medium"
                 >Manual Trigger</span
               >
             </div>
@@ -2489,14 +2199,14 @@
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
               Liest Infra-Werte dynamisch aus Terraform State (S3). Nur 2 GitHub
-              Secrets n&ouml;tig (AWS_ROLE_ARN + DB_PASSWORD), plus 2 optionale
+              Secrets nötig (AWS_ROLE_ARN + DB_PASSWORD), plus 2 optionale
               (Telegram).
             </p>
           </div>
 
           <!-- Terraform -->
           <div
-            class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center justify-between mb-3">
               <h3
@@ -2505,7 +2215,7 @@
                 <i class="devicon-terraform-plain colored"></i> terraform.yml
               </h3>
               <span
-                class="shimmer-pill text-xs px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 font-medium"
+                class="text-xs px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 font-medium"
                 >Manual Trigger</span
               >
             </div>
@@ -2532,10 +2242,10 @@
             </p>
           </div>
 
-          <!-- Provision + Destroy + Security -->
-          <div class="reveal-v2 reveal-delay-3 grid sm:grid-cols-3 gap-4">
+          <!-- Provision + Destroy + Security + Status -->
+          <div class="grid sm:grid-cols-3 gap-4">
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
@@ -2549,7 +2259,7 @@
               </p>
             </div>
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
@@ -2562,7 +2272,7 @@
               </p>
             </div>
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
@@ -2576,22 +2286,23 @@
             </div>
           </div>
 
-          <!-- Status Monitor + Lint -->
-          <div class="reveal-v2 reveal-delay-4 grid sm:grid-cols-3 gap-4 mt-4">
+          <!-- Status Monitor + Lint Workflows -->
+          <div class="grid sm:grid-cols-3 gap-4 mt-4">
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
               >
-                <i class="ti ti-heartbeat text-emerald-500"></i> status-eks.yml
+                <i class="ti ti-heartbeat text-emerald-500"></i>
+                status-eks.yml
               </h3>
               <p class="text-xs text-slate-500 dark:text-slate-400">
                 Health Check alle 5 Min. Badge zeigt Live/Offline im README.
               </p>
             </div>
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
@@ -2604,15 +2315,16 @@
               </p>
             </div>
             <div
-              class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+              class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
             >
               <h3
                 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-2"
               >
-                <i class="ti ti-code text-sky-500"></i> lint.yml
+                <i class="ti ti-code text-sky-500"></i>
+                lint.yml
               </h3>
               <p class="text-xs text-slate-500 dark:text-slate-400">
-                ESLint + TypeScript Check auf Push/PR. Code-Qualit&auml;t als
+                ESLint + TypeScript Check auf Push/PR. Code-Qualität als
                 Pipeline-Gate.
               </p>
             </div>
@@ -2621,16 +2333,16 @@
 
         <!-- OIDC highlight -->
         <div
-          class="reveal-v2 mt-8 retro-grid bg-gradient-to-r from-sky-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card mt-8 bg-gradient-to-r from-sky-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3
-            class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2 relative z-10"
+            class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
           >
             <i class="ti ti-fingerprint text-sky-500"></i>
             OIDC Federation &mdash; Zero AWS Keys
           </h3>
           <div
-            class="grid sm:grid-cols-3 gap-4 text-sm text-slate-600 dark:text-slate-400 relative z-10"
+            class="grid sm:grid-cols-3 gap-4 text-sm text-slate-600 dark:text-slate-400"
           >
             <div>
               <div class="font-semibold text-slate-900 dark:text-white mb-1">
@@ -2643,7 +2355,7 @@
             </div>
             <div>
               <div class="font-semibold text-slate-900 dark:text-white mb-1">
-                L&ouml;sung
+                Lösung
               </div>
               <p class="text-xs">
                 GitHub OIDC Provider in AWS + IAM Role mit Trust Policy.
@@ -2665,42 +2377,40 @@
 
       <!-- ==================== TAB 5: SECURITY ==================== -->
       <section class="tab-panel" id="panel-security" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-shield-check text-xl text-red-500"></i>
-            </span>
-            DevSecOps
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Security Scanning ab Tag 1 &mdash; vor der ersten Zeile Application
-            Code
-          </p>
-        </div>
+            <i class="ti ti-shield-check text-xl text-red-500"></i>
+          </span>
+          DevSecOps
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Security Scanning ab Tag 1 &mdash; vor der ersten Zeile Application
+          Code
+        </p>
 
-        <!-- Scanning tools (V2: glow-card) -->
-        <div class="reveal-v2 reveal-delay-1 grid sm:grid-cols-3 gap-4 mb-8">
+        <!-- Scanning tools -->
+        <div class="reveal grid sm:grid-cols-3 gap-4 mb-8">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-red-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-red-500 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-2">
               Trufflehog
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">
               Erkennt versehentlich committete Secrets (API Keys, Tokens,
-              Passw&ouml;rter)
+              Passwörter)
             </p>
             <span
-              class="shimmer-pill text-[10px] px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium"
+              class="text-[10px] px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium"
               >Push + PR</span
             >
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-amber-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-amber-500 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-2">
               tfsec
@@ -2709,12 +2419,12 @@
               Scannt Terraform auf Security-Fehlkonfigurationen
             </p>
             <span
-              class="shimmer-pill text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-medium"
+              class="text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-medium"
               >Push + PR + Terraform Pipeline</span
             >
           </div>
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-purple-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-l-4 border-slate-200 dark:border-slate-800 border-l-purple-500 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-2">
               Checkov
@@ -2724,7 +2434,7 @@
               triaged)
             </p>
             <span
-              class="shimmer-pill text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-medium"
+              class="text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-medium"
               >Push + PR + Terraform Pipeline</span
             >
           </div>
@@ -2732,7 +2442,7 @@
 
         <!-- Checkov triage -->
         <div
-          class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Checkov Triage: 42 Findings &rarr; 3 fixed, 39 suppressed, 0
@@ -2769,9 +2479,9 @@
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400">
                 Bewusste Entscheidungen: z.B. kein Multi-AZ RDS (Kosten), kein
-                VPC Flow Logs (Dev-Projekt), Public Subnets f&uuml;r EKS Nodes
+                VPC Flow Logs (Dev-Projekt), Public Subnets für EKS Nodes
                 (Architektur-Entscheidung). Jedes Finding einzeln evaluiert und
-                mit checkov:skip + Begr&uuml;ndung dokumentiert.
+                mit checkov:skip + Begründung dokumentiert.
               </p>
             </div>
             <div>
@@ -2794,91 +2504,86 @@
         </div>
 
         <!-- Infra security -->
-        <div class="reveal-v2 reveal-delay-3">
-          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
-            Infrastruktur-Security
-          </h3>
-          <div class="grid sm:grid-cols-2 gap-3">
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
+          Infrastruktur-Security
+        </h3>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span
+              >S3 Public Access komplett blockiert (nur CloudFront OAC)</span
             >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span
-                >S3 Public Access komplett blockiert (nur CloudFront OAC)</span
-              >
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>RDS in Private Subnets (SG-to-SG Rules)</span>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>EKS Secrets verschlüsselt (KMS at rest)</span>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>IRSA für Pod-Level IAM (Least Privilege)</span>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>TLS 1.2+ auf ALB und CloudFront erzwungen</span>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>Keine AWS Credentials in CI/CD (OIDC)</span>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span
+              >Cognito mit starker Passwort-Policy + optionalem TOTP MFA</span
             >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>RDS in Private Subnets (SG-to-SG Rules)</span>
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>EKS Secrets verschl&uuml;sselt (KMS at rest)</span>
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>IRSA f&uuml;r Pod-Level IAM (Least Privilege)</span>
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>TLS 1.2+ auf ALB und CloudFront erzwungen</span>
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>Keine AWS Credentials in CI/CD (OIDC)</span>
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span
-                >Cognito mit starker Passwort-Policy + optionalem TOTP MFA</span
-              >
-            </div>
-            <div
-              class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
-            >
-              <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
-              <span>Husky Pre-Commit Hooks (lokale Security-Guardrails)</span>
-            </div>
+          </div>
+          <div
+            class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
+            <i class="ti ti-check text-emerald-500 mt-0.5 shrink-0"></i>
+            <span>Husky Pre-Commit Hooks (lokale Security-Guardrails)</span>
           </div>
         </div>
       </section>
 
       <!-- ==================== TAB 6: KUBERNETES ==================== -->
       <section class="tab-panel" id="panel-kubernetes" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center"
-            >
-              <i class="devicon-kubernetes-plain colored text-xl"></i>
-            </span>
-            Kubernetes auf EKS
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            12 Manifest-Dateien, nummeriert (00-11) f&uuml;r
-            selbstdokumentierende Apply-Reihenfolge &mdash; IRSA + HPA +
-            Monitoring
-          </p>
-        </div>
+            <i class="devicon-kubernetes-plain colored text-xl"></i>
+          </span>
+          Kubernetes auf EKS
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          12 Manifest-Dateien, nummeriert (00-11) für selbstdokumentierende
+          Apply-Reihenfolge &mdash; IRSA + HPA + Monitoring
+        </p>
 
         <!-- Manifest overview -->
-        <div class="reveal-v2 reveal-delay-1 grid sm:grid-cols-2 gap-4 mb-8">
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">
               K8s Manifeste
@@ -2931,36 +2636,36 @@
           </div>
 
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">
               Key Design Decisions
             </h3>
             <ul class="space-y-3 text-xs text-slate-500 dark:text-slate-400">
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">ALB target-type: ip</strong>
                   &mdash; VPC CNI routet direkt zu Pod IPs</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">Spot Instances</strong>
-                  &mdash; t3.medium + t3a.medium (~70% g&uuml;nstiger)</span
+                  &mdash; t3.medium + t3a.medium (~70% günstiger)</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">nginx Reverse Proxy</strong>
                   &mdash; ALB &rarr; nginx &rarr; /api/* &rarr; Backend</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300"
                     >kubectl create secret --dry-run</strong
                   >
@@ -2968,30 +2673,30 @@
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">Liveness + Readiness</strong>
                   &mdash; HTTP /health (Backend), TCP + HTTP (Frontend)</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">DB Init als Job</strong>
                   &mdash; idempotentes Schema + Seed gegen RDS</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">IRSA</strong> &mdash;
-                  Pod-Level IAM f&uuml;r Comprehend + Translate + Polly (3
+                  Pod-Level IAM für Comprehend + Translate + Polly (3
                   Rollen)</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   ><strong class="text-slate-300">HPA + Metrics-Server</strong>
                   &mdash; CPU-basiertes Auto-Scaling (1-4 Backend, 1-3
                   Frontend)</span
@@ -3003,85 +2708,81 @@
 
         <!-- Lifecycle -->
         <div
-          class="reveal-v2 reveal-delay-2 retro-grid bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
-          <div class="relative z-10">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
-              <i class="ti ti-refresh text-emerald-500 mr-1"></i>
-              Full Lifecycle &mdash; 100% reproduzierbar
-            </h3>
-            <div class="flex flex-wrap items-center gap-3 text-sm">
-              <div
-                class="shimmer-pill px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
-              >
-                <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
-              </div>
-              <i class="ti ti-arrow-right text-slate-400"></i>
-              <div
-                class="shimmer-pill px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
-              >
-                <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
-              </div>
-              <i class="ti ti-arrow-right text-slate-400"></i>
-              <div
-                class="shimmer-pill px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium"
-              >
-                <i class="ti ti-world mr-1"></i>Blog Live
-              </div>
-              <i class="ti ti-arrow-right text-slate-400"></i>
-              <div
-                class="shimmer-pill px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-medium"
-              >
-                <i class="ti ti-arrow-down mr-1"></i>Destroy (~13 Min)
-              </div>
-              <i class="ti ti-arrow-right text-slate-400"></i>
-              <div
-                class="shimmer-pill px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
-              >
-                <i class="ti ti-refresh mr-1"></i>Repeat
-              </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
+            <i class="ti ti-refresh text-emerald-500 mr-1"></i>
+            Full Lifecycle &mdash; 100% reproduzierbar
+          </h3>
+          <div class="flex flex-wrap items-center gap-3 text-sm">
+            <div
+              class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
+            >
+              <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
             </div>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              Kein manuelles Secret-Update n&ouml;tig. Pipeline liest alle
-              Infra-Werte aus Terraform State. OIDC-Rolle &uuml;berlebt
-              Destroy-Zyklen.
-            </p>
+            <i class="ti ti-arrow-right text-slate-400"></i>
+            <div
+              class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
+            >
+              <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
+            </div>
+            <i class="ti ti-arrow-right text-slate-400"></i>
+            <div
+              class="px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium"
+            >
+              <i class="ti ti-world mr-1"></i>Blog Live
+            </div>
+            <i class="ti ti-arrow-right text-slate-400"></i>
+            <div
+              class="px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-medium"
+            >
+              <i class="ti ti-arrow-down mr-1"></i>Destroy (~13 Min)
+            </div>
+            <i class="ti ti-arrow-right text-slate-400"></i>
+            <div
+              class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
+            >
+              <i class="ti ti-refresh mr-1"></i>Repeat
+            </div>
           </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+            Kein manuelles Secret-Update nötig. Pipeline liest alle Infra-Werte
+            aus Terraform State. OIDC-Rolle überlebt Destroy-Zyklen.
+          </p>
         </div>
       </section>
 
-      <!-- ==================== TAB 7: ML ==================== -->
+      <!-- ==================== TAB 7: COMPREHEND ==================== -->
       <section class="tab-panel" id="panel-comprehend" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500/20 to-emerald-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-brain text-xl text-teal-500"></i>
-            </span>
-            ML &amp; Sprachservices &mdash; 3 AWS-Dienste
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Comprehend (NLP), Translate (Bilingual DE/EN) und Polly
-            (Text-to-Speech) &mdash; alle via IRSA
-          </p>
-        </div>
+            <i class="ti ti-brain text-xl text-teal-500"></i>
+          </span>
+          ML &amp; Sprachservices &mdash; 3 AWS-Dienste
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Comprehend (NLP), Translate (Bilingual DE/EN) und Polly
+          (Text-to-Speech) &mdash; alle via IRSA
+        </p>
 
-        <div class="reveal-v2 reveal-delay-1 grid sm:grid-cols-2 gap-6 mb-8">
+        <div class="grid sm:grid-cols-2 gap-6 mb-8">
           <!-- Auto-Tags -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-tags text-teal-500"></i> Comprehend: Auto-Tags
+              <i class="ti ti-tags text-teal-500"></i>
+              Comprehend: Auto-Tags
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              detectKeyPhrases extrahiert Schl&uuml;sselw&ouml;rter aus
-              Blog-Posts f&uuml;r automatische Tag-Vorschl&auml;ge.
+              detectKeyPhrases extrahiert Schlüsselwörter aus Blog-Posts für
+              automatische Tag-Vorschläge.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -3089,7 +2790,7 @@
               <div class="text-teal-500 mb-1">
                 // Comprehend detectKeyPhrases
               </div>
-              <div>Input: "Terraform Module f&uuml;r VPC..."</div>
+              <div>Input: "Terraform Module für VPC..."</div>
               <div class="text-emerald-400 mt-1">
                 &rarr; ["Terraform", "VPC", "Module",
               </div>
@@ -3101,13 +2802,13 @@
 
           <!-- Sentiment -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-mood-smile text-amber-500"></i> Comprehend:
-              Sentiment
+              <i class="ti ti-mood-smile text-amber-500"></i>
+              Comprehend: Sentiment
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
               detectSentiment analysiert Kommentar-Stimmung. NEGATIVE &ge; 70%
@@ -3132,17 +2833,17 @@
 
           <!-- Translate -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-language text-sky-500"></i> Translate: Bilingual
-              DE/EN
+              <i class="ti ti-language text-sky-500"></i>
+              Translate: Bilingual DE/EN
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              On-Demand &Uuml;bersetzung aller Blog-Posts via Amazon Translate
-              API. Ergebnisse in PostgreSQL gecacht (post_translations Tabelle).
+              On-Demand Übersetzung aller Blog-Posts via Amazon Translate API.
+              Ergebnisse in PostgreSQL gecacht (post_translations Tabelle).
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -3163,16 +2864,17 @@
 
           <!-- Polly -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-volume text-purple-500"></i> Polly: Text-to-Speech
+              <i class="ti ti-volume text-purple-500"></i>
+              Polly: Text-to-Speech
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Neural Voices f&uuml;r Blog-Posts. MP3-Audio in S3 gecacht,
-              Pre-Signed URLs f&uuml;r Playback. Speed Controls 0.5x-2x.
+              Neural Voices für Blog-Posts. MP3-Audio in S3 gecacht, Pre-Signed
+              URLs für Playback. Speed Controls 0.5x-2x.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
@@ -3191,34 +2893,34 @@
           </div>
         </div>
 
-        <!-- Architecture integration -->
+        <!-- Architecture -->
         <div
-          class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Architektur-Integration (alle 3 Services)
           </h3>
           <div class="flex flex-wrap items-center gap-3 text-sm mb-4">
             <div
-              class="shimmer-pill px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
+              class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
             >
               Backend Pod
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
-              class="shimmer-pill px-3 py-2 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 font-medium"
+              class="px-3 py-2 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 font-medium"
             >
               IRSA (Pod IAM)
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
-              class="shimmer-pill px-3 py-2 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium"
+              class="px-3 py-2 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium"
             >
               Comprehend / Translate / Polly
             </div>
             <i class="ti ti-arrow-right text-slate-400"></i>
             <div
-              class="shimmer-pill px-3 py-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium"
+              class="px-3 py-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium"
             >
               RDS + S3 (Cache)
             </div>
@@ -3261,14 +2963,15 @@
         </div>
 
         <!-- Auto-Moderation + Sarcasm Limitation -->
-        <div class="reveal-v2 reveal-delay-3 grid sm:grid-cols-2 gap-6 mb-8">
+        <div class="grid sm:grid-cols-2 gap-6 mb-8">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-shield-check text-red-500"></i> Auto-Moderation
+              <i class="ti ti-shield-check text-red-500"></i>
+              Auto-Moderation
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
               Kommentare mit NEGATIVE Sentiment &ge; 70% Confidence werden
@@ -3287,28 +2990,28 @@
           </div>
 
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-alert-triangle text-amber-500"></i> Limitation:
-              Deutsche Ironie
+              <i class="ti ti-alert-triangle text-amber-500"></i>
+              Limitation: Deutsche Ironie
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
               Comprehend erkennt keine Ironie oder Sarkasmus im Deutschen.
-              Manuelle Moderation bleibt n&ouml;tig.
+              Manuelle Moderation bleibt nötig.
             </p>
             <div
               class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-xs font-mono text-slate-500 dark:text-slate-400"
             >
               <div class="text-amber-500 mb-1">// Sarkasmus-Beispiel</div>
-              <div>"Ganz sch&ouml;n &uuml;berzogen dargestellt!"</div>
+              <div>"Ganz schön überzogen dargestellt!"</div>
               <div class="text-emerald-400 mt-1">
                 &rarr; POSITIVE 100% <span class="text-red-400">(falsch!)</span>
               </div>
               <div class="text-slate-500 mt-2 text-[10px]">
-                "sch&ouml;n" triggert den Positiv-Detektor, obwohl sarkastisch
+                "schön" triggert den Positiv-Detektor, obwohl sarkastisch
                 gemeint
               </div>
             </div>
@@ -3317,29 +3020,29 @@
 
         <!-- Telegram notifications -->
         <div
-          class="reveal-v2 reveal-delay-4 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3
             class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <i class="ti ti-brand-telegram text-sky-500"></i> Telegram
-            Benachrichtigungen
+            <i class="ti ti-brand-telegram text-sky-500"></i>
+            Telegram Benachrichtigungen
           </h3>
           <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
-            Neue Kommentare l&ouml;sen eine Telegram-Nachricht an den Admin aus.
+            Neue Kommentare lösen eine Telegram-Nachricht an den Admin aus.
             Non-blocking, native fetch, kein npm-Paket.
           </p>
           <div class="flex flex-wrap gap-3 text-xs">
             <span
-              class="shimmer-pill px-2 py-1 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
+              class="px-2 py-1 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
               >@my_tech_blog_bot</span
             >
             <span
-              class="shimmer-pill px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+              class="px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
               >Fire-and-Forget</span
             >
             <span
-              class="shimmer-pill px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500"
+              class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500"
               >Graceful Degradation</span
             >
           </div>
@@ -3348,31 +3051,29 @@
 
       <!-- ==================== TAB 8: LESSONS LEARNED ==================== -->
       <section class="tab-panel" id="panel-lessons" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-bulb text-xl text-amber-500"></i>
-            </span>
-            Lessons Learned
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            42 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
-            L&ouml;sung
-          </p>
-        </div>
+            <i class="ti ti-bulb text-xl text-amber-500"></i>
+          </span>
+          Lessons Learned
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          42 dokumentierte Learnings &mdash; jedes mit konkretem Problem und
+          Lösung
+        </p>
 
-        <!-- Highlight lessons (V2: glow-card) -->
-        <div class="reveal-v2 reveal-delay-1 grid sm:grid-cols-2 gap-4 mb-8">
+        <!-- Highlight lessons -->
+        <div class="reveal grid sm:grid-cols-2 gap-4 mb-8">
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
                 >#8</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3386,11 +3087,11 @@
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
                 >#17</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3403,11 +3104,11 @@
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
                 >#21</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3415,16 +3116,16 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              OIDC/IAM Zirkularabh&auml;ngigkeit. Fix: lifecycle ignore_changes
-              + Wave 0 Pre-Step.
+              OIDC/IAM Zirkularabhängigkeit. Fix: lifecycle ignore_changes +
+              Wave 0 Pre-Step.
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                 >#42</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3438,11 +3139,11 @@
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
                 >#26</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3450,16 +3151,16 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              K8s Controller erstellt ALBs au&szlig;erhalb von Terraform.
-              Cleanup BEFORE EKS Destroy n&ouml;tig.
+              K8s Controller erstellt ALBs außerhalb von Terraform. Cleanup
+              BEFORE EKS Destroy nötig.
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400"
                 >#30</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3472,11 +3173,11 @@
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
                 >#31</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3489,11 +3190,11 @@
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                 >#32</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3501,21 +3202,21 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              EKS f&uuml;r Showcase ($143/Sprint), Lightsail f&uuml;r
-              Dauerbetrieb ($5.50). Kubernetes-Expertise zeigt sich daran, wann
-              man es NICHT nutzt.
+              EKS für Showcase ($143/Sprint), Lightsail für Dauerbetrieb
+              ($5.50). Kubernetes-Expertise zeigt sich daran, wann man es NICHT
+              nutzt.
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-2 border-amber-500/50 dark:border-amber-500/30 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-2 border-amber-500/50 dark:border-amber-500/30 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                 >#35</span
               >
               <span
-                class="shimmer-pill text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-500"
+                class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-500"
                 >WICHTIG</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3523,17 +3224,17 @@
               >
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              "Ganz sch&ouml;n &uuml;berzogen dargestellt!" &rarr; POSITIVE
-              100%. Comprehend erkennt keinen deutschen Sarkasmus. Manuelle
-              Moderation bleibt Pflicht.
+              "Ganz schön überzogen dargestellt!" &rarr; POSITIVE 100%.
+              Comprehend erkennt keinen deutschen Sarkasmus. Manuelle Moderation
+              bleibt Pflicht.
             </p>
           </div>
           <div
-            class="lesson-card glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="lesson-card hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-2">
               <span
-                class="shimmer-pill text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                class="text-xs font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
                 >#38</span
               >
               <span class="font-bold text-sm text-slate-900 dark:text-white"
@@ -3548,16 +3249,16 @@
           </div>
         </div>
 
-        <!-- Stats summary (V2: counter-glow + glow-card) -->
+        <!-- Stats summary -->
         <div
-          class="reveal-v2 reveal-delay-2 dot-grid bg-gradient-to-r from-amber-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="reveal bg-gradient-to-r from-amber-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
           <h3 class="font-bold text-slate-900 dark:text-white mb-4">
             Projekt in Zahlen
           </h3>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
             <div
-              class="counter-card counter-glow glow-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
             >
               <div class="text-2xl font-extrabold text-sky-500">~3,5</div>
               <div
@@ -3567,7 +3268,7 @@
               </div>
             </div>
             <div
-              class="counter-card counter-glow glow-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
             >
               <div
                 class="text-2xl font-extrabold text-emerald-500"
@@ -3582,7 +3283,7 @@
               </div>
             </div>
             <div
-              class="counter-card counter-glow glow-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
             >
               <div
                 class="text-2xl font-extrabold text-amber-500"
@@ -3597,7 +3298,7 @@
               </div>
             </div>
             <div
-              class="counter-card counter-glow glow-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
+              class="counter-card bg-white/50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 cursor-default"
             >
               <div
                 class="text-2xl font-extrabold text-purple-500"
@@ -3615,33 +3316,30 @@
           </div>
         </div>
       </section>
-
       <!-- ==================== TAB 9: EKS vs. SERVERLESS ==================== -->
       <section
         class="tab-panel"
         id="panel-eks-vs-serverless"
         style="display: none"
       >
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-arrows-exchange text-xl text-orange-500"></i>
-            </span>
-            Warum EKS statt Serverless?
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Architektur-Entscheidung: Container-Orchestrierung vs. Lambda + API
-            Gateway
-          </p>
-        </div>
+            <i class="ti ti-arrows-exchange text-xl text-orange-500"></i>
+          </span>
+          Warum EKS statt Serverless?
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Architektur-Entscheidung: Container-Orchestrierung vs. Lambda + API
+          Gateway
+        </p>
 
         <!-- Comparison Table -->
         <div
-          class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8"
         >
           <div
             class="grid grid-cols-3 text-xs font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-800"
@@ -3702,7 +3400,7 @@
               Typisch bei
             </div>
             <div class="p-4 text-slate-600 dark:text-slate-400">
-              Gr&ouml;&szlig;ere Teams, komplexe Apps
+              Größere Teams, komplexe Apps
             </div>
             <div class="p-4 text-slate-600 dark:text-slate-400">
               Startups, event-driven Workloads
@@ -3727,88 +3425,86 @@
         </div>
 
         <!-- Decision rationale -->
-        <div class="reveal-v2 reveal-delay-2 grid sm:grid-cols-2 gap-6 mb-8">
+        <div class="grid sm:grid-cols-2 gap-6 mb-8">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="devicon-kubernetes-plain colored text-lg"></i> Warum EKS
-              gew&auml;hlt
+              <i class="devicon-kubernetes-plain colored text-lg"></i>
+              Warum EKS gewählt
             </h3>
             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
-                  >Tiefes Verst&auml;ndnis f&uuml;r
-                  Container-Orchestrierung</span
-                >
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span>Tiefes Verständnis für Container-Orchestrierung</span>
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   >Enterprise-relevante Architektur (Deployments, Services,
                   Ingress, HPA)</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   >IRSA: Pod-Level IAM statt Node-Level &mdash; Security Best
                   Practice</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span
                   >ALB Controller: K8s Ingress erzeugt echte AWS ALBs
                   automatisch</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i
-                ><span>CKA-Vorbereitung als Lernziel</span>
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                <span>CKA-Vorbereitung als Lernziel</span>
               </li>
             </ul>
           </div>
 
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
             >
-              <i class="ti ti-bolt text-amber-500"></i> Kostenbewusstsein
+              <i class="ti ti-bolt text-amber-500"></i>
+              Kostenbewusstsein
             </h3>
             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i
-                ><span
-                  >EKS nur f&uuml;r Showcase/Demos &mdash; gezielt hoch- und
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
+                  >EKS nur für Showcase/Demos &mdash; gezielt hoch- und
                   runterfahren</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
                   >Spot Instances (t3.medium + t3a.medium) &mdash; ~70%
-                  g&uuml;nstiger</span
+                  günstiger</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i
-                ><span>Node Group auf 0 skalierbar wenn nicht aktiv</span>
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span>Node Group auf 0 skalierbar wenn nicht aktiv</span>
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
                   >Lightsail als Dauerbetrieb-Alternative (~$5.50/Monat)</span
                 >
               </li>
               <li class="flex items-start gap-2">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i
-                ><span
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                <span
                   >terraform destroy runterfahren wenn nicht entwickelt
                   wird</span
                 >
@@ -3817,9 +3513,9 @@
           </div>
         </div>
 
-        <!-- Bottom quote -->
+        <!-- Bottom quote (blog-style with avatar) -->
         <div
-          class="reveal-v2 reveal-delay-3 glow-card border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
+          class="hover-card border-l-4 border-sky-500 bg-slate-100 dark:bg-slate-800/30 rounded-r-xl px-5 py-4"
         >
           <div class="flex items-start gap-3">
             <img
@@ -3833,9 +3529,9 @@
                 class="text-sm text-slate-600 dark:text-slate-300 italic leading-relaxed"
               >
                 "K8s und Lambda sind die zwei dominierenden Muster im
-                Cloud-Bereich. Wer beides kennt hat einen klaren Vorteil.
-                F&uuml;r das Abschlussprojekt reicht eines &mdash; aber es lohnt
-                sich, das andere danach selbst auszuprobieren."
+                Cloud-Bereich. Wer beides kennt hat einen klaren Vorteil. Für
+                das Abschlussprojekt reicht eines &mdash; aber es lohnt sich,
+                das andere danach selbst auszuprobieren."
               </p>
               <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">
                 &mdash; Aufgabenstellung, Seite 2
@@ -3845,34 +3541,33 @@
         </div>
       </section>
 
-      <!-- ==================== TAB 10: MONITORING ==================== -->
+      <!-- ==================== TAB: MONITORING ==================== -->
       <section class="tab-panel" id="panel-monitoring" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-chart-dots-3 text-xl text-orange-500"></i>
-            </span>
-            Monitoring &mdash; Observability von Anfang an
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Prometheus + Grafana via Helm &mdash; Self-Hosted, $0 Zusatzkosten,
-            100% reproduzierbar bei jedem Deploy
-          </p>
-        </div>
+            <i class="ti ti-chart-dots-3 text-xl text-orange-500"></i>
+          </span>
+          Monitoring &mdash; Observability von Anfang an
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Prometheus + Grafana via Helm &mdash; Self-Hosted, $0 Zusatzkosten,
+          100% reproduzierbar bei jedem Deploy
+        </p>
 
         <!-- Architecture diagram -->
         <div
-          class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8"
         >
           <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-4">
             <i class="ti ti-topology-ring-3 text-orange-500 mr-1"></i>
             Datenfluss im Monitoring-Stack
           </h3>
           <div class="flex flex-col items-center gap-3">
+            <!-- Row 1: Data Sources -->
             <div class="flex flex-wrap justify-center gap-3">
               <div
                 class="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-2 text-center min-w-[130px]"
@@ -3911,12 +3606,14 @@
                 </div>
               </div>
             </div>
+            <!-- Arrow -->
             <div class="flex flex-col items-center">
               <i class="ti ti-arrow-down text-slate-500 text-xl"></i>
               <span class="text-[10px] text-slate-500"
                 >scrape alle 30s / IRSA CloudWatch API</span
               >
             </div>
+            <!-- Row 2: Prometheus + Grafana -->
             <div class="flex flex-wrap justify-center gap-3">
               <div
                 class="bg-orange-500/10 border-2 border-orange-500/40 rounded-xl px-6 py-3 text-center"
@@ -3948,9 +3645,9 @@
         </div>
 
         <!-- 3 Dashboard cards -->
-        <div class="reveal-v2 reveal-delay-2 grid sm:grid-cols-3 gap-4 mb-8">
+        <div class="grid sm:grid-cols-3 gap-4 mb-8">
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-server text-sky-500"></i>
@@ -3960,21 +3657,22 @@
             </div>
             <ul class="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
               <li class="flex items-start gap-1.5">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i> Node
-                CPU + Memory Auslastung
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Node CPU + Memory Auslastung
               </li>
               <li class="flex items-start gap-1.5">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i> Pod
-                Status + Restart Counts
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Pod Status + Restart Counts
               </li>
               <li class="flex items-start gap-1.5">
-                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i> Network
-                I/O pro Container
+                <i class="ti ti-check text-sky-500 mt-0.5 shrink-0"></i>
+                Network I/O pro Container
               </li>
             </ul>
           </div>
+
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-arrows-maximize text-emerald-500"></i>
@@ -3997,8 +3695,9 @@
               </li>
             </ul>
           </div>
+
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-cloud text-amber-500"></i>
@@ -4012,8 +3711,8 @@
                 Translate Character Count
               </li>
               <li class="flex items-start gap-1.5">
-                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i> Polly
-                Request Characters
+                <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
+                Polly Request Characters
               </li>
               <li class="flex items-start gap-1.5">
                 <i class="ti ti-check text-amber-500 mt-0.5 shrink-0"></i>
@@ -4026,80 +3725,75 @@
           </div>
         </div>
 
-        <!-- Why self-hosted -->
+        <!-- Why self-hosted? (Lesson #42) -->
         <div
-          class="reveal-v2 reveal-delay-3 retro-grid bg-gradient-to-r from-orange-500/5 to-amber-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-gradient-to-r from-orange-500/5 to-amber-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
-          <div class="relative z-10">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
-              <i class="ti ti-bulb text-amber-500 mr-1"></i> Warum Self-Hosted
-              statt Amazon Managed Grafana?
-            </h3>
-            <div class="grid sm:grid-cols-3 gap-4 text-xs">
-              <div>
-                <div
-                  class="text-sm font-bold text-emerald-500 dark:text-emerald-400 mb-1"
-                >
-                  $0 vs. $9+/Monat
-                </div>
-                <p class="text-slate-500 dark:text-slate-400">
-                  Helm-Install im bestehenden EKS-Cluster kostet nichts extra.
-                  Amazon Managed Grafana startet bei $9/Workspace + $5/User.
-                </p>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3">
+            <i class="ti ti-bulb text-amber-500 mr-1"></i>
+            Warum Self-Hosted statt Amazon Managed Grafana?
+          </h3>
+          <div class="grid sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <div
+                class="text-sm font-bold text-emerald-500 dark:text-emerald-400 mb-1"
+              >
+                $0 vs. $9+/Monat
               </div>
-              <div>
-                <div
-                  class="text-sm font-bold text-sky-500 dark:text-sky-400 mb-1"
-                >
-                  Volle Plugin-Freiheit
-                </div>
-                <p class="text-slate-500 dark:text-slate-400">
-                  Community-Plugins, Custom Dashboards, keine
-                  Einschr&auml;nkungen. Managed Version hat limitierten
-                  Plugin-Katalog.
-                </p>
-              </div>
-              <div>
-                <div
-                  class="text-sm font-bold text-purple-500 dark:text-purple-400 mb-1"
-                >
-                  Lifecycle-Alignment
-                </div>
-                <p class="text-slate-500 dark:text-slate-400">
-                  Monitoring lebt und stirbt mit dem EKS-Stack. Kein verwaister
-                  Managed-Service nach Teardown.
-                </p>
-              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Helm-Install im bestehenden EKS-Cluster kostet nichts extra.
+                Amazon Managed Grafana startet bei $9/Workspace + $5/User.
+              </p>
             </div>
-            <p class="text-[10px] text-slate-400 mt-3 italic">
-              Lesson #42 &mdash; "Self-Hosted Grafana vs Amazon Managed Grafana"
-            </p>
+            <div>
+              <div
+                class="text-sm font-bold text-sky-500 dark:text-sky-400 mb-1"
+              >
+                Volle Plugin-Freiheit
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Community-Plugins, Custom Dashboards, keine Einschränkungen.
+                Managed Version hat limitierten Plugin-Katalog.
+              </p>
+            </div>
+            <div>
+              <div
+                class="text-sm font-bold text-purple-500 dark:text-purple-400 mb-1"
+              >
+                Lifecycle-Alignment
+              </div>
+              <p class="text-slate-500 dark:text-slate-400">
+                Monitoring lebt und stirbt mit dem EKS-Stack. Kein verwaister
+                Managed-Service nach Teardown.
+              </p>
+            </div>
           </div>
+          <p class="text-[10px] text-slate-400 mt-3 italic">
+            Lesson #42 &mdash; "Self-Hosted Grafana vs Amazon Managed Grafana"
+          </p>
         </div>
       </section>
 
-      <!-- ==================== TAB 11: LIVE-DEMO ==================== -->
+      <!-- ==================== TAB 10: LIVE-DEMO ==================== -->
       <section class="tab-panel" id="panel-live-demo" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500/20 to-sky-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-terminal-2 text-xl text-emerald-500"></i>
-            </span>
-            Live-Demo &mdash; Terminal-Befehle
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Leitfaden f&uuml;r die Live-Demonstration am Terminal
-          </p>
-        </div>
+            <i class="ti ti-terminal-2 text-xl text-emerald-500"></i>
+          </span>
+          Live-Demo &mdash; Terminal-Befehle
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Leitfaden für die Live-Demonstration am Terminal
+        </p>
 
+        <!-- Step 0: kubeconfig setup -->
         <div class="space-y-6">
-          <!-- Step 0 -->
           <div
-            class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4115,25 +3809,27 @@
             >
               <div>
                 <span class="text-slate-500"
-                  ># Kubeconfig f&uuml;r EKS Cluster laden</span
-                ><br /><span class="text-sky-400">$</span> aws eks
-                update-kubeconfig --name blog-eks-dev --region eu-central-1
+                  ># Kubeconfig für EKS Cluster laden</span
+                ><br />
+                <span class="text-sky-400">$</span> aws eks update-kubeconfig
+                --name blog-eks-dev --region eu-central-1
               </div>
               <div>
-                <span class="text-slate-500"># Kontext pr&uuml;fen</span
-                ><br /><span class="text-sky-400">$</span> kubectl config
+                <span class="text-slate-500"># Kontext prüfen</span><br />
+                <span class="text-sky-400">$</span> kubectl config
                 current-context
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Einmalig nach Provision
-              n&ouml;tig. Setzt den kubectl-Kontext auf den EKS-Cluster.
+              <i class="ti ti-info-circle mr-1"></i>
+              Einmalig nach Provision nötig. Setzt den kubectl-Kontext auf den
+              EKS-Cluster.
             </p>
           </div>
 
-          <!-- Step 1 -->
+          <!-- Step 1: Cluster Overview -->
           <div
-            class="reveal-v2 reveal-delay-2 glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4142,7 +3838,7 @@
                 class="w-6 h-6 rounded bg-sky-500 text-white text-xs font-bold flex items-center justify-center"
                 >1</span
               >
-              Cluster-&Uuml;berblick
+              Cluster-Überblick
             </h3>
             <div
               class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
@@ -4150,25 +3846,25 @@
               <div>
                 <span class="text-slate-500"
                   ># Alle Ressourcen im blog Namespace</span
-                ><br /><span class="text-sky-400">$</span> kubectl get all -n
-                blog
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get all -n blog
               </div>
               <div>
                 <span class="text-slate-500"
                   ># Pods mit Status und Restarts</span
-                ><br /><span class="text-sky-400">$</span> kubectl get pods -n
-                blog
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get pods -n blog
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Zeigt: 2x Backend, 1-2x
-              Frontend Pods, alle Running, 0 Restarts
+              <i class="ti ti-info-circle mr-1"></i>
+              Zeigt: 2x Backend, 1-2x Frontend Pods, alle Running, 0 Restarts
             </p>
           </div>
 
-          <!-- Step 2 -->
+          <!-- Step 2: HPA -->
           <div
-            class="reveal-v2 reveal-delay-3 glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4184,24 +3880,25 @@
             >
               <div>
                 <span class="text-slate-500"># HPA Status mit CPU-Werten</span
-                ><br /><span class="text-sky-400">$</span> kubectl get hpa -n
-                blog
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get hpa -n blog
               </div>
               <div>
                 <span class="text-slate-500"># Live CPU/Memory pro Pod</span
-                ><br /><span class="text-sky-400">$</span> kubectl top pods -n
-                blog
+                ><br />
+                <span class="text-sky-400">$</span> kubectl top pods -n blog
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> HPA zeigt cpu: 1%/70%
-              &mdash; bei Last skaliert Backend auf bis zu 4 Replicas
+              <i class="ti ti-info-circle mr-1"></i>
+              HPA zeigt cpu: 1%/70% &mdash; bei Last skaliert Backend auf bis zu
+              4 Replicas
             </p>
           </div>
 
-          <!-- Step 3 -->
+          <!-- Step 3: IRSA -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4218,26 +3915,28 @@
               <div>
                 <span class="text-slate-500"
                   ># ServiceAccount mit IRSA-Annotation</span
-                ><br /><span class="text-sky-400">$</span> kubectl get sa -n
-                blog blog-backend -o yaml
+                ><br />
+                <span class="text-sky-400">$</span> kubectl get sa -n blog
+                blog-backend -o yaml
               </div>
               <div>
                 <span class="text-slate-500"
                   ># Pod zeigt injected AWS credentials</span
-                ><br /><span class="text-sky-400">$</span> kubectl describe pod
-                -n blog -l app=blog-backend | grep -A5 "Service Account"
+                ><br />
+                <span class="text-sky-400">$</span> kubectl describe pod -n blog
+                -l app=blog-backend | grep -A5 "Service Account"
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> IRSA injiziert AWS_ROLE_ARN
-              + Token direkt in den Pod &mdash; nur der Backend-Pod hat Zugriff
-              auf Comprehend, Translate und Polly
+              <i class="ti ti-info-circle mr-1"></i>
+              IRSA injiziert AWS_ROLE_ARN + Token direkt in den Pod &mdash; nur
+              der Backend-Pod hat Zugriff auf Comprehend, Translate und Polly
             </p>
           </div>
 
-          <!-- Step 4 -->
+          <!-- Step 4: Comprehend Live -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-teal-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4254,31 +3953,35 @@
               <div>
                 <span class="text-slate-500"
                   ># Backend-Logs (Comprehend-Output sichtbar)</span
-                ><br /><span class="text-sky-400">$</span> kubectl logs -n blog
-                -l app=blog-backend --tail=20
+                ><br />
+                <span class="text-sky-400">$</span> kubectl logs -n blog -l
+                app=blog-backend --tail=20
               </div>
               <div>
                 <span class="text-slate-500"
                   ># Dann im Browser: Kommentar posten</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># Positiv: "Super Artikel, danke!"</span
-                ><br /><span class="text-slate-400"
-                  ># Negativ: "Das ist kompletter M&uuml;ll!"</span
-                ><br /><span class="text-slate-400"
-                  ># Ironie: "Ganz sch&ouml;n &uuml;berzogen!"</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Negativ: "Das ist kompletter Müll!"</span
+                ><br />
+                <span class="text-slate-400"
+                  ># Ironie: "Ganz schön überzogen!"</span
                 >
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Negativ &ge; 70% wird
-              automatisch geflaggt. Ironie wird falsch als POSITIVE erkannt
-              &mdash; zeigt Comprehend-Limitation
+              <i class="ti ti-info-circle mr-1"></i>
+              Negativ &ge; 70% wird automatisch geflaggt. Ironie wird falsch als
+              POSITIVE erkannt &mdash; zeigt Comprehend-Limitation
             </p>
           </div>
 
-          <!-- Step 5 -->
+          <!-- Step 5: Translate + Polly -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4295,31 +3998,35 @@
               <div>
                 <span class="text-slate-500"
                   ># Sprache umschalten (DE/EN Toggle im Browser)</span
-                ><br /><span class="text-slate-400"
-                  ># Blog-Post &ouml;ffnen &rarr; DE/EN Toggle klicken</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
+                  ># Blog-Post öffnen &rarr; DE/EN Toggle klicken</span
+                ><br />
+                <span class="text-slate-400"
                   ># Translate API Call in Backend-Logs sichtbar</span
                 >
               </div>
               <div>
                 <span class="text-slate-500"># Audio abspielen (Polly TTS)</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># Audio-Button unter Tags klicken</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># Speed Controls: 0.5x bis 2x</span
                 >
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Erster Aufruf ~5-15s
-              (Synthese + S3 Upload), danach &lt;100ms (Pre-Signed URL aus
-              Cache)
+              <i class="ti ti-info-circle mr-1"></i>
+              Erster Aufruf ~5-15s (Synthese + S3 Upload), danach &lt;100ms
+              (Pre-Signed URL aus Cache)
             </p>
           </div>
 
-          <!-- Step 6 -->
+          <!-- Step 6: Monitoring -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4335,28 +4042,32 @@
             >
               <div>
                 <span class="text-slate-500"># Port-Forward zu Grafana</span
-                ><br /><span class="text-sky-400">$</span> kubectl port-forward
-                -n monitoring svc/monitoring-grafana 3001:80
+                ><br />
+                <span class="text-sky-400">$</span> kubectl port-forward -n
+                monitoring svc/monitoring-grafana 3001:80
               </div>
               <div>
                 <span class="text-slate-500"># Im Browser: localhost:3001</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># 27 K8s-Dashboards + Custom AWS ML Dashboard</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># CloudWatch: Translate/Polly/Comprehend API Calls</span
                 >
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Self-hosted via Helm
-              (kube-prometheus-stack) &mdash; $0 extra. IRSA f&uuml;r CloudWatch
-              Datasource. Bewusst KEIN Amazon Managed Grafana (~$9/Monat).
+              <i class="ti ti-info-circle mr-1"></i>
+              Self-hosted via Helm (kube-prometheus-stack) &mdash; $0 extra.
+              IRSA für CloudWatch Datasource. Bewusst KEIN Amazon Managed
+              Grafana (~$9/Monat).
             </p>
           </div>
 
-          <!-- Step 7 -->
+          <!-- Step 7: Admin Dashboard -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-rose-500 p-6"
           >
             <h3
               class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
@@ -4371,98 +4082,96 @@
               class="bg-slate-950 rounded-lg p-4 font-mono text-sm text-emerald-400 space-y-3"
             >
               <div>
-                <span class="text-slate-500"># Im Browser &ouml;ffnen:</span
-                ><br /><span class="text-sky-400">https://</span
+                <span class="text-slate-500"># Im Browser öffnen:</span><br />
+                <span class="text-sky-400">https://</span
                 >blog.aws.his4irness23.de/admin/
               </div>
               <div>
                 <span class="text-slate-400"
                   ># Cognito Login &rarr; Dashboard</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># Zeigen: Stat Cards, Sentiment-Bar,</span
-                ><br /><span class="text-slate-400"
+                ><br />
+                <span class="text-slate-400"
                   ># Kommentare mit Badges, Auto-Refresh</span
                 >
               </div>
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
-              <i class="ti ti-info-circle mr-1"></i> Dashboard Stats refreshen
-              automatisch alle 15 Sekunden &mdash; Sentiment-&Auml;nderungen
-              sind sofort sichtbar
+              <i class="ti ti-info-circle mr-1"></i>
+              Dashboard Stats refreshen automatisch alle 15 Sekunden &mdash;
+              Sentiment-Änderungen sind sofort sichtbar
             </p>
           </div>
 
-          <!-- Step 8 -->
+          <!-- Step 6: Full Lifecycle -->
           <div
-            class="retro-grid bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+            class="hover-card bg-gradient-to-r from-emerald-500/5 to-sky-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
           >
-            <div class="relative z-10">
-              <h3
-                class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            <h3
+              class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <span
+                class="w-6 h-6 rounded bg-emerald-500 text-white text-xs font-bold flex items-center justify-center"
+                >8</span
               >
-                <span
-                  class="w-6 h-6 rounded bg-emerald-500 text-white text-xs font-bold flex items-center justify-center"
-                  >8</span
-                >
-                Reproduzierbarkeit beweisen (optional)
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
-                GitHub Actions &rarr; "Destroy Infrastructure" &rarr; alles weg
-                in ~13 Min. Danach "Provision" + "Deploy" &rarr; Blog ist wieder
-                live. Kein einziges manuelles Secret-Update.
-              </p>
-              <div class="flex flex-wrap items-center gap-3 text-sm">
-                <div
-                  class="shimmer-pill px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-medium"
-                >
-                  <i class="ti ti-arrow-down mr-1"></i>Destroy (~13 Min)
-                </div>
-                <i class="ti ti-arrow-right text-slate-400"></i>
-                <div
-                  class="shimmer-pill px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
-                >
-                  <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
-                </div>
-                <i class="ti ti-arrow-right text-slate-400"></i>
-                <div
-                  class="shimmer-pill px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
-                >
-                  <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
-                </div>
-                <i class="ti ti-arrow-right text-slate-400"></i>
-                <div
-                  class="shimmer-pill px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium"
-                >
-                  <i class="ti ti-world mr-1"></i>Blog Live
-                </div>
+              Reproduzierbarkeit beweisen (optional)
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              GitHub Actions &rarr; "Destroy Infrastructure" &rarr; alles weg in
+              ~13 Min. Danach "Provision" + "Deploy" &rarr; Blog ist wieder
+              live. Kein einziges manuelles Secret-Update.
+            </p>
+            <div class="flex flex-wrap items-center gap-3 text-sm">
+              <div
+                class="px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 font-medium"
+              >
+                <i class="ti ti-arrow-down mr-1"></i>Destroy (~13 Min)
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
+              >
+                <i class="ti ti-arrow-up mr-1"></i>Provision (~23 Min)
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium"
+              >
+                <i class="ti ti-rocket mr-1"></i>Deploy (~7 Min)
+              </div>
+              <i class="ti ti-arrow-right text-slate-400"></i>
+              <div
+                class="px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium"
+              >
+                <i class="ti ti-world mr-1"></i>Blog Live
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ==================== TAB 12: AUSBLICK ==================== -->
+      <!-- ==================== TAB 11: AUSBLICK ==================== -->
       <section class="tab-panel" id="panel-ausblick" style="display: none">
-        <div class="reveal-v2">
-          <h2
-            class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        <h2
+          class="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3"
+        >
+          <span
+            class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center"
           >
-            <span
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center"
-            >
-              <i class="ti ti-rocket text-xl text-indigo-500"></i>
-            </span>
-            Ausblick &mdash; Produktiv-Erweiterungen
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-            Sinnvolle Erweiterungen f&uuml;r eine echte Produktivumgebung
-            &mdash; bewusst nicht im Demo-Scope
-          </p>
-        </div>
+            <i class="ti ti-rocket text-xl text-indigo-500"></i>
+          </span>
+          Ausblick &mdash; Produktiv-Erweiterungen
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          Sinnvolle Erweiterungen für eine echte Produktivumgebung &mdash;
+          bewusst nicht im Demo-Scope
+        </p>
 
-        <!-- Redis Deep-Dive -->
+        <!-- Redis Deep-Dive (full-width) -->
         <div
-          class="reveal-v2 reveal-delay-1 glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6 mb-8"
+          class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-red-500 p-6 mb-8"
         >
           <div class="flex items-center gap-2 mb-4">
             <i class="devicon-redis-plain colored text-xl"></i>
@@ -4470,7 +4179,7 @@
               Redis / ElastiCache
             </h3>
             <span
-              class="shimmer-pill text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium"
+              class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium"
               >Bewusst nicht implementiert</span
             >
           </div>
@@ -4480,7 +4189,7 @@
                 Was kann Redis?
               </div>
               <p class="text-slate-500 dark:text-slate-400">
-                In-Memory Key-Value Store f&uuml;r Session-Caching,
+                In-Memory Key-Value Store für Session-Caching,
                 API-Response-Caching, Rate Limiting, Pub/Sub Messaging und
                 Leaderboards. Sub-Millisekunden Antwortzeiten.
               </p>
@@ -4491,9 +4200,8 @@
               </div>
               <p class="text-slate-500 dark:text-slate-400">
                 Translate-Cache liegt in PostgreSQL (post_translations),
-                Polly-Audio in S3. Bei ~12 Posts und geringem Traffic w&uuml;rde
-                Redis nur Komplexit&auml;t hinzuf&uuml;gen ohne messbaren
-                Vorteil.
+                Polly-Audio in S3. Bei ~12 Posts und geringem Traffic würde
+                Redis nur Komplexität hinzufügen ohne messbaren Vorteil.
               </p>
             </div>
             <div>
@@ -4509,12 +4217,11 @@
           </div>
         </div>
 
-        <!-- Extension grid -->
-        <div
-          class="reveal-v2 reveal-delay-2 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"
-        >
+        <!-- Weitere Erweiterungen (Grid) -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <!-- Multi-AZ -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-sky-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-database text-xl text-sky-500"></i>
@@ -4523,7 +4230,7 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
-              Automatisches Failover bei AZ-Ausfall. Hochverf&uuml;gbarkeit ohne
+              Automatisches Failover bei AZ-Ausfall. Hochverfügbarkeit ohne
               manuellen Eingriff. In Produktion Pflicht.
             </p>
             <div class="flex justify-between text-[11px]">
@@ -4531,8 +4238,10 @@
               <span class="text-slate-400">Produktiv Pflicht</span>
             </div>
           </div>
+
+          <!-- WAF -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-purple-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-shield-lock text-xl text-purple-500"></i>
@@ -4541,17 +4250,18 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
-              SQL Injection, XSS, Bot-Traffic. Managed Rules vor dem ALB.
-              F&uuml;r Demo-Projekt ohne &ouml;ffentlichen Traffic kein
-              Mehrwert.
+              SQL Injection, XSS, Bot-Traffic. Managed Rules vor dem ALB. Für
+              Demo-Projekt ohne öffentlichen Traffic kein Mehrwert.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-amber-500">~$6-10/Monat</span>
               <span class="text-slate-400">Kein Demo-Mehrwert</span>
             </div>
           </div>
+
+          <!-- FluentBit / Centralized Logging -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-amber-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-file-text text-xl text-amber-500"></i>
@@ -4560,16 +4270,18 @@
               </h3>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
-              Zentrales Log-Management. Grafana + Prometheus f&uuml;r Metriken
-              bereits implementiert. kubectl logs reicht f&uuml;r Demo.
+              Zentrales Log-Management. Grafana + Prometheus für Metriken
+              bereits implementiert. kubectl logs reicht für Demo.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-amber-500">~$20+/Monat</span>
               <span class="text-slate-400">Grafana reicht</span>
             </div>
           </div>
+
+          <!-- SNS -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-emerald-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-emerald-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-bell text-xl text-emerald-500"></i>
@@ -4586,8 +4298,10 @@
               <span class="text-slate-400">Telegram reicht</span>
             </div>
           </div>
+
+          <!-- Disaster Recovery -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-slate-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i class="ti ti-arrows-minimize text-xl text-slate-500"></i>
@@ -4597,15 +4311,17 @@
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
               Cross-Region Backups, dokumentierter Wiederherstellungsplan.
-              Essenziell in Produktion, Zeitaufwand f&uuml;r Demo zu hoch.
+              Essenziell in Produktion, Zeitaufwand für Demo zu hoch.
             </p>
             <div class="flex justify-between text-[11px]">
               <span class="text-emerald-500">$0 Kostenaufwand</span>
               <span class="text-slate-400">Zeitaufwand zu hoch</span>
             </div>
           </div>
+
+          <!-- Lambda -->
           <div
-            class="glow-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-5"
+            class="hover-card bg-white dark:bg-slate-900 rounded-xl border border-t-4 border-slate-200 dark:border-slate-800 border-t-orange-500 p-5"
           >
             <div class="flex items-center gap-2 mb-3">
               <i
@@ -4628,41 +4344,39 @@
 
         <!-- Fazit -->
         <div
-          class="reveal-v2 reveal-delay-3 retro-grid bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
+          class="hover-card bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-xl border border-slate-200 dark:border-slate-800 p-6"
         >
-          <div class="relative z-10">
-            <h3 class="font-bold text-slate-900 dark:text-white mb-3">
-              <i class="ti ti-bulb text-amber-500 mr-1"></i> Fazit:
-              Scope-Bewusstsein
-            </h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Jede Erweiterung wurde bewusst evaluiert und mit konkreten Kosten
-              dokumentiert. Die Entscheidung, Features NICHT zu implementieren,
-              zeigt genauso viel Architektur-Verst&auml;ndnis wie die
-              Implementierung selbst.
-            </p>
-            <div class="flex flex-wrap gap-3 text-xs">
-              <span
-                class="shimmer-pill px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
-                >Lambda + SQS: kostenlos einbaubar</span
-              >
-              <span
-                class="shimmer-pill px-2 py-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
-                >Redis + Multi-AZ: Produktiv-Features</span
-              >
-              <span
-                class="shimmer-pill px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500"
-                >WAF + DR: Enterprise-Scope</span
-              >
-            </div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-3">
+            <i class="ti ti-bulb text-amber-500 mr-1"></i>
+            Fazit: Scope-Bewusstsein
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Jede Erweiterung wurde bewusst evaluiert und mit konkreten Kosten
+            dokumentiert. Die Entscheidung, Features NICHT zu implementieren,
+            zeigt genauso viel Architektur-Verständnis wie die Implementierung
+            selbst.
+          </p>
+          <div class="flex flex-wrap gap-3 text-xs">
+            <span
+              class="px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+              >Lambda + SQS: kostenlos einbaubar</span
+            >
+            <span
+              class="px-2 py-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+              >Redis + Multi-AZ: Produktiv-Features</span
+            >
+            <span
+              class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500"
+              >WAF + DR: Enterprise-Scope</span
+            >
           </div>
         </div>
       </section>
     </main>
 
-    <!-- ==================== FOOTER (V2 Glassmorphism) ==================== -->
+    <!-- ==================== FOOTER ==================== -->
     <footer
-      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white/60 dark:bg-slate-950/60 backdrop-blur-xl no-print"
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 no-print"
     >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
         <div
@@ -4689,134 +4403,25 @@
     <!-- Animated counters (same as blog, scroll-triggered) -->
     <script src="./js/counter.js"></script>
 
-    <!-- ============================================
-         V2 Effects Engine
-         Particle canvas, glow cards, scroll reveal,
-         counter re-trigger on tab switch.
-         ============================================ -->
+    <!-- Scroll-reveal + counter re-trigger on tab switch -->
     <script>
       (function () {
-        "use strict";
-
-        // --- EFFECT: Particle Canvas ---
-        function initParticles() {
-          var canvas = document.getElementById("particle-canvas");
-          if (!canvas) return;
-          var ctx = canvas.getContext("2d");
-          var particles = [];
-          var PARTICLE_COUNT = 60;
-
-          function resize() {
-            var section = canvas.parentElement;
-            canvas.width = section.offsetWidth;
-            canvas.height = section.offsetHeight;
-          }
-
-          function createParticle() {
-            return {
-              x: Math.random() * canvas.width,
-              y: Math.random() * canvas.height,
-              vx: (Math.random() - 0.5) * 0.3,
-              vy: (Math.random() - 0.5) * 0.3,
-              radius: Math.random() * 1.5 + 0.5,
-              opacity: Math.random() * 0.4 + 0.1,
-            };
-          }
-
-          function initAll() {
-            particles = [];
-            for (var i = 0; i < PARTICLE_COUNT; i++) {
-              particles.push(createParticle());
-            }
-          }
-
-          function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            var isDark = document.documentElement.classList.contains("dark");
-            var color = isDark ? "148, 163, 184" : "100, 116, 139";
-
-            for (var i = 0; i < particles.length; i++) {
-              var p = particles[i];
-              p.x += p.vx;
-              p.y += p.vy;
-              if (p.x < 0) p.x = canvas.width;
-              if (p.x > canvas.width) p.x = 0;
-              if (p.y < 0) p.y = canvas.height;
-              if (p.y > canvas.height) p.y = 0;
-
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-              ctx.fillStyle = "rgba(" + color + "," + p.opacity + ")";
-              ctx.fill();
-            }
-
-            // Draw connections between nearby particles
-            for (var a = 0; a < particles.length; a++) {
-              for (var b = a + 1; b < particles.length; b++) {
-                var dx = particles[a].x - particles[b].x;
-                var dy = particles[a].y - particles[b].y;
-                var dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                  ctx.beginPath();
-                  ctx.moveTo(particles[a].x, particles[a].y);
-                  ctx.lineTo(particles[b].x, particles[b].y);
-                  var lineOpacity = (1 - dist / 120) * 0.15;
-                  ctx.strokeStyle = "rgba(" + color + "," + lineOpacity + ")";
-                  ctx.lineWidth = 0.5;
-                  ctx.stroke();
-                }
+        // Scroll-reveal observer
+        var revealObserver = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
               }
-            }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        document.querySelectorAll(".reveal").forEach(function (el) {
+          revealObserver.observe(el);
+        });
 
-            requestAnimationFrame(draw);
-          }
-
-          resize();
-          initAll();
-          draw();
-          window.addEventListener("resize", function () {
-            resize();
-            initAll();
-          });
-        }
-
-        // --- EFFECT: Glowing Card Borders ---
-        function initGlowCards() {
-          var cards = document.querySelectorAll(".glow-card");
-          for (var i = 0; i < cards.length; i++) {
-            (function (card) {
-              card.addEventListener("mousemove", function (e) {
-                var rect = card.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                card.style.setProperty("--glow-x", x + "px");
-                card.style.setProperty("--glow-y", y + "px");
-              });
-            })(cards[i]);
-          }
-        }
-
-        // --- EFFECT: Scroll Reveal V2 ---
-        function initScrollReveal() {
-          var observer = new IntersectionObserver(
-            function (entries) {
-              entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add("revealed");
-                  observer.unobserve(entry.target);
-                }
-              });
-            },
-            { threshold: 0.1 },
-          );
-
-          var elements = document.querySelectorAll(".reveal-v2");
-          for (var i = 0; i < elements.length; i++) {
-            observer.observe(elements[i]);
-          }
-        }
-
-        // --- Counter animation (re-trigger on tab switch) ---
+        // Counter observer (re-trigger on tab switch)
         var DURATION = 2000;
         function easeOut(t) {
           return 1 - Math.pow(1 - t, 3);
@@ -4838,29 +4443,17 @@
           requestAnimationFrame(step);
         }
 
-        // --- Re-observe reveals + re-trigger counters + re-init glow on tab switch ---
+        // Re-observe reveals + re-trigger counters when tab switches
         var nav = document.getElementById("tab-nav-bar");
         if (nav) {
           nav.addEventListener("click", function () {
             setTimeout(function () {
-              // Re-observe scroll-reveal elements in newly visible panel
-              var revealObserver = new IntersectionObserver(
-                function (entries) {
-                  entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                      entry.target.classList.add("revealed");
-                      revealObserver.unobserve(entry.target);
-                    }
-                  });
-                },
-                { threshold: 0.1 },
-              );
+              // Re-observe scroll-reveal elements
               document
-                .querySelectorAll(".reveal-v2:not(.revealed)")
+                .querySelectorAll(".reveal:not(.visible)")
                 .forEach(function (el) {
                   revealObserver.observe(el);
                 });
-
               // Re-trigger counters in the now-visible panel
               var visiblePanel = document.querySelector(
                 '.tab-panel[style*="block"]',
@@ -4872,17 +4465,9 @@
                     animateCounter(el);
                   });
               }
-
-              // Re-init glow cards for newly visible content
-              initGlowCards();
             }, 100);
           });
         }
-
-        // --- Initialize all effects ---
-        initParticles();
-        initGlowCards();
-        initScrollReveal();
       })();
     </script>
   </body>

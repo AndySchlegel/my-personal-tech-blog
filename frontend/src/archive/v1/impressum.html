@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="de" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressum - Andy Schlegel Tech Blog</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Fonts + Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+    <!-- Devicon (colored tech/brand icons) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/theme.js"></script>
+  </head>
+
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors"
+  >
+    <!-- ==================== HEADER (language toggle + theme toggle + mobile menu) ==================== -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between"
+      >
+        <!-- Logo (icon only) -->
+        <a href="./index.html" class="flex items-center group">
+          <div
+            class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center group-hover:bg-sky-400 transition-colors"
+          >
+            <i class="ti ti-cloud-code text-white text-lg"></i>
+          </div>
+        </a>
+        <nav class="hidden sm:flex items-center gap-6">
+          <a
+            href="./index.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Home</a
+          >
+          <a
+            href="./about.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >About me</a
+          >
+          <a
+            href="./skills.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Skills</a
+          >
+          <a
+            href="./blog.html"
+            class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >Blog</a
+          >
+        </nav>
+        <div class="flex items-center gap-2">
+          <!-- Language toggle (DE/EN) -->
+          <button
+            id="lang-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle language"
+            title="Switch language / Sprache wechseln"
+          >
+            <span id="lang-label" class="text-xs font-bold">DE</span>
+          </button>
+          <button
+            id="theme-toggle"
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            <i id="theme-icon-sun" class="ti ti-sun text-xl"></i>
+            <i id="theme-icon-moon" class="ti ti-moon text-xl hidden"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== CONTENT ==================== -->
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <h1
+        class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3"
+      >
+        <span
+          class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0"
+        >
+          <i class="ti ti-gavel text-xl text-sky-500"></i>
+        </span>
+        <span data-de="Impressum" data-en="Legal Notice">Impressum</span>
+      </h1>
+
+      <!-- Angaben gemäß DDG (ehemals TMG) / Information pursuant to DDG -->
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Angaben gem. &sect; 5 DDG"
+          data-en="Information pursuant to &sect; 5 DDG (German Digital Services Act)"
+        >
+          Angaben gem. &sect; 5 DDG
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p>Andy Schlegel</p>
+          <p>Zimmerstr. 2</p>
+          <p>04109 Leipzig</p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Kontakt"
+          data-en="Contact"
+        >
+          Kontakt
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p
+            data-de="E-Mail: andy.schlegel23@googlemail.com"
+            data-en="Email: andy.schlegel23@googlemail.com"
+          >
+            E-Mail: andy.schlegel23@googlemail.com
+          </p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV"
+          data-en="Responsible for content pursuant to &sect; 18 para. 2 MStV (German Interstate Media Treaty)"
+        >
+          Verantwortlich f&uuml;r den Inhalt gem. &sect; 18 Abs. 2 MStV
+        </h2>
+        <div class="text-slate-600 dark:text-slate-400 space-y-1">
+          <p>Andy Schlegel</p>
+          <p>Zimmerstr. 2, 04109 Leipzig</p>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Haftung f&uuml;r Inhalte"
+          data-en="Liability for Content"
+        >
+          Haftung f&uuml;r Inhalte
+        </h2>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder gespeicherte fremde Informationen zu &uuml;berwachen."
+          data-en="As a service provider, I am responsible for my own content on these pages in accordance with &sect; 7 para. 1 DDG and general legislation. However, pursuant to &sect;&sect; 8 to 10 DDG, I am not obligated to monitor transmitted or stored third-party information."
+        >
+          Als Diensteanbieter bin ich gem. &sect; 7 Abs. 1 DDG f&uuml;r eigene
+          Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
+          verantwortlich. Nach &sect;&sect; 8 bis 10 DDG bin ich als
+          Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder
+          gespeicherte fremde Informationen zu &uuml;berwachen.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Haftung f&uuml;r Links"
+          data-en="Liability for Links"
+        >
+          Haftung f&uuml;r Links
+        </h2>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Diese Website enth&auml;lt Links zu externen Websites. Ich bin nicht verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die Verf&uuml;gbarkeit dieser externen Websites. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar."
+          data-en="This website contains links to external websites. I am not responsible for the content, accuracy, or availability of these external websites. Permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation."
+        >
+          Diese Website enth&auml;lt Links zu externen Websites. Ich bin nicht
+          verantwortlich f&uuml;r den Inhalt, die Genauigkeit oder die
+          Verf&uuml;gbarkeit dieser externen Websites. Eine permanente
+          inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete
+          Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2
+          class="text-xl font-semibold text-slate-900 dark:text-white mb-3"
+          data-de="Weiterer Haftungsausschluss"
+          data-en="Additional Disclaimer"
+        >
+          Weiterer Haftungsausschluss
+        </h2>
+        <p
+          class="text-slate-600 dark:text-slate-400 leading-relaxed"
+          data-de="Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten, technischer Genauigkeit, geistigem Eigentum und weiteren Themen finden Sie auf der separaten Seite <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Haftungsausschluss</a>."
+          data-en="A detailed disclaimer regarding portfolio content, technical accuracy, intellectual property, and other topics can be found on the separate <a href='./haftungsausschluss.html' class='text-sky-500 hover:text-sky-400'>Disclaimer</a> page."
+        >
+          Einen ausf&uuml;hrlichen Haftungsausschluss zu Portfolio-Inhalten,
+          technischer Genauigkeit, geistigem Eigentum und weiteren Themen finden
+          Sie auf der separaten Seite
+          <a
+            href="./haftungsausschluss.html"
+            class="text-sky-500 hover:text-sky-400"
+            >Haftungsausschluss</a
+          >.
+        </p>
+      </section>
+
+      <!-- Stand / Last updated -->
+      <section class="mb-8">
+        <p
+          class="text-sm text-slate-400 dark:text-slate-500"
+          data-de="Stand: M&auml;rz 2026"
+          data-en="Last updated: March 2026"
+        >
+          Stand: M&auml;rz 2026
+        </p>
+      </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+    >
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div
+            class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+          >
+            <i class="ti ti-code text-sky-500"></i>
+            <span>2026 Andy Schlegel</span>
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <a
+              href="./impressum.html"
+              class="text-sky-600 dark:text-sky-400"
+              data-de="Impressum"
+              data-en="Legal Notice"
+              >Impressum</a
+            >
+            <a
+              href="./datenschutz.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-de="Datenschutz"
+              data-en="Privacy Policy"
+              >Datenschutz</a
+            >
+            <a
+              href="./haftungsausschluss.html"
+              class="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-de="Haftungsausschluss"
+              data-en="Disclaimer"
+              >Haftungsausschluss</a
+            >
+          </div>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/AndySchlegel"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-github text-xl"></i>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/andy-schlegel-4874852bb"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <i class="ti ti-brand-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Language toggle logic -->
+    <script src="./js/lang.js"></script>
+    <script>
+      function updatePageLanguage() {
+        var lang = window.blogLang ? window.blogLang.get() : "de";
+        var elements = document.querySelectorAll("[data-de][data-en]");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].innerHTML =
+            elements[i].getAttribute("data-" + lang) || "";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updatePageLanguage);
+      window.addEventListener("languageChanged", updatePageLanguage);
+    </script>
+  </body>
+</html>
