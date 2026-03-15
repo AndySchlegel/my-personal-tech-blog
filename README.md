@@ -193,17 +193,13 @@ After sprint: destroy Waves 2-3 -> back to ~$0.50/month.
 |----------|-----------|
 | ![Homepage](frontend/src/img/blog/homepage.png) | ![About](frontend/src/img/blog/about-page.png) |
 
-| Skills Page | Blog Overview (DE) |
-|-------------|-------------------|
-| ![Skills](frontend/src/img/blog/skills-page.png) | ![Blog Overview](frontend/src/img/blog/blog-overview.png) |
+| About Roadmap | Skills Page |
+|---------------|-------------|
+| ![Roadmap](frontend/src/img/blog/about-roadmap.png) | ![Skills](frontend/src/img/blog/skills-page.png) |
 
-| Blog Overview (EN) | Post Detail |
-|--------------------|-------------|
-| ![Blog EN](frontend/src/img/blog/blog-overview-en.png) | ![Post Detail](frontend/src/img/blog/post-detail.png) |
-
-| Comments Section (Likes, Prev/Next Navigation, Sentiment) |
-|-----------------------------------------------------------|
-| ![Comments](frontend/src/img/blog/comments-section.png) |
+| Blog Overview | Post Detail |
+|---------------|-------------|
+| ![Blog Overview](frontend/src/img/blog/blog-overview.png) | ![Post Detail](frontend/src/img/blog/post-detail.png) |
 
 ### Admin Dashboard
 
