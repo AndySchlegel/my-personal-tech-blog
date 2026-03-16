@@ -36,10 +36,10 @@ resource "aws_lightsail_instance" "blog" {
   bundle_id         = var.bundle_id
   key_pair_name     = var.ssh_public_key != "" ? aws_lightsail_key_pair.deploy[0].name : null
 
-  # Cloud-init script runs once on first boot.
-  # Installs Docker, creates swap, prepares the /opt/blog directory.
-  # Lightsail requires base64-encoded user_data (unlike EC2 which auto-encodes).
-  user_data = base64encode(file("${path.module}/user-data.sh"))
+  # NOTE: user_data removed. Lightsail's CreateInstances API has a known issue
+  # where Terraform's operation waiter times out even though the instance is
+  # created successfully. Instance setup (Docker, swap, etc.) is done via SSH
+  # in the deploy-lightsail.yml workflow instead.
 
   tags = {
     Name = "${var.project_name}-lightsail-${var.environment}"

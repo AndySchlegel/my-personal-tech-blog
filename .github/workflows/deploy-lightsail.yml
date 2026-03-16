@@ -104,6 +104,44 @@ jobs:
           # Add host to known_hosts to avoid interactive prompt
           ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
 
+      # Setup Docker, swap, and blog directory on first deploy.
+      # Idempotent: skips if Docker is already installed.
+      # This replaces the Terraform user_data script (which caused timeouts).
+      - name: Setup instance (first deploy only)
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'SETUP'
+          if command -v docker &> /dev/null; then
+            echo "Docker already installed -- skipping setup"
+            exit 0
+          fi
+          echo "First deploy: installing Docker and dependencies..."
+          sudo dnf update -y
+          sudo dnf install -y docker aws-cli
+          sudo systemctl enable docker
+          sudo systemctl start docker
+          sudo usermod -aG docker ec2-user
+
+          # Install docker-compose v2
+          COMPOSE_VERSION="v2.29.1"
+          sudo curl -SL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64" \
+            -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+          # Create 1GB swap (critical for 1GB RAM instance)
+          if [ ! -f /swapfile ]; then
+            sudo fallocate -l 1G /swapfile
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+          fi
+
+          # Prepare blog directory
+          sudo mkdir -p /opt/blog
+          sudo chown ec2-user:ec2-user /opt/blog
+          echo "Instance setup complete."
+          SETUP
+
       # Sync the entire project to the Lightsail instance.
       # Excludes: node_modules, .git, terraform state, local dev files.
       - name: Rsync files to Lightsail
