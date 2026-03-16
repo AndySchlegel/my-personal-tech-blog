@@ -332,7 +332,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Nine workflows (7 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
+Ten workflows (8 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -357,18 +357,28 @@ Manual Trigger (GitHub UI "Run workflow")
     +-- Wait for rollout + print status
 ```
 
-**Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
+**Infrastructure Provision -- EKS** (`infra-provision.yml` -- manual trigger):
 
 ```
-Manual Trigger (checkboxes: Wave 2, 3, 4)
+Manual Trigger (optional: include Wave 3 checkbox)
     |
     Job 1: VALIDATE -> Job 2: SECURITY SCAN -> Job 3: PROVISION
-    +-- Wave 0: IAM policies (always)
-    +-- Wave 1: VPC, SGs, ECR, S3, Cognito, OIDC (always, ~$0.50)
-    +-- Wave 2: RDS (checkbox, ~$13 -- only for EKS)
-    +-- Wave 3: EKS + NAT GW (checkbox, ~$126)
-    +-- Wave 4: Lightsail + CloudFront (checkbox, ~$5)
-    Lightsail-only: check Wave 4. EKS: check Wave 2+3.
+    +-- Wave 0: IAM policies (ensures permissions are current)
+    +-- Wave 1: VPC, SGs, ECR, S3, Cognito, OIDC
+    +-- Wave 2: RDS
+    +-- Wave 3: EKS + CloudFront + NAT GW (checkbox)
+```
+
+**Infrastructure Provision -- Lightsail** (`infra-provision-lightsail.yml` -- manual trigger):
+
+```
+Manual Trigger
+    |
+    Job 1: VALIDATE -> Job 2: SECURITY SCAN -> Job 3: PROVISION
+    +-- IAM policies (OIDC permissions)
+    +-- Foundation: S3, Cognito, OIDC (idempotent if already exists)
+    +-- Lightsail instance + CloudFront + Route 53
+    No VPC, no SGs, no ECR, no RDS, no EKS.
 ```
 
 **Deploy to Lightsail** (`deploy-lightsail.yml` -- manual trigger):
@@ -468,7 +478,7 @@ Key highlights:
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
-| CI/CD Workflows | 9 (deploy-eks, deploy-lightsail, provision, destroy, terraform, security-scan, lint, 2x status monitors) |
+| CI/CD Workflows | 10 (deploy-eks, deploy-lightsail, provision-eks, provision-lightsail, destroy, terraform, security-scan, lint, 2x status monitors) |
 | Commits | 175+ |
 | Lessons Learned | 43 documented |
 
