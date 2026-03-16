@@ -1,14 +1,15 @@
 # Infrastructure Teardown Pipeline
 #
-# MANUAL TRIGGER ONLY (workflow_dispatch) -- destroys all infrastructure
-# except the OIDC provider in one pipeline run.
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- destroys all EKS infrastructure
+# except OIDC (pipeline auth) and Cognito (shared admin user pool).
 #
 # Destruction order matters (reverse dependency chain):
 #   1. Wave 3 first (EKS + CloudFront -- depend on VPC, skipped if not deployed)
 #   2. Wave 2 second (RDS depends on VPC subnets + security groups)
-#   3. Wave 1 third (OIDC explicitly excluded to keep pipeline auth alive)
+#   3. Wave 1 third (OIDC + Cognito explicitly excluded)
 #
-# After completion, only github_oidc resources should remain in state.
+# After completion, only github_oidc + cognito resources should remain in state.
+# Cognito is preserved because it's shared with Lightsail (same admin user).
 # Use terraform.yml for individual wave operations.
 #
 # Authentication: OIDC federation (same IAM role as other workflows).
@@ -172,9 +173,10 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: terraform apply tfplan-wave2
 
-      # --- Wave 1 destroy (without OIDC) ---
-      # Explicitly targets each module EXCEPT github_oidc.
-      # OIDC must survive to keep pipeline auth + other projects working.
+      # --- Wave 1 destroy (without OIDC and Cognito) ---
+      # Explicitly targets each module EXCEPT github_oidc and cognito.
+      # OIDC must survive to keep pipeline auth alive.
+      # Cognito must survive because it's shared with Lightsail (same admin user).
       # VPC destruction includes NAT GW if it was enabled.
       - name: Plan destroy Wave 1
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -187,7 +189,6 @@ jobs:
             -target=module.security_groups \
             -target=module.ecr \
             -target=module.s3 \
-            -target=module.cognito \
             -target=aws_acm_certificate.alb \
             -out=tfplan-wave1
 
@@ -208,4 +209,4 @@ jobs:
           echo "=== Remaining resources in state ==="
           terraform state list
           echo ""
-          echo "Only github_oidc resources should be listed above."
+          echo "Only github_oidc + cognito resources should be listed above."

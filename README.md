@@ -332,7 +332,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Ten workflows (8 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
+Eleven workflows (9 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -397,15 +397,24 @@ Manual Trigger
     +-- Health check + backup cron setup
 ```
 
-**Infrastructure Teardown** (`infra-destroy.yml` -- manual trigger):
+**Infrastructure Teardown -- EKS** (`infra-destroy.yml` -- manual trigger):
 
 ```
 Manual Trigger (type "DESTROY" to confirm)
     +-- Clean up Helm releases (monitoring stack)
     +-- Clean up ALB Controller resources (prevents orphaned ALBs)
     +-- Destroy Wave 3 -> Wave 2 -> Wave 1
-    +-- OIDC excluded (keeps pipeline auth alive)
-    +-- Verify: only OIDC resources remain in state
+    +-- OIDC + Cognito excluded (shared with Lightsail)
+    +-- Verify: only OIDC + Cognito resources remain
+```
+
+**Infrastructure Teardown -- Lightsail** (`infra-destroy-lightsail.yml` -- manual trigger):
+
+```
+Manual Trigger (type "DESTROY" to confirm)
+    +-- Destroy CloudFront (no origin without Lightsail)
+    +-- Destroy Lightsail instance + IAM user
+    +-- S3, Cognito, OIDC preserved (free, shared, contains data)
 ```
 
 **Terraform workflow** (`terraform.yml`), **Security scanning** (`security-scan.yml`), and **Lint** (`lint.yml`) provide granular wave control, automatic PR security gates, and code quality checks respectively.
@@ -478,7 +487,7 @@ Key highlights:
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
-| CI/CD Workflows | 10 (deploy-eks, deploy-lightsail, provision-eks, provision-lightsail, destroy, terraform, security-scan, lint, 2x status monitors) |
+| CI/CD Workflows | 11 (deploy-eks, deploy-lightsail, provision-eks, provision-lightsail, destroy-eks, destroy-lightsail, terraform, security-scan, lint, 2x status monitors) |
 | Commits | 175+ |
 | Lessons Learned | 43 documented |
 

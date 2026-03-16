@@ -1,0 +1,130 @@
+# Lightsail Infrastructure Teardown Pipeline
+#
+# MANUAL TRIGGER ONLY -- destroys Lightsail-specific infrastructure.
+# Completely separate from the EKS teardown workflow (infra-destroy.yml).
+#
+# What gets DESTROYED (costs money or is useless without the instance):
+#   - Lightsail instance + static IP (~$5/month)
+#   - CloudFront distribution (no origin without Lightsail)
+#   - IAM user + access keys (backend AWS credentials)
+#
+# What gets PRESERVED (free, shared, or contains data):
+#   - S3 bucket (Polly audio files, images, DB backups)
+#   - Cognito user pool (admin user, shared with EKS)
+#   - GitHub OIDC (pipeline auth)
+#
+# After completion, S3 + Cognito + OIDC remain in state.
+# To re-deploy: run infra-provision-lightsail.yml, then deploy-lightsail.yml.
+#
+# Authentication: OIDC federation (same IAM role as other workflows).
+#
+# Required GitHub Secrets:
+#   AWS_ROLE_ARN  - IAM role ARN
+#   DB_PASSWORD   - Required by Terraform (even for destroy plans)
+
+name: Lightsail Teardown
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type DESTROY to confirm teardown of Lightsail infrastructure'
+        required: true
+        type: string
+        default: ''
+
+permissions:
+  id-token: write
+  contents: read
+
+# Same concurrency group as all Terraform workflows.
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-central-1
+  TF_WORKING_DIR: terraform
+
+jobs:
+  teardown:
+    name: Teardown Lightsail Stack
+    runs-on: ubuntu-latest
+    if: ${{ inputs.confirm_destroy == 'DESTROY' }}
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      # --- Destroy CloudFront first ---
+      # CloudFront references the Lightsail origin. Must be removed
+      # before the Lightsail instance so Terraform doesn't complain
+      # about missing origin references.
+      - name: Plan destroy CloudFront
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.cloudfront \
+            -out=tfplan-cloudfront
+
+      - name: Show CloudFront destroy plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-cloudfront
+
+      - name: Destroy CloudFront
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-cloudfront
+
+      # --- Destroy Lightsail instance + IAM user ---
+      # Removes the instance, static IP, key pair, and IAM user/credentials.
+      # S3, Cognito, and OIDC are intentionally NOT targeted.
+      - name: Plan destroy Lightsail
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan \
+            -destroy \
+            -target=module.lightsail \
+            -out=tfplan-lightsail
+
+      - name: Show Lightsail destroy plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show tfplan-lightsail
+
+      - name: Destroy Lightsail
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply tfplan-lightsail
+
+      # --- Verify: S3, Cognito, OIDC should remain ---
+      - name: Verify remaining state
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "=== Remaining resources in state ==="
+          terraform state list
+          echo ""
+          echo "Expected: s3, cognito, github_oidc resources."
+          echo "Lightsail + CloudFront should be gone."
