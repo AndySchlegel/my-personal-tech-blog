@@ -360,14 +360,15 @@ Manual Trigger (GitHub UI "Run workflow")
 **Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
 
 ```
-Manual Trigger (optional: include Wave 3/4 checkboxes)
+Manual Trigger (checkboxes: Wave 2, 3, 4)
     |
     Job 1: VALIDATE -> Job 2: SECURITY SCAN -> Job 3: PROVISION
-    +-- Wave 0: IAM policies (ensures permissions are current)
-    +-- Wave 1: VPC, SGs, ECR, S3, Cognito, OIDC
-    +-- Wave 2: RDS
-    +-- Wave 3: EKS + NAT GW (checkbox)
-    +-- Wave 4: Lightsail + CloudFront (checkbox)
+    +-- Wave 0: IAM policies (always)
+    +-- Wave 1: VPC, SGs, ECR, S3, Cognito, OIDC (always, ~$0.50)
+    +-- Wave 2: RDS (checkbox, ~$13 -- only for EKS)
+    +-- Wave 3: EKS + NAT GW (checkbox, ~$126)
+    +-- Wave 4: Lightsail + CloudFront (checkbox, ~$5)
+    Lightsail-only: check Wave 4. EKS: check Wave 2+3.
 ```
 
 **Deploy to Lightsail** (`deploy-lightsail.yml` -- manual trigger):
