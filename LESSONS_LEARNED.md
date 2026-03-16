@@ -839,3 +839,83 @@ Implemented chunking in the Polly service: split text at sentence boundaries (`.
 Always check API limits before implementing integrations. Polly's 3000-byte limit is not prominently documented and the error is not descriptive. The fix (sentence-boundary chunking) is simple but you have to know about the limit first. Same pattern applies to Amazon Translate (5000-byte limit) and Comprehend (5000 UTF-8 bytes). AWS ML APIs consistently have byte limits that real-world text easily exceeds.
 
 ---
+
+## #44 - Lightsail CreateInstances Terraform Bug
+
+**Date:** 2026-03-16
+**Phase:** Phase 9 (Lightsail Migration)
+
+**Context:**
+The AWS Terraform provider's operation waiter for Lightsail instances times out even though the instance is created successfully in AWS. This is a known provider bug, not a user code issue.
+
+**Decision:**
+Workaround: use `continue-on-error` in the CI/CD step, then verify the instance exists via AWS CLI, run `terraform import` to bring it into state, and re-apply. This makes the pipeline resilient to the provider bug without losing reproducibility.
+
+**Takeaway:**
+Not every Terraform error is your fault. When a resource exists in AWS but Terraform reports a timeout, the provider's waiter logic is likely broken. The import + re-apply pattern is a safe workaround for known provider bugs. Always verify actual AWS state before assuming a real failure.
+
+---
+
+## #45 - CloudFront Origin Cannot Be an IP Address
+
+**Date:** 2026-03-16
+**Phase:** Phase 9 (Lightsail Migration)
+
+**Context:**
+CloudFront requires a domain name as the origin, not an IP address. Lightsail provides a static IP, but passing that directly to CloudFront as an origin fails validation.
+
+**Decision:**
+Created a dedicated Route 53 A record (`origin-lightsail.aws.his4irness23.de`) pointing to the Lightsail static IP and used that DNS name as the CloudFront origin domain.
+
+**Takeaway:**
+CloudFront origins must be domain names -- this is a hard AWS constraint. When working with services that only expose IPs (Lightsail, on-prem servers), create a dedicated DNS record as a bridge. This also decouples the origin IP from CloudFront config, making IP changes a single Route 53 update instead of a CloudFront distribution change.
+
+---
+
+## #46 - Shared Terraform Config Blocks Independent Workflows
+
+**Date:** 2026-03-16
+**Phase:** Phase 9 (Lightsail Migration)
+
+**Context:**
+The ALB certificate resource used a dynamic `for_each` that blocked ALL Terraform operations (including `terraform import`) when the cert was not in state. This meant the Lightsail workflow could not run independently because the shared Terraform config referenced EKS-specific resources.
+
+**Decision:**
+Wrapped EKS-only resources in conditional variables so they can be toggled off when only the Lightsail stack is active. This unblocked Lightsail operations without touching EKS resources.
+
+**Takeaway:**
+Shared Terraform state with `-target` is fragile. A single resource with a dynamic `for_each` or `count` based on another resource's output can block the entire state, even for unrelated operations. Separate Terraform roots per stack (e.g., `terraform/eks/` and `terraform/lightsail/`) would be cleaner. When that is not practical, conditional variables are the minimum viable fix.
+
+---
+
+## #47 - Lightsail nano_3_0 Has Only 0.5GB RAM
+
+**Date:** 2026-03-16
+**Phase:** Phase 9 (Lightsail Migration)
+
+**Context:**
+The Lightsail $5/month nano_3_0 bundle is commonly assumed to have 1GB RAM, but it actually only provides 0.5GB. This is insufficient to run PostgreSQL + Node.js + nginx concurrently -- the OOM killer starts terminating processes under load.
+
+**Decision:**
+Upgraded to the micro_3_0 bundle ($7/month, 1GB RAM) and added a 1GB swap file as additional safety margin. The $2/month increase is negligible compared to the stability gain.
+
+**Takeaway:**
+Always verify instance specs in the AWS docs before choosing a bundle size. The Lightsail naming (nano, micro, small) does not match EC2 naming conventions for memory. For a stack running a database + application server + reverse proxy, 1GB RAM with swap is the practical minimum. The $2/month difference between nano and micro saves hours of debugging OOM issues.
+
+---
+
+## #48 - CloudFront Cache Behaviors Override Static Files
+
+**Date:** 2026-03-16
+**Phase:** Phase 9 (Lightsail Migration)
+
+**Context:**
+A CloudFront cache behavior for `/audio/*` was configured to route requests to S3 (for Amazon Polly audio files). The NotebookLM podcast file was a static file served by nginx at `/audio/notebooklm-podcast.m4a`. CloudFront matched the `/audio/*` pattern and routed the request to S3, which returned a 403 because the file did not exist there.
+
+**Decision:**
+Moved the podcast file from `/audio/` to `/media/` directory. The `/media/*` path has no specific cache behavior, so it falls through to the default behavior which routes to the Lightsail origin (nginx). The Polly-generated files remain in `/audio/*` routed to S3.
+
+**Takeaway:**
+CloudFront cache behaviors are evaluated by path pattern priority, not by origin availability. A specific path pattern always wins over the default behavior, even if the target origin does not have the file. When mixing S3 and server origins, keep their file paths strictly separated. A 403 from CloudFront often means the request hit the wrong origin, not that permissions are wrong.
+
+---

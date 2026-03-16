@@ -5,8 +5,8 @@
 **Project:** My Personal Tech Blog on AWS EKS
 **Start Date:** 2026-02-20
 **Deadline:** ~4 weeks (mid-March 2026)
-**Current Phase:** Session 33 complete (V2 design overhaul, presentation polish, bug fixes, final deploy prep)
-**Last Updated:** 2026-03-15 (Session 33)
+**Current Phase:** Session 34 complete (Lightsail permanent hosting live)
+**Last Updated:** 2026-03-16 (Session 34)
 
 ---
 
@@ -22,7 +22,7 @@
 | 6. Blog Content + Seed Script | Done | Week 3 |
 | 7. ML Integration (Comprehend) | Done (IRSA, auto-tags, sentiment, auto-moderation) | Week 3-4 |
 | 8. Polish + Presentation | Done (V2 design, README, screenshots, Grafana/Prometheus, HPA demo, presentation complete) | Week 4 |
-| 9. Lightsail Permanent Hosting | Planned | Post-course |
+| 9. Lightsail Permanent Hosting | Done (live at techblog.aws.his4irness23.de, micro_3_0, CloudFront CDN) | Session 34 |
 
 ---
 
@@ -190,15 +190,18 @@
 - [x] View count display on blog overview cards -- Session 29
 - [x] Post 11 content updated with Translate + Polly references -- Session 29
 
-## Phase 9: Lightsail Permanent Hosting (Planned)
+## Phase 9: Lightsail Permanent Hosting (Done)
 
-- [ ] Terraform config for Lightsail instance ($5/month, 1GB RAM, 1 vCPU)
-- [ ] PostgreSQL on-instance (no RDS needed)
-- [ ] nginx + Node.js setup (same app, no containers needed)
-- [ ] Let's Encrypt SSL (certbot)
-- [ ] GitHub Actions deploy workflow (deploy-lightsail.yml)
-- [ ] Cognito + Comprehend stay as managed AWS services
-- [ ] DNS cutover from EKS ALB to Lightsail instance
+- [x] Terraform config for Lightsail instance (micro_3_0, $7/month, 1GB RAM, 2 vCPU, Frankfurt)
+- [x] PostgreSQL on-instance (no RDS needed)
+- [x] nginx + Node.js setup (same app, no containers needed)
+- [x] Let's Encrypt SSL (certbot)
+- [x] GitHub Actions workflows: deploy-lightsail.yml, infra-provision-lightsail.yml, infra-destroy-lightsail.yml (11 workflows total)
+- [x] Cognito shared between EKS and Lightsail (preserved on destroy)
+- [x] CloudFront CDN with dual origin (S3 for audio/images, Lightsail for app)
+- [x] Polly audio via static CloudFront paths (no pre-signed URLs)
+- [x] Security hardening: fail2ban, SSH hardened, auto-updates enabled
+- [x] Live at techblog.aws.his4irness23.de -- Session 34 (2026-03-16)
 
 ---
 
@@ -224,13 +227,13 @@ After sprint: `terraform destroy -target=module.eks`, NAT GW off, RDS stop -> ba
 4. ~~Amazon Polly~~ -- **Done** (Session 28, text-to-speech with speed controls)
 5. ~~Architecture diagram~~ -- **Done** (Session 32, SVG in docs/architecture.svg)
 6. ~~Presentation~~ -- **Done** (Session 32, 12-tab HTML, assignment cross-checked)
-7. **Lightsail Terraform setup** -- `terraform-lightsail/` directory + `deploy-lightsail.yml` workflow
+7. ~~Lightsail permanent hosting~~ -- **Done** (Session 34, live at techblog.aws.his4irness23.de)
 
 2 GitHub Secrets required: `AWS_ROLE_ARN`, `DB_PASSWORD`. 2 optional: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Pipeline reads all other infra values dynamically from Terraform remote state.
 
-**Current infra state:** EKS stack live (Session 33 deploy). Full lifecycle 100% clean and reproducible.
-**Dual-track plan:** EKS for showcase demos ($143/month sprint), Lightsail for permanent hosting ($5.50/month).
-**Presentation:** 12-tab interactive HTML with V2 effects (cursor-glow, ambient backgrounds), presentation script ready. All CloudHelden assignment requirements verified and covered. Presentation date: 2026-03-16.
+**Current infra state:** Lightsail permanent hosting live (Session 34). EKS stack torn down post-presentation. 11 GitHub Actions workflows total.
+**Dual-track plan complete:** EKS for showcase demos ($143/month sprint, tear down after), Lightsail for permanent hosting ($7/month with CloudFront CDN).
+**Presentation:** Done (2026-03-16). Dozenten were impressed.
 
 ---
 

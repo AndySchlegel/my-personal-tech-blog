@@ -489,7 +489,7 @@ Key highlights:
 | K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
 | CI/CD Workflows | 11 (deploy-eks, deploy-lightsail, provision-eks, provision-lightsail, destroy-eks, destroy-lightsail, terraform, security-scan, lint, 2x status monitors) |
 | Commits | 175+ |
-| Lessons Learned | 43 documented |
+| Lessons Learned | 48 documented |
 
 ---
 
