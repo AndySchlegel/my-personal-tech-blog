@@ -38,7 +38,8 @@ resource "aws_lightsail_instance" "blog" {
 
   # Cloud-init script runs once on first boot.
   # Installs Docker, creates swap, prepares the /opt/blog directory.
-  user_data = file("${path.module}/user-data.sh")
+  # Lightsail requires base64-encoded user_data (unlike EC2 which auto-encodes).
+  user_data = base64encode(file("${path.module}/user-data.sh"))
 
   tags = {
     Name = "${var.project_name}-lightsail-${var.environment}"
