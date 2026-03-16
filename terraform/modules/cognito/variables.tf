@@ -6,8 +6,14 @@ variable "project_name" {
 }
 
 variable "domain_name" {
-  description = "Blog domain for callback URLs (e.g. blog.his4irness23.de)"
+  description = "Blog domain for callback URLs (e.g. blog.aws.his4irness23.de)"
   type        = string
-  # Used to construct OAuth callback URLs where Cognito redirects after login:
-  # https://blog.his4irness23.de/admin/callback
+  # Used to construct OAuth callback URLs where Cognito redirects after login.
+}
+
+variable "lightsail_domain" {
+  description = "Lightsail blog domain for callback URLs (e.g. techblog.aws.his4irness23.de)"
+  type        = string
+  default     = ""
+  # Added as additional callback/logout URL alongside the EKS domain.
 }

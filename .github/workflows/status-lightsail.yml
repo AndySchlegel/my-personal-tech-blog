@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Check Lightsail blog availability
         run: |
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://blog.his4irness23.de || echo "000")
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://techblog.aws.his4irness23.de || echo "000")
           echo "HTTP Status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
             echo "Lightsail blog is LIVE"

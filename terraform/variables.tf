@@ -112,6 +112,19 @@ variable "db_password" {
   # Use a strong password: at least 16 chars, mix of letters/numbers/symbols.
 }
 
+# --- Lightsail ---
+variable "lightsail_subdomain" {
+  description = "Subdomain for Lightsail blog (combined with domain_name)"
+  type        = string
+  default     = "techblog" # Combined: techblog.aws.his4irness23.de
+}
+
+variable "lightsail_ssh_public_key" {
+  description = "SSH public key for Lightsail deployment access. Set via tfvars or CI/CD."
+  type        = string
+  default     = "" # If empty, no key pair is created
+}
+
 # --- CI/CD ---
 variable "github_repository" {
   description = "GitHub repository for OIDC trust (format: owner/repo)"

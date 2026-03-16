@@ -1,0 +1,97 @@
+# ============================================
+# Docker Compose - Lightsail Production
+#
+# Production stack for the Lightsail instance.
+# Builds containers locally on the instance (no ECR pull needed).
+#
+# Services:
+#   - PostgreSQL database (internal only, port 5432)
+#   - Backend API (internal only, port 3000)
+#   - Frontend nginx (exposed port 80 for CloudFront)
+#
+# Usage:
+#   docker-compose -f docker-compose.lightsail.yml up --build -d
+#   docker-compose -f docker-compose.lightsail.yml down
+#
+# Environment variables are loaded from /opt/blog/.env
+# ============================================
+
+services:
+  # --- PostgreSQL Database ---
+  # Uses a named volume for data persistence across container restarts.
+  # Data survives docker-compose down (but NOT docker-compose down -v).
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: techblog
+      POSTGRES_USER: bloguser
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      # Persist data between restarts and deployments
+      - pgdata:/var/lib/postgresql/data
+      # Run schema + seed on first startup (only if DB is empty)
+      - ./backend/src/models/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/src/models/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bloguser -d techblog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    # Memory limit to prevent PostgreSQL from using all available RAM
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # --- Backend API ---
+  # Node.js Express server with AWS service integrations.
+  # AWS credentials come from .env (IAM user, not IRSA).
+  backend:
+    build: ./backend
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: postgresql://bloguser:${DB_PASSWORD}@db:5432/techblog
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://techblog.aws.his4irness23.de}
+      # AWS credentials (IAM user for Lightsail, replaces EKS IRSA)
+      AWS_REGION: ${AWS_REGION:-eu-central-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      # S3 bucket for Polly audio + image uploads
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-blog-assets-his4irness23}
+      # Cognito (admin auth)
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
+      COGNITO_REGION: ${AWS_REGION:-eu-central-1}
+      # Telegram notifications (optional, silent skip if missing)
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # --- Frontend (nginx) ---
+  # Serves static files and proxies /api/* to the backend.
+  # Port 80 is exposed for CloudFront (HTTPS termination at CDN level).
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+# Named volume for PostgreSQL data persistence.
+# Survives container rebuilds and deployments.
+volumes:
+  pgdata:

@@ -1,29 +1,21 @@
-# main.tf - CloudFront distribution with S3 origin
+# main.tf - CloudFront distribution with S3 + Lightsail origins
 #
 # CloudFront is AWS's CDN (Content Delivery Network).
-# It caches our blog's static assets (images, CSS, JS) at edge locations
-# around the world, so users get fast load times regardless of location.
+# It serves as the central entry point for the blog:
+#   - HTTPS termination (no certbot needed on Lightsail)
+#   - S3 origin for static assets (audio files, images)
+#   - Lightsail origin for the app (HTML, CSS, JS, API)
 #
-# How it works:
-#   1. User requests https://blog.his4irness23.de/images/photo.jpg
-#   2. DNS (Route 53) points to CloudFront
-#   3. CloudFront checks its edge cache
-#   4. Cache HIT:  serve directly from edge (fast, ~10ms)
-#      Cache MISS: fetch from S3 origin, cache it, then serve
-#
-# Security:
-#   - HTTPS only (HTTP redirects to HTTPS)
-#   - S3 origin uses OAC (Origin Access Control) -- CloudFront signs
-#     every request to S3, so S3 can verify "this request came from
-#     MY CloudFront distribution, not a random person."
-#   - TLS 1.2 minimum (modern browsers only, no legacy support)
+# Traffic routing (ordered by priority):
+#   /audio/*   -> S3 origin (OAC), TTL 7 days (immutable audio files)
+#   /images/*  -> S3 origin (OAC), TTL 7 days (immutable images)
+#   /api/*     -> Lightsail origin, TTL 0 (no cache, forward all)
+#   *.css/js   -> Lightsail origin, TTL 1 day (static assets)
+#   Default    -> Lightsail origin, TTL 5 min (HTML pages)
 #
 # ACM certificate for HTTPS must be in us-east-1 (CloudFront requirement).
 # This is an AWS quirk: CloudFront is a global service, and it only reads
 # certificates from the us-east-1 region. We use a provider alias for this.
-#
-# ALB origin for dynamic content (API routes) is added in Phase 5
-# after EKS deployment. For now, only the S3 origin is configured.
 
 # We need the us-east-1 provider for ACM certificates.
 # This tells Terraform that this module requires a specific provider alias.
@@ -64,9 +56,6 @@ resource "aws_acm_certificate" "blog" {
 # Create DNS records that prove we own the domain.
 # ACM gives us a CNAME record to create in Route 53. Once the record exists,
 # ACM validates it and issues the certificate (usually takes ~5 minutes).
-#
-# for_each with domain_validation_options: ACM may require multiple
-# validation records (one per domain/subdomain on the certificate).
 resource "aws_route53_record" "cert_validation" {
   for_each = {
     for dvo in aws_acm_certificate.blog.domain_validation_options : dvo.domain_name => {
@@ -102,9 +91,6 @@ resource "aws_acm_certificate_validation" "blog" {
 # "signing_behavior = always" means CloudFront signs EVERY request to S3
 # with SigV4 (AWS's request signing protocol). S3 then verifies:
 # "Is this signature from the CloudFront distribution I trust?"
-#
-# This replaces the older OAI (Origin Access Identity) which had limitations
-# with S3 features like SSE-KMS and bucket policies.
 resource "aws_cloudfront_origin_access_control" "s3" {
   name                              = "${var.project_name}-s3-oac"
   origin_access_control_origin_type = "s3"
@@ -119,41 +105,55 @@ resource "aws_cloudfront_origin_access_control" "s3" {
 resource "aws_cloudfront_distribution" "main" {
   #checkov:skip=CKV_AWS_68:WAF costs ~$5+/month minimum, not needed for a blog
   #checkov:skip=CKV2_AWS_47:No WAF deployed, Log4j AMR rule not applicable
-  #checkov:skip=CKV_AWS_310:Origin failover needs 2nd origin, single S3 bucket sufficient
+  #checkov:skip=CKV_AWS_310:Origin failover not needed, Lightsail is the single app origin
   #checkov:skip=CKV_AWS_86:Access logging needs dedicated S3 bucket, deferred to production
   #checkov:skip=CKV_AWS_374:Geo restriction not needed for public blog
   #checkov:skip=CKV2_AWS_32:Response headers policy deferred, security headers set via nginx
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  aliases             = [var.domain_name] # blog.his4irness23.de -> this distribution
+  aliases             = [var.domain_name] # techblog.aws.his4irness23.de -> this distribution
 
   # PriceClass_100: only use edge locations in US, Canada, and Europe.
-  # This is the cheapest option. PriceClass_200 adds Asia, PriceClass_All
-  # includes South America, Australia, etc. For a personal blog with
-  # mostly European traffic, PriceClass_100 is the right choice.
+  # This is the cheapest option. For a personal blog with mostly European
+  # traffic, PriceClass_100 is the right choice.
   price_class = "PriceClass_100"
 
-  # S3 origin: where CloudFront fetches blog assets (images, static files).
-  # The origin_id is an internal identifier used to reference this origin
-  # in cache behaviors below.
+  # --- S3 origin: audio files and images ---
+  # Served via OAC (signed requests). Used for /audio/* and /images/* paths.
   origin {
     domain_name              = var.s3_bucket_regional_domain_name
     origin_id                = "s3-assets"
     origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
   }
 
-  # Default cache behavior: how CloudFront handles requests.
-  # All requests go to the S3 origin with aggressive caching.
-  default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"] # Read-only (no POST/PUT/DELETE)
-    cached_methods         = ["GET", "HEAD"]            # Cache GET and HEAD responses
-    target_origin_id       = "s3-assets"
-    viewer_protocol_policy = "redirect-to-https" # HTTP -> HTTPS redirect
+  # --- Lightsail origin: the blog application ---
+  # HTTP only (port 80). CloudFront handles HTTPS termination.
+  # Used for HTML pages, API requests, and static frontend assets.
+  origin {
+    domain_name = var.lightsail_origin_domain
+    origin_id   = "lightsail-app"
 
-    # forwarded_values controls what CloudFront sends to the origin.
-    # We don't forward query strings or cookies because S3 doesn't use them.
-    # This maximizes cache hit ratio (same URL = same cached response).
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only" # Lightsail serves HTTP, CloudFront adds HTTPS
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  # =========================================================================
+  # ORDERED CACHE BEHAVIORS (evaluated in order, first match wins)
+  # =========================================================================
+
+  # 1. /audio/* -> S3 origin (Polly audio files, immutable, cache 7 days)
+  ordered_cache_behavior {
+    path_pattern           = "/audio/*"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "s3-assets"
+    viewer_protocol_policy = "redirect-to-https"
+
     forwarded_values {
       query_string = false
       cookies {
@@ -161,21 +161,84 @@ resource "aws_cloudfront_distribution" "main" {
       }
     }
 
-    # Cache TTLs (Time To Live):
-    # min_ttl = 0:       respect Cache-Control headers from origin
-    # default_ttl = 1d:  if origin doesn't set Cache-Control, cache for 1 day
-    # max_ttl = 7d:      never cache longer than 7 days
-    # compress = true:   serve gzip/brotli compressed responses (smaller files, faster loads)
+    min_ttl     = 604800  # 7 days
+    default_ttl = 604800  # 7 days
+    max_ttl     = 2592000 # 30 days
+    compress    = true
+  }
+
+  # 2. /images/* -> S3 origin (uploaded images, immutable, cache 7 days)
+  ordered_cache_behavior {
+    path_pattern           = "/images/*"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "s3-assets"
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl     = 604800  # 7 days
+    default_ttl = 604800  # 7 days
+    max_ttl     = 2592000 # 30 days
+    compress    = true
+  }
+
+  # 3. /api/* -> Lightsail origin (dynamic API, NO cache)
+  # Forwards all headers, query strings, and cookies to the backend.
+  # POST/PUT/DELETE must pass through for admin operations.
+  ordered_cache_behavior {
+    path_pattern           = "/api/*"
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "lightsail-app"
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["*"] # Forward all headers (Authorization, Content-Type, etc.)
+      cookies {
+        forward = "all"
+      }
+    }
+
     min_ttl     = 0
-    default_ttl = 86400  # 1 day  (in seconds)
-    max_ttl     = 604800 # 7 days (in seconds)
+    default_ttl = 0
+    max_ttl     = 0
+    compress    = true
+  }
+
+  # 4. Default -> Lightsail origin (HTML pages, short cache)
+  # HTML pages change on deploy, so a short TTL (5 min) is appropriate.
+  # Static assets (CSS, JS) get longer caching via nginx Cache-Control headers.
+  default_cache_behavior {
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "lightsail-app"
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
+
+    # Short default TTL for HTML pages.
+    # nginx sets Cache-Control headers for CSS/JS (5 min) and images (1 day),
+    # which CloudFront respects (min_ttl = 0).
+    min_ttl     = 0
+    default_ttl = 300   # 5 minutes
+    max_ttl     = 86400 # 1 day
     compress    = true
   }
 
   # TLS certificate for HTTPS.
   # sni-only: use Server Name Indication (modern standard, free).
-  # The alternative "vip" uses a dedicated IP ($600/month!) -- only needed
-  # for very old clients that don't support SNI.
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate_validation.blog.certificate_arn
     ssl_support_method       = "sni-only"
@@ -183,7 +246,6 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   # No geographic restrictions -- the blog is accessible worldwide.
-  # You could restrict to specific countries if needed (e.g. GDPR compliance).
   restrictions {
     geo_restriction {
       restriction_type = "none"
@@ -234,32 +296,19 @@ resource "aws_s3_bucket_policy" "cloudfront_access" {
 # ROUTE 53 DNS RECORD
 # =============================================================================
 
-# Points blog.his4irness23.de to the CloudFront distribution.
+# Points techblog.aws.his4irness23.de to the CloudFront distribution.
 # This is an "alias" record (AWS-specific) -- like a CNAME but works at
 # the zone apex and doesn't cost extra for DNS queries.
-# When someone visits blog.his4irness23.de, Route 53 resolves it to
-# the nearest CloudFront edge location.
 resource "aws_route53_record" "blog" {
   zone_id = var.route53_zone_id
   name    = var.domain_name
   type    = "A"
 
-  # Allow overwrite if the record already exists in Route 53.
-  # This happens when the record survives a destroy cycle (e.g., created
-  # by deploy.yml's DNS update step, which is outside Terraform state).
   allow_overwrite = true
 
   alias {
     name                   = aws_cloudfront_distribution.main.domain_name
     zone_id                = aws_cloudfront_distribution.main.hosted_zone_id
     evaluate_target_health = false # CloudFront handles its own health checks
-  }
-
-  # Ignore all changes after creation. The deploy pipeline (deploy.yml)
-  # overwrites this record to point at the ALB instead of CloudFront.
-  # Without ignore_changes, Terraform would revert DNS back to CloudFront
-  # on every apply, breaking the blog until the next deploy.
-  lifecycle {
-    ignore_changes = all
   }
 }

@@ -27,8 +27,12 @@
 
 locals {
   # Construct the full blog domain from subdomain + base domain.
-  # "blog" + "his4irness23.de" -> "blog.his4irness23.de"
+  # "blog" + "aws.his4irness23.de" -> "blog.aws.his4irness23.de"
   blog_domain = "${var.blog_subdomain}.${var.domain_name}"
+
+  # Lightsail domain for permanent hosting.
+  # "techblog" + "aws.his4irness23.de" -> "techblog.aws.his4irness23.de"
+  lightsail_domain = "${var.lightsail_subdomain}.${var.domain_name}"
 }
 
 # Look up the existing Route 53 hosted zone for his4irness23.de.
@@ -91,17 +95,19 @@ module "github_oidc" {
 module "s3" {
   source = "./modules/s3"
 
-  project_name = var.project_name
-  environment  = var.environment
-  domain_name  = local.blog_domain # For CORS configuration
+  project_name     = var.project_name
+  environment      = var.environment
+  domain_name      = local.blog_domain      # EKS CORS
+  lightsail_domain = local.lightsail_domain # Lightsail CORS
 }
 
 # Cognito: Admin authentication (JWT tokens for the admin dashboard).
 module "cognito" {
   source = "./modules/cognito"
 
-  project_name = var.project_name
-  domain_name  = local.blog_domain # For callback URLs
+  project_name     = var.project_name
+  domain_name      = local.blog_domain      # EKS callback URLs
+  lightsail_domain = local.lightsail_domain # Lightsail callback URLs
 }
 
 # ALB ACM Certificate: SSL cert for the Application Load Balancer.
@@ -234,8 +240,8 @@ resource "aws_vpc_security_group_ingress_rule" "eks_cluster_sg_from_alb" {
   ip_protocol                  = "tcp"
 }
 
-# CloudFront: CDN for serving blog assets (images) with HTTPS.
-# Depends on S3 (origin bucket) and Route 53 (DNS zone for the domain).
+# CloudFront: CDN for serving blog assets and Lightsail app with HTTPS.
+# Depends on S3 (origin bucket), Lightsail (app origin), and Route 53 (DNS).
 # The providers block passes both the default and us-east-1 provider
 # because CloudFront needs ACM certificates in us-east-1.
 module "cloudfront" {
@@ -245,8 +251,9 @@ module "cloudfront" {
   s3_bucket_regional_domain_name = module.s3.bucket_regional_domain_name
   s3_bucket_arn                  = module.s3.bucket_arn
   s3_bucket_id                   = module.s3.bucket_id
-  domain_name                    = local.blog_domain
+  domain_name                    = local.lightsail_domain
   route53_zone_id                = data.aws_route53_zone.main.zone_id
+  lightsail_origin_domain        = module.lightsail.static_ip
 
   # Pass both AWS providers to this module.
   # The module uses aws.us_east_1 for the ACM certificate.
@@ -254,4 +261,18 @@ module "cloudfront" {
     aws           = aws
     aws.us_east_1 = aws.us_east_1
   }
+}
+
+# ==================== WAVE 4: Lightsail (permanent hosting, ~$5/month) ====================
+
+# Lightsail: Single instance running Docker containers.
+# Replaces the EKS stack for permanent hosting at ~$5/month.
+# CloudFront handles HTTPS and caching in front of it.
+module "lightsail" {
+  source = "./modules/lightsail"
+
+  project_name   = var.project_name
+  environment    = var.environment
+  ssh_public_key = var.lightsail_ssh_public_key
+  s3_bucket_name = module.s3.bucket_id
 }

@@ -157,3 +157,36 @@ output "blog_url" {
   description = "Blog URL"
   value       = "https://${local.blog_domain}"
 }
+
+# --- Lightsail ---
+output "lightsail_static_ip" {
+  description = "Lightsail instance public IP"
+  value       = module.lightsail.static_ip
+}
+
+output "lightsail_instance_name" {
+  description = "Lightsail instance name"
+  value       = module.lightsail.instance_name
+}
+
+output "lightsail_domain" {
+  description = "Lightsail blog domain (e.g. techblog.aws.his4irness23.de)"
+  value       = local.lightsail_domain
+}
+
+output "lightsail_url" {
+  description = "Lightsail blog URL"
+  value       = "https://${local.lightsail_domain}"
+}
+
+output "lightsail_backend_access_key_id" {
+  description = "IAM access key ID for Lightsail backend (set as LIGHTSAIL_AWS_ACCESS_KEY_ID)"
+  value       = module.lightsail.backend_access_key_id
+  sensitive   = true
+}
+
+output "lightsail_backend_secret_access_key" {
+  description = "IAM secret key for Lightsail backend (set as LIGHTSAIL_AWS_SECRET_ACCESS_KEY)"
+  value       = module.lightsail.backend_secret_access_key
+  sensitive   = true
+}

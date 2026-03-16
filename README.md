@@ -3,9 +3,9 @@
 > **Cloud-native tech blog on AWS EKS -- built from scratch with Terraform, Kubernetes, and CI/CD. Final project for a cloud engineering course.**
 
 [![EKS Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-eks.yml/badge.svg)](https://blog.aws.his4irness23.de)
-[![Lightsail Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-lightsail.yml/badge.svg)](https://blog.his4irness23.de)
+[![Lightsail Status](https://github.com/AndySchlegel/my-personal-tech-blog/actions/workflows/status-lightsail.yml/badge.svg)](https://techblog.aws.his4irness23.de)
 [![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20Cognito%20%7C%20Comprehend%20%7C%20Translate%20%7C%20Polly-orange)](https://aws.amazon.com/)
-[![Terraform](https://img.shields.io/badge/Terraform-9%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-10%20Modules%20%7C%2025%2B%20across%20projects-blue)](https://www.terraform.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Express.js-blue)](https://www.typescriptlang.org/)
 [![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20Checkov%20%7C%20Trufflehog-green)](https://github.com/AndySchlegel/my-personal-tech-blog/security)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
@@ -41,7 +41,7 @@ A cloud-native tech blog built from scratch in under 4 weeks -- from Express API
 3. **100% reproducible lifecycle** -- Provision, deploy, destroy, repeat. No manual secret updates, no leftover resources
 4. **Monitoring built-in** -- Prometheus + Grafana on EKS with HPA auto-scaling, live-demonstrable in presentations
 5. **Natural ML integration** -- Amazon Comprehend (auto-tags + sentiment), Amazon Translate (bilingual DE/EN), Amazon Polly (text-to-speech with playback speed control)
-6. **Cost-conscious architecture** -- EKS for showcase demos (~$4.80/day), Lightsail ($5.50/month) planned for permanent hosting
+6. **Cost-conscious architecture** -- EKS for showcase demos (~$4.80/day), Lightsail ($5/month) for permanent hosting with CloudFront CDN
 
 ---
 
@@ -103,8 +103,8 @@ Monitoring (in-cluster, namespace: monitoring):
 | ML | Amazon Comprehend (key phrase extraction + sentiment analysis) |
 | Translation | Amazon Translate (bilingual DE/EN with PostgreSQL cache) |
 | Text-to-Speech | Amazon Polly (neural voices: Vicki DE, Joanna EN) + S3 audio cache |
-| CDN/Storage | CloudFront + S3 (deployed, prepared for image hosting) |
-| IaC | Terraform (9 modules, all from scratch) |
+| CDN/Storage | CloudFront (HTTPS + caching, dual origin: S3 + Lightsail) + S3 (audio + images) |
+| IaC | Terraform (10 modules, all from scratch) |
 | CI/CD | GitHub Actions with OIDC (no long-lived AWS credentials) |
 | Notifications | Telegram Bot API (native fetch, non-blocking) |
 | Monitoring | Prometheus + Grafana (kube-prometheus-stack via Helm) |
@@ -156,19 +156,20 @@ Monitoring (in-cluster, namespace: monitoring):
 
 ## Infrastructure
 
-### Terraform Modules (9 modules, all written from scratch)
+### Terraform Modules (10 modules, all written from scratch)
 
 | Module | Purpose | Key Resources |
 |--------|---------|---------------|
 | **VPC** | Network foundation | VPC, 2 public + 2 private subnets, IGW, conditional NAT GW |
 | **Security Groups** | Layered firewall | ALB SG, EKS Node SG, RDS SG (defense in depth) |
 | **ECR** | Container registry | 2 repos (frontend + backend), lifecycle policies |
-| **S3** | Asset storage (prepared) | Assets bucket, versioning, encryption, CORS, all public access blocked |
+| **S3** | Asset storage | Assets bucket, versioning, encryption, CORS, all public access blocked |
 | **Cognito** | Admin auth | User pool, OAuth code flow, app client, admin group |
 | **GitHub OIDC** | CI/CD auth | OIDC provider, IAM role, 2 policies (deploy + terraform) |
 | **RDS** | Database | PostgreSQL 16, db.t3.micro, private subnets, 7-day backups |
 | **EKS** | Kubernetes | Cluster, spot node group, KMS encryption, OIDC/IRSA, add-ons |
-| **CloudFront** | CDN (prepared) | Distribution, ACM cert (us-east-1), OAC for S3, Route 53 DNS |
+| **CloudFront** | CDN + HTTPS | Dual origin (S3 + Lightsail), 4 cache behaviors, ACM cert (us-east-1) |
+| **Lightsail** | Permanent hosting | $5/month instance, static IP, IAM user for backend AWS services |
 
 ### Wave Deployment Strategy
 
@@ -179,9 +180,10 @@ Infrastructure is deployed in cost-controlled waves to avoid unnecessary charges
 | 0 | Bootstrap (S3 state + DynamoDB) | $0 | One-time setup |
 | 1 | VPC, SGs, ECR, S3, Cognito, GitHub OIDC | ~$0.50 | Anytime |
 | 2 | RDS | ~$13 (stoppable) | When DB needed |
-| 3 | EKS + NAT GW + CloudFront | ~$126 | Sprint only |
+| 3 | EKS + NAT GW | ~$126 | Sprint only |
+| 4 | Lightsail + CloudFront | ~$5 | Permanent hosting |
 
-After sprint: destroy Waves 2-3 -> back to ~$0.50/month.
+After sprint: destroy Waves 2-3 -> back to ~$0.50/month. Wave 4 runs permanently at ~$5/month.
 
 ---
 
@@ -330,7 +332,7 @@ terraform apply
 
 ### CI/CD Pipelines
 
-Eight workflows (6 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
+Nine workflows (7 core + 2 status monitors), all using OIDC federation (no long-lived AWS credentials):
 
 **Deploy workflow** (`deploy.yml` -- manual trigger):
 
@@ -358,13 +360,30 @@ Manual Trigger (GitHub UI "Run workflow")
 **Infrastructure Provision** (`infra-provision.yml` -- manual trigger):
 
 ```
-Manual Trigger (optional: include Wave 3 checkbox)
+Manual Trigger (optional: include Wave 3/4 checkboxes)
     |
     Job 1: VALIDATE -> Job 2: SECURITY SCAN -> Job 3: PROVISION
     +-- Wave 0: IAM policies (ensures permissions are current)
     +-- Wave 1: VPC, SGs, ECR, S3, Cognito, OIDC
     +-- Wave 2: RDS
-    +-- Wave 3: EKS + CloudFront + NAT GW (checkbox)
+    +-- Wave 3: EKS + NAT GW (checkbox)
+    +-- Wave 4: Lightsail + CloudFront (checkbox)
+```
+
+**Deploy to Lightsail** (`deploy-lightsail.yml` -- manual trigger):
+
+```
+Manual Trigger
+    |
+    Job 1: TEST (skippable for hotfixes)
+    +-- ESLint + Prettier + Jest unit tests (31 tests)
+    |
+    Job 2: DEPLOY
+    +-- SSH key setup
+    +-- rsync files to Lightsail instance
+    +-- Write .env (DB password, AWS credentials, Cognito IDs)
+    +-- docker-compose up --build -d
+    +-- Health check + backup cron setup
 ```
 
 **Infrastructure Teardown** (`infra-destroy.yml` -- manual trigger):
@@ -380,7 +399,7 @@ Manual Trigger (type "DESTROY" to confirm)
 
 **Terraform workflow** (`terraform.yml`), **Security scanning** (`security-scan.yml`), and **Lint** (`lint.yml`) provide granular wave control, automatic PR security gates, and code quality checks respectively.
 
-Only 4 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+GitHub Secrets: `AWS_ROLE_ARN`, `DB_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` for EKS. Additional for Lightsail: `LIGHTSAIL_SSH_KEY`, `LIGHTSAIL_HOST`, `LIGHTSAIL_AWS_ACCESS_KEY_ID`, `LIGHTSAIL_AWS_SECRET_ACCESS_KEY`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`.
 
 ---
 
@@ -407,9 +426,9 @@ Only 4 GitHub Secrets required for the entire lifecycle: `AWS_ROLE_ARN`, `DB_PAS
 | Track | Purpose | Monthly Cost | Infrastructure |
 |-------|---------|-------------|----------------|
 | **EKS** | Showcase for demos and interviews | ~$143 (sprint only) | Full AWS stack (EKS, RDS, ALB, Cognito, Comprehend, Translate, Polly) at `blog.aws.his4irness23.de` |
-| **Lightsail** | Permanent hosting | ~$5.50 | Single instance, PostgreSQL on-instance, Let's Encrypt SSL at `blog.his4irness23.de` |
+| **Lightsail** | Permanent hosting | ~$5 | Single instance + CloudFront CDN, PostgreSQL on-instance, daily S3 backups at `techblog.aws.his4irness23.de` |
 
-Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. Cognito and Comprehend stay as managed AWS services on both tracks.
+Same codebase, separate deployment configs. EKS demonstrates Kubernetes expertise, Lightsail keeps the blog online permanently at minimal cost. CloudFront provides HTTPS termination, caching, and edge delivery for Lightsail. All AWS ML services (Cognito, Comprehend, Translate, Polly) work on both tracks.
 
 ---
 
@@ -441,14 +460,14 @@ Key highlights:
 | Metric | Value |
 |--------|-------|
 | Development Duration | ~3.5 weeks (Feb 20 - Mar 14, 2026) |
-| Terraform Modules | 9 in this project (25+ across all projects) |
+| Terraform Modules | 10 in this project (25+ across all projects) |
 | AWS Services | 14 (VPC, EKS, RDS, S3, CloudFront, Cognito, ECR, Route 53, KMS, Comprehend, Translate, Polly, ALB, IAM) |
 | Blog Articles | 11 (German, real content) + 1 added live as proof-of-concept |
 | Categories | 7 (each with unique color system) |
 | Tags | 32 |
 | Unit Tests | 31 (health, posts, comments, categories, auth) |
 | K8s Manifests | 12 (namespace, config, secrets, services, deployments, ingress, HPA, db-init, Grafana dashboard) |
-| CI/CD Workflows | 8 (deploy, provision, destroy, terraform, security-scan, lint, 2x status monitors) |
+| CI/CD Workflows | 9 (deploy-eks, deploy-lightsail, provision, destroy, terraform, security-scan, lint, 2x status monitors) |
 | Commits | 175+ |
 | Lessons Learned | 43 documented |
 
@@ -463,6 +482,6 @@ Cloud & DevOps Engineer
 
 ---
 
-**Project Status:** Feature-complete. EKS showcase stack fully operational, Lightsail permanent hosting planned.
-**Last Updated:** 2026-03-15
+**Project Status:** Feature-complete. EKS showcase stack for interviews, Lightsail permanent hosting with CloudFront CDN.
+**Last Updated:** 2026-03-16
 **AWS Region:** eu-central-1 (Frankfurt)

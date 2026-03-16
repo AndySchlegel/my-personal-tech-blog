@@ -11,8 +11,14 @@ variable "environment" {
 }
 
 variable "domain_name" {
-  description = "Blog domain for CORS configuration (e.g. blog.his4irness23.de)"
+  description = "Blog domain for CORS configuration (e.g. blog.aws.his4irness23.de)"
   type        = string
   # CORS needs the exact domain that will make requests to S3.
   # The admin dashboard at this domain uploads images via pre-signed URLs.
+}
+
+variable "lightsail_domain" {
+  description = "Lightsail blog domain for CORS (e.g. techblog.aws.his4irness23.de)"
+  type        = string
+  default     = ""
 }

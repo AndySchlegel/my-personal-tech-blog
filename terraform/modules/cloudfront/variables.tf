@@ -25,7 +25,7 @@ variable "s3_bucket_id" {
 }
 
 variable "domain_name" {
-  description = "Blog domain name (e.g. blog.his4irness23.de)"
+  description = "Blog domain name (e.g. techblog.aws.his4irness23.de)"
   type        = string
   # Used for: ACM certificate, CloudFront alias, Route 53 DNS record.
 }
@@ -33,6 +33,13 @@ variable "domain_name" {
 variable "route53_zone_id" {
   description = "Route 53 hosted zone ID for DNS record creation"
   type        = string
-  # The hosted zone for his4irness23.de. We create an A record
-  # (blog.his4irness23.de -> CloudFront) in this zone.
+  # The hosted zone for aws.his4irness23.de. We create an A record
+  # (techblog.aws.his4irness23.de -> CloudFront) in this zone.
+}
+
+variable "lightsail_origin_domain" {
+  description = "Lightsail static IP or domain for the app origin (HTTP)"
+  type        = string
+  # CloudFront forwards requests to this origin for HTML, API, and assets.
+  # This is the Lightsail static IP address.
 }

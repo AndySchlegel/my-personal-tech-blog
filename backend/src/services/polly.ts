@@ -2,26 +2,29 @@
  * polly.ts - Amazon Polly integration for text-to-speech blog audio
  *
  * Converts blog post content to MP3 audio using AWS Polly. Audio files
- * are uploaded to S3 and served via pre-signed URLs. Results are cached
- * in PostgreSQL so each post is only synthesized once.
+ * are uploaded to S3 and served via CloudFront using static paths.
+ * Results are cached in PostgreSQL so each post is only synthesized once.
  *
  * Flow:
  *   1. Check DB for cached S3 key
- *   2. If cached, generate pre-signed URL (fast, no Polly call)
+ *   2. If cached, return static path /audio/post-{id}-{lang}.mp3 (served by CloudFront)
  *   3. If not cached, strip Markdown, chunk text, call Polly, upload to S3
  *   4. Save S3 key in DB for future requests
+ *
+ * Audio delivery: CloudFront has an S3 origin with OAC for /audio/* paths.
+ * The frontend requests /audio/post-{id}-{lang}.mp3, CloudFront fetches
+ * from S3 and caches at edge (7 day TTL). No pre-signed URLs needed.
  *
  * Uses the same graceful-degradation pattern as comprehend.ts / translate.ts:
  * - If AWS credentials are not available (local dev), silently returns null
  * - Errors are logged but never break the calling code
  *
- * Required: @aws-sdk/client-polly, @aws-sdk/client-s3, @aws-sdk/s3-request-presigner
+ * Required: @aws-sdk/client-polly, @aws-sdk/client-s3
  * Region: reads AWS_REGION env var, defaults to 'eu-central-1'
  */
 
 import { PollyClient, SynthesizeSpeechCommand, VoiceId } from '@aws-sdk/client-polly';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { query } from '../models/database';
 
 // Voice configuration per language
@@ -30,10 +33,6 @@ const VOICE_MAP: Record<string, VoiceId> = {
   de: 'Vicki' as VoiceId,
   en: 'Joanna' as VoiceId,
 };
-
-// Pre-signed URL validity (1 hour). Audio stays in S3 indefinitely,
-// only the URL expires and gets regenerated on next request.
-const PRESIGNED_URL_EXPIRY = 3600;
 
 // Polly has a 3000 character limit per SynthesizeSpeech request.
 // We chunk at 2800 to leave some headroom.
@@ -201,26 +200,14 @@ async function uploadToS3(buffer: Buffer, s3Key: string): Promise<string | null>
 }
 
 /**
- * Generate a pre-signed URL for an S3 object
+ * Convert S3 key to a static URL path served by CloudFront
  *
- * The URL is temporary (1 hour) but the object stays in S3 forever.
- * Each API call generates a fresh URL.
+ * CloudFront has an ordered cache behavior for /audio/* that routes
+ * to the S3 origin with OAC. No pre-signed URLs needed.
+ * Example: "audio/post-1-de.mp3" -> "/audio/post-1-de.mp3"
  */
-async function getPresignedUrl(s3Key: string): Promise<string | null> {
-  const bucket = process.env.S3_BUCKET_NAME;
-  if (!bucket) return null;
-
-  try {
-    const command = new GetObjectCommand({
-      Bucket: bucket,
-      Key: s3Key,
-    });
-
-    return await getSignedUrl(s3Client, command, { expiresIn: PRESIGNED_URL_EXPIRY });
-  } catch (err) {
-    console.warn('Pre-signed URL generation failed:', (err as Error).message);
-    return null;
-  }
+function getStaticAudioPath(s3Key: string): string {
+  return `/${s3Key}`;
 }
 
 /**
@@ -262,16 +249,16 @@ async function saveAudioCache(postId: number, language: string, s3Key: string): 
 /**
  * Get audio URL for a blog post
  *
- * Main entry point. Returns a pre-signed S3 URL for the audio file,
+ * Main entry point. Returns a static audio path (served by CloudFront via S3),
  * or null if Polly/S3 is not available.
  *
  * Flow:
  *   1. Check DB cache for existing S3 key
- *   2. If cached, return pre-signed URL (instant)
- *   3. If not cached, generate audio via Polly, upload to S3, cache, return URL
+ *   2. If cached, return static path /audio/post-{id}-{lang}.mp3 (instant)
+ *   3. If not cached, generate audio via Polly, upload to S3, cache, return path
  *
  * First request for a post takes ~5-15 seconds (Polly synthesis + S3 upload).
- * Subsequent requests return in <100ms (just pre-signed URL generation).
+ * Subsequent requests return instantly (just DB lookup + path construction).
  */
 export async function getPostAudioUrl(
   postId: number,
@@ -288,7 +275,7 @@ export async function getPostAudioUrl(
   // Step 1: Check cache
   const cachedKey = await getCachedAudio(postId, language);
   if (cachedKey) {
-    return getPresignedUrl(cachedKey);
+    return getStaticAudioPath(cachedKey);
   }
 
   // Step 2: Prepare text for synthesis
@@ -320,6 +307,6 @@ export async function getPostAudioUrl(
   // Step 6: Cache the S3 key in DB
   await saveAudioCache(postId, language, s3Key);
 
-  // Step 7: Return pre-signed URL
-  return getPresignedUrl(s3Key);
+  // Step 7: Return static path (served by CloudFront via S3 OAC)
+  return getStaticAudioPath(s3Key);
 }

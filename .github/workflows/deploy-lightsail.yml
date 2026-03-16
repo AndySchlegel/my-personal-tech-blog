@@ -1,0 +1,206 @@
+# Deploy Pipeline - Deploy blog to Lightsail instance
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- nothing deploys unless you
+# click "Run workflow" in the GitHub Actions UI.
+#
+# Two jobs in sequence:
+#   1. TEST   - Run ESLint, Prettier, and Jest unit tests (skippable)
+#   2. DEPLOY - rsync files to Lightsail, write .env, docker-compose up --build
+#
+# Authentication: SSH key (stored as GitHub Secret).
+# AWS services (Comprehend, Translate, Polly, S3) use IAM user credentials
+# passed via .env file (not IRSA like on EKS).
+#
+# 5 GitHub Secrets required:
+#   - LIGHTSAIL_SSH_KEY          (SSH private key for deploy)
+#   - LIGHTSAIL_HOST             (Lightsail static IP)
+#   - DB_PASSWORD                (PostgreSQL password)
+#   - LIGHTSAIL_AWS_ACCESS_KEY_ID     (IAM user for backend AWS services)
+#   - LIGHTSAIL_AWS_SECRET_ACCESS_KEY (IAM user for backend AWS services)
+#
+# Optional secrets:
+#   - TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID (comment notifications)
+#   - COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID (admin auth)
+
+name: Deploy to Lightsail
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests (for hotfix deploys)'
+        required: false
+        type: boolean
+        default: false
+      run_db_init:
+        description: 'Re-initialize database (WARNING: drops existing data)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Prevent concurrent deploys.
+concurrency:
+  group: deploy-lightsail
+  cancel-in-progress: false
+
+env:
+  DEPLOY_USER: ec2-user
+  DEPLOY_PATH: /opt/blog
+  AWS_REGION: eu-central-1
+
+jobs:
+  # ===== Job 1: TEST =====
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_tests }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: backend/
+        run: npm ci
+
+      - name: Lint
+        working-directory: backend/
+        run: npx eslint src/
+
+      - name: Format check
+        working-directory: backend/
+        run: npx prettier --check "src/**/*.ts"
+
+      - name: Unit tests
+        working-directory: backend/
+        run: npm test
+
+  # ===== Job 2: DEPLOY =====
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [test]
+    # Run even if test was skipped (skip_tests = true)
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Write the SSH key to a file for rsync/ssh commands.
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > ~/.ssh/lightsail_key
+          chmod 600 ~/.ssh/lightsail_key
+          # Add host to known_hosts to avoid interactive prompt
+          ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      # Sync the entire project to the Lightsail instance.
+      # Excludes: node_modules, .git, terraform state, local dev files.
+      - name: Rsync files to Lightsail
+        run: |
+          rsync -avz --delete \
+            --exclude 'node_modules/' \
+            --exclude '.git/' \
+            --exclude 'terraform/' \
+            --exclude 'k8s/' \
+            --exclude '.github/' \
+            --exclude '*.tfvars' \
+            --exclude '*.tfstate*' \
+            --exclude '.terraform/' \
+            --exclude 'frontend/src/archive/' \
+            -e "ssh -i ~/.ssh/lightsail_key" \
+            ./ ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }}:${{ env.DEPLOY_PATH }}/
+
+      # Write .env file on the instance with all secrets.
+      # This file is read by docker-compose.lightsail.yml.
+      - name: Write .env file
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'ENVEOF'
+          cat > /opt/blog/.env << EOF
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          AWS_REGION=${{ env.AWS_REGION }}
+          AWS_ACCESS_KEY_ID=${{ secrets.LIGHTSAIL_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.LIGHTSAIL_AWS_SECRET_ACCESS_KEY }}
+          S3_BUCKET_NAME=blog-assets-his4irness23
+          COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID }}
+          COGNITO_CLIENT_ID=${{ secrets.COGNITO_CLIENT_ID }}
+          CORS_ORIGIN=https://techblog.aws.his4irness23.de
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
+          EOF
+          chmod 600 /opt/blog/.env
+          ENVEOF
+
+      # Optional: reset database (drops and recreates)
+      - name: Reset database
+        if: ${{ inputs.run_db_init }}
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'EOF'
+          cd /opt/blog
+          # Stop backend to prevent connections during reset
+          docker-compose -f docker-compose.lightsail.yml stop backend || true
+          # Drop and recreate the database volume
+          docker-compose -f docker-compose.lightsail.yml down -v
+          EOF
+
+      # Build and start all containers on the instance.
+      # --build forces a rebuild (picks up code changes from rsync).
+      - name: Build and start containers
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'EOF'
+          cd /opt/blog
+          docker-compose -f docker-compose.lightsail.yml up --build -d
+          EOF
+
+      # Wait for the backend to be healthy, then verify.
+      - name: Health check
+        run: |
+          echo "Waiting for containers to start..."
+          sleep 15
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'EOF'
+          # Check container status
+          docker-compose -f docker-compose.lightsail.yml ps
+
+          # Test health endpoint
+          for i in 1 2 3 4 5; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/health || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Health check passed (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            echo "Attempt $i: HTTP $HTTP_CODE, retrying in 5s..."
+            sleep 5
+          done
+          echo "Health check FAILED after 5 attempts"
+          docker-compose -f docker-compose.lightsail.yml logs --tail=50
+          exit 1
+          EOF
+
+      # Setup daily database backup cron job
+      - name: Setup backup cron
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'EOF'
+          chmod +x /opt/blog/scripts/backup-db.sh
+          mkdir -p /opt/blog/logs
+          # Add cron job if not already present (daily at 3 AM UTC)
+          CRON_CMD="0 3 * * * S3_BUCKET_NAME=blog-assets-his4irness23 /opt/blog/scripts/backup-db.sh >> /opt/blog/logs/backup.log 2>&1"
+          (crontab -l 2>/dev/null | grep -v "backup-db.sh" ; echo "$CRON_CMD") | crontab -
+          echo "Backup cron job configured"
+          EOF
+
+      - name: Deploy summary
+        run: |
+          echo "Deployment complete!"
+          echo "  Instance: ${{ secrets.LIGHTSAIL_HOST }}"
+          echo "  URL: https://techblog.aws.his4irness23.de"
+          echo "  Health: http://${{ secrets.LIGHTSAIL_HOST }}/health"

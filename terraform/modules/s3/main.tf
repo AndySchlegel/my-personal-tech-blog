@@ -95,8 +95,9 @@ resource "aws_s3_bucket_cors_configuration" "assets" {
     allowed_headers = ["*"]                  # Allow any request headers
     allowed_methods = ["GET", "PUT", "POST"] # Read + upload
     allowed_origins = [
-      "https://${var.domain_name}", # Production: blog.his4irness23.de
-      "http://localhost:8080"       # Local development
+      "https://${var.domain_name}",      # EKS production
+      "https://${var.lightsail_domain}", # Lightsail production
+      "http://localhost:8080"            # Local development
     ]
     max_age_seconds = 3600 # Browser caches CORS preflight response for 1 hour
   }
