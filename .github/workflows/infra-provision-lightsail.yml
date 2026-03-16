@@ -46,6 +46,7 @@ concurrency:
 env:
   AWS_REGION: eu-central-1
   TF_WORKING_DIR: terraform
+  ENVIRONMENT: dev
 
 jobs:
   # ===== Job 1: VALIDATE =====
@@ -192,10 +193,41 @@ jobs:
         run: terraform show tfplan-lightsail
 
       - name: Apply Lightsail + CloudFront
+        id: apply_lightsail
+        continue-on-error: true
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: terraform apply tfplan-lightsail
+
+      # --- Workaround: Lightsail CreateInstances provider bug ---
+      # The Terraform AWS provider's operation waiter for Lightsail times out
+      # even though the instance is created successfully. When this happens:
+      # 1. Import the instance into state
+      # 2. Re-apply to create remaining resources (static IP attachment, ports, IAM user)
+      - name: Handle Lightsail creation timeout
+        if: steps.apply_lightsail.outcome == 'failure'
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "Apply failed. Checking if Lightsail instance was created..."
+          if aws lightsail get-instance --instance-name blog-lightsail-${{ env.ENVIRONMENT }} --region ${{ env.AWS_REGION }} 2>/dev/null; then
+            echo "Instance exists! Importing into Terraform state..."
+            terraform import \
+              -var="db_password=${{ secrets.DB_PASSWORD }}" \
+              module.lightsail.aws_lightsail_instance.blog \
+              blog-lightsail-${{ env.ENVIRONMENT }} || echo "Already in state"
+
+            echo "Re-applying to reconcile remaining resources..."
+            terraform apply \
+              -target=module.lightsail \
+              -target=module.cloudfront \
+              -auto-approve
+          else
+            echo "Instance does NOT exist. This is a real error."
+            exit 1
+          fi
 
       # --- Show relevant outputs ---
       - name: Show Lightsail outputs
