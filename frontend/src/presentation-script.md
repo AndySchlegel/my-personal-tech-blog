@@ -76,10 +76,10 @@
 **Einfach erklaert:**
 - **Namespace** = eigener Bereich im Cluster, damit Blog-Sachen isoliert sind
 - **ConfigMap + Secrets** = Konfiguration und Passwoerter, getrennt vom Code
-- **Deployment** = sagt Kubernetes: "Ich will 2 Backend-Pods und 1 Frontend-Pod, halte die am Laufen"
+- **Deployment** = sagt Kubernetes: "Starte je 2 Backend- und 2 Frontend-Pods." Der HPA uebernimmt danach die Kontrolle und skaliert bei niedrigem Traffic auf je 1 Pod runter -- deshalb sieht man im Normalbetrieb nur 1+1
 - **Service** = interne Adresse damit sich Pods gegenseitig finden koennen
 - **Ingress** = der Eingang von aussen -- verbindet den ALB Load Balancer mit den Pods
-- **HPA** = Horizontal Pod Autoscaler -- wenn CPU ueber 70% geht, werden automatisch mehr Pods gestartet
+- **HPA** = Horizontal Pod Autoscaler -- uebernimmt nach dem Start die Replica-Steuerung. Skaliert bei niedrigem Traffic auf das Minimum (je 1 Pod) und bei hoher CPU (ueber 70%) auf bis zu 4 Backend- bzw. 3 Frontend-Pods
 - **IRSA** = jeder Pod bekommt nur die AWS-Rechte die er braucht, nicht die vom ganzen Server
 - **DB Init Job** = einmaliger Task der die Datenbank-Tabellen und Blog-Posts anlegt
 
@@ -140,7 +140,7 @@
 kubectl get pods -n blog
 ```
 - Alle Pods Running, 0 Restarts zeigen
-- Backend 2 Replicas, Frontend 1-2
+- Im Normalbetrieb je 1 Pod (HPA hat runterskaliert) -- das ist korrekt, nicht ein Fehler
 
 ### Schritt 2: Blog im Browser (1 Min)
 - Seite oeffnen, durch einen Post klicken
@@ -162,7 +162,7 @@ kubectl run stress --image=busybox --restart=Never -- \
   /bin/sh -c "while true; do wget -q -O- http://backend.blog.svc.cluster.local:3000/api/posts; done"
 ```
 - Grafana Dashboard oeffnen -- CPU steigt, HPA skaliert hoch
-- Warten bis Backend von 2 auf 3-4 Pods skaliert (~60s)
+- Warten bis Backend von 1 auf 3-4 Pods hochskaliert (~60s)
 ```bash
 # Ergebnis zeigen
 kubectl get hpa -n blog
@@ -298,3 +298,77 @@ Moderation neben der Auto-Moderation Pflicht.
 
 **Guter Punkt fuer die Praesentation:** Zeigt dass man die Grenzen von
 AWS-Services kennt und ehrlich damit umgeht, statt sie zu verschweigen.
+
+---
+---
+
+# Cheatsheet -- K8s Manifeste & Security Groups
+
+## Die 12 Manifeste auf einen Blick
+
+| # | Datei | Was es tut |
+|---|-------|------------|
+| 00 | namespace.yaml | Erstellt den Bereich `blog` -- alle Blog-Ressourcen leben isoliert hier drin |
+| 01 | configmap.yaml | Nicht-geheime Config (Port, Region, CORS-URL) -- wird von Backend-Pods gelesen |
+| 02 | secrets.yaml | Geheime Werte (DB-URL, Cognito-IDs) -- Platzhalter die die Pipeline mit echten Werten fuellt |
+| 03 | backend-deployment.yaml | Startet 2 Backend-Pods (Express API), verteilt auf 2 AZs, laeuft als Non-Root User |
+| 04 | backend-service.yaml | Gibt dem Backend eine interne Adresse -- heisst `backend` damit nginx es per Name findet |
+| 05 | frontend-deployment.yaml | Startet 2 Frontend-Pods (nginx), mountet die Admin-Config als Volume |
+| 06 | frontend-service.yaml | Gibt dem Frontend eine interne Adresse fuer den ALB |
+| 07 | ingress.yaml | Der Eingang von aussen -- erstellt den ALB mit HTTPS, leitet Traffic ans Frontend |
+| 08 | db-init-configmap.yaml | Enthaelt die SQL-Scripts (Schema + 11 Blog-Posts) als ConfigMap-Daten |
+| 09 | db-init-job.yaml | Einmal-Job: startet einen postgres-Container der die SQL-Scripts gegen RDS ausfuehrt |
+| 10 | hpa.yaml | Auto-Scaling: Backend 1-4 Pods, Frontend 1-3 Pods, basierend auf CPU-Last |
+| 11 | grafana-dashboard.yaml | Grafana-Dashboard-JSON fuer AWS ML Services (Translate, Polly Metriken) |
+
+## Zusammenhaenge als Kette
+
+```
+00 Namespace        <- alles andere lebt hier drin
+    |
+01 ConfigMap -----> 03 Backend Deployment <- liest Config + Secrets
+02 Secrets -------> 03 Backend Deployment
+    |                    |
+    |               04 Backend Service    <- interner Name "backend"
+    |                    ^
+    |                    | (nginx proxy_pass: backend:3000)
+    |                    |
+05 Frontend Depl.  -> 06 Frontend Service <- interner Name "frontend"
+    |                    ^
+    |                    | (ALB routet hierhin)
+    |                    |
+    |               07 Ingress            <- erstellt den ALB, HTTPS, oeffentlich
+    |
+08 DB ConfigMap --> 09 DB Init Job        <- einmal SQL ausfuehren, dann fertig
+02 Secrets -------> 09 DB Init Job        <- braucht DATABASE_URL
+    |
+10 HPA             <- ueberwacht 03 + 05, skaliert Pods hoch/runter
+    |
+11 Grafana Dashboard <- lebt in namespace "monitoring", nicht "blog"
+```
+
+## Die 6 wichtigsten Verbindungen
+
+1. **Config -> Pods:** ConfigMap (01) und Secrets (02) werden in die Deployments (03, 05) injected -- Code liest nur Env-Variablen, nie hardcoded Werte
+2. **Service -> Service:** Frontend-nginx macht `proxy_pass http://backend:3000` -- der Name `backend` ist der Service-Name aus 04. Deshalb muss der Service exakt so heissen
+3. **Ingress -> Service:** Der ALB (07) routet Traffic an den Frontend-Service (06) -- mit `target-type: ip` direkt auf Pod-IPs, nicht ueber NodePort
+4. **HPA -> Deployment:** Der HPA (10) ueberschreibt die `replicas` Zahl der Deployments (03, 05) -- er hat das letzte Wort
+5. **Job ist einmalig:** DB-Init (09) laeuft einmal, fuellt die Datenbank, und raeumt sich nach 5 Minuten selbst auf
+6. **Grafana (11) lebt woanders:** Im `monitoring` Namespace, nicht in `blog` -- Grafana entdeckt das Dashboard automatisch ueber ein Label
+
+## SG/ALB Problem und Loesung
+
+**Das Problem:** Terraform erstellt Security Groups, aber EKS erstellt automatisch eine eigene Cluster-SG. Pods kommunizieren ueber die Cluster-SG -- eigene Terraform-Regeln greifen ins Leere.
+
+**Die Loesung:** Die eigene Node-SG wird dem Cluster mitgegeben (`security_group_ids`). EKS haengt dann beide SGs an die Nodes -- seine Cluster-SG plus unsere Custom-SG. Damit greifen unsere Regeln.
+
+**Beim ALB:** Der ALB wird nicht von Terraform erstellt, sondern vom AWS Load Balancer Controller in K8s. Die Verbindung laeuft ueber Annotations im Ingress-Manifest -- die Pipeline fuellt die ALB-SG-ID aus dem Terraform-Output ein.
+
+**Traffic-Kette mit Security Groups:**
+```
+Internet -> ALB        (ALB-SG: Port 80/443 von ueberall)
+         -> EKS Nodes  (Node-SG: Port 80 nur von ALB-SG)
+         -> RDS         (RDS-SG: Port 5432 nur von Node-SG)
+```
+
+**Einfach gesagt:** "Terraform erstellt die Regeln, Kubernetes erstellt den ALB -- die Pipeline verbindet beide Welten ueber Annotations und Terraform-Outputs."
