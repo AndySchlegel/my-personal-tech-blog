@@ -53,6 +53,7 @@ services:
       PORT: 3000
       NODE_ENV: production
       DATABASE_URL: postgresql://bloguser:${DB_PASSWORD}@db:5432/techblog
+      DB_SSL: "false"
       CORS_ORIGIN: ${CORS_ORIGIN:-https://techblog.aws.his4irness23.de}
       # AWS credentials (IAM user for Lightsail, replaces EKS IRSA)
       AWS_REGION: ${AWS_REGION:-eu-central-1}

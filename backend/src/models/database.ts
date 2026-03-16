@@ -16,11 +16,15 @@ import { Pool } from 'pg';
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 
-  // RDS requires SSL. The pg library's sslmode=require now maps to verify-full,
-  // which rejects the AWS RDS CA certificate. Since we're inside a private VPC
-  // (only EKS pods can reach RDS), we accept the RDS-issued certificate.
-  // In local dev (NODE_ENV !== production), SSL is not needed.
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  // RDS requires SSL, but local Docker PostgreSQL does not.
+  // DB_SSL=false explicitly disables SSL (used on Lightsail where DB is local).
+  // Default: SSL on in production (for EKS/RDS), off in dev.
+  ssl:
+    process.env.DB_SSL === 'false'
+      ? false
+      : process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false,
 
   // Max 10 connections in the pool (db.t3.micro has limited connections)
   max: 10,
