@@ -179,6 +179,20 @@ jobs:
           chmod 600 /opt/blog/.env
           ENVEOF
 
+      # Inject Cognito config into frontend admin config.
+      # On EKS this is done via K8s ConfigMap, on Lightsail we write it directly.
+      - name: Write admin config.js
+        run: |
+          ssh -i ~/.ssh/lightsail_key ${{ env.DEPLOY_USER }}@${{ secrets.LIGHTSAIL_HOST }} << CFGEOF
+          cat > /opt/blog/frontend/src/admin/config.js << 'INNEREOF'
+          window.BLOG_CONFIG = {
+            cognitoUserPoolId: "${{ secrets.COGNITO_USER_POOL_ID }}",
+            cognitoClientId: "${{ secrets.COGNITO_CLIENT_ID }}",
+            cognitoDomain: "blog-admin-auth.auth.eu-central-1.amazoncognito.com",
+          };
+          INNEREOF
+          CFGEOF
+
       # Optional: reset database (drops and recreates)
       - name: Reset database
         if: ${{ inputs.run_db_init }}
