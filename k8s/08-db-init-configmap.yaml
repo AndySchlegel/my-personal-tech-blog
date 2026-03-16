@@ -638,9 +638,9 @@ data:
 
     Die Entscheidung, welcher Service wo läuft, folgt einer einfachen Logik:
 
-    **Rechenintensiv und datengetrieben** kommt auf den leistungsstarken Server. Dort gibt es genug CPU und schnelle NVMe-SSDs für I/O-intensive Workloads. Automatisierte Pipelines verarbeiten Daten, verifizieren die Integrität und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
+    **Rechenintensiv und ressourcenhungrig** kommt auf den leistungsstarken Server. Dort stehen genug CPU-Ressourcen und schneller Storage für I/O-intensive Workloads zur Verfügung. Automatisierte Pipelines verarbeiten Aufgaben, verifizieren Ergebnisse und synchronisieren sie per rsync auf eine externe Storage Box. Von dort zieht die NAS die Daten über Cloud Sync. Mehrstufig, mit Prüfungen auf jeder Ebene.
 
-    **Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht nicht viel Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
+    **Web-Anwendungen und öffentliche Endpunkte** laufen auf dem kleinen Server. n8n für Webhook-basierte Automatisierung, Traefik für TLS -- das braucht wenig Leistung, aber eine stabile öffentliche IP und saubere Zertifikatsverwaltung.
 
     **Alles Zentrale** bleibt auf der NAS. Prometheus sammelt Metriken von allen Standorten. Grafana visualisiert sie. Wazuh aggregiert Security-Events. GitLab hostet meine privaten Repositories. Die NAS ist die einzige Komponente, die nicht in der Cloud läuft -- und das ist bewusst so. Hier liegen die Daten, hier laufen die Auswertungen, hier ist die Kontrolle.
 
@@ -648,9 +648,9 @@ data:
 
     Was mich am meisten überrascht hat: Die eigentliche Arbeit steckt nicht im Aufsetzen der Services, sondern in der Automatisierung drumherum.
 
-    Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von minütlicher Datenverarbeitung bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
+    Auf dem leistungsstarken Server laufen mehrere Cronjobs in unterschiedlichen Intervallen -- von regelmäßigen Wartungsaufgaben bis zu täglichen Cleanup-Routinen. Ein Safety-Net-Skript erkennt hängengebliebene Prozesse und bereinigt sie automatisch.
 
-    Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn weniger als 20 GB frei sind. Kein `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
+    Das Sync-Skript allein hat über 250 Zeilen. Es synchronisiert Ordner einzeln, vergleicht Dateianzahlen zwischen Quelle und Ziel, löscht erst nach Bestätigung, überwacht den Festplattenspeicher und pausiert Prozesse automatisch, wenn der Speicher knapp wird. Kein einfaches `rsync -r` und hoffen, dass es passt -- sondern mehrstufige Verifikation mit Logging.
 
     Shell-Skripte und Cron klingen nicht glamourös. Aber diese Skripte laufen seit Wochen zuverlässig -- und genau daran habe ich Fehlerbehandlung, Robustheit und die Realität von Automatisierung wirklich verstanden.
 
