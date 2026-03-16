@@ -178,6 +178,8 @@ resource "aws_iam_role_policy" "terraform" {
   #checkov:skip=CKV_AWS_289:Terraform pipeline must manage all infrastructure resources
   #checkov:skip=CKV_AWS_355:Resource=* unavoidable for ec2/iam/rds (no resource-level scoping)
   #checkov:skip=CKV_AWS_290:Terraform must create/modify resources, write access is its purpose
+  #checkov:skip=CKV_AWS_286:IAM user creation needed for Lightsail backend AWS service access
+  #checkov:skip=CKV_AWS_287:Access key creation needed for Lightsail backend (no IRSA outside EKS)
   name = "${var.project_name}-terraform-policy"
   role = aws_iam_role.github_actions.id
 
