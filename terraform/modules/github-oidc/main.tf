@@ -604,6 +604,65 @@ resource "aws_iam_role_policy" "terraform" {
           "logs:TagLogGroup"
         ]
         Resource = "*"
+      },
+
+      # --- Lightsail ---
+      # Create/manage the Lightsail instance for permanent blog hosting.
+      # Includes instance, static IP, firewall ports, and SSH key pair.
+      {
+        Sid    = "Lightsail"
+        Effect = "Allow"
+        Action = [
+          "lightsail:CreateInstances",
+          "lightsail:DeleteInstance",
+          "lightsail:GetInstance",
+          "lightsail:GetInstances",
+          "lightsail:StartInstance",
+          "lightsail:StopInstance",
+          "lightsail:TagResource",
+          "lightsail:UntagResource",
+          "lightsail:AllocateStaticIp",
+          "lightsail:ReleaseStaticIp",
+          "lightsail:AttachStaticIp",
+          "lightsail:DetachStaticIp",
+          "lightsail:GetStaticIp",
+          "lightsail:GetStaticIps",
+          "lightsail:PutInstancePublicPorts",
+          "lightsail:GetInstancePortStates",
+          "lightsail:ImportKeyPair",
+          "lightsail:DeleteKeyPair",
+          "lightsail:GetKeyPair",
+          "lightsail:GetKeyPairs",
+          "lightsail:GetRegions",
+          "lightsail:GetBundles",
+          "lightsail:GetBlueprints"
+        ]
+        Resource = "*"
+      },
+
+      # --- IAM Users ---
+      # Terraform creates an IAM user with access keys for the Lightsail
+      # backend container (Comprehend, Translate, Polly, S3 access).
+      # Separate from the IAM Roles section above (which handles EKS IRSA).
+      {
+        Sid    = "IAMUsers"
+        Effect = "Allow"
+        Action = [
+          "iam:CreateUser",
+          "iam:DeleteUser",
+          "iam:GetUser",
+          "iam:TagUser",
+          "iam:UntagUser",
+          "iam:ListUserTags",
+          "iam:CreateAccessKey",
+          "iam:DeleteAccessKey",
+          "iam:ListAccessKeys",
+          "iam:PutUserPolicy",
+          "iam:GetUserPolicy",
+          "iam:DeleteUserPolicy",
+          "iam:ListUserPolicies"
+        ]
+        Resource = "*"
       }
     ]
   })
