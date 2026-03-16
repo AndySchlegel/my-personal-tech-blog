@@ -111,13 +111,12 @@ module "cognito" {
 }
 
 # ALB ACM Certificate: SSL cert for the Application Load Balancer.
-# This is a SEPARATE cert from the CloudFront cert (which is in us-east-1).
-# ALBs can only use certificates from their own region (eu-central-1 here).
-# Both certs cover the same domain but serve different AWS services.
-# ACM certs are free -- no additional cost for having two.
-# The DNS validation CNAME is identical to the CloudFront cert's
-# (same domain = same validation record), so allow_overwrite = true.
+# Only needed for EKS (ALB Ingress). Controlled by create_alb_cert variable
+# to prevent the for_each evaluation from blocking Lightsail-only operations.
+# When Lightsail runs alone, these resources don't exist in state and the
+# dynamic for_each on domain_validation_options would cause "Invalid for_each" errors.
 resource "aws_acm_certificate" "alb" {
+  count             = var.create_alb_cert ? 1 : 0
   domain_name       = local.blog_domain
   validation_method = "DNS"
 
@@ -130,18 +129,14 @@ resource "aws_acm_certificate" "alb" {
   }
 }
 
-# DNS validation record for the ALB cert.
-# ACM uses the same CNAME for the same domain regardless of region,
-# so this record is identical to the CloudFront cert validation record.
-# allow_overwrite = true prevents conflicts.
 resource "aws_route53_record" "alb_cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.alb.domain_validation_options : dvo.domain_name => {
+  for_each = var.create_alb_cert ? {
+    for dvo in aws_acm_certificate.alb[0].domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
     }
-  }
+  } : {}
 
   zone_id = data.aws_route53_zone.main.zone_id
   name    = each.value.name
@@ -152,10 +147,9 @@ resource "aws_route53_record" "alb_cert_validation" {
   allow_overwrite = true
 }
 
-# Wait for ACM to validate the ALB certificate.
-# Blocks until the DNS record is verified and the cert is issued.
 resource "aws_acm_certificate_validation" "alb" {
-  certificate_arn         = aws_acm_certificate.alb.arn
+  count                   = var.create_alb_cert ? 1 : 0
+  certificate_arn         = aws_acm_certificate.alb[0].arn
   validation_record_fqdns = [for record in aws_route53_record.alb_cert_validation : record.fqdn]
 }
 

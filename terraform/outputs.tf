@@ -84,7 +84,7 @@ output "acm_certificate_arn" {
 
 output "alb_acm_certificate_arn" {
   description = "ACM certificate ARN for ALB (eu-central-1)"
-  value       = aws_acm_certificate_validation.alb.certificate_arn
+  value       = var.create_alb_cert ? aws_acm_certificate_validation.alb[0].certificate_arn : ""
 }
 
 # --- GitHub OIDC ---

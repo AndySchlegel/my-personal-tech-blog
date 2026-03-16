@@ -112,6 +112,13 @@ variable "db_password" {
   # Use a strong password: at least 16 chars, mix of letters/numbers/symbols.
 }
 
+# --- ALB Certificate (EKS only) ---
+variable "create_alb_cert" {
+  description = "Create ALB ACM certificate (only needed for EKS, not Lightsail)"
+  type        = bool
+  default     = false # EKS workflows set this to true via TF_VAR_create_alb_cert
+}
+
 # --- Lightsail ---
 variable "lightsail_subdomain" {
   description = "Subdomain for Lightsail blog (combined with domain_name)"
