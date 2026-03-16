@@ -253,7 +253,7 @@ module "cloudfront" {
   s3_bucket_id                   = module.s3.bucket_id
   domain_name                    = local.lightsail_domain
   route53_zone_id                = data.aws_route53_zone.main.zone_id
-  lightsail_origin_domain        = module.lightsail.static_ip
+  lightsail_origin_domain        = module.lightsail.origin_domain
 
   # Pass both AWS providers to this module.
   # The module uses aws.us_east_1 for the ACM certificate.
@@ -266,13 +266,15 @@ module "cloudfront" {
 # ==================== WAVE 4: Lightsail (permanent hosting, ~$5/month) ====================
 
 # Lightsail: Single instance running Docker containers.
-# Replaces the EKS stack for permanent hosting at ~$5/month.
+# Replaces the EKS stack for permanent hosting at ~$7/month.
 # CloudFront handles HTTPS and caching in front of it.
 module "lightsail" {
   source = "./modules/lightsail"
 
-  project_name   = var.project_name
-  environment    = var.environment
-  ssh_public_key = var.lightsail_ssh_public_key
-  s3_bucket_name = module.s3.bucket_id
+  project_name    = var.project_name
+  environment     = var.environment
+  ssh_public_key  = var.lightsail_ssh_public_key
+  s3_bucket_name  = module.s3.bucket_id
+  route53_zone_id = data.aws_route53_zone.main.zone_id
+  domain_name     = var.domain_name
 }

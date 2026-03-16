@@ -4,8 +4,13 @@
 # IAM credentials (for GitHub Secrets setup).
 
 output "static_ip" {
-  description = "Lightsail static IP address (for CloudFront origin)"
+  description = "Lightsail static IP address"
   value       = aws_lightsail_static_ip.blog.ip_address
+}
+
+output "origin_domain" {
+  description = "DNS name for CloudFront origin (origin-lightsail.aws.his4irness23.de)"
+  value       = aws_route53_record.origin.fqdn
 }
 
 output "instance_name" {

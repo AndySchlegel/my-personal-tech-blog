@@ -1,6 +1,6 @@
 # variables.tf - Lightsail module input variables
 #
-# Configures the Lightsail instance for permanent blog hosting (~$5/month).
+# Configures the Lightsail instance for permanent blog hosting (~$7/month).
 # The instance runs Docker containers (nginx + backend + PostgreSQL).
 
 variable "project_name" {
@@ -20,9 +20,9 @@ variable "availability_zone" {
 }
 
 variable "bundle_id" {
-  description = "Lightsail instance bundle (nano_3_0 = $5/month, 1 vCPU, 1GB RAM)"
+  description = "Lightsail instance bundle (micro_3_0 = $7/month, 2 vCPU, 1GB RAM)"
   type        = string
-  default     = "nano_3_0"
+  default     = "micro_3_0"
 }
 
 variable "blueprint_id" {
@@ -41,5 +41,15 @@ variable "ssh_public_key" {
 
 variable "s3_bucket_name" {
   description = "S3 bucket name for DB backups"
+  type        = string
+}
+
+variable "route53_zone_id" {
+  description = "Route 53 hosted zone ID for origin DNS record"
+  type        = string
+}
+
+variable "domain_name" {
+  description = "Base domain name (e.g. aws.his4irness23.de)"
   type        = string
 }

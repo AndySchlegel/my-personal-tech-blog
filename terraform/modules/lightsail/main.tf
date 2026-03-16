@@ -83,6 +83,21 @@ resource "aws_lightsail_instance_public_ports" "blog" {
 }
 
 # =============================================================================
+# ORIGIN DNS RECORD
+# =============================================================================
+
+# CloudFront requires a domain name as origin, not an IP address.
+# This A record maps origin-lightsail.aws.his4irness23.de to the static IP.
+# CloudFront uses this domain name as the Lightsail origin.
+resource "aws_route53_record" "origin" {
+  zone_id = var.route53_zone_id
+  name    = "origin-lightsail.${var.domain_name}"
+  type    = "A"
+  ttl     = 60
+  records = [aws_lightsail_static_ip.blog.ip_address]
+}
+
+# =============================================================================
 # IAM USER FOR BACKEND AWS SERVICES
 # =============================================================================
 
