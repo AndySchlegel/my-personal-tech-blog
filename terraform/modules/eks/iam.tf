@@ -406,6 +406,8 @@ resource "aws_iam_role_policy" "alb_controller" {
           "elasticloadbalancing:DescribeTags",
           "elasticloadbalancing:DescribeSSLPolicies",
           "elasticloadbalancing:DescribeListenerCertificates",
+          "elasticloadbalancing:DescribeListenerAttributes",
+          "elasticloadbalancing:ModifyListenerAttributes",
           "elasticloadbalancing:AddListenerCertificates",
           "elasticloadbalancing:RemoveListenerCertificates",
           # Create/manage security groups for ALB targets
