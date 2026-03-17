@@ -76,10 +76,15 @@ resource "aws_lightsail_instance_public_ports" "blog" {
     to_port   = 80
   }
 
+  # SSH access restricted to Tailscale subnet + emergency fallback.
+  # Tailscale (100.64.0.0/10) is the primary access path.
+  # Home IP can be added temporarily via Terraform variable if needed.
+  # fail2ban on the instance provides additional brute-force protection.
   port_info {
     protocol  = "tcp"
     from_port = 22
     to_port   = 22
+    cidrs     = var.ssh_allowed_cidrs
   }
 }
 

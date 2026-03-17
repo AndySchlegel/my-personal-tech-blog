@@ -57,6 +57,21 @@ commentsRouter.post('/posts/:postId/comments', async (req: Request, res: Respons
       return;
     }
 
+    // Validate input lengths to prevent oversized payloads reaching
+    // Comprehend (API costs) and Telegram (message flood)
+    if (author_name.length > 100) {
+      res.status(400).json({ error: 'author_name must be 100 characters or less' });
+      return;
+    }
+    if (content.length > 5000) {
+      res.status(400).json({ error: 'Comment must be 5000 characters or less' });
+      return;
+    }
+    if (author_email && author_email.length > 255) {
+      res.status(400).json({ error: 'Email must be 255 characters or less' });
+      return;
+    }
+
     // Check if the post exists
     // Also fetch title for the Telegram notification
     const postCheck = await query('SELECT id, title FROM posts WHERE id = $1', [postId]);

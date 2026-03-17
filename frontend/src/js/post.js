@@ -1337,6 +1337,13 @@
       return;
     }
 
+    // Validate slug format to prevent path traversal in API calls.
+    // Slugs must only contain lowercase letters, numbers, and hyphens.
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      showError("Invalid post slug.");
+      return;
+    }
+
     setupMarked();
 
     // Build URL with language parameter

@@ -53,3 +53,9 @@ variable "domain_name" {
   description = "Base domain name (e.g. aws.his4irness23.de)"
   type        = string
 }
+
+variable "ssh_allowed_cidrs" {
+  description = "CIDR blocks allowed to SSH into the Lightsail instance. Default: Tailscale subnet only."
+  type        = list(string)
+  default     = ["100.64.0.0/10"]
+}

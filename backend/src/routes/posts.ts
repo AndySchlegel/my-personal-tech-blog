@@ -215,6 +215,21 @@ postsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    // Validate input lengths to prevent oversized content reaching
+    // Polly/Translate APIs (costs) and database bloat
+    if (title.length > 500) {
+      res.status(400).json({ error: 'Title must be 500 characters or less' });
+      return;
+    }
+    if (content.length > 100000) {
+      res.status(400).json({ error: 'Content must be 100000 characters or less' });
+      return;
+    }
+    if (excerpt && excerpt.length > 1000) {
+      res.status(400).json({ error: 'Excerpt must be 1000 characters or less' });
+      return;
+    }
+
     // Generate URL slug from title: "My First Post" -> "my-first-post"
     const slug = title
       .toLowerCase()

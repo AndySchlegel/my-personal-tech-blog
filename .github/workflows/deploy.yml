@@ -305,7 +305,7 @@ jobs:
             --set grafana.resources.requests.memory=128Mi \
             --set grafana.resources.limits.cpu=200m \
             --set grafana.resources.limits.memory=256Mi \
-            --set grafana.adminPassword=blog-monitoring-2026 \
+            --set grafana.adminPassword=${{ secrets.GRAFANA_ADMIN_PASSWORD }} \
             --set grafana.service.type=ClusterIP \
             --set alertmanager.enabled=false \
             --set nodeExporter.resources.requests.cpu=25m \

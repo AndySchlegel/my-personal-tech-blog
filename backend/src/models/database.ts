@@ -19,11 +19,13 @@ const pool = new Pool({
   // RDS requires SSL, but local Docker PostgreSQL does not.
   // DB_SSL=false explicitly disables SSL (used on Lightsail where DB is local).
   // Default: SSL on in production (for EKS/RDS), off in dev.
+  // rejectUnauthorized: true verifies the RDS TLS certificate against the
+  // Node.js CA bundle (which includes the AWS RDS root CA since Node 18+).
   ssl:
     process.env.DB_SSL === 'false'
       ? false
       : process.env.NODE_ENV === 'production'
-        ? { rejectUnauthorized: false }
+        ? { rejectUnauthorized: true }
         : false,
 
   // Max 10 connections in the pool (db.t3.micro has limited connections)

@@ -19,7 +19,9 @@ services:
     environment:
       POSTGRES_DB: techblog
       POSTGRES_USER: bloguser
-      POSTGRES_PASSWORD: blogpass
+      # Local dev only -- NEVER reuse this password for production.
+      # Production uses DB_PASSWORD from GitHub Secrets / .env file.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-blogpass}
     ports:
       - "5432:5432"
     volumes:
@@ -41,7 +43,7 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
-      DATABASE_URL: postgresql://bloguser:blogpass@db:5432/techblog
+      DATABASE_URL: postgresql://bloguser:${DB_PASSWORD:-blogpass}@db:5432/techblog
       CORS_ORIGIN: "*"
     depends_on:
       db:
