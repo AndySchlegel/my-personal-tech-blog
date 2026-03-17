@@ -920,6 +920,70 @@ CloudFront cache behaviors are evaluated by path pattern priority, not by origin
 
 ---
 
+## #53 - Terraform State Separation for Independent Lifecycles
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening (Session 35)
+
+**Context:**
+EKS and Lightsail shared one Terraform root with one state file. Destroying the EKS stack risked deleting shared resources (S3, Cognito, CloudFront) that Lightsail depends on. Running both stacks simultaneously was impossible because CloudFront could only point to one origin.
+
+**Decision:**
+Created a separate `terraform-lightsail/` root with its own S3 state backend (`blog-lightsail/terraform.tfstate`). Migrated all permanent resources (S3, CloudFront, Cognito, Lightsail) via `terraform state rm` + `terraform import`. The EKS root now references S3 and Cognito via data sources. Both stacks can provision and destroy independently.
+
+**Takeaway:**
+When two deployment targets have different lifecycles (permanent vs on-demand), they need separate Terraform states. Shared resources should be managed by the permanent stack and referenced by the temporary one via data sources. State migration (`state rm` + `import`) is safe but tedious -- for greenfield projects, plan the separation from the start.
+
+---
+
+## #54 - Content Security Policy Blocks Legitimate Services
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening (Session 35)
+
+**Context:**
+After adding nginx security headers including Content-Security-Policy, the Cognito admin login broke. The CSP `connect-src 'self'` directive blocked the browser from connecting to `amazoncognito.com/oauth2/token` during the OAuth callback flow. Chrome showed a clear console error, Safari showed a generic "An error was encountered" page.
+
+**Decision:**
+Added `https://*.amazoncognito.com` to the CSP `connect-src` directive. Every external service the frontend communicates with must be explicitly whitelisted in the CSP.
+
+**Takeaway:**
+When adding CSP headers, audit every external API call the frontend makes. CSP is powerful but breaks things silently -- always test login flows, payment integrations, analytics, and any third-party SDK after enabling CSP. Safari gives unhelpful error messages for CSP violations; always debug in Chrome DevTools first.
+
+---
+
+## #55 - Rate Limiting Needs trust proxy Behind Reverse Proxies
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening (Session 35)
+
+**Context:**
+After deploying `express-rate-limit`, comments were blocked after only 2 attempts instead of 5. The rate limiter saw different CloudFront edge IPs as the client instead of the actual visitor IP. Two fixes were needed: (1) `app.set('trust proxy', 1)` so Express reads `X-Forwarded-For`, and (2) `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for` in nginx so the header reaches Express.
+
+**Decision:**
+Added both settings. Now Express correctly identifies the real client IP through the CloudFront -> nginx -> Express chain.
+
+**Takeaway:**
+Rate limiting behind a reverse proxy is useless without `trust proxy` AND the proxy forwarding `X-Forwarded-For`. Both settings are needed -- one without the other still results in wrong IP detection. Always test rate limiting from the actual client perspective, not just localhost.
+
+---
+
+## #56 - Deploy via Tailscale VPN for Zero-Trust SSH
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening (Session 35)
+
+**Context:**
+After restricting SSH port 22 to Tailscale-only CIDRs, the GitHub Actions deploy workflow could no longer reach the Lightsail instance. The runner has no fixed IP and is not in the Tailscale network.
+
+**Decision:**
+Added the `tailscale/github-action@v4` step to the deploy workflow. The GitHub runner connects to the Tailnet via an ephemeral auth key before executing SSH commands. The `LIGHTSAIL_HOST` secret was changed to the Tailscale IP. SSH port 22 remains closed to the public internet.
+
+**Takeaway:**
+Tailscale's GitHub Action makes Zero-Trust SSH deployments practical. The runner joins the Tailnet, deploys via Tailscale IP, then disconnects (ephemeral node). The auth key expires after 90 days and must be rotated. This is significantly more secure than opening port 22 to GitHub's dynamic IP ranges.
+
+---
+
 ## #49 - Auth Bypass Must Fail Closed in Production
 
 **Date:** 2026-03-17

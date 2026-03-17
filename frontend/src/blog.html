@@ -743,7 +743,8 @@
 
               <!-- Audio element (hidden, controlled by JS) -->
               <audio id="podcast-player" class="hidden" preload="metadata">
-                <source src="./media/notebooklm-podcast.m4a" type="audio/mp4" />
+                <!-- Podcast served via CloudFront -> S3 (/audio/* cache behavior, 7-day TTL) -->
+                <source src="/audio/notebooklm-podcast.m4a" type="audio/mp4" />
               </audio>
 
               <!-- Play/Pause button + progress bar -->
