@@ -671,7 +671,8 @@
           </div>
 
           <!-- Quote block + Podcast player side by side (equal height glow-cards) -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Mobile: podcast first (flex-col-reverse), desktop: quote left podcast right -->
+          <div class="flex flex-col-reverse md:grid md:grid-cols-2 gap-6 mt-6">
             <!-- Left: Quote glow-card with sky-500 gradient left border -->
             <div
               class="reveal-v2 glow-card bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 p-6 flex flex-col"
