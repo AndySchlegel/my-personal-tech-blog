@@ -40,8 +40,18 @@ export const requireAuth = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  // --- Dev mode bypass ---
+  // --- Fail closed in production ---
+  // If Cognito is not configured in production, deny all requests
+  // instead of silently granting admin access. This prevents a missing
+  // env var from exposing the entire admin API to the internet.
   if (!verifier) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('CRITICAL: Auth not configured in production -- denying request');
+      res.status(503).json({ error: 'Authentication service not configured' });
+      return;
+    }
+
+    // Dev mode bypass: only when NODE_ENV is NOT production
     if (!devModeWarningLogged) {
       console.warn('Auth disabled -- dev mode (COGNITO_USER_POOL_ID not set)');
       devModeWarningLogged = true;

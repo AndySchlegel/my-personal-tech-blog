@@ -36,7 +36,10 @@ app.use(
 );
 
 // Parse JSON request bodies (needed for POST/PUT requests)
-app.use(express.json());
+// Limit body size to prevent DoS via oversized payloads.
+// Public endpoints (comments) accept untrusted input, so a
+// reasonable limit protects against memory exhaustion attacks.
+app.use(express.json({ limit: '100kb' }));
 
 // --- Routes ---
 

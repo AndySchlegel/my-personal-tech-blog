@@ -11,6 +11,13 @@
 (function () {
   "use strict";
 
+  // --- Escape HTML to prevent XSS when inserting API data ---
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
   // --- State ---
   var currentFilter = "all";
 
@@ -167,21 +174,21 @@
         // Author + status badge + sentiment badge
         '<div class="flex items-center gap-2 mb-2 flex-wrap">' +
         '<span class="text-sm font-semibold text-slate-900 dark:text-white">' +
-        comment.author_name +
+        escapeHtml(comment.author_name) +
         "</span>" +
         statusBadge(comment.status) +
         sentimentBadge(comment.sentiment, comment.sentiment_score) +
         "</div>" +
         // Content
         '<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">' +
-        truncate(comment.content, 200) +
+        escapeHtml(truncate(comment.content, 200)) +
         "</p>" +
         // Post link + date
         '<p class="text-xs text-slate-400 dark:text-slate-500">' +
         "on " +
         '<span class="text-slate-500 dark:text-slate-400 font-medium">' +
         (comment.post_title
-          ? truncate(comment.post_title, 50)
+          ? escapeHtml(truncate(comment.post_title, 50))
           : "Unknown post") +
         "</span>" +
         " &middot; " +

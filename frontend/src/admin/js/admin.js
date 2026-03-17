@@ -115,6 +115,13 @@
     );
   }
 
+  // --- Escape HTML to prevent XSS when inserting API data ---
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
   // --- Render stat cards ---
   function renderStatCards(stats) {
     var cards = [
@@ -346,7 +353,7 @@
           '">' +
           '<div class="min-w-0 flex-1">' +
           '<p class="text-sm font-medium text-slate-900 dark:text-white truncate">' +
-          truncate(post.title, 60) +
+          escapeHtml(truncate(post.title, 60)) +
           "</p>" +
           '<p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">' +
           date +
@@ -383,17 +390,17 @@
           '<div class="min-w-0 flex-1">' +
           '<div class="flex items-center gap-2 mb-1">' +
           '<span class="text-sm font-medium text-slate-900 dark:text-white">' +
-          comment.author_name +
+          escapeHtml(comment.author_name) +
           "</span>" +
           statusBadge(comment.status) +
           "</div>" +
           '<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">' +
-          truncate(comment.content, 100) +
+          escapeHtml(truncate(comment.content, 100)) +
           "</p>" +
           '<p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">' +
           "on " +
           (comment.post_title
-            ? truncate(comment.post_title, 40)
+            ? escapeHtml(truncate(comment.post_title, 40))
             : "Unknown post") +
           " &middot; " +
           formatDate(comment.created_at) +

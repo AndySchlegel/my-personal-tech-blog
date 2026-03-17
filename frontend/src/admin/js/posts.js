@@ -307,7 +307,11 @@
       breaks: true,
     });
 
-    previewEl.innerHTML = marked.parse(markdown);
+    // Sanitize Markdown HTML to prevent XSS in admin preview
+    previewEl.innerHTML =
+      typeof DOMPurify !== "undefined"
+        ? DOMPurify.sanitize(marked.parse(markdown))
+        : marked.parse(markdown);
   }
 
   function setupPreview() {

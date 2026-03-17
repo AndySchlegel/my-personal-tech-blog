@@ -919,3 +919,67 @@ Moved the podcast file from `/audio/` to `/media/` directory. The `/media/*` pat
 CloudFront cache behaviors are evaluated by path pattern priority, not by origin availability. A specific path pattern always wins over the default behavior, even if the target origin does not have the file. When mixing S3 and server origins, keep their file paths strictly separated. A 403 from CloudFront often means the request hit the wrong origin, not that permissions are wrong.
 
 ---
+
+## #49 - Auth Bypass Must Fail Closed in Production
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening
+
+**Context:**
+A security audit revealed that the auth middleware silently bypasses authentication when `COGNITO_USER_POOL_ID` is not set. This is intentional for local development, but if the environment variable is missing in production (misconfigured deploy, failed secret injection), every admin route becomes completely unprotected. Combined with a CORS wildcard default, any website on the internet could access the admin API.
+
+**Decision:**
+Added a `NODE_ENV === 'production'` check to the auth middleware. In production, a missing Cognito config now returns HTTP 503 ("Authentication service not configured") instead of granting access. The dev bypass only activates when NODE_ENV is explicitly not production. This is the "fail closed" principle: when in doubt, deny access.
+
+**Takeaway:**
+Dev conveniences (auth bypass, CORS wildcard, debug logging) must never be reachable in production. Always gate dev-only behavior behind an explicit environment check. A single missing env var should not silently disable your entire auth layer. Defense-in-depth means assuming every layer might fail and making each one fail safely on its own.
+
+---
+
+## #50 - XSS Prevention: Sanitize All Dynamic HTML
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening
+
+**Context:**
+A security audit found stored XSS vulnerabilities in the frontend. Blog post content rendered via `marked.parse()` was inserted directly into `innerHTML` without sanitization. Additionally, API-returned values (post titles, tag names, comment author names, excerpts) were interpolated into HTML strings without escaping. The `escapeHtml()` function existed in the codebase but was only applied to `comment.content`, not to other user-controllable fields.
+
+**Decision:**
+Two-layer fix: (1) Added DOMPurify to sanitize all Markdown-to-HTML output. DOMPurify strips dangerous elements (`<script>`, `onerror`, etc.) while keeping safe formatting (`<h1>`, `<p>`, `<code>`). (2) Applied the existing `escapeHtml()` function consistently to all API-returned string values before insertion into innerHTML: titles, excerpts, tag names, category names, author names, slugs. Applied across all files: `app.js`, `post.js`, `admin.js`, `comments.js`.
+
+**Takeaway:**
+Never trust data from any source -- even your own API. The frontend should treat all dynamic content as potentially malicious. Use `escapeHtml()` for plain text values and DOMPurify for rich HTML (Markdown output). Having a security function in your codebase is not enough -- it must be applied consistently everywhere. A single missed `innerHTML` insertion is enough for an XSS attack. Defense-in-depth means sanitizing at every layer, not just the one you think is most exposed.
+
+---
+
+## #51 - Request Body Size Limits on Public Endpoints
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening
+
+**Context:**
+The Express backend used `express.json()` without an explicit body size limit. While Express defaults to 100KB, the comment submission endpoint is public and unauthenticated. Without an explicit limit, an attacker could send oversized payloads to consume server memory, potentially causing out-of-memory crashes on the Lightsail instance (1GB RAM + 1GB swap).
+
+**Decision:**
+Added an explicit `{ limit: '100kb' }` to `express.json()`. This makes the constraint visible and intentional rather than relying on a framework default that could change between versions. For a blog, 100KB is more than sufficient for any legitimate comment or post body.
+
+**Takeaway:**
+Always set explicit limits on public-facing endpoints, even when the framework has defaults. Framework defaults can change between versions, and implicit behavior is invisible to code reviewers. On resource-constrained hosts (Lightsail micro with 1GB RAM), a missing size limit on a public endpoint is a trivial DoS vector. Explicit limits are self-documenting and survive framework upgrades.
+
+---
+
+## #52 - Security Audits with Custom Claude Code Agents
+
+**Date:** 2026-03-17
+**Phase:** Security Hardening
+
+**Context:**
+Manual security reviews are inconsistent and depend on what the reviewer remembers to check. As the project grew (backend routes, frontend JS, Terraform modules, K8s manifests, CI/CD workflows), a systematic approach was needed. Claude Code supports custom agents with specialized system prompts and restricted tool access.
+
+**Decision:**
+Created four custom review agents: `security-reviewer` (OWASP Top 10, secrets, auth), `code-reviewer` (quality, comments, best practices), `frontend-reviewer` (accessibility, V2 design, i18n), and `infra-reviewer` (Terraform, IAM, K8s, CI/CD). Security and code reviewers are global (`~/.claude/agents/`), frontend and infra reviewers are project-specific (`.claude/agents/`). All are read-only (can't modify code) and run on Sonnet for speed.
+
+**Takeaway:**
+Automated security scanning tools (tfsec, Checkov, Trufflehog) catch pattern-based issues but miss application-level vulnerabilities like auth bypass logic or inconsistent XSS escaping. AI-powered review agents fill this gap by understanding code semantics and data flow. The first audit found 4 critical and 14 high-severity issues that no automated scanner would have caught. Make security audits a recurring practice, not a one-time event.
+
+---

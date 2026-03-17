@@ -719,7 +719,7 @@
           '<div class="flex-1 min-w-0">' +
           '<div class="flex items-center gap-2 mb-1">' +
           '<span class="text-sm font-semibold text-slate-900 dark:text-white">' +
-          comment.author_name +
+          escapeHtml(comment.author_name) +
           "</span>" +
           '<span class="text-xs text-slate-400 dark:text-slate-500">' +
           formatRelativeTime(comment.created_at) +
@@ -998,7 +998,7 @@
             i * 0.08 +
             's forwards;">' +
             "#" +
-            tag.name +
+            escapeHtml(tag.name) +
             "</span>"
           );
         })
@@ -1008,7 +1008,13 @@
     // Convert Markdown to HTML and insert it
     var contentEl = document.getElementById("post-content");
     if (contentEl) {
-      contentEl.innerHTML = marked.parse(post.content);
+      // Sanitize Markdown HTML output to prevent stored XSS attacks.
+      // DOMPurify strips dangerous elements (script, onerror, etc.)
+      // while keeping safe formatting (h1, p, code, etc.).
+      contentEl.innerHTML =
+        typeof DOMPurify !== "undefined"
+          ? DOMPurify.sanitize(marked.parse(post.content))
+          : marked.parse(post.content);
     }
 
     // Show all sections, hide loading skeleton
@@ -1401,10 +1407,15 @@
           var contentEl = document.getElementById("post-content");
           if (titleEl) titleEl.textContent = post.title;
           if (contentEl && post.content) {
-            contentEl.innerHTML =
+            // Sanitize translated Markdown to prevent XSS
+            var parsedHtml =
               typeof marked !== "undefined"
                 ? marked.parse(post.content)
                 : post.content;
+            contentEl.innerHTML =
+              typeof DOMPurify !== "undefined"
+                ? DOMPurify.sanitize(parsedHtml)
+                : parsedHtml;
           }
           // Update nav titles + labels in-place (keeps prev/next positions stable)
           refreshNavLanguage(lang);

@@ -244,6 +244,15 @@
     return CATEGORY_STYLES[category] || DEFAULT_STYLE;
   }
 
+  // --- Escape HTML to prevent XSS when inserting API data into innerHTML ---
+  // Converts special characters (<, >, ", &) to harmless HTML entities
+  // so they render as text instead of being parsed as HTML/JavaScript.
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
   // --- Create HTML for a single post card ---
   function createPostCard(post, index) {
     var style = getCategoryStyle(post.category_name);
@@ -254,7 +263,11 @@
       .slice(0, 3)
       .map(function (tag) {
         return (
-          '<span class="text-xs ' + style.tag + '">#' + tag.name + "</span>"
+          '<span class="text-xs ' +
+          style.tag +
+          '">#' +
+          escapeHtml(tag.name) +
+          "</span>"
         );
       })
       .join(" ");
@@ -282,7 +295,7 @@
       index * 0.1 +
       's" ' +
       "onclick=\"window.location.href='./post.html?slug=" +
-      post.slug +
+      escapeHtml(post.slug) +
       "'\">" +
       // Category blob (subtle floating color accent)
       '<div class="card-blob" style="background:rgba(' +
@@ -298,7 +311,7 @@
       '<span class="badge px-2.5 py-1 rounded-full ' +
       style.badge +
       '">' +
-      post.category_name +
+      escapeHtml(post.category_name) +
       "</span>" +
       featuredHtml +
       "</div>" +
@@ -317,12 +330,12 @@
       // Title with gradient span
       '<h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">' +
       '<span class="title-text">' +
-      post.title +
+      escapeHtml(post.title) +
       "</span>" +
       "</h2>" +
       // Excerpt
       '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2 card-excerpt">' +
-      post.excerpt +
+      escapeHtml(post.excerpt) +
       "</p>" +
       // Footer: date + tags
       '<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">' +
