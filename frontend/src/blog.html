@@ -431,9 +431,7 @@
         -webkit-box-orient: vertical !important;
         overflow: hidden;
         max-height: 3.2em;
-        transition:
-          max-height 0.4s ease,
-          -webkit-line-clamp 0s 0s;
+        transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .post-card:hover .card-excerpt {
         display: block !important;
@@ -441,6 +439,7 @@
         -webkit-box-orient: unset !important;
         max-height: 12em;
         overflow: hidden;
+        transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       /* --- V2 Filter Button Enhancements ---
