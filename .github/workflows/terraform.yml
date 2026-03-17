@@ -170,10 +170,12 @@ jobs:
                 # Exclude github_oidc from destroy -- OIDC provider must survive
                 # to keep pipeline auth + other projects (ecokart) working.
                 # Target aws_acm_certificate.alb (cascades to validation + DNS records).
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=aws_acm_certificate.alb" >> "$GITHUB_OUTPUT"
+                # NOTE: module.s3 and module.cognito moved to terraform-lightsail/
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=aws_acm_certificate.alb" >> "$GITHUB_OUTPUT"
               else
                 # Target aws_acm_certificate_validation.alb (pulls in cert + DNS as dependencies).
-                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.s3 -target=module.cognito -target=module.github_oidc -target=aws_acm_certificate_validation.alb" >> "$GITHUB_OUTPUT"
+                # NOTE: module.s3 and module.cognito moved to terraform-lightsail/
+                echo "flags=-target=module.vpc -target=module.security_groups -target=module.ecr -target=module.github_oidc -target=aws_acm_certificate_validation.alb" >> "$GITHUB_OUTPUT"
               fi
               ;;
             wave-2)
@@ -182,7 +184,8 @@ jobs:
             wave-3)
               # Root-level rds_from_eks_cluster_sg connects EKS cluster SG -> RDS.
               # Must be explicitly targeted because it's not inside any module.
-              echo "flags=-target=module.vpc -target=module.eks -target=module.cloudfront -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb" >> "$GITHUB_OUTPUT"
+              # NOTE: module.cloudfront moved to terraform-lightsail/
+              echo "flags=-target=module.vpc -target=module.eks -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb" >> "$GITHUB_OUTPUT"
               ;;
             all)
               echo "flags=" >> "$GITHUB_OUTPUT"

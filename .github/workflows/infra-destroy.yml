@@ -134,7 +134,6 @@ jobs:
           terraform plan \
             -destroy \
             -target=module.eks \
-            -target=module.cloudfront \
             -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
             -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg \
             -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb \
@@ -175,9 +174,9 @@ jobs:
         run: terraform apply tfplan-wave2
 
       # --- Wave 1 destroy (without OIDC and Cognito) ---
-      # Explicitly targets each module EXCEPT github_oidc and cognito.
+      # Explicitly targets each module EXCEPT github_oidc.
       # OIDC must survive to keep pipeline auth alive.
-      # Cognito must survive because it's shared with Lightsail (same admin user).
+      # S3, Cognito, CloudFront moved to terraform-lightsail/ (not affected).
       # VPC destruction includes NAT GW if it was enabled.
       - name: Plan destroy Wave 1
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -189,7 +188,6 @@ jobs:
             -target=module.vpc \
             -target=module.security_groups \
             -target=module.ecr \
-            -target=module.s3 \
             -target=aws_acm_certificate.alb \
             -out=tfplan-wave1
 

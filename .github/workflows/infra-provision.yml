@@ -174,12 +174,12 @@ jobs:
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: |
+          # NOTE: module.s3 and module.cognito moved to terraform-lightsail/
+          # They are now referenced via data sources (no target needed).
           terraform plan \
             -target=module.vpc \
             -target=module.security_groups \
             -target=module.ecr \
-            -target=module.s3 \
-            -target=module.cognito \
             -target=module.github_oidc \
             -target=aws_acm_certificate_validation.alb \
             -out=tfplan-wave1
@@ -227,9 +227,9 @@ jobs:
           TF_VAR_enable_nat_gateway: "true"
         run: |
           terraform plan \
+            # NOTE: module.cloudfront moved to terraform-lightsail/
             -target=module.vpc \
             -target=module.eks \
-            -target=module.cloudfront \
             -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
             -target=aws_vpc_security_group_egress_rule.alb_to_eks_cluster_sg \
             -target=aws_vpc_security_group_ingress_rule.eks_cluster_sg_from_alb \

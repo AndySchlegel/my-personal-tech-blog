@@ -1463,11 +1463,10 @@
                 ? DOMPurify.sanitize(parsedHtml)
                 : parsedHtml;
           }
-          // Rebuild navigation with translated titles from API.
-          // Clear the old language cache so loadPostNavigation fetches fresh.
-          var otherLang = lang === "en" ? "de" : "en";
-          sessionStorage.removeItem("postNavContext_" + otherLang);
-          loadPostNavigation(slug);
+          // Update nav titles + labels in-place (keeps prev/next positions stable).
+          // We do NOT rebuild from API because the API default sort order may
+          // differ from the blog.html sort order, causing positions to swap.
+          refreshNavLanguage(lang);
         })
         .catch(function () {
           // Silently fail -- keep current content
