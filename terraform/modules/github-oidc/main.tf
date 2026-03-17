@@ -462,6 +462,7 @@ resource "aws_iam_role_policy" "terraform" {
           "iam:DeleteRole",
           "iam:GetRole",
           "iam:UpdateRole",
+          "iam:UpdateAssumeRolePolicy",
           "iam:ListRolePolicies",
           "iam:ListAttachedRolePolicies",
           "iam:ListInstanceProfilesForRole",
