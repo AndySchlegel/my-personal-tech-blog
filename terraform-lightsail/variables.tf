@@ -41,6 +41,12 @@ variable "lightsail_subdomain" {
 }
 
 # --- Lightsail ---
+variable "lightsail_static_ip" {
+  description = "Pre-existing Lightsail static IP address (not Terraform-managed, import not supported)"
+  type        = string
+  default     = "63.183.111.225"
+}
+
 variable "lightsail_ssh_public_key" {
   description = "SSH public key for Lightsail deployment access. Set via tfvars or CI/CD."
   type        = string

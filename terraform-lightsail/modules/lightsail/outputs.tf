@@ -5,7 +5,7 @@
 
 output "static_ip" {
   description = "Lightsail static IP address"
-  value       = aws_lightsail_static_ip.blog.ip_address
+  value       = var.static_ip_address
 }
 
 output "origin_domain" {

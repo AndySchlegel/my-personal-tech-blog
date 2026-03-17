@@ -54,6 +54,11 @@ variable "domain_name" {
   type        = string
 }
 
+variable "static_ip_address" {
+  description = "Pre-existing Lightsail static IP address (not managed by Terraform -- import not supported)"
+  type        = string
+}
+
 variable "ssh_allowed_cidrs" {
   description = "CIDR blocks allowed to SSH into the Lightsail instance. Default: Tailscale subnet only."
   type        = list(string)

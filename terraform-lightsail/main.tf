@@ -43,6 +43,7 @@ module "lightsail" {
   project_name      = var.project_name
   environment       = var.environment
   ssh_public_key    = var.lightsail_ssh_public_key
+  static_ip_address = var.lightsail_static_ip
   s3_bucket_name    = module.s3.bucket_id
   route53_zone_id   = data.aws_route53_zone.main.zone_id
   domain_name       = var.domain_name

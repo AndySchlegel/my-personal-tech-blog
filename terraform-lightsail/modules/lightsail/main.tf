@@ -47,19 +47,13 @@ resource "aws_lightsail_instance" "blog" {
 }
 
 # =============================================================================
-# STATIC IP
+# STATIC IP (managed externally -- not importable via Terraform)
 # =============================================================================
 
-# A static IP ensures the instance keeps the same public IP across reboots.
-# Without this, the IP changes on every stop/start, breaking DNS and SSH.
-resource "aws_lightsail_static_ip" "blog" {
-  name = "${var.project_name}-lightsail-ip"
-}
-
-resource "aws_lightsail_static_ip_attachment" "blog" {
-  static_ip_name = aws_lightsail_static_ip.blog.name
-  instance_name  = aws_lightsail_instance.blog.name
-}
+# The static IP was created during initial provisioning. The AWS provider
+# does not support importing aws_lightsail_static_ip into state, so we
+# pass the IP address as a variable instead of managing it as a resource.
+# The IP persists across instance reboots and is not affected by Terraform.
 
 # =============================================================================
 # FIREWALL (PUBLIC PORTS)
@@ -100,7 +94,7 @@ resource "aws_route53_record" "origin" {
   name    = "origin-lightsail.${var.domain_name}"
   type    = "A"
   ttl     = 60
-  records = [aws_lightsail_static_ip.blog.ip_address]
+  records = [var.static_ip_address]
 }
 
 # =============================================================================
