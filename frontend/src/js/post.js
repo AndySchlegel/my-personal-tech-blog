@@ -1105,7 +1105,10 @@
       }
     }
 
-    // Fetch posts with current language for correct translated titles
+    // Fetch posts with current language for correct translated titles.
+    // The API returns posts with translated titles when lang=en is passed.
+    // We also save the result to sessionStorage so subsequent navigations
+    // on the same language don't need another API call.
     var langParam = lang === "en" ? "?lang=en" : "";
 
     fetch(API_BASE + "/posts" + langParam)
@@ -1113,10 +1116,16 @@
         if (!response.ok) throw new Error("Failed");
         return response.json();
       })
-      .then(function (posts) {
+      .then(function (data) {
+        var posts = data.posts || data;
         var navList = posts.map(function (p) {
           return { slug: p.slug, title: p.title };
         });
+        // Cache for this language so prev/next works on subsequent navigation
+        sessionStorage.setItem(
+          "postNavContext_" + lang,
+          JSON.stringify(navList),
+        );
         buildNavFromList(navList, currentSlug);
       })
       .catch(function () {
@@ -1454,8 +1463,11 @@
                 ? DOMPurify.sanitize(parsedHtml)
                 : parsedHtml;
           }
-          // Update nav titles + labels in-place (keeps prev/next positions stable)
-          refreshNavLanguage(lang);
+          // Rebuild navigation with translated titles from API.
+          // Clear the old language cache so loadPostNavigation fetches fresh.
+          var otherLang = lang === "en" ? "de" : "en";
+          sessionStorage.removeItem("postNavContext_" + otherLang);
+          loadPostNavigation(slug);
         })
         .catch(function () {
           // Silently fail -- keep current content
