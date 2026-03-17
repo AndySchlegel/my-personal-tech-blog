@@ -91,13 +91,15 @@ resource "aws_iam_role" "github_actions" {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
-          # StringLike: the subject must match our repository + allowed branches.
-          # Restricted to main and develop branches only -- prevents
-          # fork PRs or arbitrary branches from assuming this IAM role.
+          # StringLike: the subject must match our repository + allowed contexts.
+          # Allows: main branch, develop branch, and production environment.
+          # GitHub sets the subject to "environment:production" when a job
+          # uses the "environment: production" setting (infra workflows).
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
               "repo:${var.github_repository}:ref:refs/heads/main",
-              "repo:${var.github_repository}:ref:refs/heads/develop"
+              "repo:${var.github_repository}:ref:refs/heads/develop",
+              "repo:${var.github_repository}:environment:production"
             ]
           }
         }
