@@ -55,10 +55,11 @@ app.use(express.json({ limit: '100kb' }));
 // Protects public endpoints from abuse (spam, cost inflation on AWS ML services).
 // Uses IP-based limiting. Separate limiters for different risk levels.
 
-// Comment submissions: max 5 per 15 minutes per IP
+// Comment submissions: max 5 successful per 15 minutes per IP
+// (max: 6 because express-rate-limit counts the blocked request too)
 const commentLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 6,
   message: { error: 'Too many comments. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,

@@ -785,6 +785,10 @@
         body: JSON.stringify(data),
       })
         .then(function (response) {
+          if (response.status === 429) {
+            // Rate limit hit -- show specific user-friendly message
+            throw { rateLimited: true };
+          }
           if (!response.ok) throw new Error("Failed");
           return response.json();
         })
@@ -809,16 +813,25 @@
             if (success) success.classList.add("hidden");
           }, 30000);
         })
-        .catch(function () {
+        .catch(function (err) {
           // Re-enable on error
           submitBtn.disabled = false;
           submitBtn.textContent =
             getCurrentLang() === "en" ? "Send comment" : "Kommentar senden";
-          alert(
-            getCurrentLang() === "en"
-              ? "Comment could not be sent. Please try again."
-              : "Kommentar konnte nicht gesendet werden. Bitte versuche es erneut.",
-          );
+          if (err && err.rateLimited) {
+            // Rate limit: friendly message explaining the wait time
+            alert(
+              getCurrentLang() === "en"
+                ? "You have posted too many comments. Please wait 15 minutes before trying again."
+                : "Du hast zu viele Kommentare gesendet. Bitte warte 15 Minuten und versuche es erneut.",
+            );
+          } else {
+            alert(
+              getCurrentLang() === "en"
+                ? "Comment could not be sent. Please try again."
+                : "Kommentar konnte nicht gesendet werden. Bitte versuche es erneut.",
+            );
+          }
         });
     });
   }
