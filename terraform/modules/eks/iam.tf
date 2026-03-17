@@ -422,6 +422,9 @@ resource "aws_iam_role_policy" "alb_controller" {
           # Read ACM certificates (for HTTPS listeners on ALB)
           "acm:ListCertificates",
           "acm:DescribeCertificate",
+          # Shield subscription check (ALB controller checks this on startup,
+          # returns AccessDenied without it -- non-critical but noisy in logs)
+          "shield:GetSubscriptionState",
           # Tag management
           "tag:GetResources",
           "tag:TagResources"

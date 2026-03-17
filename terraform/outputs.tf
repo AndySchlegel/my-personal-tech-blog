@@ -61,6 +61,19 @@ output "cognito_user_pool_id" {
   value       = tolist(data.aws_cognito_user_pools.admin.ids)[0]
 }
 
+# Cognito client ID and domain must be looked up via AWS CLI since the
+# data source aws_cognito_user_pools only returns pool IDs, not client details.
+# The deploy.yml workflow reads these directly from GitHub Secrets instead.
+output "cognito_client_id" {
+  description = "Cognito client ID (read from GitHub Secret COGNITO_CLIENT_ID in deploy.yml)"
+  value       = "see-github-secrets"
+}
+
+output "cognito_domain" {
+  description = "Cognito domain prefix for Hosted UI"
+  value       = "${var.project_name}-admin-auth"
+}
+
 # --- ALB Certificate ---
 output "alb_acm_certificate_arn" {
   description = "ACM certificate ARN for ALB (eu-central-1)"
