@@ -590,8 +590,12 @@
   }
 
   // --- Initial load: fetch all posts + categories ---
+  // Includes language parameter so posts load in the active language
+  // (important when returning from a post page where EN was selected).
   function loadPosts() {
-    fetch(API_BASE + "/posts")
+    var lang = getCurrentLang();
+    var langParam = lang === "en" ? "?lang=en" : "";
+    fetch(API_BASE + "/posts" + langParam)
       .then(function (response) {
         if (!response.ok) throw new Error("API returned " + response.status);
         return response.json();
