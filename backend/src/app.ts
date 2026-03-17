@@ -27,6 +27,11 @@ const app = express();
 // Example: prevents clickjacking, hides "X-Powered-By: Express" header
 app.use(helmet());
 
+// Trust the first proxy (nginx) so Express reads the real client IP
+// from X-Forwarded-For header instead of using the nginx container IP.
+// Required for rate limiting to work correctly behind CloudFront + nginx.
+app.set('trust proxy', 1);
+
 // CORS: controls which websites can call our API
 // In production, restrict to our frontend domain only.
 // Fail closed: if CORS_ORIGIN is not set in production, deny cross-origin
