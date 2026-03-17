@@ -1,4 +1,4 @@
-# nginx configuration for the frontend container
+# nginx configuration for the frontend container (production template)
 #
 # Serves static files (HTML, CSS, JS) and proxies /api requests to the backend.
 # This way the frontend and backend look like one application to the browser.
@@ -6,6 +6,7 @@
 # Origin verification: CloudFront sends X-Origin-Verify header with a secret.
 # nginx rejects requests without the correct header (403 Forbidden).
 # This prevents direct IP access that bypasses CloudFront CDN + HTTPS.
+# The /health endpoint is exempt so Docker health checks still work.
 # In local dev, ORIGIN_VERIFY_SECRET is not set and the check is skipped.
 
 server {
@@ -33,45 +34,56 @@ server {
     index index.html;
 
     # --- Origin Verification ---
-    # Block direct IP access: only CloudFront sends the correct X-Origin-Verify header.
-    # $ORIGIN_VERIFY_SECRET is injected at container start via envsubst.
-    # When empty (local dev), the check is skipped -- all requests pass through.
+    # Check the X-Origin-Verify header on all requests.
+    # When ORIGIN_VERIFY_SECRET is set (production), requests without the
+    # correct header are blocked. When empty (local dev), all pass through.
     set $verify_secret "${ORIGIN_VERIFY_SECRET}";
+    set $origin_check "pass";
     if ($verify_secret != '') {
         set $origin_check "need_verify";
     }
     if ($http_x_origin_verify = "${ORIGIN_VERIFY_SECRET}") {
         set $origin_check "verified";
     }
-    if ($origin_check = "need_verify") {
-        return 403;
+
+    # Proxy health check to backend (exempt from origin verification)
+    # Docker health checks and CI/CD come from localhost -- no CloudFront header.
+    location /health {
+        proxy_pass http://backend:3000;
     }
 
     # Serve static files directly
     location / {
+        if ($origin_check = "need_verify") {
+            return 403;
+        }
         try_files $uri $uri/ /index.html;
     }
 
     # Proxy API requests to the backend container
     # /api/posts -> backend:3000/api/posts
     location /api/ {
+        if ($origin_check = "need_verify") {
+            return 403;
+        }
         proxy_pass http://backend:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    # Proxy health check to backend
-    location /health {
-        proxy_pass http://backend:3000;
-    }
-
     # Cache static assets (images, fonts) for 1 day
     # CSS/JS use short cache for dev -- switch to 1d + immutable for production
     location ~* \.(png|jpg|jpeg|gif|ico|svg|woff2?)$ {
+        if ($origin_check = "need_verify") {
+            return 403;
+        }
         expires 1d;
         add_header Cache-Control "public, immutable";
     }
     location ~* \.(css|js)$ {
+        if ($origin_check = "need_verify") {
+            return 403;
+        }
         expires 5m;
         add_header Cache-Control "public, must-revalidate";
     }
