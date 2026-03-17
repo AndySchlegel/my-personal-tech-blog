@@ -95,7 +95,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Connect the GitHub Actions runner to the Tailscale VPN.
+      # This allows SSH access to the Lightsail instance via its Tailscale IP,
+      # keeping port 22 closed to the public internet (only Tailscale subnet).
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
       # Write the SSH key to a file for rsync/ssh commands.
+      # LIGHTSAIL_HOST should be the Tailscale IP (100.96.135.41), not the public IP.
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
