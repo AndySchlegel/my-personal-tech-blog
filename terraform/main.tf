@@ -248,6 +248,7 @@ module "cloudfront" {
   domain_name                    = local.lightsail_domain
   route53_zone_id                = data.aws_route53_zone.main.zone_id
   lightsail_origin_domain        = module.lightsail.origin_domain
+  origin_verify_secret           = var.origin_verify_secret
 
   # Pass both AWS providers to this module.
   # The module uses aws.us_east_1 for the ACM certificate.

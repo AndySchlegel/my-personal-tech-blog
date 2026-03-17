@@ -43,3 +43,9 @@ variable "lightsail_origin_domain" {
   # CloudFront forwards requests to this origin for HTML, API, and assets.
   # This is the Lightsail static IP address.
 }
+
+variable "origin_verify_secret" {
+  description = "Secret header value sent by CloudFront to the origin. nginx rejects requests without this header, preventing direct IP access that bypasses CloudFront."
+  type        = string
+  sensitive   = true
+}

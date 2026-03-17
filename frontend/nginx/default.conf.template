@@ -1,11 +1,12 @@
-# nginx configuration for the frontend container (local dev version)
+# nginx configuration for the frontend container
 #
 # Serves static files (HTML, CSS, JS) and proxies /api requests to the backend.
 # This way the frontend and backend look like one application to the browser.
 #
-# In production (Lightsail), default.conf.template is used instead.
-# The template adds origin verification via X-Origin-Verify header
-# to block direct IP access that bypasses CloudFront.
+# Origin verification: CloudFront sends X-Origin-Verify header with a secret.
+# nginx rejects requests without the correct header (403 Forbidden).
+# This prevents direct IP access that bypasses CloudFront CDN + HTTPS.
+# In local dev, ORIGIN_VERIFY_SECRET is not set and the check is skipped.
 
 server {
     listen 80;
@@ -30,6 +31,21 @@ server {
     # Where the static files live inside the container
     root /usr/share/nginx/html;
     index index.html;
+
+    # --- Origin Verification ---
+    # Block direct IP access: only CloudFront sends the correct X-Origin-Verify header.
+    # $ORIGIN_VERIFY_SECRET is injected at container start via envsubst.
+    # When empty (local dev), the check is skipped -- all requests pass through.
+    set $verify_secret "${ORIGIN_VERIFY_SECRET}";
+    if ($verify_secret != '') {
+        set $origin_check "need_verify";
+    }
+    if ($http_x_origin_verify = "${ORIGIN_VERIFY_SECRET}") {
+        set $origin_check "verified";
+    }
+    if ($origin_check = "need_verify") {
+        return 403;
+    }
 
     # Serve static files directly
     location / {

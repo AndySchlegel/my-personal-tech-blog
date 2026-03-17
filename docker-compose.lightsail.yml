@@ -80,10 +80,15 @@ services:
   # --- Frontend (nginx) ---
   # Serves static files and proxies /api/* to the backend.
   # Port 80 is exposed for CloudFront (HTTPS termination at CDN level).
+  # Entrypoint generates nginx config from template with origin verify secret.
   frontend:
     build: ./frontend
+    entrypoint: ["/docker-entrypoint.sh"]
     ports:
       - "80:80"
+    environment:
+      # CloudFront origin verification: blocks direct IP access
+      ORIGIN_VERIFY_SECRET: ${ORIGIN_VERIFY_SECRET:-}
     depends_on:
       - backend
     restart: unless-stopped

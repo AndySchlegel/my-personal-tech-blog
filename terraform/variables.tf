@@ -138,3 +138,9 @@ variable "github_repository" {
   type        = string
   default     = "AndySchlegel/my-personal-tech-blog"
 }
+
+variable "origin_verify_secret" {
+  description = "Secret header sent by CloudFront to verify requests come from CDN, not direct IP access. Set via TF_VAR_origin_verify_secret or terraform.tfvars."
+  type        = string
+  sensitive   = true
+}

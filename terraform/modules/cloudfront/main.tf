@@ -130,6 +130,7 @@ resource "aws_cloudfront_distribution" "main" {
   # --- Lightsail origin: the blog application ---
   # HTTP only (port 80). CloudFront handles HTTPS termination.
   # Used for HTML pages, API requests, and static frontend assets.
+  # Custom header X-Origin-Verify prevents direct IP access bypassing CloudFront.
   origin {
     domain_name = var.lightsail_origin_domain
     origin_id   = "lightsail-app"
@@ -139,6 +140,11 @@ resource "aws_cloudfront_distribution" "main" {
       https_port             = 443
       origin_protocol_policy = "http-only" # Lightsail serves HTTP, CloudFront adds HTTPS
       origin_ssl_protocols   = ["TLSv1.2"]
+    }
+
+    custom_header {
+      name  = "X-Origin-Verify"
+      value = var.origin_verify_secret
     }
   }
 
