@@ -150,6 +150,42 @@ jobs:
           TF_VAR_enable_nat_gateway: "true"
         run: terraform apply tfplan-wave3
 
+      # --- Clean up orphaned ALB ---
+      # The ALB is created by the K8s Ingress Controller (not Terraform).
+      # After EKS is destroyed, the ALB remains as an orphan and blocks
+      # VPC deletion in Wave 1 (ALB holds references to subnets + SGs).
+      - name: Clean up orphaned ALB
+        run: |
+          echo "Looking for orphaned ALBs in VPC..."
+          VPC_ID=$(cd ${{ env.TF_WORKING_DIR }} && terraform output -raw vpc_id 2>/dev/null || echo "")
+          if [ -z "$VPC_ID" ]; then
+            echo "No VPC ID found, skipping ALB cleanup"
+            exit 0
+          fi
+          # Find ALBs in this VPC
+          ALB_ARNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?VpcId=='${VPC_ID}'].LoadBalancerArn" --output text)
+          if [ -z "$ALB_ARNS" ]; then
+            echo "No orphaned ALBs found"
+            exit 0
+          fi
+          for ARN in $ALB_ARNS; do
+            echo "Deleting orphaned ALB: $ARN"
+            # Delete listeners first
+            LISTENERS=$(aws elbv2 describe-listeners --load-balancer-arn "$ARN" --query "Listeners[].ListenerArn" --output text 2>/dev/null)
+            for L in $LISTENERS; do
+              aws elbv2 delete-listener --listener-arn "$L" 2>/dev/null || true
+            done
+            # Delete target groups
+            TGS=$(aws elbv2 describe-target-groups --load-balancer-arn "$ARN" --query "TargetGroups[].TargetGroupArn" --output text 2>/dev/null)
+            aws elbv2 delete-load-balancer --load-balancer-arn "$ARN"
+            echo "ALB deleted, waiting 30s for ENIs to detach..."
+            sleep 30
+            for TG in $TGS; do
+              aws elbv2 delete-target-group --target-group-arn "$TG" 2>/dev/null || true
+            done
+          done
+          echo "ALB cleanup complete"
+
       # --- Wave 2 destroy (RDS) ---
       # Must be destroyed BEFORE Wave 1 because RDS depends on VPC subnets
       # and security groups.
