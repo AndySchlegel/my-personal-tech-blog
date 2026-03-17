@@ -819,14 +819,22 @@
           submitBtn.textContent =
             getCurrentLang() === "en" ? "Send comment" : "Kommentar senden";
           if (err && err.rateLimited) {
-            // Rate limit: show inline message with link to privacy policy
+            // Rate limit: show inline message with heading, explanation and privacy link
             var rateLimitMsg = document.getElementById("rate-limit-message");
             if (rateLimitMsg) {
               rateLimitMsg.innerHTML =
                 getCurrentLang() === "en"
-                  ? 'You have posted too many comments. Please wait 15 minutes before trying again. <a href="./datenschutz.html#rate-limiting" class="underline text-sky-400 hover:text-sky-300">More info</a>'
-                  : 'Du hast zu viele Kommentare gesendet. Bitte warte 15 Minuten und versuche es erneut. <a href="./datenschutz.html#rate-limiting" class="underline text-sky-400 hover:text-sky-300">Mehr Infos</a>';
+                  ? '<div class="flex items-center gap-2 mb-2"><i class="ti ti-clock-pause text-lg text-amber-500"></i><span class="font-semibold text-amber-500">Comment limit reached</span></div>' +
+                    '<p class="text-sm text-slate-400 mb-2">You have posted too many comments. Please wait 15 minutes before trying again.</p>' +
+                    '<a href="./datenschutz.html#rate-limiting" class="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300 underline"><i class="ti ti-shield-check text-sm"></i>Why is there a limit?</a>'
+                  : '<div class="flex items-center gap-2 mb-2"><i class="ti ti-clock-pause text-lg text-amber-500"></i><span class="font-semibold text-amber-500">Kommentarlimit erreicht</span></div>' +
+                    '<p class="text-sm text-slate-400 mb-2">Du hast zu viele Kommentare gesendet. Bitte warte 15 Minuten und versuche es erneut.</p>' +
+                    '<a href="./datenschutz.html#rate-limiting" class="inline-flex items-center gap-1 text-sm text-sky-400 hover:text-sky-300 underline"><i class="ti ti-shield-check text-sm"></i>Warum gibt es ein Limit?</a>';
               rateLimitMsg.classList.remove("hidden");
+              rateLimitMsg.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
             } else {
               alert(
                 getCurrentLang() === "en"
