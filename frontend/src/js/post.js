@@ -819,12 +819,21 @@
           submitBtn.textContent =
             getCurrentLang() === "en" ? "Send comment" : "Kommentar senden";
           if (err && err.rateLimited) {
-            // Rate limit: friendly message explaining the wait time
-            alert(
-              getCurrentLang() === "en"
-                ? "You have posted too many comments. Please wait 15 minutes before trying again."
-                : "Du hast zu viele Kommentare gesendet. Bitte warte 15 Minuten und versuche es erneut.",
-            );
+            // Rate limit: show inline message with link to privacy policy
+            var rateLimitMsg = document.getElementById("rate-limit-message");
+            if (rateLimitMsg) {
+              rateLimitMsg.innerHTML =
+                getCurrentLang() === "en"
+                  ? 'You have posted too many comments. Please wait 15 minutes before trying again. <a href="./datenschutz.html#rate-limiting" class="underline text-sky-400 hover:text-sky-300">More info</a>'
+                  : 'Du hast zu viele Kommentare gesendet. Bitte warte 15 Minuten und versuche es erneut. <a href="./datenschutz.html#rate-limiting" class="underline text-sky-400 hover:text-sky-300">Mehr Infos</a>';
+              rateLimitMsg.classList.remove("hidden");
+            } else {
+              alert(
+                getCurrentLang() === "en"
+                  ? "Too many comments. Please wait 15 minutes."
+                  : "Zu viele Kommentare. Bitte warte 15 Minuten.",
+              );
+            }
           } else {
             alert(
               getCurrentLang() === "en"

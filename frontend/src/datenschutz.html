@@ -470,18 +470,18 @@
               class="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 mt-2"
             >
               <li
-                data-de="<strong>Amazon EKS</strong> (Elastic Kubernetes Service) &ndash; Container-Orchestrierung der Anwendung"
-                data-en="<strong>Amazon EKS</strong> (Elastic Kubernetes Service) &ndash; Container orchestration of the application"
+                data-de="<strong>Amazon Lightsail</strong> &ndash; Application Hosting (Docker Container)"
+                data-en="<strong>Amazon Lightsail</strong> &ndash; Application Hosting (Docker Container)"
               >
-                <strong>Amazon EKS</strong> (Elastic Kubernetes Service) &ndash;
-                Container-Orchestrierung der Anwendung
+                <strong>Amazon Lightsail</strong> &ndash; Application Hosting
+                (Docker Container)
               </li>
               <li
-                data-de="<strong>Amazon RDS</strong> (PostgreSQL) &ndash; Datenbankspeicherung"
-                data-en="<strong>Amazon RDS</strong> (PostgreSQL) &ndash; Database storage"
+                data-de="<strong>PostgreSQL</strong> &ndash; Datenbankspeicherung (lokal auf dem Server)"
+                data-en="<strong>PostgreSQL</strong> &ndash; Database storage (local on the server)"
               >
-                <strong>Amazon RDS</strong> (PostgreSQL) &ndash;
-                Datenbankspeicherung
+                <strong>PostgreSQL</strong> &ndash; Datenbankspeicherung (lokal
+                auf dem Server)
               </li>
               <li
                 data-de="<strong>Amazon S3</strong> &ndash; Speicherung von Bildern und statischen Dateien"
@@ -524,13 +524,6 @@
               >
                 <strong>Amazon Polly</strong> &ndash; Text-to-Speech f&uuml;r
                 Blog-Beitr&auml;ge (siehe Abschnitt 8)
-              </li>
-              <li
-                data-de="<strong>Application Load Balancer</strong> &ndash; Lastverteilung und SSL-Terminierung"
-                data-en="<strong>Application Load Balancer</strong> &ndash; Load balancing and SSL termination"
-              >
-                <strong>Application Load Balancer</strong> &ndash;
-                Lastverteilung und SSL-Terminierung
               </li>
               <li
                 data-de="<strong>Amazon Route 53</strong> &ndash; DNS-Verwaltung"
@@ -1112,16 +1105,72 @@
             </p>
           </div>
 
-          <!-- 9. Like-Funktion -->
+          <!-- 9. Rate Limiting -->
+          <div
+            id="rate-limiting"
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="9. Rate Limiting (Kommentarbegrenzung)"
+              data-en="9. Rate Limiting (Comment Throttling)"
+            >
+              9. Rate Limiting (Kommentarbegrenzung)
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Zum Schutz vor Missbrauch werden Kommentareinreichungen auf maximal 5 pro 15 Minuten pro IP-Adresse begrenzt. Hierzu wird die IP-Adresse des Nutzers tempor&auml;r im Arbeitsspeicher des Servers gespeichert und nach 15 Minuten automatisch gel&ouml;scht. Es erfolgt keine dauerhafte Speicherung der IP-Adresse f&uuml;r diesen Zweck. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Spam und Missbrauch)."
+              data-en="To protect against abuse, comment submissions are limited to a maximum of 5 per 15 minutes per IP address. For this purpose, the user's IP address is temporarily stored in the server's memory and automatically deleted after 15 minutes. No permanent storage of the IP address occurs for this purpose. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in protection against spam and abuse)."
+            >
+              Zum Schutz vor Missbrauch werden Kommentareinreichungen auf
+              maximal 5 pro 15 Minuten pro IP-Adresse begrenzt. Hierzu wird die
+              IP-Adresse des Nutzers tempor&auml;r im Arbeitsspeicher des
+              Servers gespeichert und nach 15 Minuten automatisch gel&ouml;scht.
+              Es erfolgt keine dauerhafte Speicherung der IP-Adresse f&uuml;r
+              diesen Zweck. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO
+              (berechtigtes Interesse am Schutz vor Spam und Missbrauch).
+            </p>
+          </div>
+
+          <!-- 10. Telegram-Benachrichtigungen -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="9. Like-Funktion"
-              data-en="9. Like Function"
+              data-de="10. Telegram-Benachrichtigungen"
+              data-en="10. Telegram Notifications"
             >
-              9. Like-Funktion
+              10. Telegram-Benachrichtigungen
+            </h2>
+            <p
+              class="text-slate-600 dark:text-slate-400 leading-relaxed"
+              data-de="Bei Einreichung eines Kommentars wird eine Benachrichtigung an den Betreiber &uuml;ber den Messaging-Dienst <strong>Telegram</strong> (Telegram FZ-LLC, Dubai) gesendet. Die Benachrichtigung enth&auml;lt den Autorennamen, den Kommentartext und den Titel des kommentierten Beitrags. Es werden keine E-Mail-Adressen oder IP-Adressen an Telegram &uuml;bermittelt. Die Telegram-Benachrichtigung dient ausschlie&szlig;lich der zeitnahen Moderation von Kommentaren. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der zeitnahen Moderation nutzergenerierter Inhalte)."
+              data-en="When a comment is submitted, a notification is sent to the operator via the messaging service <strong>Telegram</strong> (Telegram FZ-LLC, Dubai). The notification contains the author name, comment text, and the title of the commented post. No email addresses or IP addresses are transmitted to Telegram. The Telegram notification serves exclusively for timely comment moderation. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in timely moderation of user-generated content)."
+            >
+              Bei Einreichung eines Kommentars wird eine Benachrichtigung an den
+              Betreiber &uuml;ber den Messaging-Dienst
+              <strong>Telegram</strong> (Telegram FZ-LLC, Dubai) gesendet. Die
+              Benachrichtigung enth&auml;lt den Autorennamen, den Kommentartext
+              und den Titel des kommentierten Beitrags. Es werden keine
+              E-Mail-Adressen oder IP-Adressen an Telegram &uuml;bermittelt. Die
+              Telegram-Benachrichtigung dient ausschlie&szlig;lich der zeitnahen
+              Moderation von Kommentaren. Rechtsgrundlage: Art. 6 Abs. 1 lit. f
+              DSGVO (berechtigtes Interesse an der zeitnahen Moderation
+              nutzergenerierter Inhalte).
+            </p>
+          </div>
+
+          <!-- 11. Like-Funktion -->
+          <div
+            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+          >
+            <h2
+              class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
+              data-de="11. Like-Funktion"
+              data-en="11. Like Function"
+            >
+              11. Like-Funktion
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
@@ -1137,28 +1186,27 @@
             </p>
           </div>
 
-          <!-- 10. Datenbankspeicherung -->
+          <!-- 12. Datenbankspeicherung -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="10. Datenbankspeicherung"
-              data-en="10. Database Storage"
+              data-de="12. Datenbankspeicherung"
+              data-en="12. Database Storage"
             >
-              10. Datenbankspeicherung
+              12. Datenbankspeicherung
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
-              data-de="S&auml;mtliche Daten (Blog-Beitr&auml;ge, Kommentare, Kategorien) werden in einer <strong>PostgreSQL-Datenbank</strong> auf Amazon RDS in der Region eu-central-1 (Frankfurt) gespeichert. Die Verbindung zwischen Anwendung und Datenbank ist <strong>SSL-verschl&uuml;sselt</strong>. Die Datenbank befindet sich in einem privaten Subnetz und ist nicht direkt aus dem Internet erreichbar."
-              data-en="All data (blog posts, comments, categories) is stored in a <strong>PostgreSQL database</strong> on Amazon RDS in the eu-central-1 (Frankfurt) region. The connection between the application and the database is <strong>SSL-encrypted</strong>. The database is located in a private subnet and is not directly accessible from the internet."
+              data-de="S&auml;mtliche Daten (Blog-Beitr&auml;ge, Kommentare, Kategorien) werden in einer <strong>PostgreSQL-Datenbank</strong> lokal auf dem Server (Amazon Lightsail, Region eu-central-1, Frankfurt) gespeichert. Die Datenbank l&auml;uft als Docker-Container auf demselben Server wie die Anwendung und ist nicht direkt aus dem Internet erreichbar."
+              data-en="All data (blog posts, comments, categories) is stored in a <strong>PostgreSQL database</strong> locally on the server (Amazon Lightsail, eu-central-1 region, Frankfurt). The database runs as a Docker container on the same server as the application and is not directly accessible from the internet."
             >
               S&auml;mtliche Daten (Blog-Beitr&auml;ge, Kommentare, Kategorien)
-              werden in einer <strong>PostgreSQL-Datenbank</strong> auf Amazon
-              RDS in der Region eu-central-1 (Frankfurt) gespeichert. Die
-              Verbindung zwischen Anwendung und Datenbank ist
-              <strong>SSL-verschl&uuml;sselt</strong>. Die Datenbank befindet
-              sich in einem privaten Subnetz und ist nicht direkt aus dem
+              werden in einer <strong>PostgreSQL-Datenbank</strong> lokal auf
+              dem Server (Amazon Lightsail, Region eu-central-1, Frankfurt)
+              gespeichert. Die Datenbank l&auml;uft als Docker-Container auf
+              demselben Server wie die Anwendung und ist nicht direkt aus dem
               Internet erreichbar.
             </p>
             <p
@@ -1173,16 +1221,16 @@
             </p>
           </div>
 
-          <!-- 11. Admin-Authentifizierung -->
+          <!-- 13. Admin-Authentifizierung -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="11. Admin-Authentifizierung (AWS Cognito)"
-              data-en="11. Admin Authentication (AWS Cognito)"
+              data-de="13. Admin-Authentifizierung (AWS Cognito)"
+              data-en="13. Admin Authentication (AWS Cognito)"
             >
-              11. Admin-Authentifizierung (AWS Cognito)
+              13. Admin-Authentifizierung (AWS Cognito)
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
@@ -1217,16 +1265,16 @@
             </p>
           </div>
 
-          <!-- 12. Auftragsverarbeitung -->
+          <!-- 14. Auftragsverarbeitung -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="12. Auftragsverarbeitung (AWS)"
-              data-en="12. Data Processing Agreement (AWS)"
+              data-de="14. Auftragsverarbeitung (AWS)"
+              data-en="14. Data Processing Agreement (AWS)"
             >
-              12. Auftragsverarbeitung (AWS)
+              14. Auftragsverarbeitung (AWS)
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
@@ -1255,16 +1303,16 @@
             </p>
           </div>
 
-          <!-- 13. Ihre Rechte -->
+          <!-- 15. Ihre Rechte -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="13. Ihre Rechte"
-              data-en="13. Your Rights"
+              data-de="15. Ihre Rechte"
+              data-en="15. Your Rights"
             >
-              13. Ihre Rechte
+              15. Ihre Rechte
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed mb-3"
@@ -1335,16 +1383,16 @@
             </p>
           </div>
 
-          <!-- 14. Beschwerderecht -->
+          <!-- 16. Beschwerderecht -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="14. Beschwerderecht bei einer Aufsichtsbeh&ouml;rde"
-              data-en="14. Right to Lodge a Complaint with a Supervisory Authority"
+              data-de="16. Beschwerderecht bei einer Aufsichtsbeh&ouml;rde"
+              data-en="16. Right to Lodge a Complaint with a Supervisory Authority"
             >
-              14. Beschwerderecht bei einer Aufsichtsbeh&ouml;rde
+              16. Beschwerderecht bei einer Aufsichtsbeh&ouml;rde
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
@@ -1385,16 +1433,16 @@
             </div>
           </div>
 
-          <!-- 15. Aenderungen -->
+          <!-- 17. Aenderungen -->
           <div
             class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
-              data-de="15. &Auml;nderungen dieser Datenschutzerkl&auml;rung"
-              data-en="15. Changes to This Privacy Policy"
+              data-de="17. &Auml;nderungen dieser Datenschutzerkl&auml;rung"
+              data-en="17. Changes to This Privacy Policy"
             >
-              15. &Auml;nderungen dieser Datenschutzerkl&auml;rung
+              17. &Auml;nderungen dieser Datenschutzerkl&auml;rung
             </h2>
             <p
               class="text-slate-600 dark:text-slate-400 leading-relaxed"
