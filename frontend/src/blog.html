@@ -422,12 +422,12 @@
         overflow: hidden;
       }
 
-      /* --- Excerpt: fixed 2-line clamp, no expand on hover ---
-         Removed hover expand because it caused content shift (bad UX).
-         Excerpt stays at 2 lines -- full text visible on post page. */
+      /* --- Excerpt: 4-line clamp, no expand on hover ---
+         Shows enough text to give readers a good preview without
+         needing hover. No content shift, works on mobile too. */
       .post-card .card-excerpt {
         display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
+        -webkit-line-clamp: 4 !important;
         -webkit-box-orient: vertical !important;
         overflow: hidden;
       }
