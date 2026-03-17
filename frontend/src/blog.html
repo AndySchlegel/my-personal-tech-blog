@@ -422,15 +422,22 @@
         overflow: hidden;
       }
 
-      /* --- Excerpt: smooth expand/collapse on hover ---
-         Uses max-height only (no line-clamp toggle) so both open and
-         close animate smoothly. Line-clamp can't be transitioned. */
+      /* --- Excerpt: 2-line teaser with smooth expand/collapse ---
+         line-clamp provides clean "..." truncation at 2 lines.
+         On hover, line-clamp is removed via JS and max-height animates.
+         On leave, max-height animates back down, then JS re-adds line-clamp. */
       .post-card .card-excerpt {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
         max-height: 3.2em;
         transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .post-card:hover .card-excerpt {
+      .post-card .card-excerpt.expanded {
+        display: block;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: unset;
         max-height: 12em;
         transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       }
@@ -1313,7 +1320,41 @@
           initGlowCards();
           initScrollReveal();
           initCursorGlow();
+          initExcerptExpand();
         });
+
+        // --- Smooth excerpt expand/collapse ---
+        // On hover: immediately add 'expanded' (removes line-clamp, animates max-height up)
+        // On leave: animate max-height down, then re-add line-clamp after transition ends
+        function initExcerptExpand() {
+          document.addEventListener(
+            "mouseenter",
+            function (e) {
+              var card = e.target.closest(".post-card");
+              if (!card) return;
+              var excerpt = card.querySelector(".card-excerpt");
+              if (excerpt) excerpt.classList.add("expanded");
+            },
+            true,
+          );
+
+          document.addEventListener(
+            "mouseleave",
+            function (e) {
+              var card = e.target.closest(".post-card");
+              if (!card) return;
+              var excerpt = card.querySelector(".card-excerpt");
+              if (!excerpt) return;
+              // First set max-height to current scrollHeight for smooth close
+              excerpt.style.maxHeight = excerpt.scrollHeight + "px";
+              excerpt.classList.remove("expanded");
+              // Force reflow so browser picks up the non-expanded max-height
+              excerpt.offsetHeight;
+              excerpt.style.maxHeight = "";
+            },
+            true,
+          );
+        }
       })();
     </script>
   </body>
