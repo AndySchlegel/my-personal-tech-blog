@@ -226,8 +226,8 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
           TF_VAR_enable_nat_gateway: "true"
         run: |
+          # NOTE: module.cloudfront moved to terraform-lightsail/
           terraform plan \
-            # NOTE: module.cloudfront moved to terraform-lightsail/
             -target=module.vpc \
             -target=module.eks \
             -target=aws_vpc_security_group_ingress_rule.rds_from_eks_cluster_sg \
