@@ -1,113 +1,67 @@
-# Lightsail Infrastructure Provision Pipeline
+# Lightsail Infrastructure Provision Pipeline (terraform-lightsail/)
 #
-# MANUAL TRIGGER ONLY -- provisions ONLY the resources needed for Lightsail hosting.
-# Completely separate from the EKS provision workflow (infra-provision.yml).
+# MANUAL TRIGGER ONLY -- provisions the standalone Lightsail infrastructure
+# from the terraform-lightsail/ root module. This is completely independent
+# from the EKS terraform/ root (separate state, separate lifecycle).
 #
-# Three jobs in sequence:
-#   1. VALIDATE      - Format check, init, validate (no AWS needed)
-#   2. SECURITY SCAN - tfsec + Checkov strict
-#   3. PROVISION     - Apply only Lightsail-specific resources
+# Single job with three phases:
+#   1. VALIDATE - Format check, init, validate (no AWS credentials needed)
+#   2. PLAN    - Full plan of all resources (requires AWS credentials)
+#   3. APPLY   - Apply the plan (creates/updates all resources at once)
+#
+# NO wave system needed -- the Lightsail root has no complex dependency chains.
+# Terraform resolves module dependencies automatically (e.g., CloudFront
+# waits for S3 and Lightsail outputs).
 #
 # What gets created:
-#   - S3 bucket (Polly audio, images, DB backups)
 #   - Cognito user pool (admin authentication)
-#   - GitHub OIDC (so this workflow can authenticate with AWS)
-#   - Lightsail instance + static IP + IAM user
-#   - CloudFront distribution (HTTPS + caching)
-#   - Route 53 DNS record (techblog.aws.his4irness23.de)
+#   - S3 bucket (images, Polly audio, DB backups)
+#   - Lightsail instance + static IP attachment + IAM user
+#   - CloudFront distribution (HTTPS + caching) + ACM cert (us-east-1)
+#   - Route 53 DNS records
 #
-# What does NOT get created:
-#   - VPC, Security Groups, ECR (EKS-only, not needed for Lightsail)
-#   - RDS (PostgreSQL runs in Docker on the Lightsail instance)
-#   - EKS, NAT Gateway (Kubernetes-only)
+# NOTE: The static IP itself (63.183.111.225) is passed as a variable,
+# NOT managed as a Terraform resource. It was created manually and persists
+# independently of this workflow.
 #
-# Monthly cost: ~$5 (Lightsail instance)
-# Authentication: OIDC federation (same IAM role as EKS workflows)
+# Authentication: OIDC federation (same IAM role as other workflows).
 #
 # Required GitHub Secrets:
-#   AWS_ROLE_ARN  - IAM role ARN from terraform output github_actions_role_arn
-#   DB_PASSWORD   - Required by Terraform (even though Lightsail doesn't use RDS)
+#   AWS_ROLE_ARN           - IAM role ARN for OIDC authentication
+#   ORIGIN_VERIFY_SECRET   - Secret header for CloudFront origin verification
 
-name: Lightsail Provision
+name: Provision Lightsail Infrastructure
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_provision:
+        description: 'Type PROVISION to confirm infrastructure deployment'
+        required: true
+        type: string
+        default: ''
 
+# OIDC requires these permissions to request and present the JWT token.
 permissions:
   id-token: write
   contents: read
 
-# Same concurrency group as terraform.yml and infra-provision.yml.
-# Prevents Terraform state conflicts between any infrastructure workflows.
+# Shared concurrency group with all Terraform workflows.
+# Prevents state file conflicts when multiple workflows run.
 concurrency:
-  group: terraform-apply
+  group: terraform-lightsail
   cancel-in-progress: false
 
 env:
   AWS_REGION: eu-central-1
-  TF_WORKING_DIR: terraform
-  ENVIRONMENT: dev
+  TF_WORKING_DIR: terraform-lightsail
+  TF_VAR_origin_verify_secret: ${{ secrets.ORIGIN_VERIFY_SECRET }}
 
 jobs:
-  # ===== Job 1: VALIDATE =====
-  validate:
-    name: Validate
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.0
-
-      - name: Terraform fmt
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform fmt -check -recursive
-
-      - name: Terraform init
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform init -backend=false
-
-      - name: Terraform validate
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform validate
-
-  # ===== Job 2: SECURITY SCAN =====
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: validate
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: ${{ env.TF_WORKING_DIR }}
-          soft_fail: false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run Checkov
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: ${{ env.TF_WORKING_DIR }}
-          framework: terraform
-          soft_fail: false
-
-  # ===== Job 3: PROVISION =====
-  # Targets ONLY the modules that Lightsail needs.
-  # Terraform -target ensures no VPC, SGs, ECR, RDS, or EKS resources are touched.
-  # If S3/Cognito/OIDC already exist from a previous EKS provision, Terraform
-  # detects them in state and does a no-op (idempotent).
   provision:
-    name: Provision Lightsail Stack
+    name: Validate + Plan + Apply
     runs-on: ubuntu-latest
-    needs: security-scan
+    if: ${{ inputs.confirm_provision == 'PROVISION' }}
     environment: production
 
     steps:
@@ -119,118 +73,82 @@ jobs:
         with:
           terraform_version: 1.9.0
 
+      # --- Validate phase (no AWS credentials needed) ---
+
+      # Check that all .tf files follow canonical formatting.
+      - name: Terraform fmt
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform fmt -check -recursive
+
+      # Initialize without backend for validation only.
+      - name: Terraform init (validation)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate
+
+      # --- Plan + Apply phase (requires AWS credentials) ---
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      # Re-initialize with real backend for plan and apply.
       - name: Terraform init
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
-      # --- Step 1: IAM policies (ensures permissions are current) ---
-      - name: Plan IAM policies
+      # Plan all resources at once -- no wave system needed.
+      # Terraform handles module dependency ordering automatically.
+      - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          terraform plan \
-            -target=module.github_oidc.aws_iam_role_policy.terraform \
-            -target=module.github_oidc.aws_iam_role_policy.github_actions \
-            -out=tfplan-iam
+        run: terraform plan -out=tfplan
 
-      - name: Apply IAM policies
+      - name: Show plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply tfplan-iam
+        run: terraform show tfplan
 
-      - name: Wait for IAM propagation
-        run: |
-          echo "Waiting 15s for IAM policy propagation..."
-          sleep 15
-
-      # --- Step 2: Foundation (S3, Cognito, OIDC) ---
-      # These are shared with EKS but Lightsail needs them too.
-      # Idempotent: no-op if already provisioned by EKS workflow.
-      - name: Plan Lightsail foundation (S3, Cognito, OIDC)
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          terraform plan \
-            -target=module.s3 \
-            -target=module.cognito \
-            -target=module.github_oidc \
-            -out=tfplan-foundation
-
-      - name: Show foundation plan
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform show tfplan-foundation
-
-      - name: Apply Lightsail foundation
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply tfplan-foundation
-
-      # --- Step 3: Lightsail instance + CloudFront ---
-      # Creates the Lightsail instance, static IP, IAM user,
-      # CloudFront distribution, ACM cert, and Route 53 DNS.
-      - name: Plan Lightsail + CloudFront
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          terraform plan \
-            -target=module.lightsail \
-            -target=module.cloudfront \
-            -out=tfplan-lightsail
-
-      - name: Show Lightsail plan
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform show tfplan-lightsail
-
-      - name: Apply Lightsail + CloudFront
-        id: apply_lightsail
+      # Apply the full plan. All modules are created in dependency order:
+      # Cognito + S3 first (no dependencies), then Lightsail (needs S3 + Route 53),
+      # then CloudFront (needs Lightsail origin + S3 bucket + ACM cert).
+      - name: Terraform apply
+        id: apply
         continue-on-error: true
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply tfplan-lightsail
+        run: terraform apply tfplan
 
       # --- Workaround: Lightsail CreateInstances provider bug ---
-      # The Terraform AWS provider's operation waiter for Lightsail times out
-      # even though the instance is created successfully. When this happens:
-      # 1. Import the instance into state
-      # 2. Re-apply to create remaining resources (static IP attachment, ports, IAM user)
+      # The AWS provider's operation waiter for Lightsail can time out
+      # even when the instance is successfully created. When this happens:
+      # 1. Check if the instance actually exists in AWS
+      # 2. Import it into Terraform state
+      # 3. Re-apply to reconcile remaining resources (IP attachment, firewall, IAM)
       - name: Handle Lightsail creation timeout
-        if: steps.apply_lightsail.outcome == 'failure'
+        if: steps.apply.outcome == 'failure'
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "Apply failed. Checking if Lightsail instance was created..."
-          if aws lightsail get-instance --instance-name blog-lightsail-${{ env.ENVIRONMENT }} --region ${{ env.AWS_REGION }} 2>/dev/null; then
+          echo "Apply failed. Checking if Lightsail instance was created despite timeout..."
+          INSTANCE_NAME="blog-lightsail-dev"
+          if aws lightsail get-instance --instance-name "$INSTANCE_NAME" --region ${{ env.AWS_REGION }} 2>/dev/null; then
             echo "Instance exists! Importing into Terraform state..."
             terraform import \
-              -var="db_password=${{ secrets.DB_PASSWORD }}" \
               module.lightsail.aws_lightsail_instance.blog \
-              blog-lightsail-${{ env.ENVIRONMENT }} || echo "Already in state"
+              "$INSTANCE_NAME" || echo "Already in state"
 
-            echo "Re-applying to reconcile remaining resources..."
-            terraform apply \
-              -target=module.lightsail \
-              -target=module.cloudfront \
-              -auto-approve
+            echo "Re-applying to reconcile all resources..."
+            terraform apply -auto-approve
           else
             echo "Instance does NOT exist. This is a real error."
             exit 1
           fi
 
-      # --- Show relevant outputs ---
-      - name: Show Lightsail outputs
+      # --- Show all outputs after successful provision ---
+      # These values are needed for GitHub Secrets and SSH access.
+      - name: Show outputs
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
           echo "=== Lightsail Instance ==="
@@ -239,13 +157,17 @@ jobs:
           terraform output lightsail_url
           echo ""
           echo "=== CloudFront ==="
-          terraform output cloudfront_domain
+          terraform output cloudfront_distribution_id
+          terraform output cloudfront_domain_name
+          echo ""
+          echo "=== S3 ==="
+          terraform output s3_bucket_name
           echo ""
           echo "=== Cognito (for GitHub Secrets) ==="
           terraform output cognito_user_pool_id
           terraform output cognito_client_id
           echo ""
-          echo "=== IAM Credentials (for GitHub Secrets) ==="
-          echo "Run locally to get sensitive values:"
-          echo "  terraform output -raw lightsail_backend_access_key_id"
-          echo "  terraform output -raw lightsail_backend_secret_access_key"
+          echo "=== IAM Credentials ==="
+          echo "Sensitive values -- run locally to retrieve:"
+          echo "  cd terraform-lightsail && terraform output -raw lightsail_backend_access_key_id"
+          echo "  cd terraform-lightsail && terraform output -raw lightsail_backend_secret_access_key"

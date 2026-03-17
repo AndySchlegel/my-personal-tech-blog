@@ -119,19 +119,6 @@ variable "create_alb_cert" {
   default     = false # EKS workflows set this to true via TF_VAR_create_alb_cert
 }
 
-# --- Lightsail ---
-variable "lightsail_subdomain" {
-  description = "Subdomain for Lightsail blog (combined with domain_name)"
-  type        = string
-  default     = "techblog" # Combined: techblog.aws.his4irness23.de
-}
-
-variable "lightsail_ssh_public_key" {
-  description = "SSH public key for Lightsail deployment access. Set via tfvars or CI/CD."
-  type        = string
-  default     = "" # If empty, no key pair is created
-}
-
 # --- CI/CD ---
 variable "github_repository" {
   description = "GitHub repository for OIDC trust (format: owner/repo)"
@@ -139,8 +126,3 @@ variable "github_repository" {
   default     = "AndySchlegel/my-personal-tech-blog"
 }
 
-variable "origin_verify_secret" {
-  description = "Secret header sent by CloudFront to verify requests come from CDN, not direct IP access. Set via TF_VAR_origin_verify_secret or terraform.tfvars."
-  type        = string
-  sensitive   = true
-}

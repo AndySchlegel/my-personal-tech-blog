@@ -23,6 +23,18 @@ data "aws_route53_zone" "main" {
   name = var.domain_name
 }
 
+# --- Cognito: Admin authentication ---
+# Manages the admin user pool for the blog dashboard.
+# Permanent resource -- admin users persist across deploy cycles.
+# Both Lightsail and EKS reference this pool for admin authentication.
+module "cognito" {
+  source = "./modules/cognito"
+
+  project_name     = var.project_name
+  domain_name      = "blog.${var.domain_name}"  # EKS callback URL (kept for when EKS is spun up)
+  lightsail_domain = local.lightsail_domain      # Lightsail callback URL
+}
+
 # --- S3: Asset storage (images, Polly audio) ---
 # Bucket for blog assets, served through CloudFront via OAC.
 # Only the Lightsail domain is passed for CORS (no EKS domain needed).

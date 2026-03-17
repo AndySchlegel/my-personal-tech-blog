@@ -1,54 +1,66 @@
-# Lightsail Infrastructure Teardown Pipeline
+# Lightsail Infrastructure Destroy Pipeline (terraform-lightsail/)
 #
-# MANUAL TRIGGER ONLY -- destroys Lightsail-specific infrastructure.
-# Completely separate from the EKS teardown workflow (infra-destroy.yml).
+# MANUAL TRIGGER ONLY -- destroys all Lightsail infrastructure managed by
+# the terraform-lightsail/ root module. This is completely independent
+# from the EKS terraform/ root (separate state, separate lifecycle).
 #
-# What gets DESTROYED (costs money or is useless without the instance):
-#   - Lightsail instance + static IP (~$5/month)
-#   - CloudFront distribution (no origin without Lightsail)
-#   - IAM user + access keys (backend AWS credentials)
+# Single job with two phases:
+#   1. PLAN DESTROY - Shows what will be destroyed
+#   2. DESTROY      - Executes the destroy
 #
-# What gets PRESERVED (free, shared, or contains data):
-#   - S3 bucket (Polly audio files, images, DB backups)
-#   - Cognito user pool (admin user, shared with EKS)
-#   - GitHub OIDC (pipeline auth)
+# What gets DESTROYED:
+#   - Cognito user pool (admin users lost -- re-register after re-provision)
+#   - S3 bucket (Polly audio, images, DB backups)
+#   - Lightsail instance + key pair + IAM user + access keys
+#   - CloudFront distribution + ACM certificate
+#   - Route 53 DNS records (except the hosted zone itself)
 #
-# After completion, S3 + Cognito + OIDC remain in state.
-# To re-deploy: run infra-provision-lightsail.yml, then deploy-lightsail.yml.
+# IMPORTANT: The Lightsail static IP (63.183.111.225) is NOT managed by
+# Terraform -- it is passed as a variable, not created as a resource.
+# The IP persists after destroy and must be manually released via the
+# AWS console or CLI if you are truly decommissioning:
+#   aws lightsail release-static-ip --static-ip-name blog-lightsail-ip
+#
+# Simple destroy: no wave system, no target filtering. Everything in the
+# terraform-lightsail/ state gets destroyed in one operation. Terraform
+# handles the correct destruction order automatically.
 #
 # Authentication: OIDC federation (same IAM role as other workflows).
 #
 # Required GitHub Secrets:
-#   AWS_ROLE_ARN  - IAM role ARN
-#   DB_PASSWORD   - Required by Terraform (even for destroy plans)
+#   AWS_ROLE_ARN           - IAM role ARN for OIDC authentication
+#   ORIGIN_VERIFY_SECRET   - Required by Terraform even for destroy plans
 
-name: Lightsail Teardown
+name: Destroy Lightsail Infrastructure
 
 on:
   workflow_dispatch:
     inputs:
       confirm_destroy:
-        description: 'Type DESTROY to confirm teardown of Lightsail infrastructure'
+        description: 'Type DESTROY to confirm teardown of all Lightsail infrastructure'
         required: true
         type: string
         default: ''
 
+# OIDC requires these permissions to request and present the JWT token.
 permissions:
   id-token: write
   contents: read
 
-# Same concurrency group as all Terraform workflows.
+# Shared concurrency group with all Terraform-Lightsail workflows.
+# Prevents state file conflicts when multiple workflows run.
 concurrency:
-  group: terraform-apply
+  group: terraform-lightsail
   cancel-in-progress: false
 
 env:
   AWS_REGION: eu-central-1
-  TF_WORKING_DIR: terraform
+  TF_WORKING_DIR: terraform-lightsail
+  TF_VAR_origin_verify_secret: ${{ secrets.ORIGIN_VERIFY_SECRET }}
 
 jobs:
-  teardown:
-    name: Teardown Lightsail Stack
+  destroy:
+    name: Plan Destroy + Destroy
     runs-on: ubuntu-latest
     if: ${{ inputs.confirm_destroy == 'DESTROY' }}
     environment: production
@@ -72,59 +84,32 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
-      # --- Destroy CloudFront first ---
-      # CloudFront references the Lightsail origin. Must be removed
-      # before the Lightsail instance so Terraform doesn't complain
-      # about missing origin references.
-      - name: Plan destroy CloudFront
+      # --- Plan destroy: show everything that will be removed ---
+      # No -target flags needed. The entire terraform-lightsail/ state
+      # is destroyed. This is safe because this root only contains
+      # Lightsail-specific resources (no shared OIDC or EKS resources).
+      - name: Terraform plan destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          terraform plan \
-            -destroy \
-            -target=module.cloudfront \
-            -out=tfplan-cloudfront
+        run: terraform plan -destroy -out=tfplan-destroy
 
-      - name: Show CloudFront destroy plan
+      - name: Show destroy plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform show tfplan-cloudfront
+        run: terraform show tfplan-destroy
 
-      - name: Destroy CloudFront
+      # --- Execute destroy ---
+      # Terraform destroys resources in reverse dependency order:
+      # Route 53 + CloudFront first, then Lightsail, then S3 + Cognito.
+      - name: Terraform destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply tfplan-cloudfront
+        run: terraform apply tfplan-destroy
 
-      # --- Destroy Lightsail instance + IAM user ---
-      # Removes the instance, static IP, key pair, and IAM user/credentials.
-      # S3, Cognito, and OIDC are intentionally NOT targeted.
-      - name: Plan destroy Lightsail
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          terraform plan \
-            -destroy \
-            -target=module.lightsail \
-            -out=tfplan-lightsail
-
-      - name: Show Lightsail destroy plan
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform show tfplan-lightsail
-
-      - name: Destroy Lightsail
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply tfplan-lightsail
-
-      # --- Verify: S3, Cognito, OIDC should remain ---
-      - name: Verify remaining state
+      # --- Verify: state should be empty after full destroy ---
+      - name: Verify empty state
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
           echo "=== Remaining resources in state ==="
-          terraform state list
+          terraform state list || echo "State is empty (expected)."
           echo ""
-          echo "Expected: s3, cognito, github_oidc resources."
-          echo "Lightsail + CloudFront should be gone."
+          echo "NOTE: The Lightsail static IP is NOT in Terraform state."
+          echo "It persists after destroy and must be manually released if decommissioning:"
+          echo "  aws lightsail release-static-ip --static-ip-name blog-lightsail-ip"

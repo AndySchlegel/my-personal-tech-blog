@@ -49,6 +49,17 @@ output "s3_bucket_name" {
   value       = module.s3.bucket_id
 }
 
+# --- Cognito ---
+output "cognito_user_pool_id" {
+  description = "Cognito user pool ID for admin authentication"
+  value       = module.cognito.user_pool_id
+}
+
+output "cognito_client_id" {
+  description = "Cognito app client ID for admin authentication"
+  value       = module.cognito.user_pool_client_id
+}
+
 # --- URL ---
 # The final blog URL -- what users type in their browser.
 output "lightsail_url" {

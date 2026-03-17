@@ -53,35 +53,15 @@ output "eks_cluster_endpoint" {
   value       = module.eks.cluster_endpoint
 }
 
-# --- Cognito ---
-# The frontend needs these values to redirect users to the login page
-# and validate JWT tokens.
+# --- Cognito (managed by terraform-lightsail/, referenced via data source) ---
+# The Cognito user pool is permanently managed by the Lightsail root.
+# These outputs use data source lookups so deploy.yml can still read them.
 output "cognito_user_pool_id" {
-  description = "Cognito User Pool ID"
-  value       = module.cognito.user_pool_id
+  description = "Cognito User Pool ID (from data source)"
+  value       = tolist(data.aws_cognito_user_pools.admin.ids)[0]
 }
 
-output "cognito_client_id" {
-  description = "Cognito App Client ID (for frontend)"
-  value       = module.cognito.user_pool_client_id
-}
-
-output "cognito_domain" {
-  description = "Cognito domain prefix (for hosted login UI)"
-  value       = module.cognito.user_pool_domain
-}
-
-# --- CloudFront ---
-output "cloudfront_domain" {
-  description = "CloudFront distribution domain"
-  value       = module.cloudfront.distribution_domain_name
-}
-
-output "acm_certificate_arn" {
-  description = "ACM certificate ARN for CloudFront (us-east-1)"
-  value       = module.cloudfront.acm_certificate_arn
-}
-
+# --- ALB Certificate ---
 output "alb_acm_certificate_arn" {
   description = "ACM certificate ARN for ALB (eu-central-1)"
   value       = var.create_alb_cert ? aws_acm_certificate_validation.alb[0].certificate_arn : ""
@@ -116,11 +96,10 @@ output "alb_controller_role_arn" {
   value       = module.eks.alb_controller_role_arn
 }
 
-# --- S3 Bucket ---
-# Used by the backend for Polly audio file storage (MP3s).
+# --- S3 (managed by terraform-lightsail/, referenced via data source) ---
 output "s3_bucket_name" {
-  description = "S3 bucket name for assets (audio, images)"
-  value       = module.s3.bucket_id
+  description = "S3 bucket name for assets (from data source)"
+  value       = data.aws_s3_bucket.assets.id
 }
 
 # --- Backend IRSA Role ---
@@ -158,35 +137,4 @@ output "blog_url" {
   value       = "https://${local.blog_domain}"
 }
 
-# --- Lightsail ---
-output "lightsail_static_ip" {
-  description = "Lightsail instance public IP"
-  value       = module.lightsail.static_ip
-}
-
-output "lightsail_instance_name" {
-  description = "Lightsail instance name"
-  value       = module.lightsail.instance_name
-}
-
-output "lightsail_domain" {
-  description = "Lightsail blog domain (e.g. techblog.aws.his4irness23.de)"
-  value       = local.lightsail_domain
-}
-
-output "lightsail_url" {
-  description = "Lightsail blog URL"
-  value       = "https://${local.lightsail_domain}"
-}
-
-output "lightsail_backend_access_key_id" {
-  description = "IAM access key ID for Lightsail backend (set as LIGHTSAIL_AWS_ACCESS_KEY_ID)"
-  value       = module.lightsail.backend_access_key_id
-  sensitive   = true
-}
-
-output "lightsail_backend_secret_access_key" {
-  description = "IAM secret key for Lightsail backend (set as LIGHTSAIL_AWS_SECRET_ACCESS_KEY)"
-  value       = module.lightsail.backend_secret_access_key
-  sensitive   = true
-}
+# NOTE: Lightsail, CloudFront, and S3 outputs have been moved to terraform-lightsail/outputs.tf.
