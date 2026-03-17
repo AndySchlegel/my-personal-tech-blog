@@ -422,24 +422,17 @@
         overflow: hidden;
       }
 
-      /* --- Excerpt: 2-line teaser, smooth expand on hover ---
-         Shows 2 lines by default. On hover, smoothly expands to full
-         excerpt over 0.4s. The animation prevents jarring content shift. */
+      /* --- Excerpt: smooth expand/collapse on hover ---
+         Uses max-height only (no line-clamp toggle) so both open and
+         close animate smoothly. Line-clamp can't be transitioned. */
       .post-card .card-excerpt {
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
         overflow: hidden;
         max-height: 3.2em;
         transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .post-card:hover .card-excerpt {
-        display: block !important;
-        -webkit-line-clamp: unset !important;
-        -webkit-box-orient: unset !important;
         max-height: 12em;
-        overflow: hidden;
-        transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       /* --- V2 Filter Button Enhancements ---
