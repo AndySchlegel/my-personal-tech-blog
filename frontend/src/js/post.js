@@ -1118,6 +1118,9 @@
       })
       .then(function (data) {
         var posts = data.posts || data;
+        // API returns newest-first (DESC), but blog.html defaults to
+        // chronological (oldest-first). Reverse so prev/next directions match.
+        posts.reverse();
         var navList = posts.map(function (p) {
           return { slug: p.slug, title: p.title };
         });
