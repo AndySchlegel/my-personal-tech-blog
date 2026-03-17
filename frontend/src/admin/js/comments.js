@@ -5,7 +5,8 @@
 //   - loadComments(status?) fetches all comments from /api/admin/comments
 //   - renderComments(comments) renders the list with action buttons
 //   - updateStatus(id, status) changes a comment's status via API
-//   - Filter buttons switch between all/pending/approved/flagged
+//   - Filter buttons switch between all/pending/approved/flagged/deleted
+//   - Filter buttons show counts: "All (19)", "Pending (5)", etc.
 // ============================================
 
 (function () {
@@ -99,27 +100,63 @@
     return text.length > maxLen ? text.substring(0, maxLen) + "..." : text;
   }
 
+  // --- Update filter button labels with counts ---
+  // Counts how many comments are in each status and updates
+  // the button text to show e.g. "All (19)", "Pending (5)"
+  function updateFilterCounts(allComments) {
+    var counts = {
+      all: allComments.length,
+      pending: 0,
+      approved: 0,
+      flagged: 0,
+      deleted: 0,
+    };
+
+    allComments.forEach(function (c) {
+      if (counts.hasOwnProperty(c.status)) {
+        counts[c.status]++;
+      }
+    });
+
+    // Update each filter button label with its count
+    var buttons = filtersEl.querySelectorAll(".filter-btn");
+    buttons.forEach(function (btn) {
+      var status = btn.getAttribute("data-status");
+      var label = status.charAt(0).toUpperCase() + status.slice(1);
+      var count = counts[status] !== undefined ? counts[status] : 0;
+      btn.textContent = label + " (" + count + ")";
+    });
+  }
+
   // --- Load comments from API ---
+  // Always fetches ALL comments to compute counts for every filter button,
+  // then filters client-side based on the active status filter.
   async function loadComments(status) {
     commentListEl.innerHTML =
       '<div class="p-6 text-center text-sm text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50">Loading...</div>';
 
-    var url = "/api/admin/comments";
-    if (status && status !== "all") {
-      url += "?status=" + encodeURIComponent(status);
-    }
-
-    var comments = [];
+    var allComments = [];
     try {
-      var response = await AdminAuth.authFetch(url);
+      var response = await AdminAuth.authFetch("/api/admin/comments");
       if (response.ok) {
-        comments = await response.json();
+        allComments = await response.json();
       }
     } catch (err) {
       console.warn("Failed to load comments:", err.message);
     }
 
-    renderComments(comments);
+    // Update filter button counts with the full dataset
+    updateFilterCounts(allComments);
+
+    // Filter client-side based on active filter
+    var filtered = allComments;
+    if (status && status !== "all") {
+      filtered = allComments.filter(function (c) {
+        return c.status === status;
+      });
+    }
+
+    renderComments(filtered);
   }
 
   // --- Render comment list ---
