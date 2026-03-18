@@ -334,7 +334,7 @@
       "</span>" +
       "</h2>" +
       // Excerpt
-      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2 card-excerpt">' +
+      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4 card-excerpt">' +
       escapeHtml(post.excerpt) +
       "</p>" +
       // Footer: date + tags

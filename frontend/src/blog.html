@@ -422,24 +422,35 @@
         overflow: hidden;
       }
 
-      /* --- Excerpt: full text on mobile, 2-line teaser + hover expand on desktop ---
-         Mobile has no hover, so show everything. Desktop teases with 2 lines
-         and expands on hover with smooth max-height animation. */
+      /* --- Excerpt: full text on mobile, smooth expand/collapse on desktop ---
+         Mobile: no clamp, full text visible (no hover on touch devices).
+         Desktop: max-height limits to ~2 lines, gradient fades text edge.
+         NO line-clamp used -- only max-height is animatable in both directions.
+         The gradient mask replaces "..." with a smooth visual fade-out. */
       @media (min-width: 640px) {
         .post-card .card-excerpt {
-          display: -webkit-box !important;
-          -webkit-line-clamp: 2 !important;
-          -webkit-box-orient: vertical !important;
           overflow: hidden;
-          max-height: 3.2em;
-          transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          max-height: 2.8em;
+          position: relative;
+          -webkit-mask-image: linear-gradient(
+            to bottom,
+            black 50%,
+            transparent 100%
+          );
+          mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+          transition:
+            max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            -webkit-mask-image 0.4s ease,
+            mask-image 0.4s ease;
         }
         .post-card:hover .card-excerpt {
-          display: block !important;
-          -webkit-line-clamp: unset !important;
-          -webkit-box-orient: unset !important;
-          max-height: 300px;
-          overflow: visible;
+          max-height: 10em;
+          -webkit-mask-image: none;
+          mask-image: none;
+          transition:
+            max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+            -webkit-mask-image 0.3s ease,
+            mask-image 0.3s ease;
         }
       }
 
