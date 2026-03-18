@@ -11,6 +11,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
+    <!-- Preconnect to CDN origins for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -931,6 +935,10 @@
                   alt="Andy Schlegel"
                   class="relative w-44 h-44 md:w-56 md:h-56 rounded-full object-cover shadow-2xl"
                   style="object-position: 70% 20%"
+                  width="224"
+                  height="224"
+                  fetchpriority="high"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -1055,6 +1063,9 @@
                   alt="Andy Schlegel"
                   class="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
                   style="object-position: center 25%"
+                  width="56"
+                  height="56"
+                  loading="lazy"
                 />
                 <div>
                   <p
@@ -1794,7 +1805,7 @@
     </script>
 
     <!-- Animated counters (scroll-triggered) -->
-    <script src="./js/counter.js"></script>
+    <script src="./js/counter.js" defer></script>
 
     <!-- ============================================
          V2 Effects Engine (modular, reusable)
