@@ -11,6 +11,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
+    <!-- Preconnect to CDN origins for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -702,6 +706,8 @@
                     alt="Andy Schlegel"
                     class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-sky-500/20"
                     style="object-position: center 25%"
+                    width="40"
+                    height="40"
                   />
                   <p
                     class="text-sm sm:text-base text-slate-500 dark:text-slate-400 italic leading-relaxed"
@@ -757,6 +763,10 @@
                   alt="Andy Schlegel"
                   class="relative w-44 h-44 md:w-56 md:h-56 rounded-full object-cover shadow-2xl"
                   style="object-position: center 40%"
+                  width="224"
+                  height="224"
+                  fetchpriority="high"
+                  decoding="async"
                 />
               </div>
 
@@ -773,6 +783,9 @@
                     src="./img/certs/aws-certified-solutions-architect-associate.png"
                     alt="AWS SAA"
                     class="h-14 w-auto"
+                    width="56"
+                    height="56"
+                    loading="lazy"
                   />
                 </a>
                 <a
@@ -786,6 +799,9 @@
                     src="./img/certs/aws-certified-cloud-practitioner.png"
                     alt="AWS CCP"
                     class="h-14 w-auto"
+                    width="56"
+                    height="56"
+                    loading="lazy"
                   />
                 </a>
                 <a
@@ -799,6 +815,9 @@
                     src="./img/certs/linux-essentials-certificate.9.png"
                     alt="Linux Essentials"
                     class="h-14 w-auto"
+                    width="56"
+                    height="56"
+                    loading="lazy"
                   />
                 </a>
                 <a
@@ -812,6 +831,9 @@
                     src="./img/certs/github-foundations.png"
                     alt="GitHub Foundations"
                     class="h-14 w-auto"
+                    width="56"
+                    height="56"
+                    loading="lazy"
                   />
                 </a>
               </div>
@@ -1815,7 +1837,7 @@
     </script>
 
     <!-- Animated counters -->
-    <script src="./js/counter.js"></script>
+    <script src="./js/counter.js" defer></script>
 
     <!-- ============================================
          V2 Effects Engine (modular, reusable)

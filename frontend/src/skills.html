@@ -11,6 +11,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
+    <!-- Preconnect to CDN origins for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -1510,6 +1514,9 @@
                   src="./img/certs/aws-certified-cloud-practitioner.png"
                   alt="AWS Cloud Practitioner"
                   class="h-20 w-auto drop-shadow-md"
+                  width="80"
+                  height="80"
+                  loading="lazy"
                 />
               </div>
               <h3 class="font-semibold text-slate-900 dark:text-white mb-2">
@@ -1546,6 +1553,9 @@
                   src="./img/certs/linux-essentials-certificate.9.png"
                   alt="LPI Linux Essentials"
                   class="h-20 w-auto drop-shadow-md"
+                  width="80"
+                  height="80"
+                  loading="lazy"
                 />
               </div>
               <h3 class="font-semibold text-slate-900 dark:text-white mb-2">
@@ -1582,6 +1592,9 @@
                   src="./img/certs/aws-certified-solutions-architect-associate.png"
                   alt="AWS Solutions Architect Associate"
                   class="h-20 w-auto drop-shadow-md"
+                  width="80"
+                  height="80"
+                  loading="lazy"
                 />
               </div>
               <h3 class="font-semibold text-slate-900 dark:text-white mb-2">
@@ -1618,6 +1631,9 @@
                   src="./img/certs/github-foundations.png"
                   alt="GitHub Foundations"
                   class="h-20 w-auto drop-shadow-md"
+                  width="80"
+                  height="80"
+                  loading="lazy"
                 />
               </div>
               <h3 class="font-semibold text-slate-900 dark:text-white mb-2">
@@ -2527,7 +2543,7 @@
     </script>
 
     <!-- Animated counters -->
-    <script src="./js/counter.js"></script>
+    <script src="./js/counter.js" defer></script>
 
     <!-- ============================================
          V2 Effects Engine (copied from index-v2.html)
