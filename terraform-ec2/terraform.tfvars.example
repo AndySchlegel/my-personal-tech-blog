@@ -4,9 +4,6 @@
 # Everything else has sane defaults in variables.tf -- only override
 # here if you consciously deviate from them.
 
-# Your current public IPv4 with /32 suffix. Find it with: curl -4 ifconfig.me
-# This only matters during bootstrap; the rule is removed after Tailscale join.
-ssh_ingress_cidr = "203.0.113.42/32"
 
 # Contents of the PUBLIC key file (~/.ssh/blog_ec2_ed25519.pub), one line.
 # Generate the pair with: ssh-keygen -t ed25519 -f ~/.ssh/blog_ec2_ed25519

@@ -22,16 +22,10 @@ resource "aws_security_group" "blog" {
   description = "Firewall for the blog EC2 host"
   vpc_id      = data.aws_vpc.default.id
 
-  # SSH only from one admin address during bootstrap. Once Tailscale is
-  # up, this rule gets removed (delete the block, terraform apply) --
-  # SSH then goes through the tailnet and never over the public port.
-  ingress {
-    description = "SSH from admin IP (bootstrap only, remove after Tailscale join)"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.ssh_ingress_cidr]
-  }
+  # No SSH ingress: since the Tailscale join (26.08.2026) SSH runs
+  # exclusively through the tailnet. The bootstrap rule that allowed
+  # port 22 from one admin IP was removed right after -- if you ever
+  # need emergency SSH, re-add it here, never in the console.
 
   # HTTP/HTTPS for the blog itself. Port 80 stays open for the
   # ACME HTTP-01 challenge and the redirect to 443.

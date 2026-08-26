@@ -23,11 +23,6 @@ variable "root_volume_size_gb" {
   default     = 20 # blog currently uses 6.6 GiB, factor 3 headroom
 }
 
-variable "ssh_ingress_cidr" {
-  description = "CIDR allowed to reach SSH during bootstrap (your current public IP as x.x.x.x/32). After Tailscale is up this rule gets removed. No default on purpose: forces a conscious choice per plan."
-  type        = string
-}
-
 variable "ssh_public_key" {
   description = "Public SSH key material for the initial ubuntu user (contents of a .pub file, never the private key)"
   type        = string
