@@ -29,6 +29,9 @@ resource "aws_security_group" "blog" {
 
   # HTTP/HTTPS for the blog itself. Port 80 stays open for the
   # ACME HTTP-01 challenge and the redirect to 443.
+  # checkov:skip=CKV_AWS_260:Public webserver -- ports 80/443 open to the world is the purpose, SSH is tailnet-only
+  # checkov:skip=CKV_AWS_382:Open egress is a documented decision, see comment on the egress block
+  #tfsec:ignore:aws-ec2-no-public-ingress-sgr
   ingress {
     description = "HTTP public (redirect + ACME challenge)"
     from_port   = 80
@@ -37,6 +40,7 @@ resource "aws_security_group" "blog" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  #tfsec:ignore:aws-ec2-no-public-ingress-sgr
   ingress {
     description = "HTTPS public (blog traffic, CloudFront origin)"
     from_port   = 443
@@ -48,6 +52,7 @@ resource "aws_security_group" "blog" {
   # Outbound: allow everything. The host must reach apt mirrors, Docker
   # registries, Tailscale and AWS APIs; restricting egress on a single
   # trusted host adds friction without a matching threat model.
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
   egress {
     description = "Allow all outbound"
     from_port   = 0
@@ -59,11 +64,14 @@ resource "aws_security_group" "blog" {
 
 # --- The instance -------------------------------------------------------
 resource "aws_instance" "blog" {
+  # checkov:skip=CKV_AWS_126:Detailed (1-min) monitoring costs ~2 USD/month and buys nothing for a low-traffic blog; default 5-min metrics suffice
+  # checkov:skip=CKV_AWS_135:t4g delivers EBS-optimized performance by default; setting the flag forces instance REPLACEMENT (measured 27.08.2026) for zero gain
   ami           = data.aws_ami.ubuntu_arm64.id
   instance_type = var.instance_type
 
   key_name               = aws_key_pair.blog.key_name
   vpc_security_group_ids = [aws_security_group.blog.id]
+  iam_instance_profile   = aws_iam_instance_profile.blog.name
 
   # IMDSv2 only: the instance metadata service answers only to
   # session-token requests. Blocks the classic SSRF attack where a
