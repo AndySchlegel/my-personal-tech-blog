@@ -1,0 +1,10 @@
+# terraform.tfvars.example - Template for the real terraform.tfvars
+#
+# Copy to terraform.tfvars (gitignored) and fill in the two values.
+# Everything else has sane defaults in variables.tf -- only override
+# here if you consciously deviate from them.
+
+
+# Contents of the PUBLIC key file (~/.ssh/blog_ec2_ed25519.pub), one line.
+# Generate the pair with: ssh-keygen -t ed25519 -f ~/.ssh/blog_ec2_ed25519
+ssh_public_key = "ssh-ed25519 AAAA...example... comment"
