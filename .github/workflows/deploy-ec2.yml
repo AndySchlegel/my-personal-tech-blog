@@ -1,0 +1,181 @@
+# Deploy Pipeline - Deploy blog to the EC2 instance (blog-ec2)
+#
+# MANUAL TRIGGER ONLY (workflow_dispatch) -- nothing deploys unless you
+# click "Run workflow" in the GitHub Actions UI.
+#
+# Two jobs in sequence:
+#   1. TEST   - Run ESLint, Prettier, and Jest unit tests (skippable)
+#   2. DEPLOY - rsync files to the instance, write .env + admin config,
+#               docker compose up --build, verify health
+#
+# Differences to the retired Lightsail pipeline:
+#   - No AWS access keys: the backend uses the EC2 instance role (IMDSv2).
+#   - Deploy user is "ubuntu", target is the Tailscale IP (port 22 is
+#     closed to the public internet, the runner joins the tailnet).
+#   - No swap/Docker bootstrap here: the instance is provisioned by
+#     Terraform (terraform-ec2/) and cloud-init.
+#
+# GitHub Secrets used:
+#   - BLOG_EC2_SSH_KEY       (SSH private key for the ubuntu user)
+#   - BLOG_EC2_HOST          (Tailscale IP of blog-ec2)
+#   - TAILSCALE_AUTH_KEY     (lets the runner join the tailnet)
+#   - DB_PASSWORD, COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID,
+#     TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, ORIGIN_VERIFY_SECRET
+
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests (for hotfix deploys)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Prevent concurrent deploys.
+concurrency:
+  group: deploy-ec2
+  cancel-in-progress: false
+
+env:
+  DEPLOY_USER: ubuntu
+  DEPLOY_PATH: /opt/blog
+  AWS_REGION: eu-central-1
+
+jobs:
+  # ===== Job 1: TEST =====
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_tests }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: backend/
+        run: npm ci
+
+      - name: Lint
+        working-directory: backend/
+        run: npx eslint src/
+
+      - name: Format check
+        working-directory: backend/
+        run: npx prettier --check "src/**/*.ts"
+
+      - name: Unit tests
+        working-directory: backend/
+        run: npm test
+
+  # ===== Job 2: DEPLOY =====
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [test]
+    # Run even if test was skipped (skip_tests = true)
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # The instance only accepts SSH from inside the tailnet.
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.BLOG_EC2_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.BLOG_EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      # Sync the project. Excludes mirror the Lightsail pipeline plus the
+      # terraform-ec2 root (never ship state or infra code to the host).
+      - name: Rsync files to the instance
+        run: |
+          rsync -avz --delete \
+            --exclude 'node_modules/' \
+            --exclude '.git/' \
+            --exclude 'terraform/' \
+            --exclude 'terraform-ec2/' \
+            --exclude 'terraform-lightsail/' \
+            --exclude 'k8s/' \
+            --exclude '.github/' \
+            --exclude '*.tfvars' \
+            --exclude '*.tfstate*' \
+            --exclude '.terraform/' \
+            --exclude 'frontend/src/archive/' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./ ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }}:${{ env.DEPLOY_PATH }}/
+
+      # Write .env -- NO AWS keys: the backend gets credentials from the
+      # instance role via IMDSv2. Vault integration will replace this step.
+      - name: Write .env file
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }} << 'ENVEOF'
+          cat > /opt/blog/.env << EOF
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          AWS_REGION=${{ env.AWS_REGION }}
+          S3_BUCKET_NAME=blog-assets-his4irness23
+          COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID }}
+          COGNITO_CLIENT_ID=${{ secrets.COGNITO_CLIENT_ID }}
+          CORS_ORIGIN=https://techblog.aws.his4irness23.de
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
+          ORIGIN_VERIFY_SECRET=${{ secrets.ORIGIN_VERIFY_SECRET }}
+          EOF
+          chmod 600 /opt/blog/.env
+          ENVEOF
+
+      # Inject Cognito config into the frontend admin config BEFORE the
+      # image build -- the repo ships this file with empty placeholders.
+      # (Lesson from the migration on 29.08.2026: a source checkout is
+      # not a deployment; this file only exists filled at deploy time.)
+      - name: Write admin config.js
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }} << CFGEOF
+          cat > /opt/blog/frontend/src/admin/config.js << 'INNEREOF'
+          window.BLOG_CONFIG = {
+            cognitoUserPoolId: "${{ secrets.COGNITO_USER_POOL_ID }}",
+            cognitoClientId: "${{ secrets.COGNITO_CLIENT_ID }}",
+            cognitoDomain: "blog-admin-auth.auth.eu-central-1.amazoncognito.com",
+          };
+          INNEREOF
+          CFGEOF
+
+      - name: Build and start containers
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }} << 'EOF'
+          cd /opt/blog
+          docker compose -f docker-compose.lightsail.yml up -d --build
+          EOF
+
+      # Fail the run if the backend does not come up healthy.
+      - name: Verify health
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }} << 'EOF'
+          for i in $(seq 1 12); do
+            if docker exec blog-backend-1 wget -qO- http://localhost:3000/health | grep -q '"status":"ok"'; then
+              echo "Backend healthy."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Backend did not become healthy in 60s" >&2
+          docker logs blog-backend-1 --tail 20 >&2
+          exit 1
+          EOF
