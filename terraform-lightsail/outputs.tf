@@ -20,45 +20,15 @@ output "lightsail_instance_name" {
 
 # IAM credentials for the backend to access AWS services (Translate, Polly, Comprehend, S3).
 # Set these as GitHub Secrets: LIGHTSAIL_AWS_ACCESS_KEY_ID, LIGHTSAIL_AWS_SECRET_ACCESS_KEY
-output "lightsail_backend_access_key_id" {
-  description = "IAM access key ID for Lightsail backend (set as LIGHTSAIL_AWS_ACCESS_KEY_ID)"
-  value       = module.lightsail.backend_access_key_id
-  sensitive   = true
-}
 
-output "lightsail_backend_secret_access_key" {
-  description = "IAM secret key for Lightsail backend (set as LIGHTSAIL_AWS_SECRET_ACCESS_KEY)"
-  value       = module.lightsail.backend_secret_access_key
-  sensitive   = true
-}
 
 # --- CloudFront ---
-output "cloudfront_distribution_id" {
-  description = "CloudFront distribution ID (for cache invalidation)"
-  value       = module.cloudfront.distribution_id
-}
 
-output "cloudfront_domain_name" {
-  description = "CloudFront distribution domain (e.g. d1234abcdef8.cloudfront.net)"
-  value       = module.cloudfront.distribution_domain_name
-}
 
 # --- S3 ---
-output "s3_bucket_name" {
-  description = "S3 bucket name for assets (audio, images)"
-  value       = module.s3.bucket_id
-}
 
 # --- Cognito ---
-output "cognito_user_pool_id" {
-  description = "Cognito user pool ID for admin authentication"
-  value       = module.cognito.user_pool_id
-}
 
-output "cognito_client_id" {
-  description = "Cognito app client ID for admin authentication"
-  value       = module.cognito.user_pool_client_id
-}
 
 # --- URL ---
 # The final blog URL -- what users type in their browser.

@@ -18,14 +18,4 @@ output "instance_name" {
   value       = aws_lightsail_instance.blog.name
 }
 
-output "backend_access_key_id" {
-  description = "IAM access key ID for backend AWS services (set as GitHub Secret)"
-  value       = aws_iam_access_key.lightsail_backend.id
-  sensitive   = true
-}
 
-output "backend_secret_access_key" {
-  description = "IAM secret access key for backend AWS services (set as GitHub Secret)"
-  value       = aws_iam_access_key.lightsail_backend.secret
-  sensitive   = true
-}
