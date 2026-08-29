@@ -27,3 +27,9 @@ variable "ssh_public_key" {
   description = "Public SSH key material for the initial ubuntu user (contents of a .pub file, never the private key)"
   type        = string
 }
+
+variable "origin_verify_secret" {
+  description = "Shared secret CloudFront sends as X-Origin-Verify header; nginx on the instance rejects requests without it. Value lives in /opt/blog/.env on the host (Vault later), passed via TF_VAR_origin_verify_secret."
+  type        = string
+  sensitive   = true
+}

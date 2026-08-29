@@ -19,3 +19,18 @@ provider "aws" {
     }
   }
 }
+
+# Second provider for us-east-1: CloudFront requires its ACM certificate
+# to live in that region, everything else stays in Frankfurt.
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Project     = "tech-blog"
+      Environment = "production"
+      ManagedBy   = "terraform-ec2"
+    }
+  }
+}
