@@ -79,6 +79,10 @@ resource "aws_instance" "blog" {
   metadata_options {
     http_tokens   = "required" # this is what "IMDSv2 enforced" means
     http_endpoint = "enabled"
+    # Containers sit one network hop further from the metadata service
+    # than the host (docker bridge). Limit 2 lets the backend container
+    # fetch role credentials via IMDSv2; the default of 1 would block it.
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {
