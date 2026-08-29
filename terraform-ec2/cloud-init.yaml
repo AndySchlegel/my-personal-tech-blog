@@ -1,0 +1,38 @@
+#cloud-config
+# cloud-init.yaml - First-boot provisioning for the blog EC2 host
+#
+# Runs ONCE when a fresh instance boots. Together with the deploy-ec2
+# workflow this makes the compute layer rebuildable in minutes:
+#
+#   1. terraform apply            -> instance boots, this file runs
+#   2. sudo tailscale up          -> one manual auth in the browser
+#      (plus: disable key expiry for the node in the admin console)
+#   3. Run the "Deploy to EC2" workflow -> app code, .env, containers
+#
+# What deliberately does NOT come back by itself:
+#   - database CONTENT (restore from the S3 backup once that exists)
+#   - the tailnet membership (step 2 -- a human authorizes new nodes)
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - unattended-upgrades
+  - ca-certificates
+  - curl
+
+runcmd:
+  # Docker from the official repository (same origin as all other hosts)
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" > /etc/apt/sources.list.d/docker.list
+  - apt-get update -qq
+  - DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  - usermod -aG docker ubuntu
+  # Tailscale (joining the tailnet stays a manual, human-approved step)
+  - curl -fsSL https://tailscale.com/install.sh | sh
+  # Blog directory owned by the deploy user; content comes via the workflow
+  - mkdir -p /opt/blog
+  - chown ubuntu:ubuntu /opt/blog
+  # Enable automatic security updates (kernel reboots stay manual)
+  - dpkg-reconfigure -f noninteractive unattended-upgrades

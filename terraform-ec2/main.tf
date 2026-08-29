@@ -85,6 +85,13 @@ resource "aws_instance" "blog" {
     http_put_response_hop_limit = 2
   }
 
+  # First-boot provisioning: docker, tailscale, unattended-upgrades.
+  # Only runs when an instance is CREATED -- the running instance keeps
+  # its hand-provisioned state (identical content, done 26.-29.08.2026).
+  # replace_on_change=false: editing the file must never destroy the host.
+  user_data                   = file("${path.module}/cloud-init.yaml")
+  user_data_replace_on_change = false
+
   root_block_device {
     volume_type           = "gp3"
     volume_size           = var.root_volume_size_gb
