@@ -19,8 +19,8 @@
 #   - BLOG_EC2_SSH_KEY       (SSH private key for the ubuntu user)
 #   - BLOG_EC2_HOST          (Tailscale IP of blog-ec2)
 #   - TAILSCALE_AUTH_KEY     (lets the runner join the tailnet)
-#   - DB_PASSWORD, COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID,
-#     TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, ORIGIN_VERIFY_SECRET
+#   - COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID (admin config.js injection)
+#   (.env secrets come from Vault via the host agent, not from here)
 
 name: Deploy to EC2
 
@@ -122,24 +122,10 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }}:${{ env.DEPLOY_PATH }}/
 
-      # Write .env -- NO AWS keys: the backend gets credentials from the
-      # instance role via IMDSv2. Vault integration will replace this step.
-      - name: Write .env file
-        run: |
-          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.BLOG_EC2_HOST }} << 'ENVEOF'
-          cat > /opt/blog/.env << EOF
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          AWS_REGION=${{ env.AWS_REGION }}
-          S3_BUCKET_NAME=blog-assets-his4irness23
-          COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID }}
-          COGNITO_CLIENT_ID=${{ secrets.COGNITO_CLIENT_ID }}
-          CORS_ORIGIN=https://techblog.aws.his4irness23.de
-          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
-          ORIGIN_VERIFY_SECRET=${{ secrets.ORIGIN_VERIFY_SECRET }}
-          EOF
-          chmod 600 /opt/blog/.env
-          ENVEOF
+      # NOTE: /opt/blog/.env is NOT written here anymore. Since 29.08.2026
+      # the Vault Agent on the host owns that file (vault-agent-blog.service,
+      # secrets from kv/blog/env). Writing it here would create a second
+      # source of truth that fights the agent on every render.
 
       # Inject Cognito config into the frontend admin config BEFORE the
       # image build -- the repo ships this file with empty placeholders.
