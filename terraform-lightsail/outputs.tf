@@ -20,17 +20,7 @@ output "lightsail_instance_name" {
 
 # IAM credentials for the backend to access AWS services (Translate, Polly, Comprehend, S3).
 # Set these as GitHub Secrets: LIGHTSAIL_AWS_ACCESS_KEY_ID, LIGHTSAIL_AWS_SECRET_ACCESS_KEY
-output "lightsail_backend_access_key_id" {
-  description = "IAM access key ID for Lightsail backend (set as LIGHTSAIL_AWS_ACCESS_KEY_ID)"
-  value       = module.lightsail.backend_access_key_id
-  sensitive   = true
-}
 
-output "lightsail_backend_secret_access_key" {
-  description = "IAM secret key for Lightsail backend (set as LIGHTSAIL_AWS_SECRET_ACCESS_KEY)"
-  value       = module.lightsail.backend_secret_access_key
-  sensitive   = true
-}
 
 # --- CloudFront ---
 
