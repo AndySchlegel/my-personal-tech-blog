@@ -36,3 +36,43 @@ resource "aws_iam_instance_profile" "blog" {
   name = "blog-ec2-profile"
   role = aws_iam_role.blog.name
 }
+
+# Permissions for the blog backend, attached to the instance role.
+# Same statements the transitional IAM user carries (iam-legacy.tf) --
+# once the backend proves it works via the role, that file gets deleted
+# and these become the only path to AWS.
+resource "aws_iam_role_policy" "blog_backend" {
+  #checkov:skip=CKV_AWS_355:Comprehend/Translate/Polly APIs don't support resource-level ARNs
+  name = "blog-backend-policy"
+  role = aws_iam_role.blog.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "ComprehendAccess"
+        Effect   = "Allow"
+        Action   = ["comprehend:DetectKeyPhrases", "comprehend:DetectSentiment"]
+        Resource = "*"
+      },
+      {
+        Sid      = "TranslateAccess"
+        Effect   = "Allow"
+        Action   = ["translate:TranslateText"]
+        Resource = "*"
+      },
+      {
+        Sid      = "PollyAccess"
+        Effect   = "Allow"
+        Action   = ["polly:SynthesizeSpeech"]
+        Resource = "*"
+      },
+      {
+        Sid      = "S3Access"
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:GetObject"]
+        Resource = "arn:aws:s3:::blog-assets-his4irness23/*"
+      }
+    ]
+  })
+}

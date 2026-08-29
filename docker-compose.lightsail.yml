@@ -55,10 +55,9 @@ services:
       DATABASE_URL: postgresql://bloguser:${DB_PASSWORD}@db:5432/techblog
       DB_SSL: "false"
       CORS_ORIGIN: ${CORS_ORIGIN:-https://techblog.aws.his4irness23.de}
-      # AWS credentials (IAM user for Lightsail, replaces EKS IRSA)
+      # AWS access via the EC2 instance role (IMDSv2) -- no static keys.
+      # The SDK credential chain resolves the role automatically.
       AWS_REGION: ${AWS_REGION:-eu-central-1}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       # S3 bucket for Polly audio + image uploads
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-blog-assets-his4irness23}
       # Cognito (admin auth)
