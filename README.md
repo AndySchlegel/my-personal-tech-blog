@@ -156,6 +156,14 @@ Monitoring (in-cluster, namespace: monitoring):
 
 ## Infrastructure
 
+> **Current production setup (since 29.08.2026):** the blog runs on a single
+> EC2 instance managed by the `terraform-ec2/` root -- t4g.small (arm64),
+> IMDSv2-enforced instance role instead of static AWS keys, secrets rendered
+> by a Vault Agent, CloudFront in front, deployed via the "Deploy to EC2"
+> workflow. The EKS setup below is kept as the **historical final project**
+> of my cloud training -- fully functional IaC, no longer deployed. The
+> Lightsail chapter (interim hosting) was retired the same day.
+
 ### Terraform Modules (10 modules, all written from scratch)
 
 | Module | Purpose | Key Resources |
