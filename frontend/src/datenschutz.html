@@ -40,211 +40,11 @@
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
     />
 
+    <!-- Common V2 effects -->
+    <link rel="stylesheet" href="./css/common.css" />
+
     <!-- Theme toggle (loads early to prevent flash) -->
     <script src="./js/theme.js"></script>
-
-    <!-- ============================================
-         V2 Effects System (Legal Page - Lightweight)
-         Only includes effects relevant for legal pages:
-         lamp-effect, glow-card, reveal-v2, section-divider.
-         ============================================ -->
-    <style>
-      /* --- EFFECT: Lamp / Conic Gradient ---
-         Spotlight beam radiating down from top center. */
-      .lamp-effect {
-        position: relative;
-        overflow: hidden;
-      }
-      .lamp-effect::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 140%;
-        height: 100%;
-        background: conic-gradient(
-          from 90deg at 50% 0%,
-          transparent 40%,
-          rgba(56, 189, 248, 0.08) 45%,
-          rgba(139, 92, 246, 0.06) 50%,
-          rgba(56, 189, 248, 0.08) 55%,
-          transparent 60%
-        );
-        pointer-events: none;
-        z-index: 0;
-      }
-      html:not(.dark) .lamp-effect::before {
-        background: conic-gradient(
-          from 90deg at 50% 0%,
-          transparent 40%,
-          rgba(56, 189, 248, 0.05) 45%,
-          rgba(139, 92, 246, 0.03) 50%,
-          rgba(56, 189, 248, 0.05) 55%,
-          transparent 60%
-        );
-      }
-
-      /* --- EFFECT: Glowing Card Border ---
-         Mouse-following gradient glow on card borders. */
-      .glow-card {
-        --glow-x: 50%;
-        --glow-y: 50%;
-        position: relative;
-        border-radius: 1rem;
-        overflow: hidden;
-        transition:
-          transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-          box-shadow 0.4s ease;
-      }
-      .glow-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1.5px;
-        background: radial-gradient(
-          350px circle at var(--glow-x) var(--glow-y),
-          rgba(56, 189, 248, 0.35),
-          rgba(139, 92, 246, 0.2),
-          transparent 60%
-        );
-        -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        z-index: 2;
-      }
-      .glow-card:hover::before {
-        opacity: 1;
-      }
-      .glow-card:hover {
-        transform: translateY(-4px) scale(1.01);
-        box-shadow:
-          0 12px 40px rgba(56, 189, 248, 0.08),
-          0 4px 16px rgba(139, 92, 246, 0.05);
-      }
-      html:not(.dark) .glow-card::before {
-        background: radial-gradient(
-          350px circle at var(--glow-x) var(--glow-y),
-          rgba(56, 189, 248, 0.2),
-          rgba(139, 92, 246, 0.12),
-          transparent 60%
-        );
-      }
-      html:not(.dark) .glow-card:hover {
-        box-shadow:
-          0 12px 40px rgba(56, 189, 248, 0.06),
-          0 4px 16px rgba(139, 92, 246, 0.03);
-      }
-
-      /* --- EFFECT: Scroll Reveal --- */
-      .reveal-v2 {
-        opacity: 0;
-        transform: translateY(30px);
-        transition:
-          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .reveal-v2.revealed {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .reveal-v2.reveal-delay-1 {
-        transition-delay: 0.1s;
-      }
-      .reveal-v2.reveal-delay-2 {
-        transition-delay: 0.2s;
-      }
-      .reveal-v2.reveal-delay-3 {
-        transition-delay: 0.3s;
-      }
-
-      /* --- Section divider gradient line --- */
-      .section-divider {
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(56, 189, 248, 0.3),
-          rgba(139, 92, 246, 0.3),
-          transparent
-        );
-      }
-
-      /* --- Theme transition smoothing --- */
-      html.transition-theme,
-      html.transition-theme *,
-      html.transition-theme *::before,
-      html.transition-theme *::after {
-        transition:
-          background-color 0.3s ease,
-          color 0.3s ease,
-          border-color 0.3s ease;
-      }
-
-      /* --- Custom scrollbar --- */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-
-      /* --- EFFECT: Custom Cursor Glow ---
-         Soft radial glow following the mouse pointer. */
-      .cursor-glow {
-        position: fixed;
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        background: radial-gradient(
-          circle,
-          rgba(56, 189, 248, 0.08) 0%,
-          transparent 70%
-        );
-        transform: translate(-50%, -50%);
-        transition: opacity 0.3s ease;
-        mix-blend-mode: screen;
-      }
-      .dark .cursor-glow {
-        background: radial-gradient(
-          circle,
-          rgba(56, 189, 248, 0.12) 0%,
-          rgba(139, 92, 246, 0.06) 40%,
-          transparent 70%
-        );
-      }
-      html:not(.dark) .cursor-glow {
-        background: radial-gradient(
-          circle,
-          rgba(56, 189, 248, 0.15) 0%,
-          rgba(139, 92, 246, 0.08) 40%,
-          transparent 70%
-        );
-        mix-blend-mode: multiply;
-      }
-    </style>
   </head>
 
   <body
@@ -387,7 +187,7 @@
         <div class="max-w-3xl mx-auto space-y-6">
           <!-- 1. Verantwortlicher -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -419,7 +219,7 @@
 
           <!-- 2. Allgemeines zur Datenverarbeitung -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -444,7 +244,7 @@
 
           <!-- 3. Hosting und Infrastruktur -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -571,7 +371,7 @@
 
           <!-- 4. Content Delivery Network -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -605,7 +405,7 @@
 
           <!-- 5. SSL/TLS -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -630,7 +430,7 @@
 
           <!-- 6. Externe Ressourcen -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -722,7 +522,7 @@
 
           <!-- 7. Cookies und Local Storage -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -797,7 +597,7 @@
 
           <!-- 8. Kommentarfunktion und automatisierte Textanalyse -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -957,7 +757,7 @@
 
           <!-- 8.3 Amazon Translate -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h3
               class="text-lg font-semibold text-slate-900 dark:text-white mb-3"
@@ -1013,7 +813,7 @@
 
           <!-- 8.4 Amazon Polly -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h3
               class="text-lg font-semibold text-slate-900 dark:text-white mb-3"
@@ -1066,7 +866,7 @@
 
           <!-- 8.5 Prometheus & Grafana -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h3
               class="text-lg font-semibold text-slate-900 dark:text-white mb-3"
@@ -1113,7 +913,7 @@
           <!-- 9. Rate Limiting -->
           <div
             id="rate-limiting"
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2 scroll-mt-24"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2 scroll-mt-24"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1139,7 +939,7 @@
 
           <!-- 10. Telegram-Benachrichtigungen -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1168,7 +968,7 @@
 
           <!-- 11. Like-Funktion -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1193,7 +993,7 @@
 
           <!-- 12. Datenbankspeicherung -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1228,7 +1028,7 @@
 
           <!-- 13. Admin-Authentifizierung -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1272,7 +1072,7 @@
 
           <!-- 14. Auftragsverarbeitung -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1310,7 +1110,7 @@
 
           <!-- 15. Ihre Rechte -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1390,7 +1190,7 @@
 
           <!-- 16. Beschwerderecht -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
@@ -1440,7 +1240,7 @@
 
           <!-- 17. Aenderungen -->
           <div
-            class="glow-card bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
+            class="glow-card glow-card-subtle bg-white dark:bg-slate-900/80 p-6 sm:p-8 reveal-v2"
           >
             <h2
               class="text-xl font-semibold text-slate-900 dark:text-white mb-4"
